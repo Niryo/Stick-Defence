@@ -11,12 +11,17 @@ import android.view.SurfaceView;
 public class GameSurface extends SurfaceView implements
         SurfaceHolder.Callback {
 
-
+    private Context context;
     private GameLoopThread thread;
-    private BasicSoldier soldier;
+    private DrawableObject soldier;
 
     public GameSurface(Context context) {
         super(context);
+        this.context=context;
+        //==========temp=========
+        soldier=new BasicSoldier(context);
+        //=========================
+
         // adding the callback (this) to the surface holder to intercept events
         getHolder().addCallback(this);
 
@@ -25,14 +30,7 @@ public class GameSurface extends SurfaceView implements
 
         // make the GameSurface focusable so it can handle events
         setFocusable(true);
-        //===========temp code==========
-        soldier = new BasicSoldier(
-                BitmapFactory.decodeResource(getResources(), R.drawable.simple_running_stick)
-                , 10, 50    // initial position
-                , 2250, 163    // width and height of sprite
-                , 30, 9);    // FPS and number of frames in the animation
 
-        //==============================
     }
 
     @Override
@@ -61,8 +59,9 @@ public class GameSurface extends SurfaceView implements
 
 
     public void render(Canvas canvas) {
-        canvas.drawColor(Color.WHITE);
-        soldier.draw(canvas);
+            canvas.drawColor(Color.WHITE);
+            soldier.render(canvas);
+
     }
 
 

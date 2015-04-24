@@ -35,7 +35,7 @@ public class GameLoopThread extends Thread {
         Canvas canvas;
 
         long beginTime;        // the time when the cycle begun
-        long endTime;        // the time it took for the cycle to execute
+        long timeDiff;        // the time it took for the cycle to execute
         int sleepTime;        // ms to sleep (<0 if we're behind)
         int skippedFrames;    // number of frames being skipped
 
@@ -52,10 +52,10 @@ public class GameLoopThread extends Thread {
                     this.gameSurface.render(canvas);
 
 
-                    endTime = System.currentTimeMillis() - beginTime;
+                    timeDiff = System.currentTimeMillis() - beginTime;
 
                     // calculate sleep time
-                    sleepTime = (int) (FRAME_PERIOD - endTime);
+                    sleepTime = (int) (FRAME_PERIOD - timeDiff);
 
                     if (sleepTime > 0) {
                         // if sleepTime > 0 we're OK
