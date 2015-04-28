@@ -3,7 +3,7 @@ package huji.ac.il.stick_defence;
 import android.graphics.Canvas;
 
 /**
- * Created by Nir on 25/04/2015.
+ * This interface represents any object that can be draw on the screen
  */
 public interface DrawableObject {
     public void render(Canvas canvas);

@@ -8,6 +8,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 
+/**
+ * The game surface. During the game, everything takes place on this surface.
+ */
 public class GameSurface extends SurfaceView implements
         SurfaceHolder.Callback {
 

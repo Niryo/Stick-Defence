@@ -8,7 +8,7 @@ import android.view.SurfaceHolder;
 
 
 /**
- * This class represents the main game loop
+ * The main game loop
  */
 public class GameLoopThread extends Thread {
     private final static int MAX_FPS = 50;           // desired fps
