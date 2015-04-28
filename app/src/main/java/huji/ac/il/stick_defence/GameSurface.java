@@ -28,10 +28,8 @@ public class GameSurface extends SurfaceView implements
         // adding the callback (this) to the surface holder to intercept events
         getHolder().addCallback(this);
 
-        // create the game loop thread
-        thread = new GameLoopThread(getHolder(), this);
 
-        // make the GameSurface focusable so it can handle events
+        thread = new GameLoopThread(getHolder(), this);
         setFocusable(true);
 
     }

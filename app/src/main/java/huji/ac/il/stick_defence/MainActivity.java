@@ -7,6 +7,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 
 public class MainActivity extends Activity {
@@ -17,7 +20,16 @@ public class MainActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_main);
-        setContentView(new GameSurface(this));
+        FrameLayout game = new FrameLayout(this);
+        GameSurface gameSurface= new GameSurface(this);
+        LinearLayout gameComponents = new LinearLayout (this);
+        Button sendSoldier = new Button(this);
+        sendSoldier.setText("Send");
+        gameComponents.addView(sendSoldier);
+        game.addView(gameSurface);
+        game.addView(gameComponents);
+//        setContentView(new GameSurface(this));
+        setContentView(game);
 
 
     }
