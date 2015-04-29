@@ -5,11 +5,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.util.Log;
 
 /**
  * Created by yahav on 28/04/15.
  */
-public class Castle implements DrawableObject {
+public class Tower implements DrawableObject {
+    public enum Position{
+        LEFT,
+        RIGHT
+    }
     private Bitmap bitmap;
     private int frameHeight;
     private int frameWidth;
@@ -27,17 +32,26 @@ public class Castle implements DrawableObject {
     private int y = 100;                // the Y coordinate of the object (top left of the image)
     private int framePeriod= 100/fps;    // milliseconds between each frame (1000/fps)
     private int scaleFactor=3;
-    private int runSpeed =5;
+    Position m_pos;
 
-    public Castle(Context context) {
-        this.bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.castle);
+    public Tower(Context context, Position pos) {
+        int towerId = (pos == Position.RIGHT) ? R.drawable.right_tower : R.drawable.left_tower;
+        this.m_pos = pos;
+        this.bitmap = BitmapFactory.decodeResource(context.getResources(), towerId);
         this.frameHeight =bitmap.getHeight();
-        this.frameWidth = (bitmap.getWidth()/frameNumber);
-        this.frameRect = new Rect(0, 0, frameWidth, frameHeight);
+        this.frameWidth = bitmap.getWidth();
+
         this.frameScaledHeight= frameHeight/scaleFactor;
         this.frameScaledWidth= frameWidth/scaleFactor;
         this.screenWidth= context.getResources().getDisplayMetrics().widthPixels;
         this.screenHeight= context.getResources().getDisplayMetrics().heightPixels;
+     /*   if (pos == Position.RIGHT){
+            this.frameRect = new Rect(screenWidth - frameWidth, 0, frameWidth, frameHeight);
+            Log.w("yahav", "rect: " + (this.frameRect.toString()));
+        } else {*/
+            this.frameRect = new Rect(0, 0, frameWidth, frameHeight);
+        //}
+
         this.y =screenHeight - frameScaledHeight; //set the y on the bottom of the screen
 
     }
@@ -59,7 +73,13 @@ public class Castle implements DrawableObject {
 
     public void render(Canvas canvas) {
         // where to draw the sprite
-        Rect destRect = new Rect(x, y, (x + frameScaledWidth), (y + frameScaledHeight));
+        Rect destRect; //= new Rect(x, y, (x + frameScaledWidth), (y + frameScaledHeight));
+        if (m_pos == Position.RIGHT){
+            destRect = new Rect(screenWidth - frameScaledWidth, screenHeight - frameScaledHeight, screenWidth, screenHeight);
+        } else {
+            destRect = new Rect(0, screenHeight - frameScaledHeight, frameScaledWidth, screenHeight);
+        }
+
         canvas.drawBitmap(bitmap, frameRect, destRect, null);
     }
 }
