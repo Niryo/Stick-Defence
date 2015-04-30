@@ -1,44 +1,96 @@
 package huji.ac.il.stick_defence;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.util.DisplayMetrics;
 
 /**
  * This class represents a sprite animation object
  */
-public class Sprite {
-    private Bitmap bitmap;
-    private int frameHeight;
-    private int frameWidth;
-    private Rect frameRect;  // the rectangle to be drawn from the animation bitmap
-    private int currentFrame = 0;    // the current frame
-    private long frameTicker = 01;    // the time of the last frame update
-    private int frameNumber = 9;        // number of frames in animation
-    private int fps = 4;             //the speed of the animation
-    private int framePeriod = 100 / fps;    // milliseconds between each frame (1000/fps)
-    private int scaleDownFactor;
+public abstract class Sprite implements DrawableObject{
+    /**
+    * Represents left or right player
+     */
+    enum Player{
+        LEFT,
+        RIGHT
+    }
+
+    private Bitmap  m_bitmap;
+    private Rect    m_frameRect;  // the rectangle to be drawn from the animation bitmap
+    private Rect    m_destRect;
+    private int     m_frameHeight;
+    private int     m_frameWidth;
+    private int     m_currentFrame = 0;    // the current frame
+
+    private int     m_nFrames = 9;        // number of frames in animation
+    private int     m_fps = 4;             //the speed of the animation
+    private int     m_framePeriod
+               = 100 / m_fps;    // milliseconds between each frame (1000/m_fps)
+    private long    m_frameTicker = 01;    // the time of the last frame update
+    private double  m_scaleDownFactor;
+    private Player  m_player;
 
     /**
-     * Constructor
+     * Default Constructor
+     */
+    public Sprite(){}
+
+    /**
+     * Initialize the sprite. Must be called after construct.
      *
+     * @param context the context
      * @param bitmap the bitmap of the sprite
      * @param frameNumber the number of frames in the sprite
+     * @param player left or right player
+     * @param screenHeightPortion sprite height in relation to the screen height.
+     *                            0-1 double. For instance, 0.5 will cause the
+     *                            sprite to span over a half of the screen height.
      */
-    public Sprite(Bitmap bitmap, int frameNumber){
-      this.bitmap=bitmap;
-      this.frameNumber=frameNumber;
-      this.frameHeight = bitmap.getHeight();
-      this.frameWidth = (bitmap.getWidth() / frameNumber);
-      this.frameRect = new Rect(0, 0, frameWidth, frameHeight);
+    public void initSprite(Context context, Bitmap bitmap, int frameNumber,
+                           Player player, double screenHeightPortion){
+        if (player == Player.RIGHT){
+            this.m_bitmap = mirrorBitmap(bitmap);
+        } else {
+            this.m_bitmap = bitmap;
+        }
+        this.m_player = player;
+        this.m_nFrames = frameNumber;
+        this.m_frameHeight = bitmap.getHeight();
+        this.m_frameWidth = (bitmap.getWidth() / frameNumber);
+        this.m_frameRect = new Rect(0, 0, m_frameWidth, m_frameHeight);
+        this.m_destRect = new Rect();
+        int screenHeight =
+                context.getResources().getDisplayMetrics().heightPixels;
+        setScaleDownFactor(((double) this.m_frameHeight / (double) screenHeight)
+                            / screenHeightPortion);
+    }
+
+    /**
+     * Mirror bitmap
+     *
+     * @param src the bitmap to mirror
+     * @return a mirrored bitmap
+     */
+    Bitmap mirrorBitmap(Bitmap src){
+        Matrix m = new Matrix();
+        m.preScale(-1, 1);
+        Bitmap dst = Bitmap.createBitmap(src, 0, 0, src.getWidth(),
+                                         src.getHeight(), m, false);
+        dst.setDensity(DisplayMetrics.DENSITY_DEFAULT);
+        return dst;
     }
 
     /**
      * Sets the animation speed (fps)
+     *
      * @param fps
      */
     public void setAnimationSpeed(int fps){
-        this.fps=fps;
+        this.m_fps = fps;
     }
 
     /**
@@ -48,17 +100,28 @@ public class Sprite {
      * @param gameTime the current time in milliseconds
      */
     public void update(long gameTime) {
-        if (gameTime > frameTicker + framePeriod) {
-            frameTicker = gameTime;
-            // increment the frame
-            currentFrame++;
-            if (currentFrame >= frameNumber) {
-                currentFrame = 0;
+        if (gameTime > m_frameTicker + m_framePeriod) {
+            m_frameTicker = gameTime;
+
+            if (m_nFrames > 1){
+                // increment the frame
+                if (m_player == Player.LEFT){
+                    m_currentFrame++;
+                    if (m_currentFrame >= m_nFrames) {
+                        m_currentFrame = 0;
+                    }
+                } else {
+                    m_currentFrame--;
+                    if (m_currentFrame < 0){
+                        m_currentFrame = m_nFrames - 1;
+                    }
+                }
             }
+
         }
 
-        this.frameRect.left = currentFrame * frameWidth;
-        this.frameRect.right = this.frameRect.left + frameWidth;
+        this.m_frameRect.left = this.m_currentFrame * m_frameWidth;
+        this.m_frameRect.right = this.m_frameRect.left + m_frameWidth;
     }
 
     /**
@@ -69,11 +132,10 @@ public class Sprite {
      * @param x the x axis
      * @param y the y axis
      */
-    public void render(Canvas canvas,int x,int y){
+    public void render(Canvas canvas, int x, int y){
         // where to draw the sprite
-        Rect destRect = new Rect(x, y, (x + getScaledFrameWidth()), (y + getScaledFrameHeight()));
-
-        canvas.drawBitmap(this.bitmap, this.frameRect, destRect, null);
+        m_destRect.set(x, y, (x + (int)getScaledFrameWidth()), (y + (int)getScaledFrameHeight()));
+        canvas.drawBitmap(this.m_bitmap, this.m_frameRect, m_destRect, null);
     }
 
     /**
@@ -81,24 +143,33 @@ public class Sprite {
      * a high scale factor.
      * @param scale the amount of scale
      */
-   public void setScaleDownFactor(int scale){
-       this.scaleDownFactor = scale;
+   public void setScaleDownFactor(double scale){
+       this.m_scaleDownFactor = scale;
+   }
+
+    /**
+     * Returns the scan down factor, that is a factor that shrink or enlarge
+     * the sprite in relation to the screen dimensions.
+     * @return m_scaleDownFactor
+     */
+   public double getScaleDownFactor(){
+       return this.m_scaleDownFactor;
    }
 
     /**
      * Get the actual height of the sprite frame after scaling
      * @return height of frame in pixels
      */
-    public int getScaledFrameHeight(){
-        return this.frameHeight/this.scaleDownFactor;
+    public double getScaledFrameHeight(){
+        return this.m_frameHeight/this.m_scaleDownFactor;
     }
 
     /**
      * Get the actual width of the sprite frame after scaling
      * @return width of frame in pixels
      */
-    public int getScaledFrameWidth(){
-        return this.frameWidth/this.scaleDownFactor;
+    public double getScaledFrameWidth(){
+        return this.m_frameWidth/this.m_scaleDownFactor;
     }
 
 }

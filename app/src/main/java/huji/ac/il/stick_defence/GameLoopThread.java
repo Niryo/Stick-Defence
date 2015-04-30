@@ -1,55 +1,73 @@
 package huji.ac.il.stick_defence;
 
-import java.text.DecimalFormat;
-
 import android.graphics.Canvas;
-import android.util.Log;
 import android.view.SurfaceHolder;
+import android.view.View;
+import android.widget.Button;
 
 
 /**
  * The main game loop
  */
 public class GameLoopThread extends Thread {
-    private final static int MAX_FPS = 50;           // desired fps
-    private final static int MAX_FRAME_SKIPS = 5;   // maximum number of frames to be skipped
-    private final static int FRAME_PERIOD = 1000 / MAX_FPS;          // the frame period
+    // desired fps
+    private final static int MAX_FPS = 50;
+    // maximum number of frames to be skipped
+    private final static int MAX_FRAME_SKIPS = 5;
+    // the frame period
+    private final static int FRAME_PERIOD = 1000 / MAX_FPS;
 
-
-    private SurfaceHolder surfaceHolder;
-    private GameSurface gameSurface;
-    private boolean running;
+    private SurfaceHolder m_surfaceHolder;
+    private GameSurface   m_gameSurface;
+    private GameState     m_gameState;
+    private boolean       m_running;
+    private boolean       m_sendSoldier; // TODO - handle sendSoldier of other player
 
     public void setRunning(boolean running) {
-        this.running = running;
+        this.m_running = running;
     }
 
-    public GameLoopThread(SurfaceHolder surfaceHolder, GameSurface gameSurface) {
+    public GameLoopThread(SurfaceHolder surfaceHolder,
+                          GameSurface gameSurface,
+                          Button sendSoldier) {
         super();
-        this.surfaceHolder = surfaceHolder;
-        this.gameSurface = gameSurface;
+        this.m_surfaceHolder = surfaceHolder;
+        this.m_gameSurface   = gameSurface;
+        this.m_gameState     = new GameState(gameSurface.getContext());
+        this.m_sendSoldier   = false;
+        sendSoldier.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                m_sendSoldier = true;
+            }
+        });
     }
 
     @Override
     public void run() {
         Canvas canvas;
-
-        long beginTime;        // the time when the cycle begun
-        long timeDiff;        // the time it took for the cycle to execute
-        int sleepTime;        // ms to sleep (<0 if we're behind)
-        int skippedFrames;    // number of frames being skipped
+        long   beginTime;        // the time when the cycle begun
+        long   timeDiff;        // the time it took for the cycle to execute
+        int    sleepTime;        // ms to sleep (<0 if we're behind)
+        int    skippedFrames;    // number of frames being skipped
 
         sleepTime = 0;
 
-        while (running) {
+        while (m_running) {
             canvas = null;
             try {
-                canvas = this.surfaceHolder.lockCanvas();
-                synchronized (surfaceHolder) {
+                canvas = this.m_surfaceHolder.lockCanvas();
+                synchronized (m_surfaceHolder) {
                     beginTime = System.currentTimeMillis();
                     skippedFrames = 0;    // resetting the frames skipped
-                    this.gameSurface.update();
-                    this.gameSurface.render(canvas);
+                    if (m_sendSoldier){
+                        //TODO - handle right player addSoldier requests
+                        this.m_gameState.addSoldier(m_gameSurface.getContext(),
+                                                    BasicSoldier.Player.LEFT);
+                        m_sendSoldier = false;
+                    }
+                    this.m_gameState.update();
+                    this.m_gameSurface.render(canvas, m_gameState.getSpriteList());
 
 
                     timeDiff = System.currentTimeMillis() - beginTime;
@@ -68,7 +86,7 @@ public class GameLoopThread extends Thread {
 
                     while (sleepTime < 0 && skippedFrames < MAX_FRAME_SKIPS) {
                         // we need to catch up
-                        this.gameSurface.update(); // update without rendering
+                        this.m_gameState.update(); // update without rendering
                         sleepTime += FRAME_PERIOD;    // add frame period to check if in next frame
                         skippedFrames++;
                     }
@@ -78,11 +96,10 @@ public class GameLoopThread extends Thread {
                 // in case of an exception the surface is not left in
                 // an inconsistent state
                 if (canvas != null) {
-                    surfaceHolder.unlockCanvasAndPost(canvas);
+                    m_surfaceHolder.unlockCanvasAndPost(canvas);
                 }
             }    // end finally
         }
     }
-
 
 }

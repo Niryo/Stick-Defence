@@ -5,6 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Button;
+
+import java.util.ArrayList;
 
 
 /**
@@ -13,38 +16,30 @@ import android.view.SurfaceView;
 public class GameSurface extends SurfaceView implements
         SurfaceHolder.Callback {
 
-    private Context context;
-    private GameLoopThread thread;
-    private DrawableObject soldier;
-    private DrawableObject m_rightTower, m_leftTower;
+    private GameLoopThread m_gameLoopThread;
 
-    public GameSurface(Context context) {
+    public GameSurface(Context context, Button sendSoldier) {
         super(context);
-        this.context=context;
-        //==========temp=========
-        soldier=new BasicSoldier(context);
-        m_rightTower = new Tower(context, Tower.Position.RIGHT);
-        m_leftTower = new Tower(context, Tower.Position.LEFT);
-        //=========================
 
-        // adding the callback (this) to the surface holder to intercept events
+        // Adding the callback (this) to the surface holder to intercept events
         getHolder().addCallback(this);
 
+        // Create the GameLoopThread
+        m_gameLoopThread = new GameLoopThread(getHolder(), this, sendSoldier);
 
-        thread = new GameLoopThread(getHolder(), this);
+        // Make the GameSurface focusable so it can handle events
         setFocusable(true);
 
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
-                               int height) {
-    }
+                               int height) { }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        thread.setRunning(true);
-        thread.start();
+        m_gameLoopThread.setRunning(true);
+        m_gameLoopThread.start();
     }
 
     @Override
@@ -52,27 +47,23 @@ public class GameSurface extends SurfaceView implements
         boolean retry = true;
         while (retry) {
             try {
-                thread.join();
+                m_gameLoopThread.join();
                 retry = false;
             } catch (InterruptedException e) {
-                // try again shutting down the thread
+                // try again shutting down the m_gameLoopThread
             }
         }
     }
 
+    public void render(Canvas canvas, ArrayList<Sprite> sprites) {
+        canvas.drawColor(Color.WHITE);
 
-    public void render(Canvas canvas) {
-            canvas.drawColor(Color.WHITE);
-            soldier.render(canvas);
-            m_rightTower.render(canvas);
-            m_leftTower.render(canvas);
-
+        for (Sprite spirit : sprites){
+            spirit.render(canvas);
+        }
     }
 
 
-    public void update() {
-        soldier.update(System.currentTimeMillis());
-    }
 
 }
 

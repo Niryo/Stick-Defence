@@ -1,7 +1,6 @@
 package huji.ac.il.stick_defence;
 
 import android.app.Activity;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,10 +20,11 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_main);
         FrameLayout game = new FrameLayout(this);
-        GameSurface gameSurface= new GameSurface(this);
-        LinearLayout gameComponents = new LinearLayout (this);
         Button sendSoldier = new Button(this);
         sendSoldier.setText("Send");
+        GameSurface gameSurface= new GameSurface(this, sendSoldier);
+        LinearLayout gameComponents = new LinearLayout (this);
+
         gameComponents.addView(sendSoldier);
         game.addView(gameSurface);
         game.addView(gameComponents);

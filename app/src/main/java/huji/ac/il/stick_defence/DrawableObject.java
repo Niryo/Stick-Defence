@@ -7,6 +7,5 @@ import android.graphics.Canvas;
  */
 public interface DrawableObject {
     public void render(Canvas canvas);
-    public void update(long gameTime);
 
 }

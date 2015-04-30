@@ -6,42 +6,63 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
-public class BasicSoldier implements DrawableObject {
-    private int FRAME_NUMBER=9;
-    private int ANIMATION_SPEED=4;
-    private int SCALE_FACTOR=3; //todo: make relative to sceen size
+public class BasicSoldier extends Sprite {
 
+    //Tower height in relation to the screen height.
+    //0-1 double. For instance, 0.5 will cause the
+    //tower to span over a half of the screen height.
+    private static final double SCREEN_HEIGHT_PORTION = 0.166;
 
-    private int screenWidth;
-    private int screenHeight;
+    private static final int NUMBER_OF_FRAMES = 9;
+    private static final int ANIMATION_SPEED = 4;
+    private static final int RUN_SPEED = 5;
 
-    private Sprite sprite;
-    private int x = 0;                // the X coordinate of the object (top left of the image)
-    private int y = 100;                // the Y coordinate of the object (top left of the image)
-    private int runSpeed = 5; //todo: make the speed in pixels/seconds units.
+    private static Bitmap m_soldierPic = null;
+    private           int m_screenWidth;
+    private           int m_screenHeight;
+    private           int m_soldierX;
+    private           int m_soldierY;
+    private           int m_runSpeed; //todo: make the speed in pixels/seconds units.
 
-    public BasicSoldier(Context context) {
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.simple_running_stick);
-        this.sprite= new Sprite(bitmap, FRAME_NUMBER);
-        this.sprite.setAnimationSpeed(ANIMATION_SPEED);
-        this.sprite.setScaleDownFactor(SCALE_FACTOR);
+    public BasicSoldier(Context context, Player player) {
+        if (m_soldierPic == null){
+            m_soldierPic = BitmapFactory.decodeResource(context.getResources(),
+                    R.drawable.simple_running_stick); // Read resource only once
+        }
+        super.initSprite(context, m_soldierPic, NUMBER_OF_FRAMES,
+                player, SCREEN_HEIGHT_PORTION);
+        super.setAnimationSpeed(ANIMATION_SPEED);
 
-        this.screenWidth = context.getResources().getDisplayMetrics().widthPixels;
-        this.screenHeight = context.getResources().getDisplayMetrics().heightPixels;
-        this.y = screenHeight - sprite.getScaledFrameHeight(); //set the y on the bottom of the screen
+        super.setScaleDownFactor(super.getScaleDownFactor());
+
+        this.m_screenWidth =
+                context.getResources().getDisplayMetrics().widthPixels;
+        this.m_screenHeight =
+                context.getResources().getDisplayMetrics().heightPixels;
+
+        //set the y on the bottom of the screen
+        this.m_soldierY = m_screenHeight - (int)getScaledFrameHeight();
+
+        //Set x and speed
+        if (player == Player.LEFT){
+            m_runSpeed = RUN_SPEED;
+            m_soldierX = 0;
+        } else {
+            m_runSpeed = -RUN_SPEED;
+            m_soldierX = m_screenWidth;
+        }
     }
 
-
     public void update(long gameTime) {
-        sprite.update(gameTime);
-        x += runSpeed;
-        if (x > screenWidth) {
-            x = 0 - sprite.getScaledFrameWidth();
+        super.update(gameTime);
+        m_soldierX += m_runSpeed;
+        if (m_soldierX > m_screenWidth){
+            m_soldierX = 0 - (int)getScaledFrameWidth();
         }
     }
 
     public void render(Canvas canvas) {
-        sprite.render(canvas,x,y);
+        super.render(canvas, m_soldierX, m_soldierY);
     }
 
 
