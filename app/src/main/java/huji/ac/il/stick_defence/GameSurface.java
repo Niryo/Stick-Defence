@@ -1,7 +1,6 @@
 package huji.ac.il.stick_defence;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.view.SurfaceHolder;
@@ -17,12 +16,15 @@ public class GameSurface extends SurfaceView implements
     private Context context;
     private GameLoopThread thread;
     private DrawableObject soldier;
+    private DrawableObject m_rightTower, m_leftTower;
 
     public GameSurface(Context context) {
         super(context);
         this.context=context;
         //==========temp=========
         soldier=new BasicSoldier(context);
+        m_rightTower = new Tower(context, Tower.Position.RIGHT);
+        m_leftTower = new Tower(context, Tower.Position.LEFT);
         //=========================
 
         // adding the callback (this) to the surface holder to intercept events
@@ -62,6 +64,8 @@ public class GameSurface extends SurfaceView implements
     public void render(Canvas canvas) {
             canvas.drawColor(Color.WHITE);
             soldier.render(canvas);
+            m_rightTower.render(canvas);
+            m_leftTower.render(canvas);
 
     }
 
