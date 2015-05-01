@@ -16,22 +16,26 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                             WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_main);
         FrameLayout game = new FrameLayout(this);
         LinearLayout gameComponents = new LinearLayout(this);
-        GameSurface gameSurface = new GameSurface(this);
+        GameSurface gameSurface = new GameSurface(this, game);
 
         Button sendSoldier = new Button(this);
         sendSoldier.setText("Send");
+
         sendSoldier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 GameState.getInstance().addSoldier(BasicSoldier.Player.LEFT);
             }
         });
+
         gameComponents.addView(sendSoldier);
+
         game.addView(gameSurface);
         game.addView(gameComponents);
 //        setContentView(new GameSurface(this));

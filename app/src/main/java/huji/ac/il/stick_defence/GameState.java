@@ -2,6 +2,13 @@ package huji.ac.il.stick_defence;
 
 import android.content.Context;
 
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+
 import java.util.ArrayList;
 
 
@@ -14,6 +21,7 @@ public class GameState {
     private static GameState gameState;
     private ArrayList<Sprite> soldiers = new ArrayList<>();
     private ArrayList<Sprite> towers = new ArrayList<>();
+    private ArrayList<Sprite> bows = new ArrayList<>();
     private Context context;
 
     /**
@@ -23,8 +31,14 @@ public class GameState {
      */
     private GameState(Context context) {
         this.context = context;
-        towers.add(new Tower(context, Tower.Player.RIGHT));
-        towers.add(new Tower(context, Tower.Player.LEFT));
+        Tower leftTower = new Tower(context, Tower.Player.LEFT);
+        Tower rightTower = new Tower(context, Tower.Player.RIGHT);
+
+        towers.add(leftTower);
+        towers.add(rightTower);
+
+        bows.add(new Bow(context, Bow.Player.LEFT, leftTower.getTowerHeight()));
+        bows.add(new Bow(context, Bow.Player.RIGHT, rightTower.getTowerHeight()));
 
         //     soldiers.add(new BasicSoldier(context, BasicSoldier.Player.LEFT));
 
@@ -48,7 +62,21 @@ public class GameState {
         for (Sprite sprite : this.getSoldiers()) {
             sprite.update(System.currentTimeMillis());
         }
+        for (Sprite bow : this.getBows()){
+            bow.update(System.currentTimeMillis());
+        }
+    }
 
+    public void touchDown(float x, float y){
+        ((Bow)bows.get(0)).startStrech(x, y);
+    }
+
+    public void touchMove(float x, float y) {
+        ((Bow) bows.get(0)).strech(x, y);
+    }
+
+    public void touchUp(){
+        ((Bow) bows.get(0)).release();
     }
 
     /**
@@ -77,4 +105,6 @@ public class GameState {
     public ArrayList<Sprite> getTowers() {
         return this.towers;
     }
+
+    public ArrayList<Sprite> getBows() { return this.bows; }
 }

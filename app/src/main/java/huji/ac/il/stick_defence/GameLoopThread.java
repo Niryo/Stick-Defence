@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 
 
 /**
@@ -35,6 +36,7 @@ public class GameLoopThread extends Thread {
         this.m_gameSurface = gameSurface;
         this.m_gameState = GameState.getInstance();
         this.m_sendSoldier = false;
+
     }
 
     @Override

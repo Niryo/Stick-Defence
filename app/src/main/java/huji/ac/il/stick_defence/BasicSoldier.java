@@ -17,7 +17,9 @@ public class BasicSoldier extends Sprite {
     private static final int ANIMATION_SPEED = 4;
     private static final int RUN_SPEED = 5;
 
-    private static Bitmap m_soldierPic = null;
+    private static Bitmap m_leftSoldierpic = null;
+    private static Bitmap m_rightSoldierPic = null;
+
     private int m_screenWidth;
     private int m_screenHeight;
     private int m_soldierX;
@@ -26,12 +28,23 @@ public class BasicSoldier extends Sprite {
     private GameState gameState = GameState.getInstance();
 
     public BasicSoldier(Context context, Player player) {
-        if (m_soldierPic == null) {
-            m_soldierPic = BitmapFactory.decodeResource(context.getResources(),
+        if (null == m_leftSoldierpic) {
+            m_leftSoldierpic = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.simple_running_stick); // Read resource only once
         }
-        super.initSprite(context, m_soldierPic, NUMBER_OF_FRAMES,
-                player, SCREEN_HEIGHT_PORTION);
+
+        if (null == m_rightSoldierPic){
+            m_rightSoldierPic = super.mirrorBitmap(m_leftSoldierpic);
+        }
+
+        if (player == Player.LEFT){
+            super.initSprite(context, m_leftSoldierpic, NUMBER_OF_FRAMES,
+                    player, SCREEN_HEIGHT_PORTION);
+        } else {
+            super.initSprite(context, m_rightSoldierPic, NUMBER_OF_FRAMES,
+                    player, SCREEN_HEIGHT_PORTION);
+        }
+
         super.setAnimationSpeed(ANIMATION_SPEED);
 
         this.m_screenWidth =

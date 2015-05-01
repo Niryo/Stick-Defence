@@ -3,8 +3,11 @@ package huji.ac.il.stick_defence;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.FrameLayout;
 
 
 /**
@@ -16,7 +19,8 @@ public class GameSurface extends SurfaceView implements
     private GameLoopThread m_gameLoopThread;
     private GameState gameState = GameState.CreateGameState(getContext());
 
-    public GameSurface(Context context) {
+    public GameSurface(Context context, FrameLayout layout) {
+
         super(context);
 
         // Adding the callback (this) to the surface holder to intercept events
@@ -28,6 +32,24 @@ public class GameSurface extends SurfaceView implements
         // Make the GameSurface focusable so it can handle events
         setFocusable(true);
 
+        layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        gameState.touchDown(event.getX(), event.getY());
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        gameState.touchMove(event.getX(), event.getY());
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        gameState.touchUp();
+                        break;
+                }
+
+                return true;
+            }
+        });
     }
 
     @Override
@@ -62,6 +84,10 @@ public class GameSurface extends SurfaceView implements
 
         for (Sprite tower : gameState.getTowers()) {
             tower.render(canvas);
+        }
+
+        for (Sprite bow : gameState.getBows()){
+            bow.render(canvas);
         }
     }
 
