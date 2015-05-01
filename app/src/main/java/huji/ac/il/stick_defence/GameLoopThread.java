@@ -18,38 +18,32 @@ public class GameLoopThread extends Thread {
     private final static int FRAME_PERIOD = 1000 / MAX_FPS;
 
     private SurfaceHolder m_surfaceHolder;
-    private GameSurface   m_gameSurface;
-    private GameState     m_gameState;
-    private boolean       m_running;
-    private boolean       m_sendSoldier; // TODO - handle sendSoldier of other player
+    private GameSurface m_gameSurface;
+    private GameState m_gameState;
+    private boolean m_running;
+    private boolean m_sendSoldier; // TODO - handle sendSoldier of other player
+
 
     public void setRunning(boolean running) {
         this.m_running = running;
     }
 
     public GameLoopThread(SurfaceHolder surfaceHolder,
-                          GameSurface gameSurface,
-                          Button sendSoldier) {
+                          GameSurface gameSurface) {
         super();
         this.m_surfaceHolder = surfaceHolder;
-        this.m_gameSurface   = gameSurface;
-        this.m_gameState     = new GameState(gameSurface.getContext());
-        this.m_sendSoldier   = false;
-        sendSoldier.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                m_sendSoldier = true;
-            }
-        });
+        this.m_gameSurface = gameSurface;
+        this.m_gameState = GameState.getInstance();
+        this.m_sendSoldier = false;
     }
 
     @Override
     public void run() {
         Canvas canvas;
-        long   beginTime;        // the time when the cycle begun
-        long   timeDiff;        // the time it took for the cycle to execute
-        int    sleepTime;        // ms to sleep (<0 if we're behind)
-        int    skippedFrames;    // number of frames being skipped
+        long beginTime;        // the time when the cycle begun
+        long timeDiff;        // the time it took for the cycle to execute
+        int sleepTime;        // ms to sleep (<0 if we're behind)
+        int skippedFrames;    // number of frames being skipped
 
         sleepTime = 0;
 
@@ -60,14 +54,13 @@ public class GameLoopThread extends Thread {
                 synchronized (m_surfaceHolder) {
                     beginTime = System.currentTimeMillis();
                     skippedFrames = 0;    // resetting the frames skipped
-                    if (m_sendSoldier){
+                    if (m_sendSoldier) {
                         //TODO - handle right player addSoldier requests
-                        this.m_gameState.addSoldier(m_gameSurface.getContext(),
-                                                    BasicSoldier.Player.LEFT);
+                        this.m_gameState.addSoldier(BasicSoldier.Player.LEFT);
                         m_sendSoldier = false;
                     }
                     this.m_gameState.update();
-                    this.m_gameSurface.render(canvas, m_gameState.getSpriteList());
+                    this.m_gameSurface.render(canvas);
 
 
                     timeDiff = System.currentTimeMillis() - beginTime;

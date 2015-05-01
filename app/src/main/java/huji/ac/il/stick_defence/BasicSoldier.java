@@ -18,14 +18,15 @@ public class BasicSoldier extends Sprite {
     private static final int RUN_SPEED = 5;
 
     private static Bitmap m_soldierPic = null;
-    private           int m_screenWidth;
-    private           int m_screenHeight;
-    private           int m_soldierX;
-    private           int m_soldierY;
-    private           int m_runSpeed; //todo: make the speed in pixels/seconds units.
+    private int m_screenWidth;
+    private int m_screenHeight;
+    private int m_soldierX;
+    private int m_soldierY;
+    private int m_runSpeed; //todo: make the speed in pixels/seconds units.
+    private GameState gameState = GameState.getInstance();
 
     public BasicSoldier(Context context, Player player) {
-        if (m_soldierPic == null){
+        if (m_soldierPic == null) {
             m_soldierPic = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.simple_running_stick); // Read resource only once
         }
@@ -33,18 +34,16 @@ public class BasicSoldier extends Sprite {
                 player, SCREEN_HEIGHT_PORTION);
         super.setAnimationSpeed(ANIMATION_SPEED);
 
-        super.setScaleDownFactor(super.getScaleDownFactor());
-
         this.m_screenWidth =
                 context.getResources().getDisplayMetrics().widthPixels;
         this.m_screenHeight =
                 context.getResources().getDisplayMetrics().heightPixels;
 
         //set the y on the bottom of the screen
-        this.m_soldierY = m_screenHeight - (int)getScaledFrameHeight();
+        this.m_soldierY = m_screenHeight - (int) getScaledFrameHeight();
 
         //Set x and speed
-        if (player == Player.LEFT){
+        if (player == Player.LEFT) {
             m_runSpeed = RUN_SPEED;
             m_soldierX = 0;
         } else {
@@ -56,8 +55,9 @@ public class BasicSoldier extends Sprite {
     public void update(long gameTime) {
         super.update(gameTime);
         m_soldierX += m_runSpeed;
-        if (m_soldierX > m_screenWidth){
-            m_soldierX = 0 - (int)getScaledFrameWidth();
+        if (m_soldierX > m_screenWidth) {
+            m_soldierX -= m_runSpeed;
+            gameState.removeSoldier(this);
         }
     }
 

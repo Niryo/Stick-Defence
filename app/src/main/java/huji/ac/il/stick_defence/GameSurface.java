@@ -5,9 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.Button;
-
-import java.util.ArrayList;
 
 
 /**
@@ -17,15 +14,16 @@ public class GameSurface extends SurfaceView implements
         SurfaceHolder.Callback {
 
     private GameLoopThread m_gameLoopThread;
+    private GameState gameState = GameState.CreateGameState(getContext());
 
-    public GameSurface(Context context, Button sendSoldier) {
+    public GameSurface(Context context) {
         super(context);
 
         // Adding the callback (this) to the surface holder to intercept events
         getHolder().addCallback(this);
 
         // Create the GameLoopThread
-        m_gameLoopThread = new GameLoopThread(getHolder(), this, sendSoldier);
+        m_gameLoopThread = new GameLoopThread(getHolder(), this);
 
         // Make the GameSurface focusable so it can handle events
         setFocusable(true);
@@ -34,7 +32,8 @@ public class GameSurface extends SurfaceView implements
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
-                               int height) { }
+                               int height) {
+    }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
@@ -55,14 +54,16 @@ public class GameSurface extends SurfaceView implements
         }
     }
 
-    public void render(Canvas canvas, ArrayList<Sprite> sprites) {
+    public void render(Canvas canvas) {
         canvas.drawColor(Color.WHITE);
+        for (Sprite soldier : gameState.getSoldiers()) {
+            soldier.render(canvas);
+        }
 
-        for (Sprite spirit : sprites){
-            spirit.render(canvas);
+        for (Sprite tower : gameState.getTowers()) {
+            tower.render(canvas);
         }
     }
-
 
 
 }

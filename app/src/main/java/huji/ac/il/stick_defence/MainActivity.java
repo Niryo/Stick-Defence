@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -12,7 +13,6 @@ import android.widget.LinearLayout;
 
 
 public class MainActivity extends Activity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -20,11 +20,17 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_main);
         FrameLayout game = new FrameLayout(this);
+        LinearLayout gameComponents = new LinearLayout(this);
+        GameSurface gameSurface = new GameSurface(this);
+
         Button sendSoldier = new Button(this);
         sendSoldier.setText("Send");
-        GameSurface gameSurface= new GameSurface(this, sendSoldier);
-        LinearLayout gameComponents = new LinearLayout (this);
-
+        sendSoldier.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GameState.getInstance().addSoldier(BasicSoldier.Player.LEFT);
+            }
+        });
         gameComponents.addView(sendSoldier);
         game.addView(gameSurface);
         game.addView(gameComponents);
