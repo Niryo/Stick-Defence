@@ -19,7 +19,7 @@ public class GameSurface extends SurfaceView implements
     private GameLoopThread m_gameLoopThread;
     private GameState gameState = GameState.CreateGameState(getContext());
 
-    public GameSurface(Context context, FrameLayout layout) {
+    public GameSurface(Context context) {
 
         super(context);
 
@@ -31,25 +31,27 @@ public class GameSurface extends SurfaceView implements
 
         // Make the GameSurface focusable so it can handle events
         setFocusable(true);
+    }
 
-        layout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()){
-                    case MotionEvent.ACTION_DOWN:
-                        gameState.touchDown(event.getX(), event.getY());
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        gameState.touchMove(event.getX(), event.getY());
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        gameState.touchUp();
-                        break;
-                }
 
-                return true;
-            }
-        });
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        super.onTouchEvent(event);
+        switch (event.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                gameState.touchDown(event.getX(), event.getY());
+                break;
+            case MotionEvent.ACTION_MOVE:
+                gameState.touchMove(event.getX(), event.getY());
+                break;
+            case MotionEvent.ACTION_UP:
+                gameState.touchUp();
+                break;
+        }
+
+        return true;
+
     }
 
     @Override

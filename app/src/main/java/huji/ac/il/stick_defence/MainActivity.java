@@ -22,7 +22,7 @@ public class MainActivity extends Activity {
 //        setContentView(R.layout.activity_main);
         FrameLayout game = new FrameLayout(this);
         LinearLayout gameComponents = new LinearLayout(this);
-        GameSurface gameSurface = new GameSurface(this, game);
+        GameSurface gameSurface = new GameSurface(this);
 
         Button sendSoldier = new Button(this);
         sendSoldier.setText("Send");

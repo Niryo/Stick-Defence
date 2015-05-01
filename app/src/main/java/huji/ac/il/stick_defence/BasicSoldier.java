@@ -28,12 +28,12 @@ public class BasicSoldier extends Sprite {
     private GameState gameState = GameState.getInstance();
 
     public BasicSoldier(Context context, Player player) {
-        if (null == m_leftSoldierpic) {
+        if  (m_leftSoldierpic == null) {
             m_leftSoldierpic = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.simple_running_stick); // Read resource only once
         }
 
-        if (null == m_rightSoldierPic){
+        if (m_rightSoldierPic == null){
             m_rightSoldierPic = super.mirrorBitmap(m_leftSoldierpic);
         }
 
