@@ -19,8 +19,7 @@ public class GameSurface extends SurfaceView implements
 
     private GameLoopThread m_gameLoopThread;
     private GameState gameState = GameState.CreateGameState(getContext());
-    private float lastY;
-    private float lastX;
+    private SimpleGestureDetector simpleGestureDetector= new SimpleGestureDetector();
 
     public GameSurface(Context context) {
 
@@ -41,37 +40,7 @@ public class GameSurface extends SurfaceView implements
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);
-        switch (event.getAction()){
-            case MotionEvent.ACTION_DOWN:
-//                gameState.touchDown(event.getX(), event.getY());
-                this.lastX=event.getX();
-                this.lastY=event.getY();
-
-                break;
-            case MotionEvent.ACTION_MOVE:
-                float currentY= event.getY();
-                float currentX= event.getX();
-
-                if(currentY-this.lastY > 0){
-                    gameState.touchMove(1); //moveDown
-                    Log.w("custom", "move down");
-                }else{
-                    gameState.touchMove(2); //todo: make enum
-                    Log.w("custom", "move up");
-                }
-
-                if(currentX-this.lastX > 0){
-                    gameState.touchMove(3); //moveRight
-                }else{
-                    gameState.touchMove(4); //todo: make enum
-                }
-//                gameState.touchMove(event.getX(), event.getY());
-                break;
-            case MotionEvent.ACTION_UP:
-//                gameState.touchUp();
-                break;
-        }
-
+        this.simpleGestureDetector.detect(event);
         return true;
 
     }

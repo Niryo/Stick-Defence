@@ -105,9 +105,7 @@ public class Bow extends Sprite{
 
 
 
-    public void release(){
-        //TODO - shoot an arrow
-    }
+
 
     /**
      * Updates bow's place and angel
@@ -162,9 +160,9 @@ public class Bow extends Sprite{
     }
 
     public void stretch(){
-        this.currentFrame++;
-        if(this.currentFrame>=NUMBER_OF_FRAMES){
-            this.currentFrame=0;
+
+        if(this.currentFrame<NUMBER_OF_FRAMES-4){
+            this.currentFrame++;
         }
     }
     public void unStretch(){
@@ -172,6 +170,9 @@ public class Bow extends Sprite{
         if(this.currentFrame>0){
             this.currentFrame--;
         }
+    }
+    public void release(){
+        //TODO - shoot an arrow
     }
 
     private void renderBow(Canvas canvas){

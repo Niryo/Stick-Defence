@@ -87,7 +87,6 @@ public class GameState {
             ((Bow) bows.get(0)).stretch();
         }
 
-
     }
 
     public void touchUp(){
