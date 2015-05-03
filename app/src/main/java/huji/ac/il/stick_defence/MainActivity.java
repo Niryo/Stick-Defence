@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
         sendSoldier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GameState.getInstance().addSoldier(BasicSoldier.Player.LEFT);
+                GameState.getInstance().addSoldier(Sprite.Player.LEFT);
             }
         });
 

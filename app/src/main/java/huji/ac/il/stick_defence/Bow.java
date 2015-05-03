@@ -16,7 +16,7 @@ import android.util.Log;
 /**
  * Created by yahav on 01/05/15.
  */
-public class Bow extends Sprite{
+public class Bow{
     //Bow height in relation to the screen height.
     //0-1 double. For instance, 0.5 will cause the
     //bow to span over a half of the screen height.
@@ -25,8 +25,9 @@ public class Bow extends Sprite{
 
     private static        Bitmap m_leftBowPic = null;
     private static        Bitmap m_rightBowPic = null;
-    private double           m_frameScaledWidth;   //the frame width after scale
-    private double           m_frameScaledHeight;  //the frame height after scale
+    private Sprite        m_sprite;
+    private double        m_frameScaledWidth;   //the frame width after scale
+    private double        m_frameScaledHeight;  //the frame height after scale
     private double        m_bowAngle;
     private int           m_screenWidth;
     private int           m_screenHeight;
@@ -57,14 +58,16 @@ public class Bow extends Sprite{
                     R.drawable.bow); // Read resource only once
         }
         if (null == m_rightBowPic){
-            m_rightBowPic = super.mirrorBitmap(m_leftBowPic);
+            m_rightBowPic = Sprite.mirrorBitmap(m_leftBowPic);
         }
 
-        if (player == Player.LEFT){
-            super.initSprite(context, m_leftBowPic, NUMBER_OF_FRAMES,
+        m_sprite = new Sprite();
+
+        if (player == Sprite.Player.LEFT){
+            m_sprite.initSprite(context, m_leftBowPic, NUMBER_OF_FRAMES,
                     player, SCREEN_HEIGHT_PORTION);
         } else {
-            super.initSprite(context, m_rightBowPic, NUMBER_OF_FRAMES,
+            m_sprite.initSprite(context, m_rightBowPic, NUMBER_OF_FRAMES,
                     player, SCREEN_HEIGHT_PORTION);
         }
 
@@ -75,7 +78,7 @@ public class Bow extends Sprite{
         this.m_screenWidth = context.getResources().getDisplayMetrics().widthPixels;
         this.m_screenHeight = context.getResources().getDisplayMetrics().heightPixels;
 
-        double scaleDownFactor = super.getScaleDownFactor();
+        double scaleDownFactor = m_sprite.getScaleDownFactor();
 
         this.m_frameScaledHeight = frameHeight/scaleDownFactor;
         this.m_frameScaledWidth = frameWidth/scaleDownFactor;
@@ -112,7 +115,7 @@ public class Bow extends Sprite{
      * @param gameTime the current time in milliseconds
      */
     public void update(long gameTime) {
-        super.update(gameTime);
+        m_sprite.update(gameTime);
 
     }
 
@@ -123,7 +126,7 @@ public class Bow extends Sprite{
     public void render(Canvas canvas) {
         // where to draw the sprite
         if (m_player == Sprite.Player.RIGHT){
-            super.render(canvas, (int)(m_screenWidth - m_frameScaledWidth),
+            m_sprite.render(canvas, (int)(m_screenWidth - m_frameScaledWidth),
                     (int)(m_towerHeight - m_frameScaledHeight));
         } else {
 //            super.render(canvas, 0, (int)(m_towerHeight - m_frameScaledHeight));

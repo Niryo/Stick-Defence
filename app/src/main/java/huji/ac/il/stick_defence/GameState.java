@@ -2,13 +2,6 @@ package huji.ac.il.stick_defence;
 
 import android.content.Context;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
-
 import java.util.ArrayList;
 
 
@@ -18,11 +11,13 @@ import java.util.ArrayList;
  * the interactions between them.
  */
 public class GameState {
-    private static GameState gameState;
-    private ArrayList<Sprite> soldiers = new ArrayList<>();
-    private ArrayList<Sprite> towers = new ArrayList<>();
-    private ArrayList<Sprite> bows = new ArrayList<>();
-    private Context context;
+    private static GameState        gameState;
+    private ArrayList<BasicSoldier> soldiers = new ArrayList<>();
+    private ArrayList<Tower>        towers = new ArrayList<>();
+    private ArrayList<Bow>          bows = new ArrayList<>();
+    private Context                 context;
+    private int                     rightTowerLeftX;
+    private int                     leftTowerBeginX;
 
     /**
      * Constructor. Adds 2 towers to the sprites list.
@@ -31,14 +26,18 @@ public class GameState {
      */
     private GameState(Context context) {
         this.context = context;
-        Tower leftTower = new Tower(context, Tower.Player.LEFT);
-        Tower rightTower = new Tower(context, Tower.Player.RIGHT);
+        Tower leftTower = new Tower(context, Sprite.Player.LEFT);
+        Tower rightTower = new Tower(context, Sprite.Player.RIGHT);
 
         towers.add(leftTower);
         towers.add(rightTower);
 
-        bows.add(new Bow(context, Bow.Player.LEFT, leftTower.getTowerHeight()));
-        bows.add(new Bow(context, Bow.Player.RIGHT, rightTower.getTowerHeight()));
+        bows.add(new Bow(context, Sprite.Player.LEFT, leftTower.getTowerHeight()));
+        bows.add(new Bow(context, Sprite.Player.RIGHT, rightTower.getTowerHeight()));
+
+        rightTowerLeftX = rightTower.getLeftX();
+        leftTowerBeginX = leftTower.getRightX();
+
 
         //     soldiers.add(new BasicSoldier(context, BasicSoldier.Player.LEFT));
 
@@ -59,10 +58,10 @@ public class GameState {
      * Update the place and pictures of the sprites, but doesn't print them.
      */
     public void update() {
-        for (Sprite sprite : this.getSoldiers()) {
-            sprite.update(System.currentTimeMillis());
+        for (BasicSoldier soldier : this.getSoldiers()) {
+            soldier.update(System.currentTimeMillis());
         }
-        for (Sprite bow : this.getBows()){
+        for (Bow bow : this.getBows()){
             bow.update(System.currentTimeMillis());
         }
     }
@@ -98,7 +97,7 @@ public class GameState {
      *
      * @param player the requested player
      */
-    public void addSoldier(BasicSoldier.Player player) {
+    public void addSoldier(Sprite.Player player) {
         soldiers.add(new BasicSoldier(context, player));
     }
 
@@ -112,13 +111,21 @@ public class GameState {
      *
      * @return the sprite list
      */
-    public ArrayList<Sprite> getSoldiers() {
-        return (ArrayList<Sprite>) this.soldiers.clone();
+    public ArrayList<BasicSoldier> getSoldiers() {
+        return (ArrayList<BasicSoldier>) this.soldiers.clone();
     }
 
-    public ArrayList<Sprite> getTowers() {
+    public ArrayList<Tower> getTowers() {
         return this.towers;
     }
 
-    public ArrayList<Sprite> getBows() { return this.bows; }
+    public ArrayList<Bow> getBows() { return this.bows; }
+
+    public int getRightTowerLeftX(){
+        return this.rightTowerLeftX;
+    }
+
+    public int getLeftTowerRightX(){
+        return this.leftTowerBeginX;
+    }
 }

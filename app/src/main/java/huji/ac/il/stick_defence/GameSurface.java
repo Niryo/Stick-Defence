@@ -71,15 +71,16 @@ public class GameSurface extends SurfaceView implements
 
     public void render(Canvas canvas) {
         canvas.drawColor(Color.WHITE);
-        for (Sprite soldier : gameState.getSoldiers()) {
-            soldier.render(canvas);
-        }
 
-        for (Sprite tower : gameState.getTowers()) {
+        for (Tower tower : gameState.getTowers()) {
             tower.render(canvas);
         }
 
-        for (Sprite bow : gameState.getBows()){
+        for (BasicSoldier soldier : gameState.getSoldiers()) {
+            soldier.render(canvas);
+        }
+
+        for (Bow bow : gameState.getBows()){
             bow.render(canvas);
         }
     }

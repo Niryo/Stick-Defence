@@ -8,18 +8,23 @@ import android.graphics.Canvas;
 /**
  * Created by yahav on 28/04/15.
  */
-public class Tower extends Sprite {
+public class Tower {
 
     //Tower height in relation to the screen height.
     //0-1 double. For instance, 0.5 will cause the
     //tower to span over a half of the screen height.
     private static final double SCREEN_HEIGHT_PORTION = 0.6;
 
-    private static Bitmap m_towerPic = null;
-    private double m_hp;
-    private int m_screenWidth;
-    private int m_screenHeight;
-    private Player m_player;
+    private static Bitmap m_leftTowerPic = null;
+    private static Bitmap m_rightTowerPic = null;
+    private Sprite        m_sprite;
+
+    private double        m_hp;
+    private int           m_screenWidth;
+    private int           m_screenHeight;
+    private Sprite.Player m_player;
+    private int           m_towerX;
+    private int           m_towerY;
 
     /**
      * Constructor
@@ -27,15 +32,31 @@ public class Tower extends Sprite {
      * @param context the context
      * @param player  the player - right or left
      */
-    public Tower(Context context, Player player) {
-        if (null == m_towerPic) {
-            m_towerPic = BitmapFactory.decodeResource(context.getResources(),
+    public Tower(Context context, Sprite.Player player) {
+        if (null == m_leftTowerPic){
+            m_leftTowerPic = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.tower); // Read resource only once
         }
-        super.initSprite(context, m_towerPic, 1, player, SCREEN_HEIGHT_PORTION);
-        this.m_player = player;
+        if (null == m_rightTowerPic){
+            m_rightTowerPic = Sprite.mirrorBitmap(m_leftTowerPic);
+        }
+
         this.m_screenWidth = context.getResources().getDisplayMetrics().widthPixels;
         this.m_screenHeight = context.getResources().getDisplayMetrics().heightPixels;
+
+        m_sprite = new Sprite();
+
+        if (player == Sprite.Player.LEFT){
+            m_sprite.initSprite(context, m_leftTowerPic, 1, player, SCREEN_HEIGHT_PORTION);
+            m_towerX = 0;
+        } else {
+            m_sprite.initSprite(context, m_rightTowerPic, 1, player, SCREEN_HEIGHT_PORTION);
+            m_towerX = m_screenWidth - (int)m_sprite.getScaledFrameWidth();
+        }
+        m_towerY = m_screenHeight - (int)m_sprite.getScaledFrameHeight();
+
+        this.m_player = player;
+
         this.m_hp = 100.0; // TODO
     }
 
@@ -45,7 +66,7 @@ public class Tower extends Sprite {
      * @param gameTime the current time in milliseconds
      */
     public void update(long gameTime) {
-        super.update(gameTime);
+        m_sprite.update(gameTime);
         //TODO - Consider change the picture when tower is damaged
     }
 
@@ -56,16 +77,15 @@ public class Tower extends Sprite {
      */
     public void render(Canvas canvas) {
         // where to draw the sprite
-        if (m_player == Player.RIGHT) {
-            super.render(canvas, (int) (m_screenWidth - super.getScaledFrameWidth()),
-                    (int) (m_screenHeight - super.getScaledFrameHeight()));
-        } else {
-            super.render(canvas, 0, (int) (m_screenHeight - super.getScaledFrameHeight()));
-        }
+        m_sprite.render(canvas, m_towerX, m_towerY);
     }
 
     public int getTowerHeight(){
-        return (int) (m_screenHeight - super.getScaledFrameHeight());
+        return (int) (m_screenHeight - m_sprite.getScaledFrameHeight());
     }
+
+    public int getLeftX() {return this.m_towerX; }
+
+    public int getRightX() { return this.m_towerX + (int) m_sprite.getScaledFrameWidth(); }
 
 }

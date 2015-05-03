@@ -58,7 +58,7 @@ public class GameLoopThread extends Thread {
                     skippedFrames = 0;    // resetting the frames skipped
                     if (m_sendSoldier) {
                         //TODO - handle right player addSoldier requests
-                        this.m_gameState.addSoldier(BasicSoldier.Player.LEFT);
+                        this.m_gameState.addSoldier(Sprite.Player.LEFT);
                         m_sendSoldier = false;
                     }
                     this.m_gameState.update();

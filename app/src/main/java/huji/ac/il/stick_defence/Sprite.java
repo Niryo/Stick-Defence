@@ -11,11 +11,11 @@ import android.util.DisplayMetrics;
 /**
  * This class represents a sprite animation object
  */
-public abstract class Sprite implements DrawableObject{
+public class Sprite{
     /**
      * Represents left or right player
      */
-    enum Player{
+    public enum Player{
         LEFT,
         RIGHT
     }
@@ -53,7 +53,7 @@ public abstract class Sprite implements DrawableObject{
      *                            0-1 double. For instance, 0.5 will cause the
      *                            sprite to span over a half of the screen height.
      */
-    protected void initSprite(Context context, Bitmap bitmap, int nFrames,
+    public void initSprite(Context context, Bitmap bitmap, int nFrames,
                               Player player, double screenHeightPortion){
 
         this.m_bitmap = bitmap;
@@ -78,7 +78,7 @@ public abstract class Sprite implements DrawableObject{
      * @param src the bitmap to mirror
      * @return a mirrored bitmap
      */
-    protected static Bitmap mirrorBitmap(Bitmap src){
+    public static Bitmap mirrorBitmap(Bitmap src){
         Matrix m = new Matrix();
         m.preScale(-1, 1);
         Bitmap dst = Bitmap.createBitmap(src, 0, 0, src.getWidth(),
@@ -92,7 +92,7 @@ public abstract class Sprite implements DrawableObject{
      *
      * @param fps
      */
-    protected void setAnimationSpeed(int fps){
+    public void setAnimationSpeed(int fps){
         this.m_fps = fps;
     }
 
@@ -102,7 +102,7 @@ public abstract class Sprite implements DrawableObject{
      *
      * @param gameTime the current time in milliseconds
      */
-    protected void update(long gameTime) {
+    public void update(long gameTime) {
         if (gameTime > m_frameTicker + m_framePeriod) {
             m_frameTicker = gameTime;
 
@@ -135,7 +135,7 @@ public abstract class Sprite implements DrawableObject{
      * @param x the x axis
      * @param y the y axis
      */
-    protected void render(Canvas canvas, int x, int y){
+    public void render(Canvas canvas, int x, int y){
         // where to draw the sprite
         m_destRect.set(x, y, (x + (int)getScaledFrameWidth()), (y + (int)getScaledFrameHeight()));
 
@@ -154,7 +154,7 @@ public abstract class Sprite implements DrawableObject{
      * a high scale factor.
      * @param scale the amount of scale
      */
-    protected void setScaleDownFactor(double scale){
+    public void setScaleDownFactor(double scale){
         this.m_scaleDownFactor = scale;
     }
 
@@ -171,7 +171,7 @@ public abstract class Sprite implements DrawableObject{
      * Get the actual height of the sprite frame after scaling
      * @return height of frame in pixels
      */
-    protected double getScaledFrameHeight(){
+    public double getScaledFrameHeight(){
         return this.m_frameHeight/this.m_scaleDownFactor;
     }
 
@@ -179,7 +179,7 @@ public abstract class Sprite implements DrawableObject{
      * Get the actual width of the sprite frame after scaling
      * @return width of frame in pixels
      */
-    protected double getScaledFrameWidth(){
+    public double getScaledFrameWidth(){
         return this.m_frameWidth/this.m_scaleDownFactor;
     }
 
@@ -187,7 +187,7 @@ public abstract class Sprite implements DrawableObject{
      * This class represents a point in the (x,y) cartesian system.
      * Designed to reduce memory allocations.
      */
-    protected class Point{
+    public class Point{
         double  m_x = 0;
         double  m_y = 0;
         boolean m_isInitialized = false;
@@ -214,8 +214,12 @@ public abstract class Sprite implements DrawableObject{
         }
     }
 
-    protected void setAngle(float angle){
+    public void setAngle(float angle){
         this.m_angle = angle;
+    }
+
+    public void setPic(Bitmap bitmap){
+        this.m_bitmap = bitmap;
     }
 
 }
