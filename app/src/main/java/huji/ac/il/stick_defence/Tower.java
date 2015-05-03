@@ -67,4 +67,5 @@ public class Tower extends Sprite {
     public int getTowerHeight(){
         return (int) (m_screenHeight - super.getScaledFrameHeight());
     }
+
 }

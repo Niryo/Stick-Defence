@@ -3,6 +3,7 @@ package huji.ac.il.stick_defence;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -18,6 +19,8 @@ public class GameSurface extends SurfaceView implements
 
     private GameLoopThread m_gameLoopThread;
     private GameState gameState = GameState.CreateGameState(getContext());
+    private float lastY;
+    private float lastX;
 
     public GameSurface(Context context) {
 
@@ -40,13 +43,32 @@ public class GameSurface extends SurfaceView implements
         super.onTouchEvent(event);
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
-                gameState.touchDown(event.getX(), event.getY());
+//                gameState.touchDown(event.getX(), event.getY());
+                this.lastX=event.getX();
+                this.lastY=event.getY();
+
                 break;
             case MotionEvent.ACTION_MOVE:
-                gameState.touchMove(event.getX(), event.getY());
+                float currentY= event.getY();
+                float currentX= event.getX();
+
+                if(currentY-this.lastY > 0){
+                    gameState.touchMove(1); //moveDown
+                    Log.w("custom", "move down");
+                }else{
+                    gameState.touchMove(2); //todo: make enum
+                    Log.w("custom", "move up");
+                }
+
+                if(currentX-this.lastX > 0){
+                    gameState.touchMove(3); //moveRight
+                }else{
+                    gameState.touchMove(4); //todo: make enum
+                }
+//                gameState.touchMove(event.getX(), event.getY());
                 break;
             case MotionEvent.ACTION_UP:
-                gameState.touchUp();
+//                gameState.touchUp();
                 break;
         }
 

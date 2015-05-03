@@ -68,11 +68,26 @@ public class GameState {
     }
 
     public void touchDown(float x, float y){
-        ((Bow)bows.get(0)).startStrech(x, y);
+//        ((Bow) bows.get(0)).rotateLeft();
+
     }
 
-    public void touchMove(float x, float y) {
-        ((Bow) bows.get(0)).strech(x, y);
+    public void touchMove(int move) {
+        if(move==1){
+            ((Bow) bows.get(0)).rotateRight();
+        }
+        if(move==2){
+            ((Bow) bows.get(0)).rotateLeft();
+        }
+
+        if(move==3){
+            ((Bow) bows.get(0)).unStretch();
+        }
+        if(move==4){
+            ((Bow) bows.get(0)).stretch();
+        }
+
+
     }
 
     public void touchUp(){

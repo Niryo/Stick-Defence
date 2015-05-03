@@ -4,6 +4,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.PathMeasure;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
 
 /**
@@ -16,17 +23,28 @@ public class Bow extends Sprite{
     private static final double SCREEN_HEIGHT_PORTION = 0.15;
     private static final int NUMBER_OF_FRAMES = 9;
 
-    Point m_strechBegin = null;
-    Point m_strechEnd = null;
     private static        Bitmap m_leftBowPic = null;
     private static        Bitmap m_rightBowPic = null;
-    private double        m_frameScaledWidth;   //the frame width after scale
-    private double        m_frameScaledHeight;  //the frame height after scale
+    private double           m_frameScaledWidth;   //the frame width after scale
+    private double           m_frameScaledHeight;  //the frame height after scale
     private double        m_bowAngle;
     private int           m_screenWidth;
     private int           m_screenHeight;
     private int           m_towerHeight;
+
     private Sprite.Player m_player;
+
+    private Path path = new Path();
+    private PathMeasure pathMeasure;
+    private float pathLength;
+    private float[] pos= new float[2];
+    private float[] tan= new float[2];;
+    private Matrix matrix= new Matrix();
+    private int distance=0;
+    private float bm_offsetX;
+    private float bm_offsetY;
+    private Bitmap[] scaledLeftBow = new Bitmap[NUMBER_OF_FRAMES];
+    private int currentFrame=0;
 
     /**
      * Constructor
@@ -52,8 +70,8 @@ public class Bow extends Sprite{
 
         this.m_player = player;
 
-        double frameHeight = m_leftBowPic.getHeight();
-        double frameWidth = m_leftBowPic.getWidth() / NUMBER_OF_FRAMES;
+        int frameHeight = m_leftBowPic.getHeight();
+        int frameWidth = m_leftBowPic.getWidth() / NUMBER_OF_FRAMES;
         this.m_screenWidth = context.getResources().getDisplayMetrics().widthPixels;
         this.m_screenHeight = context.getResources().getDisplayMetrics().heightPixels;
 
@@ -64,29 +82,31 @@ public class Bow extends Sprite{
 
         this.m_towerHeight = towerHeight;
 
-        this.m_strechBegin = new Point();
-        this.m_strechEnd = new Point();
+
+        for(int i=0; i<NUMBER_OF_FRAMES; i++){
+            Bitmap temp= Bitmap.createBitmap(this.m_leftBowPic, i*frameWidth, 0, frameWidth, frameHeight);
+            this.scaledLeftBow[i] = Bitmap.createScaledBitmap(temp,   (int) this.m_frameScaledWidth, (int) this.m_frameScaledHeight ,false);
+        }
+
+//        this.scaledLeftBow=temp;
+
+        //==============temp=============
+        RectF oval = new RectF();
+        oval.set(100,towerHeight-30, 140, towerHeight+30);
+        path.addArc(oval, 280,80);
+
+        this.pathMeasure= new PathMeasure(path,false);
+        this.pathLength = pathMeasure.getLength();
+        this.bm_offsetX= this.scaledLeftBow[0].getWidth()/2;
+        this.bm_offsetY= this.scaledLeftBow[0].getHeight()/2;
+        this.resetMatrix();
 
     }
 
-    public void startStrech(float x, float y){
-        m_strechBegin.set(x, y);
-    }
 
-    public void strech(float x, float y){
-        m_strechEnd.set(x, y);
-        m_bowAngle = Math.toDegrees(
-                     Math.atan2(m_strechBegin.getY() - m_strechEnd.getY(),
-                                m_strechBegin.getX() - m_strechEnd.getX()));
-        Log.w("yahav", String.valueOf(m_bowAngle));
-
-
-    }
 
     public void release(){
         //TODO - shoot an arrow
-        m_strechBegin.invalidate();
-        m_strechEnd.invalidate();
     }
 
     /**
@@ -108,7 +128,54 @@ public class Bow extends Sprite{
             super.render(canvas, (int)(m_screenWidth - m_frameScaledWidth),
                     (int)(m_towerHeight - m_frameScaledHeight));
         } else {
-            super.render(canvas, 0, (int)(m_towerHeight - m_frameScaledHeight));
+//            super.render(canvas, 0, (int)(m_towerHeight - m_frameScaledHeight));
+            renderBow(canvas);
         }
+
+        Paint paint =new Paint();
+        paint.setColor(Color.BLACK);
+        paint.setStrokeWidth(3);
+        paint.setStyle(Paint.Style.STROKE);
+        canvas.drawPath(this.path, paint);
+    }
+
+
+    public void rotateLeft(){
+       if(distance>0){
+           this.distance-=1;
+           this.resetMatrix();
+       }
+    }
+
+    public void rotateRight(){
+        if(distance<this.pathLength){
+            this.distance+=1;
+            this.resetMatrix();
+        }
+    }
+    private void resetMatrix(){
+        pathMeasure.getPosTan(distance, pos, tan);
+        matrix.reset();
+        float degrees = (float)(Math.atan2(tan[1], tan[0])*180.0/Math.PI);
+        matrix.postRotate(degrees, bm_offsetX, bm_offsetY);
+        matrix.postTranslate(pos[0]-bm_offsetX, pos[1]-bm_offsetY);
+    }
+
+    public void stretch(){
+        this.currentFrame++;
+        if(this.currentFrame>=NUMBER_OF_FRAMES){
+            this.currentFrame=0;
+        }
+    }
+    public void unStretch(){
+
+        if(this.currentFrame>0){
+            this.currentFrame--;
+        }
+    }
+
+    private void renderBow(Canvas canvas){
+            canvas.drawBitmap(this.scaledLeftBow[this.currentFrame], matrix, null);
+
     }
 }

@@ -142,6 +142,13 @@ public abstract class Sprite implements DrawableObject{
         canvas.drawBitmap(this.m_bitmap, this.m_frameRect, m_destRect, null);
     }
 
+    public Rect getFrameRect(){
+        return this.m_frameRect;
+    }
+    public RectF getDestRect(){
+        return this.m_destRect;
+    }
+
     /**
      * Set the scale factor of the bitmap. if the bitmap is big and you want it to appear small, set
      * a high scale factor.
