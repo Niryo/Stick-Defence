@@ -9,9 +9,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
-import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
 
 /**
  * Created by yahav on 01/05/15.
@@ -26,26 +24,21 @@ public class Bow{
     private static        Bitmap leftBowPic = null;
     private static        Bitmap rightBowPic = null;
     private Sprite        sprite;
-    private double        frameScaledWidth;   //the frame width after scale
-    private double        frameScaledHeight;  //the frame height after scale
-    private double        bowAngle;
-    private int           screenWidth;
-    private int           screenHeight;
     private int           towerHeight;
-
     private Sprite.Player player;
 
     private Path path = new Path();
     private PathMeasure pathMeasure;
     private float pathLength;
     private float[] pos= new float[2];
-    private float[] tan= new float[2];;
+    private float[] tan= new float[2];
     private Matrix matrix= new Matrix();
     private int distance=0;
-    private float boffsetX;
-    private float boffsetY;
+    private float bm_offsetX;
+    private float bm_offsetY;
     private Bitmap[] scaledLeftBow = new Bitmap[NUMBER_OF_FRAMES];
     private int currentFrame=0;
+
 
     /**
      * Constructor
@@ -53,17 +46,17 @@ public class Bow{
      * @param player the player - right or left
      */
     public Bow(Context context, Sprite.Player player, int towerHeight) {
-        if (null == leftBowPic){
+        if (leftBowPic == null) {
             leftBowPic = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.bow); // Read resource only once
         }
-        if (null == rightBowPic){
+        if (rightBowPic == null) {
             rightBowPic = Sprite.mirrorBitmap(leftBowPic);
         }
 
         sprite = new Sprite();
 
-        if (player == Sprite.Player.LEFT){
+        if (player == Sprite.Player.LEFT) {
             sprite.initSprite(context, leftBowPic, NUMBER_OF_FRAMES,
                     player, SCREEN_HEIGHT_PORTION);
         } else {
@@ -75,35 +68,30 @@ public class Bow{
 
         int frameHeight = leftBowPic.getHeight();
         int frameWidth = leftBowPic.getWidth() / NUMBER_OF_FRAMES;
-        this.screenWidth = context.getResources().getDisplayMetrics().widthPixels;
-        this.screenHeight = context.getResources().getDisplayMetrics().heightPixels;
 
-        double scaleDownFactor = sprite.getScaleDownFactor();
-
-        this.frameScaledHeight = frameHeight/scaleDownFactor;
-        this.frameScaledWidth = frameWidth/scaleDownFactor;
 
         this.towerHeight = towerHeight;
 
 
-        for(int i=0; i<NUMBER_OF_FRAMES; i++){
-            Bitmap temp= Bitmap.createBitmap(this.leftBowPic, i*frameWidth, 0, frameWidth, frameHeight);
-            this.scaledLeftBow[i] = Bitmap.createScaledBitmap(temp,   (int) this.frameScaledWidth, (int) this.frameScaledHeight ,false);
+        for (int i = 0; i < NUMBER_OF_FRAMES; i++) {
+            Bitmap frameToScale = Bitmap.createBitmap(this.leftBowPic, i * frameWidth, 0, frameWidth, frameHeight);
+            this.scaledLeftBow[i] = Bitmap.createScaledBitmap(frameToScale, (int) this.sprite.getScaledFrameWidth(), (int) this.sprite.getScaledFrameHeight(), false);
         }
 
-//        this.scaledLeftBow=temp;
 
         //==============temp=============
         RectF oval = new RectF();
-        oval.set(100,towerHeight-30, 140, towerHeight+30);
-        path.addArc(oval, 280,80);
+        oval.set(100, towerHeight - 30, 140, towerHeight + 30);
+        path.addArc(oval, 280, 80);
 
-        this.pathMeasure= new PathMeasure(path,false);
+        this.pathMeasure = new PathMeasure(path, false);
         this.pathLength = pathMeasure.getLength();
-        this.boffsetX= this.scaledLeftBow[0].getWidth()/2;
-        this.boffsetY= this.scaledLeftBow[0].getHeight()/2;
+        this.bm_offsetX = this.scaledLeftBow[0].getWidth() / 2;
+        this.bm_offsetY = this.scaledLeftBow[0].getHeight() / 2;
         this.resetMatrix();
 
+//        this.test = new Arrow(context, this.pos[0],this.pos[1], this.tan, this.sprite.getScaleDownFactor());
+        Arrow.init(context, sprite.getScaleDownFactor());
     }
 
 
@@ -115,7 +103,7 @@ public class Bow{
      * @param gameTime the current time in milliseconds
      */
     public void update(long gameTime) {
-        sprite.update(gameTime);
+//        sprite.update(gameTime);
 
     }
 
@@ -124,14 +112,9 @@ public class Bow{
      * @param canvas the canvas to draw on
      */
     public void render(Canvas canvas) {
-        // where to draw the sprite
-        if (player == Sprite.Player.RIGHT){
-            sprite.render(canvas, (int)(screenWidth - frameScaledWidth),
-                    (int)(towerHeight - frameScaledHeight));
-        } else {
-//            super.render(canvas, 0, (int)(towerHeight - frameScaledHeight));
-            renderBow(canvas);
-        }
+         renderBow(canvas);
+
+
 
         Paint paint =new Paint();
         paint.setColor(Color.BLACK);
@@ -158,8 +141,8 @@ public class Bow{
         pathMeasure.getPosTan(distance, pos, tan);
         matrix.reset();
         float degrees = (float)(Math.atan2(tan[1], tan[0])*180.0/Math.PI);
-        matrix.postRotate(degrees, boffsetX, boffsetY);
-        matrix.postTranslate(pos[0]-boffsetX, pos[1]-boffsetY);
+        matrix.postRotate(degrees, bm_offsetX, bm_offsetY);
+        matrix.postTranslate(pos[0]- bm_offsetX, pos[1]- bm_offsetY);
     }
 
     public void stretch(){
@@ -181,5 +164,8 @@ public class Bow{
     private void renderBow(Canvas canvas){
             canvas.drawBitmap(this.scaledLeftBow[this.currentFrame], matrix, null);
 
+    }
+    public double getScaleDownFactor(){
+        return this.sprite.getScaleDownFactor();
     }
 }

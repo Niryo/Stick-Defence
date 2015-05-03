@@ -33,7 +33,7 @@ public class GameState {
         towers.add(rightTower);
 
         bows.add(new Bow(context, Sprite.Player.LEFT, leftTower.getTowerHeight()));
-        bows.add(new Bow(context, Sprite.Player.RIGHT, rightTower.getTowerHeight()));
+//        bows.add(new Bow(context, Sprite.Player.RIGHT, rightTower.getTowerHeight()));
 
         rightTowerLeftX = rightTower.getLeftX();
         leftTowerBeginX = leftTower.getRightX();

@@ -17,9 +17,9 @@ public class BasicSoldier {
     private static final int ANIMATION_SPEED = 4;
     private static final int RUN_SPEED = 5;
 
-    private static Bitmap leftSoldierpic = null;
+    private static Bitmap leftSoldierPic = null;
     private static Bitmap rightSoldierPic = null;
-    private static Bitmap leftHitSoldirePic = null;
+    private static Bitmap leftHitSoldierPic = null;
     private static Bitmap rightHitSoldierPic = null;
 
     private Sprite    sprite;
@@ -31,28 +31,28 @@ public class BasicSoldier {
     private GameState gameState = GameState.getInstance();
 
     public BasicSoldier(Context context, Sprite.Player player) {
-        if  (null == leftSoldierpic) {
-            leftSoldierpic = BitmapFactory.decodeResource(context.getResources(),
+        if  (null == leftSoldierPic) {
+            leftSoldierPic = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.simple_running_stick); // Read resource only once
         }
 
         if (null == rightSoldierPic){
-            rightSoldierPic = Sprite.mirrorBitmap(leftSoldierpic);
+            rightSoldierPic = Sprite.mirrorBitmap(leftSoldierPic);
         }
 
-        if (null == leftHitSoldirePic){
-            leftHitSoldirePic = BitmapFactory.decodeResource(context.getResources(),
+        if (null == leftHitSoldierPic){
+            leftHitSoldierPic = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.basic_soldier_hit);
         }
 
         if(null == rightHitSoldierPic){
-            rightHitSoldierPic = Sprite.mirrorBitmap(leftHitSoldirePic);
+            rightHitSoldierPic = Sprite.mirrorBitmap(leftHitSoldierPic);
         }
 
         sprite = new Sprite();
 
         if (player == Sprite.Player.LEFT){
-            sprite.initSprite(context, leftSoldierpic, NUMBER_OF_FRAMES,
+            sprite.initSprite(context, leftSoldierPic, NUMBER_OF_FRAMES,
                     player, SCREEN_HEIGHT_PORTION);
         } else {
             sprite.initSprite(context, rightSoldierPic, NUMBER_OF_FRAMES,
@@ -89,7 +89,7 @@ public class BasicSoldier {
         if (runSpeed > 0){
             if (soldierX + sprite.getScaledFrameWidth()/2 >= gameState.getRightTowerLeftX()){
                 runSpeed = 0;
-                sprite.setPic(leftHitSoldirePic);
+                sprite.setPic(leftHitSoldierPic);
 
             }
         }

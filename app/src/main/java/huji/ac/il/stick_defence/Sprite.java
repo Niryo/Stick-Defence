@@ -34,8 +34,7 @@ public class Sprite{
     private long    frameTicker = 01;    // the time of the last frame update
     private double  scaleDownFactor;
     private Player  player;
-    private float   angle;
-    private float   screenHeightPortion;
+
 
     /**
      * Default Constructor
@@ -68,8 +67,7 @@ public class Sprite{
                 context.getResources().getDisplayMetrics().heightPixels;
         setScaleDownFactor(((double) this.frameHeight / (double) screenHeight)
                 / screenHeightPortion);
-        this.angle = 20;
-        screenHeightPortion = (float)screenHeightPortion;
+
     }
 
     /**
@@ -214,9 +212,7 @@ public class Sprite{
         }
     }
 
-    public void setAngle(float angle){
-        this.angle = angle;
-    }
+
 
     public void setPic(Bitmap bitmap){
         this.bitmap = bitmap;
