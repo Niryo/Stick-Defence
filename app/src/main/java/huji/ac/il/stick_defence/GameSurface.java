@@ -17,7 +17,7 @@ import android.widget.FrameLayout;
 public class GameSurface extends SurfaceView implements
         SurfaceHolder.Callback {
 
-    private GameLoopThread m_gameLoopThread;
+    private GameLoopThread gameLoopThread;
     private GameState gameState = GameState.CreateGameState(getContext());
     private SimpleGestureDetector simpleGestureDetector= new SimpleGestureDetector();
 
@@ -29,7 +29,7 @@ public class GameSurface extends SurfaceView implements
         getHolder().addCallback(this);
 
         // Create the GameLoopThread
-        m_gameLoopThread = new GameLoopThread(getHolder(), this);
+        gameLoopThread = new GameLoopThread(getHolder(), this);
 
         // Make the GameSurface focusable so it can handle events
         setFocusable(true);
@@ -52,8 +52,8 @@ public class GameSurface extends SurfaceView implements
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        m_gameLoopThread.setRunning(true);
-        m_gameLoopThread.start();
+        gameLoopThread.setRunning(true);
+        gameLoopThread.start();
     }
 
     @Override
@@ -61,10 +61,10 @@ public class GameSurface extends SurfaceView implements
         boolean retry = true;
         while (retry) {
             try {
-                m_gameLoopThread.join();
+                gameLoopThread.join();
                 retry = false;
             } catch (InterruptedException e) {
-                // try again shutting down the m_gameLoopThread
+                // try again shutting down the gameLoopThread
             }
         }
     }

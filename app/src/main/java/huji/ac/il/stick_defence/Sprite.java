@@ -20,22 +20,22 @@ public class Sprite{
         RIGHT
     }
 
-    private Bitmap  m_bitmap;
-    private Rect    m_frameRect;  // the rectangle to be drawn from the animation bitmap
-    private RectF   m_destRect;
-    private int     m_frameHeight;
-    private int     m_frameWidth;
-    private int     m_currentFrame = 0;    // the current frame
+    private Bitmap  bitmap;
+    private Rect    frameRect;  // the rectangle to be drawn from the animation bitmap
+    private RectF   destRect;
+    private int     frameHeight;
+    private int     frameWidth;
+    private int     currentFrame = 0;    // the current frame
 
-    private int     m_nFrames = 9;        // number of frames in animation
-    private int     m_fps = 4;             //the speed of the animation
-    private int     m_framePeriod
-            = 100 / m_fps;    // milliseconds between each frame (1000/m_fps)
-    private long    m_frameTicker = 01;    // the time of the last frame update
-    private double  m_scaleDownFactor;
-    private Player  m_player;
-    private float   m_angle;
-    private float   m_screenHeightPortion;
+    private int     nFrames = 9;        // number of frames in animation
+    private int     fps = 4;             //the speed of the animation
+    private int     framePeriod
+            = 100 / fps;    // milliseconds between each frame (1000/fps)
+    private long    frameTicker = 01;    // the time of the last frame update
+    private double  scaleDownFactor;
+    private Player  player;
+    private float   angle;
+    private float   screenHeightPortion;
 
     /**
      * Default Constructor
@@ -56,20 +56,20 @@ public class Sprite{
     public void initSprite(Context context, Bitmap bitmap, int nFrames,
                               Player player, double screenHeightPortion){
 
-        this.m_bitmap = bitmap;
+        this.bitmap = bitmap;
 
-        this.m_player = player;
-        this.m_nFrames = nFrames;
-        this.m_frameHeight = bitmap.getHeight();
-        this.m_frameWidth = (bitmap.getWidth() / nFrames);
-        this.m_frameRect = new Rect(0, 0, m_frameWidth, m_frameHeight);
-        this.m_destRect = new RectF();
+        this.player = player;
+        this.nFrames = nFrames;
+        this.frameHeight = bitmap.getHeight();
+        this.frameWidth = (bitmap.getWidth() / nFrames);
+        this.frameRect = new Rect(0, 0, frameWidth, frameHeight);
+        this.destRect = new RectF();
         int screenHeight =
                 context.getResources().getDisplayMetrics().heightPixels;
-        setScaleDownFactor(((double) this.m_frameHeight / (double) screenHeight)
+        setScaleDownFactor(((double) this.frameHeight / (double) screenHeight)
                 / screenHeightPortion);
-        this.m_angle = 20;
-        m_screenHeightPortion = (float)screenHeightPortion;
+        this.angle = 20;
+        screenHeightPortion = (float)screenHeightPortion;
     }
 
     /**
@@ -93,7 +93,7 @@ public class Sprite{
      * @param fps
      */
     public void setAnimationSpeed(int fps){
-        this.m_fps = fps;
+        this.fps = fps;
     }
 
     /**
@@ -103,28 +103,28 @@ public class Sprite{
      * @param gameTime the current time in milliseconds
      */
     public void update(long gameTime) {
-        if (gameTime > m_frameTicker + m_framePeriod) {
-            m_frameTicker = gameTime;
+        if (gameTime > frameTicker + framePeriod) {
+            frameTicker = gameTime;
 
-            if (m_nFrames > 1){
+            if (nFrames > 1){
                 // increment the frame
-                if (m_player == Player.LEFT){
-                    m_currentFrame++;
-                    if (m_currentFrame >= m_nFrames) {
-                        m_currentFrame = 0;
+                if (player == Player.LEFT){
+                    currentFrame++;
+                    if (currentFrame >= nFrames) {
+                        currentFrame = 0;
                     }
                 } else {
-                    m_currentFrame--;
-                    if (m_currentFrame < 0){
-                        m_currentFrame = m_nFrames - 1;
+                    currentFrame--;
+                    if (currentFrame < 0){
+                        currentFrame = nFrames - 1;
                     }
                 }
             }
 
         }
 
-        this.m_frameRect.left = this.m_currentFrame * m_frameWidth;
-        this.m_frameRect.right = this.m_frameRect.left + m_frameWidth;
+        this.frameRect.left = this.currentFrame * frameWidth;
+        this.frameRect.right = this.frameRect.left + frameWidth;
     }
 
     /**
@@ -137,16 +137,16 @@ public class Sprite{
      */
     public void render(Canvas canvas, int x, int y){
         // where to draw the sprite
-        m_destRect.set(x, y, (x + (int)getScaledFrameWidth()), (y + (int)getScaledFrameHeight()));
+        destRect.set(x, y, (x + (int)getScaledFrameWidth()), (y + (int)getScaledFrameHeight()));
 
-        canvas.drawBitmap(this.m_bitmap, this.m_frameRect, m_destRect, null);
+        canvas.drawBitmap(this.bitmap, this.frameRect, destRect, null);
     }
 
     public Rect getFrameRect(){
-        return this.m_frameRect;
+        return this.frameRect;
     }
     public RectF getDestRect(){
-        return this.m_destRect;
+        return this.destRect;
     }
 
     /**
@@ -155,16 +155,16 @@ public class Sprite{
      * @param scale the amount of scale
      */
     public void setScaleDownFactor(double scale){
-        this.m_scaleDownFactor = scale;
+        this.scaleDownFactor = scale;
     }
 
     /**
      * Returns the scan down factor, that is a factor that shrink or enlarge
      * the sprite in relation to the screen dimensions.
-     * @return m_scaleDownFactor
+     * @return scaleDownFactor
      */
     protected double getScaleDownFactor(){
-        return this.m_scaleDownFactor;
+        return this.scaleDownFactor;
     }
 
     /**
@@ -172,7 +172,7 @@ public class Sprite{
      * @return height of frame in pixels
      */
     public double getScaledFrameHeight(){
-        return this.m_frameHeight/this.m_scaleDownFactor;
+        return this.frameHeight/this.scaleDownFactor;
     }
 
     /**
@@ -180,7 +180,7 @@ public class Sprite{
      * @return width of frame in pixels
      */
     public double getScaledFrameWidth(){
-        return this.m_frameWidth/this.m_scaleDownFactor;
+        return this.frameWidth/this.scaleDownFactor;
     }
 
     /**
@@ -188,38 +188,38 @@ public class Sprite{
      * Designed to reduce memory allocations.
      */
     public class Point{
-        double  m_x = 0;
-        double  m_y = 0;
-        boolean m_isInitialized = false;
+        double  x = 0;
+        double  y = 0;
+        boolean isInitialized = false;
 
         double getX(){
-            return this.m_x;
+            return this.x;
         }
         double getY(){
-            return this.m_y;
+            return this.y;
         }
 
         void set(double x, double y){
-            this.m_x = x;
-            this.m_y = y;
-            m_isInitialized = true;
+            this.x = x;
+            this.y = y;
+            isInitialized = true;
         }
 
         boolean isInitialized(){
-            return this.m_isInitialized;
+            return this.isInitialized;
         }
 
         void invalidate(){
-            this.m_isInitialized = false;
+            this.isInitialized = false;
         }
     }
 
     public void setAngle(float angle){
-        this.m_angle = angle;
+        this.angle = angle;
     }
 
     public void setPic(Bitmap bitmap){
-        this.m_bitmap = bitmap;
+        this.bitmap = bitmap;
     }
 
 }

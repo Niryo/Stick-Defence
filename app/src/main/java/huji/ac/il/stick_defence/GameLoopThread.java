@@ -18,24 +18,24 @@ public class GameLoopThread extends Thread {
     // the frame period
     private final static int FRAME_PERIOD = 1000 / MAX_FPS;
 
-    private SurfaceHolder m_surfaceHolder;
-    private GameSurface m_gameSurface;
-    private GameState m_gameState;
-    private boolean m_running;
-    private boolean m_sendSoldier; // TODO - handle sendSoldier of other player
+    private SurfaceHolder surfaceHolder;
+    private GameSurface gameSurface;
+    private GameState gameState;
+    private boolean running;
+    private boolean sendSoldier; // TODO - handle sendSoldier of other player
 
 
     public void setRunning(boolean running) {
-        this.m_running = running;
+        this.running = running;
     }
 
     public GameLoopThread(SurfaceHolder surfaceHolder,
                           GameSurface gameSurface) {
         super();
-        this.m_surfaceHolder = surfaceHolder;
-        this.m_gameSurface = gameSurface;
-        this.m_gameState = GameState.getInstance();
-        this.m_sendSoldier = false;
+        this.surfaceHolder = surfaceHolder;
+        this.gameSurface = gameSurface;
+        this.gameState = GameState.getInstance();
+        this.sendSoldier = false;
 
     }
 
@@ -49,20 +49,20 @@ public class GameLoopThread extends Thread {
 
         sleepTime = 0;
 
-        while (m_running) {
+        while (running) {
             canvas = null;
             try {
-                canvas = this.m_surfaceHolder.lockCanvas();
-                synchronized (m_surfaceHolder) {
+                canvas = this.surfaceHolder.lockCanvas();
+                synchronized (surfaceHolder) {
                     beginTime = System.currentTimeMillis();
                     skippedFrames = 0;    // resetting the frames skipped
-                    if (m_sendSoldier) {
+                    if (sendSoldier) {
                         //TODO - handle right player addSoldier requests
-                        this.m_gameState.addSoldier(Sprite.Player.LEFT);
-                        m_sendSoldier = false;
+                        this.gameState.addSoldier(Sprite.Player.LEFT);
+                        sendSoldier = false;
                     }
-                    this.m_gameState.update();
-                    this.m_gameSurface.render(canvas);
+                    this.gameState.update();
+                    this.gameSurface.render(canvas);
 
 
                     timeDiff = System.currentTimeMillis() - beginTime;
@@ -81,7 +81,7 @@ public class GameLoopThread extends Thread {
 
                     while (sleepTime < 0 && skippedFrames < MAX_FRAME_SKIPS) {
                         // we need to catch up
-                        this.m_gameState.update(); // update without rendering
+                        this.gameState.update(); // update without rendering
                         sleepTime += FRAME_PERIOD;    // add frame period to check if in next frame
                         skippedFrames++;
                     }
@@ -91,7 +91,7 @@ public class GameLoopThread extends Thread {
                 // in case of an exception the surface is not left in
                 // an inconsistent state
                 if (canvas != null) {
-                    m_surfaceHolder.unlockCanvasAndPost(canvas);
+                    surfaceHolder.unlockCanvasAndPost(canvas);
                 }
             }    // end finally
         }

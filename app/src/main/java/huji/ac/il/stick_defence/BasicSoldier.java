@@ -17,86 +17,86 @@ public class BasicSoldier {
     private static final int ANIMATION_SPEED = 4;
     private static final int RUN_SPEED = 5;
 
-    private static Bitmap m_leftSoldierpic = null;
-    private static Bitmap m_rightSoldierPic = null;
-    private static Bitmap m_leftHitSoldirePic = null;
-    private static Bitmap m_rightHitSoldierPic = null;
+    private static Bitmap leftSoldierpic = null;
+    private static Bitmap rightSoldierPic = null;
+    private static Bitmap leftHitSoldirePic = null;
+    private static Bitmap rightHitSoldierPic = null;
 
-    private Sprite    m_sprite;
-    private int       m_screenWidth;
-    private int       m_screenHeight;
-    private int       m_soldierX;
-    private int       m_soldierY;
-    private int       m_runSpeed; //todo: make the speed in pixels/seconds units.
+    private Sprite    sprite;
+    private int       screenWidth;
+    private int       screenHeight;
+    private int       soldierX;
+    private int       soldierY;
+    private int       runSpeed; //todo: make the speed in pixels/seconds units.
     private GameState gameState = GameState.getInstance();
 
     public BasicSoldier(Context context, Sprite.Player player) {
-        if  (null == m_leftSoldierpic) {
-            m_leftSoldierpic = BitmapFactory.decodeResource(context.getResources(),
+        if  (null == leftSoldierpic) {
+            leftSoldierpic = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.simple_running_stick); // Read resource only once
         }
 
-        if (null == m_rightSoldierPic){
-            m_rightSoldierPic = Sprite.mirrorBitmap(m_leftSoldierpic);
+        if (null == rightSoldierPic){
+            rightSoldierPic = Sprite.mirrorBitmap(leftSoldierpic);
         }
 
-        if (null == m_leftHitSoldirePic){
-            m_leftHitSoldirePic = BitmapFactory.decodeResource(context.getResources(),
+        if (null == leftHitSoldirePic){
+            leftHitSoldirePic = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.basic_soldier_hit);
         }
 
-        if(null == m_rightHitSoldierPic){
-            m_rightHitSoldierPic = Sprite.mirrorBitmap(m_leftHitSoldirePic);
+        if(null == rightHitSoldierPic){
+            rightHitSoldierPic = Sprite.mirrorBitmap(leftHitSoldirePic);
         }
 
-        m_sprite = new Sprite();
+        sprite = new Sprite();
 
         if (player == Sprite.Player.LEFT){
-            m_sprite.initSprite(context, m_leftSoldierpic, NUMBER_OF_FRAMES,
+            sprite.initSprite(context, leftSoldierpic, NUMBER_OF_FRAMES,
                     player, SCREEN_HEIGHT_PORTION);
         } else {
-            m_sprite.initSprite(context, m_rightSoldierPic, NUMBER_OF_FRAMES,
+            sprite.initSprite(context, rightSoldierPic, NUMBER_OF_FRAMES,
                     player, SCREEN_HEIGHT_PORTION);
         }
 
-        m_sprite.setAnimationSpeed(ANIMATION_SPEED);
+        sprite.setAnimationSpeed(ANIMATION_SPEED);
 
-        this.m_screenWidth =
+        this.screenWidth =
                 context.getResources().getDisplayMetrics().widthPixels;
-        this.m_screenHeight =
+        this.screenHeight =
                 context.getResources().getDisplayMetrics().heightPixels;
 
         //set the y on the bottom of the screen
-        this.m_soldierY = m_screenHeight - (int) m_sprite.getScaledFrameHeight();
+        this.soldierY = screenHeight - (int) sprite.getScaledFrameHeight();
 
         //Set x and speed
         if (player == Sprite.Player.LEFT) {
-            m_runSpeed = RUN_SPEED;
-            m_soldierX = 0;
+            runSpeed = RUN_SPEED;
+            soldierX = 0;
         } else {
-            m_runSpeed = -RUN_SPEED;
-            m_soldierX = m_screenWidth;
+            runSpeed = -RUN_SPEED;
+            soldierX = screenWidth;
         }
     }
 
     public void update(long gameTime) {
-        m_sprite.update(gameTime);
-        m_soldierX += m_runSpeed;
-     /*   if (m_soldierX > m_screenWidth) {
-            m_soldierX -= m_runSpeed;
+        sprite.update(gameTime);
+        soldierX += runSpeed;
+     /*   if (soldierX > screenWidth) {
+            soldierX -= runSpeed;
             gameState.removeSoldier(this);
         }*/
-        if (m_runSpeed > 0){
-            if (m_soldierX + m_sprite.getScaledFrameWidth()/2 >= gameState.getRightTowerLeftX()){
-                m_runSpeed = 0;
-                m_sprite.setPic(m_leftHitSoldirePic);
+        if (runSpeed > 0){
+            if (soldierX + sprite.getScaledFrameWidth()/2 >= gameState.getRightTowerLeftX()){
+                runSpeed = 0;
+                sprite.setPic(leftHitSoldirePic);
 
             }
         }
-        if (m_runSpeed < 0){
-            if (m_soldierX + m_sprite.getScaledFrameWidth()/2 <= gameState.getLeftTowerRightX()){
-                m_runSpeed = 0;
-                m_sprite.setPic(m_rightHitSoldierPic);
+        if (runSpeed < 0){
+            if (soldierX + sprite.getScaledFrameWidth()/2 <= gameState.getLeftTowerRightX()){
+                runSpeed = 0;
+                sprite.setPic(rightHitSoldierPic);
 
             }
         }
@@ -104,7 +104,7 @@ public class BasicSoldier {
     }
 
     public void render(Canvas canvas) {
-        m_sprite.render(canvas, m_soldierX, m_soldierY);
+        sprite.render(canvas, soldierX, soldierY);
     }
 
 

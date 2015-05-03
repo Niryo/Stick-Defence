@@ -15,16 +15,16 @@ public class Tower {
     //tower to span over a half of the screen height.
     private static final double SCREEN_HEIGHT_PORTION = 0.6;
 
-    private static Bitmap m_leftTowerPic = null;
-    private static Bitmap m_rightTowerPic = null;
-    private Sprite        m_sprite;
+    private static Bitmap leftTowerPic = null;
+    private static Bitmap rightTowerPic = null;
+    private Sprite        sprite;
 
-    private double        m_hp;
-    private int           m_screenWidth;
-    private int           m_screenHeight;
-    private Sprite.Player m_player;
-    private int           m_towerX;
-    private int           m_towerY;
+    private double        hp;
+    private int           screenWidth;
+    private int           screenHeight;
+    private Sprite.Player player;
+    private int           towerX;
+    private int           towerY;
 
     /**
      * Constructor
@@ -33,31 +33,31 @@ public class Tower {
      * @param player  the player - right or left
      */
     public Tower(Context context, Sprite.Player player) {
-        if (null == m_leftTowerPic){
-            m_leftTowerPic = BitmapFactory.decodeResource(context.getResources(),
+        if (null == leftTowerPic){
+            leftTowerPic = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.tower); // Read resource only once
         }
-        if (null == m_rightTowerPic){
-            m_rightTowerPic = Sprite.mirrorBitmap(m_leftTowerPic);
+        if (null == rightTowerPic){
+            rightTowerPic = Sprite.mirrorBitmap(leftTowerPic);
         }
 
-        this.m_screenWidth = context.getResources().getDisplayMetrics().widthPixels;
-        this.m_screenHeight = context.getResources().getDisplayMetrics().heightPixels;
+        this.screenWidth = context.getResources().getDisplayMetrics().widthPixels;
+        this.screenHeight = context.getResources().getDisplayMetrics().heightPixels;
 
-        m_sprite = new Sprite();
+        sprite = new Sprite();
 
         if (player == Sprite.Player.LEFT){
-            m_sprite.initSprite(context, m_leftTowerPic, 1, player, SCREEN_HEIGHT_PORTION);
-            m_towerX = 0;
+            sprite.initSprite(context, leftTowerPic, 1, player, SCREEN_HEIGHT_PORTION);
+            towerX = 0;
         } else {
-            m_sprite.initSprite(context, m_rightTowerPic, 1, player, SCREEN_HEIGHT_PORTION);
-            m_towerX = m_screenWidth - (int)m_sprite.getScaledFrameWidth();
+            sprite.initSprite(context, rightTowerPic, 1, player, SCREEN_HEIGHT_PORTION);
+            towerX = screenWidth - (int)sprite.getScaledFrameWidth();
         }
-        m_towerY = m_screenHeight - (int)m_sprite.getScaledFrameHeight();
+        towerY = screenHeight - (int)sprite.getScaledFrameHeight();
 
-        this.m_player = player;
+        this.player = player;
 
-        this.m_hp = 100.0; // TODO
+        this.hp = 100.0; // TODO
     }
 
     /**
@@ -66,7 +66,7 @@ public class Tower {
      * @param gameTime the current time in milliseconds
      */
     public void update(long gameTime) {
-        m_sprite.update(gameTime);
+        sprite.update(gameTime);
         //TODO - Consider change the picture when tower is damaged
     }
 
@@ -77,15 +77,15 @@ public class Tower {
      */
     public void render(Canvas canvas) {
         // where to draw the sprite
-        m_sprite.render(canvas, m_towerX, m_towerY);
+        sprite.render(canvas, towerX, towerY);
     }
 
     public int getTowerHeight(){
-        return (int) (m_screenHeight - m_sprite.getScaledFrameHeight());
+        return (int) (screenHeight - sprite.getScaledFrameHeight());
     }
 
-    public int getLeftX() {return this.m_towerX; }
+    public int getLeftX() {return this.towerX; }
 
-    public int getRightX() { return this.m_towerX + (int) m_sprite.getScaledFrameWidth(); }
+    public int getRightX() { return this.towerX + (int) sprite.getScaledFrameWidth(); }
 
 }
