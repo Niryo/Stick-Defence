@@ -40,26 +40,26 @@ public class SimpleGestureDetector {
                     this.lastX=event.getX();
                     this.lastY=event.getY();
                     gameState.touch(Gesture.DOWN); //moveDown
-                    Log.w("custom", "move down");
+
                 }
                 if(currentY-this.lastY < -DISTANCE){
                     this.lastX=event.getX();
                     this.lastY=event.getY();
                     gameState.touch(Gesture.UP); //todo: make enum
-                    Log.w("custom", "move up");
+
                 }
 
                 if(currentX-this.lastX > DISTANCE){
                     this.lastX=event.getX();
                     this.lastY=event.getY();
                     gameState.touch(Gesture.RIGHT); //moveRight
-                    Log.w("custom", "move right");
+
                 }
                 if(currentX-this.lastX < -DISTANCE) {
                     this.lastX=event.getX();
                     this.lastY=event.getY();
                     gameState.touch(Gesture.LEFT); //todo: make enum
-                    Log.w("custom", "move left");
+
                 }
 //                gameState.touch(event.getX(), event.getY());
                 break;

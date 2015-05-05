@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.Log;
 
 public class BasicSoldier {
 
@@ -107,5 +108,17 @@ public class BasicSoldier {
         sprite.render(canvas, soldierX, soldierY);
     }
 
+    public boolean checkHit(Arrow arrow){
+        int tempx= arrow.getHeadX();
+        int tempy=arrow.getHeadY();
+        int tempsol= (int) (this.soldierX+sprite.getScaledFrameWidth()/2);
+
+        if((int) this.soldierX+sprite.getScaledFrameWidth()/2 == arrow.getHeadX() && this.soldierY<= arrow.getHeadY()){ //todo: fix.
+            //todo: hit
+            Log.w("custom", "soldier hit!");
+            return true;
+        }
+        return false;
+    }
 
 }

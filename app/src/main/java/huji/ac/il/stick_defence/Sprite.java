@@ -216,6 +216,8 @@ public class Sprite{
 
     public void setPic(Bitmap bitmap){
         this.bitmap = bitmap;
+//        this.frameHeight=bitmap.getHeight();
+//        this.frameWidth= bitmap.getWidth();
     }
 
 }

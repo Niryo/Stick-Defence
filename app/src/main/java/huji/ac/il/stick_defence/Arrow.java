@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 
 /**
  * Created by Nir on 03/05/2015.
@@ -60,6 +62,10 @@ public class Arrow {
 
     public void render(Canvas canvas){
         canvas.drawBitmap(scaledArrowPic, matrix, null);
+        Paint paint=new Paint();
+        paint.setColor(Color.RED);
+        paint.setStrokeWidth(10);
+        canvas.drawPoint(this.getHeadX(),this.getHeadY(), paint);
 
     }
 
@@ -80,6 +86,15 @@ public class Arrow {
 
 
     }
+
+    public int  getHeadX(){
+        return (int) (this.x + Math.cos(Math.toRadians(this.degree))*scaledArrowPic.getWidth());
+    }
+
+    public int  getHeadY(){
+        return (int) (this.y + Math.sin(Math.toRadians(this.degree))*scaledArrowPic.getWidth());
+    }
+
 
 
 }

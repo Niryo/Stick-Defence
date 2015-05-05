@@ -69,9 +69,20 @@ public class GameState {
         for (Arrow arrow: this.getArrows()){
             arrow.update();
         }
+        this.checkHits();
+
     }
 
-
+    private void checkHits(){
+        for(Arrow arrow: this.getArrows()){
+            for(BasicSoldier soldier: this.getSoldiers()){
+                boolean hit = soldier.checkHit(arrow);
+                if(hit){
+                    removeArrow(arrow);
+                }
+            }
+        }
+    }
     public void touch(SimpleGestureDetector.Gesture move) {
         if(move== SimpleGestureDetector.Gesture.DOWN){
             ((Bow) bows.get(0)).rotateRight();
