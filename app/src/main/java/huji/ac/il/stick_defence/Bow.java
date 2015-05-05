@@ -21,6 +21,7 @@ public class Bow{
     private static final double SCREEN_HEIGHT_PORTION = 0.15;
     private static final int NUMBER_OF_FRAMES = 9;
 
+    private GameState gameState= GameState.getInstance();
     private static        Bitmap leftBowPic = null;
     private static        Bitmap rightBowPic = null;
     private Sprite        sprite;
@@ -38,6 +39,7 @@ public class Bow{
     private float bm_offsetY;
     private Bitmap[] scaledLeftBow = new Bitmap[NUMBER_OF_FRAMES];
     private int currentFrame=0;
+
 
 
     /**
@@ -89,9 +91,8 @@ public class Bow{
         this.bm_offsetX = this.scaledLeftBow[0].getWidth() / 2;
         this.bm_offsetY = this.scaledLeftBow[0].getHeight() / 2;
         this.resetMatrix();
-
-//        this.test = new Arrow(context, this.pos[0],this.pos[1], this.tan, this.sprite.getScaleDownFactor());
         Arrow.init(context, sprite.getScaleDownFactor());
+
     }
 
 
@@ -104,6 +105,7 @@ public class Bow{
      */
     public void update(long gameTime) {
 //        sprite.update(gameTime);
+
 
     }
 
@@ -146,7 +148,9 @@ public class Bow{
     }
 
     public void stretch(){
-
+        if(this.currentFrame==NUMBER_OF_FRAMES-1){
+            this.currentFrame=0;
+        }
         if(this.currentFrame<NUMBER_OF_FRAMES-4){
             this.currentFrame++;
         }
@@ -158,7 +162,10 @@ public class Bow{
         }
     }
     public void release(){
-        //TODO - shoot an arrow
+        if(this.currentFrame==NUMBER_OF_FRAMES-4) {
+            this.currentFrame = NUMBER_OF_FRAMES - 1;
+            this.gameState.addArrow(this.pos[0], this.pos[1], this.tan);
+        }
     }
 
     private void renderBow(Canvas canvas){

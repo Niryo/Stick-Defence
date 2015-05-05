@@ -1,6 +1,7 @@
 package huji.ac.il.stick_defence;
 
 import android.content.Context;
+import android.gesture.Gesture;
 
 import java.util.ArrayList;
 
@@ -15,6 +16,7 @@ public class GameState {
     private ArrayList<BasicSoldier> soldiers = new ArrayList<>();
     private ArrayList<Tower>        towers = new ArrayList<>();
     private ArrayList<Bow>          bows = new ArrayList<>();
+    private ArrayList<Arrow>        arrows= new ArrayList<>();
     private Context                 context;
     private int                     rightTowerLeftX;
     private int                     leftTowerBeginX;
@@ -26,6 +28,8 @@ public class GameState {
      */
     private GameState(Context context) {
         this.context = context;
+    }
+    private void init(){
         Tower leftTower = new Tower(context, Sprite.Player.LEFT);
         Tower rightTower = new Tower(context, Sprite.Player.RIGHT);
 
@@ -37,15 +41,12 @@ public class GameState {
 
         rightTowerLeftX = rightTower.getLeftX();
         leftTowerBeginX = leftTower.getRightX();
-
-
-        //     soldiers.add(new BasicSoldier(context, BasicSoldier.Player.LEFT));
-
     }
 
     public static GameState CreateGameState(Context context) {
         if (gameState == null) {
             gameState = new GameState(context);
+            gameState.init();
         }
         return gameState;
     }
@@ -64,33 +65,34 @@ public class GameState {
         for (Bow bow : this.getBows()){
             bow.update(System.currentTimeMillis());
         }
+
+        for (Arrow arrow: this.getArrows()){
+            arrow.update();
+        }
     }
 
-    public void touchDown(float x, float y){
-//        ((Bow) bows.get(0)).rotateLeft();
 
-    }
-
-    public void touchMove(int move) {
-        if(move==1){
+    public void touch(SimpleGestureDetector.Gesture move) {
+        if(move== SimpleGestureDetector.Gesture.DOWN){
             ((Bow) bows.get(0)).rotateRight();
         }
-        if(move==2){
+        if(move== SimpleGestureDetector.Gesture.UP){
             ((Bow) bows.get(0)).rotateLeft();
         }
 
-        if(move==3){
+        if(move== SimpleGestureDetector.Gesture.RIGHT){
             ((Bow) bows.get(0)).unStretch();
         }
-        if(move==4){
+        if(move== SimpleGestureDetector.Gesture.LEFT){
             ((Bow) bows.get(0)).stretch();
+        }
+        if(move== SimpleGestureDetector.Gesture.TOUCH_UP){
+            ((Bow) bows.get(0)).release();
         }
 
     }
 
-    public void touchUp(){
-        ((Bow) bows.get(0)).release();
-    }
+
 
     /**
      * adds a soldier to the requested player
@@ -127,5 +129,15 @@ public class GameState {
 
     public int getLeftTowerRightX(){
         return this.leftTowerBeginX;
+    }
+
+    public void addArrow(float x, float y, float[] tan){
+        this.arrows.add(new Arrow(context, x,y,tan));
+    }
+    public void removeArrow(Arrow arrow){
+        this.arrows.remove(arrow);
+    }
+    public ArrayList<Arrow> getArrows(){
+    return (ArrayList<Arrow>) this.arrows.clone();
     }
 }

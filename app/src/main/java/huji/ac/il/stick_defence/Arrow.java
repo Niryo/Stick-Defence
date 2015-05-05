@@ -12,30 +12,51 @@ import android.graphics.Matrix;
 public class Arrow {
     private static Bitmap scaledArrowPic;
     private static Sprite sprite;
+
+    private GameState gameState= GameState.getInstance();
+    private int SPEED= 5; //make the speed in pixle/sec unit
     private float x;
     private float y;
-    private float angle;
+    private float degree;
     private float bm_offsetX;
     private float bm_offsetY;
     private Matrix matrix= new Matrix();
+    private int       screenWidth;
+    private int       screenHeight;
 
 
-    public Arrow(Context context,float x, float y, float[] tan){
+    public Arrow(Context context, float x, float y, float[] tan){
+        this.screenWidth =
+                context.getResources().getDisplayMetrics().widthPixels;
+        this.screenHeight =
+                context.getResources().getDisplayMetrics().heightPixels;
         this.x=x;
         this.y=y;
         this.bm_offsetX =scaledArrowPic.getWidth()/2;
         this.bm_offsetY= scaledArrowPic.getHeight()/2;
-        this.angle=(float)(Math.atan2(tan[1], tan[0])*180.0/Math.PI);
+        this.degree =(float)(Math.atan2(tan[1], tan[0])*180.0/Math.PI);
         updateMatrix();
 
 
     }
 
     private void updateMatrix(){
-        matrix.postRotate(this.angle, bm_offsetX, bm_offsetY);
+        matrix.reset();
+        matrix.postRotate(this.degree, bm_offsetX, bm_offsetY);
         matrix.postTranslate(this.x- bm_offsetX, this.y- bm_offsetY);
+
     }
 
+    public void update(){
+        this.x+=Math.cos(Math.toRadians(this.degree))*SPEED;
+        this.y+= Math.sin(Math.toRadians(this.degree))*SPEED;
+        updateMatrix();
+        if(this.x>this.screenWidth || this.y>this.screenHeight){
+            gameState.removeArrow(this);
+        }
+
+
+    }
 
     public void render(Canvas canvas){
         canvas.drawBitmap(scaledArrowPic, matrix, null);

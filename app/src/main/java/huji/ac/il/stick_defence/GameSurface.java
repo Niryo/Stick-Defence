@@ -83,6 +83,9 @@ public class GameSurface extends SurfaceView implements
         for (Bow bow : gameState.getBows()){
             bow.render(canvas);
         }
+        for( Arrow arrow: gameState.getArrows()){
+            arrow.render(canvas);
+        }
     }
 
 
