@@ -30,6 +30,7 @@ public class BasicSoldier {
     private int       soldierY;
     private int       runSpeed; //todo: make the speed in pixels/seconds units.
     private GameState gameState = GameState.getInstance();
+    private Sprite.Player player;
 
     public BasicSoldier(Context context, Sprite.Player player) {
         if  (null == leftSoldierPic) {
@@ -49,6 +50,8 @@ public class BasicSoldier {
         if(null == rightHitSoldierPic){
             rightHitSoldierPic = Sprite.mirrorBitmap(leftHitSoldierPic);
         }
+
+        this.player = player;
 
         sprite = new Sprite();
 
@@ -78,6 +81,8 @@ public class BasicSoldier {
             runSpeed = -RUN_SPEED;
             soldierX = screenWidth;
         }
+
+
     }
 
     public void update(long gameTime) {
@@ -101,7 +106,13 @@ public class BasicSoldier {
 
             }
         }
-
+        if (runSpeed == 0){
+            if (player == Sprite.Player.LEFT){
+                gameState.hitTower(Sprite.Player.RIGHT, 1);
+            } else {
+                gameState.hitTower(Sprite.Player.LEFT, 1);
+            }
+        }
     }
 
     public void render(Canvas canvas) {

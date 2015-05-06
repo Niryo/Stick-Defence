@@ -88,7 +88,6 @@ public class GameSurface extends SurfaceView implements
         }
     }
 
-
 }
 
 

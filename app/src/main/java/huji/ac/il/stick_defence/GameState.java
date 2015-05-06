@@ -65,9 +65,11 @@ public class GameState {
         for (Bow bow : this.getBows()){
             bow.update(System.currentTimeMillis());
         }
-
         for (Arrow arrow: this.getArrows()){
             arrow.update();
+        }
+        for (Tower tower : this.getTowers()){
+            tower.update(System.currentTimeMillis());
         }
         this.checkHits();
 
@@ -149,6 +151,14 @@ public class GameState {
         this.arrows.remove(arrow);
     }
     public ArrayList<Arrow> getArrows(){
-    return (ArrayList<Arrow>) this.arrows.clone();
+        return (ArrayList<Arrow>) this.arrows.clone();
+    }
+
+    public void hitTower(Sprite.Player player, int hp){
+        if (player == Sprite.Player.LEFT){
+            towers.get(0).reduceHP(hp);
+        } else {
+            towers.get(1).reduceHP(hp);
+        }
     }
 }
