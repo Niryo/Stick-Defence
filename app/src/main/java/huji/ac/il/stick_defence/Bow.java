@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.RectF;
+import android.util.Log;
 
 /**
  * Created by yahav on 01/05/15.
@@ -40,7 +41,7 @@ public class Bow{
     private Bitmap[] scaledLeftBow = new Bitmap[NUMBER_OF_FRAMES];
     private int currentFrame=0;
 
-
+    private float angel;
 
     /**
      * Constructor
@@ -87,17 +88,13 @@ public class Bow{
         path.addArc(oval, 280, 80);
 
         this.pathMeasure = new PathMeasure(path, false);
-        this.pathLength = pathMeasure.getLength();
+        this.pathLength = this.pathMeasure.getLength();
         this.bm_offsetX = this.scaledLeftBow[0].getWidth() / 2;
         this.bm_offsetY = this.scaledLeftBow[0].getHeight() / 2;
         this.resetMatrix();
         Arrow.init(context, sprite.getScaleDownFactor());
 
     }
-
-
-
-
 
     /**
      * Updates bow's place and angel
@@ -114,9 +111,7 @@ public class Bow{
      * @param canvas the canvas to draw on
      */
     public void render(Canvas canvas) {
-         renderBow(canvas);
-
-
+        renderBow(canvas);
 
         Paint paint =new Paint();
         paint.setColor(Color.BLACK);
@@ -147,6 +142,19 @@ public class Bow{
         matrix.postTranslate(pos[0]- bm_offsetX, pos[1]- bm_offsetY);
     }
 
+    public void setBowDirection(Sprite.Point point){
+      /*  float degrees = (float)(Math.atan2(point.getY(), point.getX())*180.0/Math.PI);
+        angel = degrees;
+
+        pathMeasure.getPosTan(distance, pos, tan);
+        matrix.reset();
+
+        matrix.postRotate(degrees, bm_offsetX, bm_offsetY);
+        matrix.postTranslate(pos[0]- bm_offsetX, pos[1]- bm_offsetY);*/
+
+
+    }
+
     public void stretch(){
         if(this.currentFrame==NUMBER_OF_FRAMES-1){
             this.currentFrame=0;
@@ -162,14 +170,14 @@ public class Bow{
         }
     }
     public void release(){
-        if(this.currentFrame==NUMBER_OF_FRAMES-4) {
+        if(this.currentFrame != NUMBER_OF_FRAMES-1) {
             this.currentFrame = NUMBER_OF_FRAMES - 1;
             this.gameState.addArrow(this.pos[0], this.pos[1], this.tan);
         }
     }
 
     private void renderBow(Canvas canvas){
-            canvas.drawBitmap(this.scaledLeftBow[this.currentFrame], matrix, null);
+        canvas.drawBitmap(this.scaledLeftBow[this.currentFrame], matrix, null);
 
     }
     public double getScaleDownFactor(){

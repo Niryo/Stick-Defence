@@ -9,33 +9,43 @@ import android.util.Log;
 
 public class BasicSoldier {
 
-    //Tower height in relation to the screen height.
-    //0-1 double. For instance, 0.5 will cause the
-    //tower to span over a half of the screen height.
-    private static final double SCREEN_HEIGHT_PORTION = 0.166;
+    //=======================BasicSoldier's abilities===========================
+    private static final double RUN_PIXELS_PER_SEC = 200; // [Pixels/Sec]
+    private static final int    DAMAGE_PIXELS_PER_SEC = 1; // [Damage/Sec]
+    //==========================================================================
 
-    private static final int NUMBER_OF_FRAMES = 9;
-    private static final int ANIMATION_SPEED = 4;
-    private static final int RUN_SPEED = 5;
+    //==========================================================================
+    //Soldier height in relation to the screen height.
+    //0-1 double. For instance, 0.5 will cause the
+    //soldier to span over a half of the screen height.
+    private static final double SCREEN_HEIGHT_PORTION = 0.166;
+    //==========================================================================
+
+    //============================Sprite constants==============================
+    private static final int    NUMBER_OF_FRAMES = 9;
+    private static final int    ANIMATION_SPEED = 4;
+    //==========================================================================
+
 
     private static Bitmap leftSoldierPic = null;
     private static Bitmap rightSoldierPic = null;
     private static Bitmap leftHitSoldierPic = null;
     private static Bitmap rightHitSoldierPic = null;
 
-    private Sprite    sprite;
-    private int       screenWidth;
-    private int       screenHeight;
-    private int       soldierX;
-    private int       soldierY;
-    private int       runSpeed; //todo: make the speed in pixels/seconds units.
-    private GameState gameState = GameState.getInstance();
+    private Sprite        sprite;
+    private int           screenWidth;
+    private int           screenHeight;
+    private int           soldierX;
+    private int           soldierY;
+    private double        runPixelsPerSec;
+    private GameState     gameState = GameState.getInstance();
     private Sprite.Player player;
+    private long          lastUpdateTime;
 
     public BasicSoldier(Context context, Sprite.Player player) {
         if  (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.simple_running_stick); // Read resource only once
+                    R.drawable.basic_soldier_run); // Read resource only once
         }
 
         if (null == rightSoldierPic){
@@ -75,42 +85,47 @@ public class BasicSoldier {
 
         //Set x and speed
         if (player == Sprite.Player.LEFT) {
-            runSpeed = RUN_SPEED;
+            runPixelsPerSec = RUN_PIXELS_PER_SEC;
             soldierX = 0;
         } else {
-            runSpeed = -RUN_SPEED;
+            runPixelsPerSec = -RUN_PIXELS_PER_SEC;
             soldierX = screenWidth;
         }
+
+        lastUpdateTime = System.currentTimeMillis();
 
 
     }
 
     public void update(long gameTime) {
         sprite.update(gameTime);
-        soldierX += runSpeed;
-     /*   if (soldierX > screenWidth) {
-            soldierX -= runSpeed;
-            gameState.removeSoldier(this);
-        }*/
-        if (runSpeed > 0){
-            if (soldierX + sprite.getScaledFrameWidth()/2 >= gameState.getRightTowerLeftX()){
-                runSpeed = 0;
+        double passedTimeInSec = (double)(gameTime - lastUpdateTime) / 1000;
+        lastUpdateTime = gameTime;
+        soldierX += (runPixelsPerSec * passedTimeInSec);
+
+        if (runPixelsPerSec > 0){
+            if (soldierX + sprite.getScaledFrameWidth() / 2 >=
+                    gameState.getRightTowerLeftX()){
+                runPixelsPerSec = 0;
                 sprite.setPic(leftHitSoldierPic);
 
             }
         }
-        if (runSpeed < 0){
-            if (soldierX + sprite.getScaledFrameWidth()/2 <= gameState.getLeftTowerRightX()){
-                runSpeed = 0;
+        if (runPixelsPerSec < 0){
+            if (soldierX + sprite.getScaledFrameWidth()/2 <=
+                    gameState.getLeftTowerRightX()){
+                runPixelsPerSec = 0;
                 sprite.setPic(rightHitSoldierPic);
 
             }
         }
-        if (runSpeed == 0){
+        if (runPixelsPerSec == 0){
             if (player == Sprite.Player.LEFT){
-                gameState.hitTower(Sprite.Player.RIGHT, 1);
+                gameState.hitTower(Sprite.Player.RIGHT,
+                                   DAMAGE_PIXELS_PER_SEC * passedTimeInSec);
             } else {
-                gameState.hitTower(Sprite.Player.LEFT, 1);
+                gameState.hitTower(Sprite.Player.LEFT,
+                                   DAMAGE_PIXELS_PER_SEC * passedTimeInSec);
             }
         }
     }

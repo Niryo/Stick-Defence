@@ -24,6 +24,9 @@ public class GameLoopThread extends Thread {
     private boolean running;
     private boolean sendSoldier; // TODO - handle sendSoldier of other player
 
+    //Testing
+    private int sendSoldierTimeout = 0;
+
 
     public void setRunning(boolean running) {
         this.running = running;
@@ -60,6 +63,10 @@ public class GameLoopThread extends Thread {
                         //TODO - handle right player addSoldier requests
                         this.gameState.addSoldier(Sprite.Player.LEFT);
                         sendSoldier = false;
+                    }
+                    sendSoldierTimeout ++;
+                    if (sendSoldierTimeout % 100 == 0){
+                        this.gameState.addSoldier(Sprite.Player.RIGHT);
                     }
                     this.gameState.update();
                     this.gameSurface.render(canvas);

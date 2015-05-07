@@ -185,19 +185,23 @@ public class Sprite{
      * This class represents a point in the (x,y) cartesian system.
      * Designed to reduce memory allocations.
      */
-    public class Point{
-        double  x = 0;
-        double  y = 0;
+    public static class Point{
+        float  x = 0;
+        float  y = 0;
         boolean isInitialized = false;
 
-        double getX(){
+        public Point(float x, float y){
+            this.x = x;
+            this.y = y;
+        }
+        float getX(){
             return this.x;
         }
-        double getY(){
+        float getY(){
             return this.y;
         }
 
-        void set(double x, double y){
+        void set(float x, float y){
             this.x = x;
             this.y = y;
             isInitialized = true;

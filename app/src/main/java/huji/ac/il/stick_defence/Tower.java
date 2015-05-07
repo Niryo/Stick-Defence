@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by yahav on 28/04/15.
@@ -16,24 +17,35 @@ public class Tower {
     private class Fire{
         private static final int NUMBER_OF_FRAMES = 4;
         private static final double FIRE_SCREEN_HEIGHT_PORTION = 0.1;
-        private Sprite sprite;
-        private int    screenWidth;
-        private int    screenHeight;
+        private Sprite fireSprite;
+        private int    fireX;
+        private int    fireY;
+        private Random random;
 
         public Fire(Context context){
-            sprite = new Sprite();
+            random = new Random();
+            fireSprite = new Sprite();
 
-            sprite.initSprite(context, firePic, NUMBER_OF_FRAMES, player,
-                              FIRE_SCREEN_HEIGHT_PORTION);
+            fireSprite.initSprite(context, firePic, NUMBER_OF_FRAMES, player,
+                    FIRE_SCREEN_HEIGHT_PORTION);
+
+            this.fireX =
+                    random.nextInt((int)towerSprite.getScaledFrameWidth()
+                                   - (int)fireSprite.getScaledFrameWidth()) +
+                    towerX ;
+            this.fireY =
+                    random.nextInt((int)towerSprite.getScaledFrameHeight() -
+                                   (int)fireSprite.getScaledFrameHeight()) +
+                    towerY ;
 
         }
 
         public void update(long gameTime){
-            sprite.update(gameTime);
+            fireSprite.update(gameTime);
         }
 
         public void render(Canvas canvas){
-            sprite.render(canvas, towerX, towerY);
+            fireSprite.render(canvas, fireX, fireY);
         }
 
     }
@@ -46,7 +58,7 @@ public class Tower {
     private static Bitmap   leftTowerPic = null;
     private static Bitmap   rightTowerPic = null;
     private static Bitmap   firePic = null;
-    private Sprite          sprite;
+    private Sprite          towerSprite;
     private ArrayList<Fire> fires;
     private Context         context;
 
@@ -80,16 +92,16 @@ public class Tower {
         this.screenWidth = context.getResources().getDisplayMetrics().widthPixels;
         this.screenHeight = context.getResources().getDisplayMetrics().heightPixels;
 
-        sprite = new Sprite();
+        towerSprite = new Sprite();
 
         if (player == Sprite.Player.LEFT){
-            sprite.initSprite(context, leftTowerPic, 1, player, SCREEN_HEIGHT_PORTION);
+            towerSprite.initSprite(context, leftTowerPic, 1, player, SCREEN_HEIGHT_PORTION);
             towerX = 0;
         } else {
-            sprite.initSprite(context, rightTowerPic, 1, player, SCREEN_HEIGHT_PORTION);
-            towerX = screenWidth - (int)sprite.getScaledFrameWidth();
+            towerSprite.initSprite(context, rightTowerPic, 1, player, SCREEN_HEIGHT_PORTION);
+            towerX = screenWidth - (int) towerSprite.getScaledFrameWidth();
         }
-        towerY = screenHeight - (int)sprite.getScaledFrameHeight();
+        towerY = screenHeight - (int) towerSprite.getScaledFrameHeight();
 
         this.player = player;
 
@@ -105,11 +117,10 @@ public class Tower {
      * @param gameTime the current time in milliseconds
      */
     public void update(long gameTime) {
-        sprite.update(gameTime);
+        towerSprite.update(gameTime);
         for (Fire fire : fires){
             fire.update(gameTime);
         }
-        //TODO - Consider change the picture when tower is damaged
     }
 
     /**
@@ -118,8 +129,8 @@ public class Tower {
      * @param canvas the canvas to draw on
      */
     public void render(Canvas canvas) {
-        // where to draw the sprite
-        sprite.render(canvas, towerX, towerY);
+        // where to draw the fireSprite
+        towerSprite.render(canvas, towerX, towerY);
 
         for (Fire fire : fires){
             fire.render(canvas);
@@ -127,18 +138,26 @@ public class Tower {
     }
 
     public int getTowerHeight(){
-        return (int) (screenHeight - sprite.getScaledFrameHeight());
+        return (int) (screenHeight - towerSprite.getScaledFrameHeight());
     }
 
     public int getLeftX() {return this.towerX; }
 
-    public int getRightX() { return this.towerX + (int) sprite.getScaledFrameWidth(); }
+    public int getRightX() { return this.towerX + (int) towerSprite.getScaledFrameWidth(); }
 
-    public void reduceHP(int hp){
+    public void reduceHP(double hp){
         this.hp -= hp;
 
-        Log.w("yahav", String.valueOf(hp));
         if (this.hp < 75 && this.fires.size() < 1){
+            this.fires.add(new Fire(context));
+        }
+        if (this.hp < 50 && this.fires.size() < 2){
+            this.fires.add(new Fire(context));
+        }
+        if (this.hp < 25 && this.fires.size() < 3){
+            this.fires.add(new Fire(context));
+        }
+        if (this.hp < 10 && this.fires.size() < 4){
             this.fires.add(new Fire(context));
         }
 

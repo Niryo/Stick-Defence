@@ -13,6 +13,9 @@ import java.util.ArrayList;
  */
 public class GameState {
     private static GameState        gameState;
+
+    private static int MAX_SOLDIERS_PER_PLAYER = 5;
+
     private ArrayList<BasicSoldier> soldiers = new ArrayList<>();
     private ArrayList<Tower>        towers = new ArrayList<>();
     private ArrayList<Bow>          bows = new ArrayList<>();
@@ -20,6 +23,8 @@ public class GameState {
     private Context                 context;
     private int                     rightTowerLeftX;
     private int                     leftTowerBeginX;
+    private int                     rightPlayerSoldiers = 0;
+    private int                     leftPlayerSoldiers = 0;
 
     /**
      * Constructor. Adds 2 towers to the sprites list.
@@ -66,7 +71,7 @@ public class GameState {
             bow.update(System.currentTimeMillis());
         }
         for (Arrow arrow: this.getArrows()){
-            arrow.update();
+            arrow.update(System.currentTimeMillis());
         }
         for (Tower tower : this.getTowers()){
             tower.update(System.currentTimeMillis());
@@ -85,24 +90,26 @@ public class GameState {
             }
         }
     }
-    public void touch(SimpleGestureDetector.Gesture move) {
-        if(move== SimpleGestureDetector.Gesture.DOWN){
+    public void touch(SimpleGestureDetector.Gesture move, Sprite.Point point) {
+        if(move == SimpleGestureDetector.Gesture.DOWN){
             ((Bow) bows.get(0)).rotateRight();
         }
-        if(move== SimpleGestureDetector.Gesture.UP){
+        if(move == SimpleGestureDetector.Gesture.UP){
             ((Bow) bows.get(0)).rotateLeft();
         }
 
-        if(move== SimpleGestureDetector.Gesture.RIGHT){
+        if(move == SimpleGestureDetector.Gesture.RIGHT){
             ((Bow) bows.get(0)).unStretch();
         }
-        if(move== SimpleGestureDetector.Gesture.LEFT){
+        if(move == SimpleGestureDetector.Gesture.LEFT){
             ((Bow) bows.get(0)).stretch();
         }
-        if(move== SimpleGestureDetector.Gesture.TOUCH_UP){
+        if(move == SimpleGestureDetector.Gesture.TOUCH_UP){
             ((Bow) bows.get(0)).release();
         }
-
+        if (move == SimpleGestureDetector.Gesture.TOUCH_DOWN){
+            ((Bow) bows.get(0)).setBowDirection(point);
+        }
     }
 
 
@@ -113,6 +120,17 @@ public class GameState {
      * @param player the requested player
      */
     public void addSoldier(Sprite.Player player) {
+        if (player == Sprite.Player.LEFT){
+            if (this.leftPlayerSoldiers >= MAX_SOLDIERS_PER_PLAYER){
+                return;
+            }
+            this.leftPlayerSoldiers++;
+        } else {
+            if (this.rightPlayerSoldiers >= MAX_SOLDIERS_PER_PLAYER){
+                return;
+            }
+            this.rightPlayerSoldiers++;
+        }
         soldiers.add(new BasicSoldier(context, player));
     }
 
@@ -154,7 +172,7 @@ public class GameState {
         return (ArrayList<Arrow>) this.arrows.clone();
     }
 
-    public void hitTower(Sprite.Player player, int hp){
+    public void hitTower(Sprite.Player player, double hp){
         if (player == Sprite.Player.LEFT){
             towers.get(0).reduceHP(hp);
         } else {

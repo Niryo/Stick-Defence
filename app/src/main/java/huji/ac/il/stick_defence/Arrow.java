@@ -12,20 +12,22 @@ import android.graphics.Paint;
  * Created by Nir on 03/05/2015.
  */
 public class Arrow {
+    //=======================BasicSoldier's abilities===========================
+    private static final double MOVE_PIXELS_PER_SEC = 1000; // [Pixels/Sec]
+
     private static Bitmap scaledArrowPic;
     private static Sprite sprite;
 
     private GameState gameState= GameState.getInstance();
-    private int SPEED= 5; //make the speed in pixle/sec unit
-    private float x;
-    private float y;
-    private float degree;
-    private float bm_offsetX;
-    private float bm_offsetY;
-    private Matrix matrix= new Matrix();
+    private float     x;
+    private float     y;
+    private float     degree;
+    private float     bm_offsetX;
+    private float     bm_offsetY;
+    private Matrix    matrix = new Matrix();
     private int       screenWidth;
     private int       screenHeight;
-
+    private long      lastUpdateTime;
 
     public Arrow(Context context, float x, float y, float[] tan){
         this.screenWidth =
@@ -39,6 +41,7 @@ public class Arrow {
         this.degree =(float)(Math.atan2(tan[1], tan[0])*180.0/Math.PI);
         updateMatrix();
 
+        lastUpdateTime = System.currentTimeMillis();
 
     }
 
@@ -49,9 +52,14 @@ public class Arrow {
 
     }
 
-    public void update(){
-        this.x+=Math.cos(Math.toRadians(this.degree))*SPEED;
-        this.y+= Math.sin(Math.toRadians(this.degree))*SPEED;
+    public void update(long gameTime){
+        double passedTimeInSec = (double)(gameTime - lastUpdateTime) / 1000;
+        this.x +=
+                Math.cos(Math.toRadians(this.degree)) *
+                MOVE_PIXELS_PER_SEC * passedTimeInSec;
+        this.y +=
+                Math.sin(Math.toRadians(this.degree)) *
+                MOVE_PIXELS_PER_SEC * passedTimeInSec;
         updateMatrix();
         if(this.x>this.screenWidth || this.y>this.screenHeight){
             gameState.removeArrow(this);

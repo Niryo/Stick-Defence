@@ -27,9 +27,10 @@ public class SimpleGestureDetector {
 
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
-             gameState.touch(Gesture.TOUCH_DOWN);
                 this.lastX=event.getX();
                 this.lastY=event.getY();
+                gameState.touch(Gesture.TOUCH_DOWN,
+                                new Sprite.Point(this.lastX, this.lastY));
                 break;
 
             case MotionEvent.ACTION_MOVE:
@@ -39,33 +40,33 @@ public class SimpleGestureDetector {
                 if(currentY-this.lastY > DISTANCE){
                     this.lastX=event.getX();
                     this.lastY=event.getY();
-                    gameState.touch(Gesture.DOWN); //moveDown
+                    gameState.touch(Gesture.DOWN, null); //moveDown
 
                 }
                 if(currentY-this.lastY < -DISTANCE){
                     this.lastX=event.getX();
                     this.lastY=event.getY();
-                    gameState.touch(Gesture.UP); //todo: make enum
+                    gameState.touch(Gesture.UP, null); //todo: make enum
 
                 }
 
                 if(currentX-this.lastX > DISTANCE){
                     this.lastX=event.getX();
                     this.lastY=event.getY();
-                    gameState.touch(Gesture.RIGHT); //moveRight
+                    gameState.touch(Gesture.RIGHT, null); //moveRight
 
                 }
                 if(currentX-this.lastX < -DISTANCE) {
                     this.lastX=event.getX();
                     this.lastY=event.getY();
-                    gameState.touch(Gesture.LEFT); //todo: make enum
+                    gameState.touch(Gesture.LEFT, null); //todo: make enum
 
                 }
 //                gameState.touch(event.getX(), event.getY());
                 break;
 
             case MotionEvent.ACTION_UP:
-               gameState.touch(Gesture.TOUCH_UP);
+               gameState.touch(Gesture.TOUCH_UP, null);
                 break;
         }
     }
