@@ -16,7 +16,7 @@ public class GameState {
 
     private static int MAX_SOLDIERS_PER_PLAYER = 5;
 
-    private ArrayList<BasicSoldier> soldiers = new ArrayList<>();
+    private ArrayList<Soldier>      soldiers = new ArrayList<>();
     private ArrayList<Tower>        towers = new ArrayList<>();
     private ArrayList<Bow>          bows = new ArrayList<>();
     private ArrayList<Arrow>        arrows= new ArrayList<>();
@@ -64,7 +64,7 @@ public class GameState {
      * Update the place and pictures of the sprites, but doesn't print them.
      */
     public void update() {
-        for (BasicSoldier soldier : this.getSoldiers()) {
+        for (Soldier soldier : this.getSoldiers()) {
             soldier.update(System.currentTimeMillis());
         }
         for (Bow bow : this.getBows()){
@@ -82,10 +82,11 @@ public class GameState {
 
     private void checkHits(){
         for(Arrow arrow: this.getArrows()){
-            for(BasicSoldier soldier: this.getSoldiers()){
+            for(Soldier soldier: this.getSoldiers()){
                 boolean hit = soldier.checkHit(arrow);
                 if(hit){
-                    removeArrow(arrow);
+          //          removeArrow(arrow);
+                    removeSoldier(soldier);
                 }
             }
         }
@@ -115,9 +116,9 @@ public class GameState {
 
 
     /**
-     * adds a soldier to the requested player
+     * adds a soldier to the requested PLAYER
      *
-     * @param player the requested player
+     * @param player the requested PLAYER
      */
     public void addSoldier(Sprite.Player player) {
         if (player == Sprite.Player.LEFT){
@@ -134,7 +135,12 @@ public class GameState {
         soldiers.add(new BasicSoldier(context, player));
     }
 
-    public void removeSoldier(BasicSoldier soldier) {
+    public void removeSoldier(Soldier soldier) {
+        if (soldier.getPlayer() == Sprite.Player.LEFT){
+            this.leftPlayerSoldiers--;
+        } else {
+            this.rightPlayerSoldiers--;
+        }
         soldiers.remove(soldier);
 
     }
@@ -144,8 +150,8 @@ public class GameState {
      *
      * @return the sprite list
      */
-    public ArrayList<BasicSoldier> getSoldiers() {
-        return (ArrayList<BasicSoldier>) this.soldiers.clone();
+    public ArrayList<Soldier> getSoldiers() {
+        return (ArrayList<Soldier>) this.soldiers.clone();
     }
 
     public ArrayList<Tower> getTowers() {
@@ -173,7 +179,7 @@ public class GameState {
     }
 
     public void hitTower(Sprite.Player player, double hp){
-        if (player == Sprite.Player.LEFT){
+        if (player == Sprite.Player.RIGHT){
             towers.get(0).reduceHP(hp);
         } else {
             towers.get(1).reduceHP(hp);

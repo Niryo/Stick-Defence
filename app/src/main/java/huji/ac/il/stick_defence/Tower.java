@@ -73,7 +73,7 @@ public class Tower {
      * Constructor
      *
      * @param context the context
-     * @param player  the player - right or left
+     * @param player  the PLAYER - right or left
      */
     public Tower(Context context, Sprite.Player player) {
         if (null == leftTowerPic){

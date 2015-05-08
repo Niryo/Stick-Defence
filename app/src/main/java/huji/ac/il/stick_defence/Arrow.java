@@ -79,28 +79,31 @@ public class Arrow {
 
     public static void init(Context context,double scaleDownFactor){
 
-           Bitmap arrowPic = BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.arrow); // Read resource only once
+       Bitmap arrowPic = BitmapFactory.decodeResource(context.getResources(),
+                R.drawable.arrow); // Read resource only once
 
         if(sprite==null){
-        sprite= new Sprite();
-        sprite.initSprite(context, arrowPic, 1, Sprite.Player.LEFT, 1.0);
-        sprite.setScaleDownFactor(scaleDownFactor);
-
+            sprite= new Sprite();
+            sprite.initSprite(context, arrowPic, 1, Sprite.Player.LEFT, 1.0);
+            sprite.setScaleDownFactor(scaleDownFactor);
         }
+
         if(scaledArrowPic==null){
-            scaledArrowPic = Bitmap.createScaledBitmap(arrowPic,   (int) sprite.getScaledFrameWidth(), (int) sprite.getScaledFrameHeight() ,false);
+            scaledArrowPic =
+                    Bitmap.createScaledBitmap(arrowPic,
+                    (int) sprite.getScaledFrameWidth(),
+                    (int) sprite.getScaledFrameHeight(), false);
         }
-
-
     }
 
     public int  getHeadX(){
-        return (int) (this.x + Math.cos(Math.toRadians(this.degree))*scaledArrowPic.getWidth());
+        return (int) (this.x + Math.cos(Math.toRadians(this.degree))
+                             * scaledArrowPic.getWidth());
     }
 
     public int  getHeadY(){
-        return (int) (this.y + Math.sin(Math.toRadians(this.degree))*scaledArrowPic.getWidth());
+        return (int) (this.y + Math.sin(Math.toRadians(this.degree))
+                             * scaledArrowPic.getWidth());
     }
 
 
