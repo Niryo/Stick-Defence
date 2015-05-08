@@ -104,7 +104,7 @@ public abstract class Soldier {
         Paint paint=new Paint();
         paint.setColor(Color.RED);
         paint.setStrokeWidth(10);
-        canvas.drawPoint((float) (this.soldierX+(sprite.getScaledFrameWidth()/2)),this.soldierY, paint);
+        canvas.drawLine(( float) (this.soldierX+(sprite.getScaledFrameWidth()/2) -HIT_EPSILON) ,this.soldierY, ( float) (this.soldierX+(sprite.getScaledFrameWidth()/2)+HIT_EPSILON) , this.soldierY, paint);
 
     }
 
