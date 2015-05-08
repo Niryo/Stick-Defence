@@ -45,7 +45,7 @@ public class Bow{
     /**
      * Constructor
      * @param context the context
-     * @param player the player - right or left
+     * @param player the PLAYER - right or left
      */
     public Bow(Context context, Sprite.Player player, int towerHeight) {
         if (leftBowPic == null) {

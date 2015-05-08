@@ -13,7 +13,7 @@ import android.util.DisplayMetrics;
  */
 public class Sprite{
     /**
-     * Represents left or right player
+     * Represents left or right PLAYER
      */
     public enum Player{
         LEFT,
@@ -47,7 +47,7 @@ public class Sprite{
      * @param context the context
      * @param bitmap the bitmap of the sprite
      * @param nFrames the number of frames in the sprite
-     * @param player left or right player
+     * @param player left or right PLAYER
      * @param screenHeightPortion sprite height in relation to the screen height.
      *                            0-1 double. For instance, 0.5 will cause the
      *                            sprite to span over a half of the screen height.

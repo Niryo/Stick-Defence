@@ -76,7 +76,7 @@ public class GameSurface extends SurfaceView implements
             tower.render(canvas);
         }
 
-        for (BasicSoldier soldier : gameState.getSoldiers()) {
+        for (Soldier soldier : gameState.getSoldiers()) {
             soldier.render(canvas);
         }
 

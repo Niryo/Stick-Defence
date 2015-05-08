@@ -22,7 +22,7 @@ public class GameLoopThread extends Thread {
     private GameSurface gameSurface;
     private GameState gameState;
     private boolean running;
-    private boolean sendSoldier; // TODO - handle sendSoldier of other player
+    private boolean sendSoldier; // TODO - handle sendSoldier of other PLAYER
 
     //Testing
     private int sendSoldierTimeout = 0;
@@ -60,7 +60,7 @@ public class GameLoopThread extends Thread {
                     beginTime = System.currentTimeMillis();
                     skippedFrames = 0;    // resetting the frames skipped
                     if (sendSoldier) {
-                        //TODO - handle right player addSoldier requests
+                        //TODO - handle right PLAYER addSoldier requests
                         this.gameState.addSoldier(Sprite.Player.LEFT);
                         sendSoldier = false;
                     }
