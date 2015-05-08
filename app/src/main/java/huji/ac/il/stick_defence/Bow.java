@@ -56,7 +56,8 @@ public class Bow{
                     R.drawable.bow); // Read resource only once
         }
         if (rightBowPic == null) {
-            rightBowPic = Sprite.mirrorBitmap(leftBowPic);
+            //rightBowPic = Sprite.mirrorBitmap(leftBowPic);
+            rightBowPic=leftBowPic;
         }
 
         sprite = new Sprite();

@@ -105,7 +105,7 @@ public class GameState {
 
         if(move == SimpleGestureDetector.Gesture.RIGHT){
             this.leftBow.rotateLeft();
-            //this.rightBow.rotateLeft();
+           // this.rightBow.rotateLeft();
 
         }
         if(move == SimpleGestureDetector.Gesture.LEFT){
