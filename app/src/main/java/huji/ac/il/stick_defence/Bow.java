@@ -40,8 +40,7 @@ public class Bow{
     private float bm_offsetY;
     private Bitmap[] scaledLeftBow = new Bitmap[NUMBER_OF_FRAMES];
     private int currentFrame=0;
-
-    private float angel;
+    private float degrees;
 
     /**
      * Constructor
@@ -121,37 +120,46 @@ public class Bow{
     }
 
 
-    public void rotateLeft(){
+    public boolean rotateLeft(){
        if(distance>0){
            this.distance-=1;
            this.resetMatrix();
+           return true;
        }
+
+        return false;
     }
 
-    public void rotateRight(){
+    public boolean rotateRight(){
         if(distance<this.pathLength){
             this.distance+=1;
             this.resetMatrix();
+            return true;
         }
+        return false;
     }
     private void resetMatrix(){
         pathMeasure.getPosTan(distance, pos, tan);
         matrix.reset();
-        float degrees = (float)(Math.atan2(tan[1], tan[0])*180.0/Math.PI);
-        matrix.postRotate(degrees, bm_offsetX, bm_offsetY);
+        this.degrees = (float)(Math.atan2(tan[1], tan[0])*180.0/Math.PI);
+        matrix.postRotate(this.degrees, bm_offsetX, bm_offsetY);
         matrix.postTranslate(pos[0]- bm_offsetX, pos[1]- bm_offsetY);
     }
 
     public void setBowDirection(Sprite.Point point){
-      /*  float degrees = (float)(Math.atan2(point.getY(), point.getX())*180.0/Math.PI);
-        angel = degrees;
-
-        pathMeasure.getPosTan(distance, pos, tan);
-        matrix.reset();
-
-        matrix.postRotate(degrees, bm_offsetX, bm_offsetY);
-        matrix.postTranslate(pos[0]- bm_offsetX, pos[1]- bm_offsetY);*/
-
+        float newDegrees = (float) Math.toDegrees(Math.atan2(point.getY()-this.pos[1], point.getX()-this.pos[0]));
+        while(Math.abs(this.degrees-newDegrees)>2){
+            if(this.degrees< newDegrees){
+                if(!rotateRight()){
+                    break;
+                };
+            }
+            else{
+                if(!rotateLeft()){
+                    break;
+                };
+            }
+        }
 
     }
 
@@ -170,10 +178,10 @@ public class Bow{
         }
     }
     public void release(){
-        if(this.currentFrame != NUMBER_OF_FRAMES-1) {
-            this.currentFrame = NUMBER_OF_FRAMES - 1;
+        if(this.currentFrame==NUMBER_OF_FRAMES-4) {
             this.gameState.addArrow(this.pos[0], this.pos[1], this.tan);
         }
+        this.currentFrame = NUMBER_OF_FRAMES - 1;
     }
 
     private void renderBow(Canvas canvas){

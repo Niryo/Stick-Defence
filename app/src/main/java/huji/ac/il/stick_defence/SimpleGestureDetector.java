@@ -18,7 +18,7 @@ public class SimpleGestureDetector {
 
     }
 
-    private final int DISTANCE = 30;
+    private final int DISTANCE = 15;
     private float lastY;
     private float lastX;
     private GameState gameState = GameState.getInstance();
@@ -46,7 +46,7 @@ public class SimpleGestureDetector {
                 if(currentY-this.lastY < -DISTANCE){
                     this.lastX=event.getX();
                     this.lastY=event.getY();
-                    gameState.touch(Gesture.UP, null); //todo: make enum
+                    gameState.touch(Gesture.UP, null);
 
                 }
 
@@ -59,7 +59,7 @@ public class SimpleGestureDetector {
                 if(currentX-this.lastX < -DISTANCE) {
                     this.lastX=event.getX();
                     this.lastY=event.getY();
-                    gameState.touch(Gesture.LEFT, null); //todo: make enum
+                    gameState.touch(Gesture.LEFT, null);
 
                 }
 //                gameState.touch(event.getX(), event.getY());

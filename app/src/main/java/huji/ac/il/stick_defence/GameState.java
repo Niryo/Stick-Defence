@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class GameState {
     private static GameState        gameState;
 
-    private static int MAX_SOLDIERS_PER_PLAYER = 5;
+    private static int MAX_SOLDIERS_PER_PLAYER = 20;
 
     private ArrayList<BasicSoldier> soldiers = new ArrayList<>();
     private ArrayList<Tower>        towers = new ArrayList<>();

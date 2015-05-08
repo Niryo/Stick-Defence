@@ -13,7 +13,7 @@ import android.graphics.Paint;
  */
 public class Arrow {
     //=======================BasicSoldier's abilities===========================
-    private static final double MOVE_PIXELS_PER_SEC = 1000; // [Pixels/Sec]
+    private static final double MOVE_PIXELS_PER_SEC = 40; // [Pixels/Sec]
 
     private static Bitmap scaledArrowPic;
     private static Sprite sprite;
