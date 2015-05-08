@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -28,6 +30,7 @@ public abstract class Soldier {
     private static Bitmap         rightSoldierPic = null;
     private static Bitmap         leftAttackSoldierPic = null;
     private static Bitmap         rightAttackSoldierPic = null;
+    private static int            HIT_EPSILON=15;
     private Sprite                sprite;
 
     //Positions
@@ -97,6 +100,12 @@ public abstract class Soldier {
 
     protected void render(Canvas canvas) {
         sprite.render(canvas, soldierX, soldierY);
+
+        Paint paint=new Paint();
+        paint.setColor(Color.RED);
+        paint.setStrokeWidth(10);
+        canvas.drawPoint((float) (this.soldierX+(sprite.getScaledFrameWidth()/2)),this.soldierY, paint);
+
     }
 
     protected int getSoldierX(){
@@ -113,8 +122,7 @@ public abstract class Soldier {
     protected boolean checkHit(Arrow arrow){
 
         if (this.soldierY <= arrow.getHeadY() &&
-            this.soldierX <= arrow.getHeadX() &&
-            this.soldierX + sprite.getScaledFrameWidth() > arrow.getHeadX()){
+                Math.abs(this.soldierX+sprite.getScaledFrameWidth()/2-arrow.getHeadX())<=HIT_EPSILON){
             Log.w("custom", "soldier hit!");
             return true;
         }

@@ -98,12 +98,12 @@ public class Arrow {
 
     public int  getHeadX(){
         return (int) (this.x + Math.cos(Math.toRadians(this.degree))
-                             * scaledArrowPic.getWidth());
+                             * scaledArrowPic.getWidth()/2);
     }
 
     public int  getHeadY(){
         return (int) (this.y + Math.sin(Math.toRadians(this.degree))
-                             * scaledArrowPic.getWidth());
+                             * scaledArrowPic.getWidth()/2);
     }
 
 

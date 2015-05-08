@@ -25,6 +25,8 @@ public class GameState {
     private int                     leftTowerBeginX;
     private int                     rightPlayerSoldiers = 0;
     private int                     leftPlayerSoldiers = 0;
+    private Bow leftBow;
+    private Bow rightBow;
 
     /**
      * Constructor. Adds 2 towers to the sprites list.
@@ -41,8 +43,11 @@ public class GameState {
         towers.add(leftTower);
         towers.add(rightTower);
 
-        bows.add(new Bow(context, Sprite.Player.LEFT, leftTower.getTowerHeight()));
-//        bows.add(new Bow(context, Sprite.Player.RIGHT, rightTower.getTowerHeight()));
+        this.leftBow = new Bow(context, Sprite.Player.LEFT, leftTower.getTowerHeight());
+        this.rightBow = new Bow(context, Sprite.Player.LEFT, leftTower.getTowerHeight());
+        bows.add(this.leftBow);
+//        bows.add(this.rightBow);
+
 
         rightTowerLeftX = rightTower.getLeftX();
         leftTowerBeginX = leftTower.getRightX();
@@ -93,23 +98,25 @@ public class GameState {
     }
     public void touch(SimpleGestureDetector.Gesture move, Sprite.Point point) {
         if(move == SimpleGestureDetector.Gesture.DOWN){
-            ((Bow) bows.get(0)).rotateRight();
+            this.leftBow.unStretch();
         }
         if(move == SimpleGestureDetector.Gesture.UP){
-            ((Bow) bows.get(0)).rotateLeft();
+            this.leftBow.stretch();
         }
 
         if(move == SimpleGestureDetector.Gesture.RIGHT){
-            ((Bow) bows.get(0)).unStretch();
+            this.leftBow.rotateLeft();
+
         }
         if(move == SimpleGestureDetector.Gesture.LEFT){
-            ((Bow) bows.get(0)).stretch();
+            this.leftBow.rotateRight();
+
         }
         if(move == SimpleGestureDetector.Gesture.TOUCH_UP){
-            ((Bow) bows.get(0)).release();
+            this.leftBow.release();
         }
         if (move == SimpleGestureDetector.Gesture.TOUCH_DOWN){
-            ((Bow) bows.get(0)).setBowDirection(point);
+            this.leftBow.setBowDirection(point);
         }
     }
 
