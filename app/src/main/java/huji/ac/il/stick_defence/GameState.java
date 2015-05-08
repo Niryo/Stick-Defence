@@ -1,7 +1,6 @@
 package huji.ac.il.stick_defence;
 
 import android.content.Context;
-import android.gesture.Gesture;
 
 import java.util.ArrayList;
 
@@ -43,10 +42,10 @@ public class GameState {
         towers.add(leftTower);
         towers.add(rightTower);
 
-        this.leftBow = new Bow(context, Sprite.Player.LEFT, leftTower.getTowerHeight());
-        this.rightBow = new Bow(context, Sprite.Player.LEFT, leftTower.getTowerHeight());
+        this.leftBow = new Bow(context, Sprite.Player.LEFT, leftTower);
+        this.rightBow = new Bow(context, Sprite.Player.RIGHT, rightTower);
         bows.add(this.leftBow);
-//        bows.add(this.rightBow);
+        bows.add(this.rightBow);
 
 
         rightTowerLeftX = rightTower.getLeftX();
@@ -106,11 +105,12 @@ public class GameState {
 
         if(move == SimpleGestureDetector.Gesture.RIGHT){
             this.leftBow.rotateLeft();
+            //this.rightBow.rotateLeft();
 
         }
         if(move == SimpleGestureDetector.Gesture.LEFT){
-            this.leftBow.rotateRight();
-
+           this.leftBow.rotateRight();
+            //this.rightBow.rotateRight();
         }
         if(move == SimpleGestureDetector.Gesture.TOUCH_UP){
             this.leftBow.release();

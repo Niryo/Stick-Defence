@@ -137,8 +137,12 @@ public class Tower {
         }
     }
 
-    public int getTowerHeight(){
-        return (int) (screenHeight - towerSprite.getScaledFrameHeight());
+
+    public double getWidth(){
+        return this.towerSprite.getScaledFrameWidth();
+    }
+    public Sprite.Point getPosition(){
+        return new Sprite.Point(this.towerX, this.towerY);
     }
 
     public int getLeftX() {return this.towerX; }

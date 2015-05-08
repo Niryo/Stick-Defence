@@ -10,7 +10,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.RectF;
-import android.util.Log;
 
 /**
  * Created by yahav on 01/05/15.
@@ -21,6 +20,10 @@ public class Bow{
     //bow to span over a half of the screen height.
     private static final double SCREEN_HEIGHT_PORTION = 0.15;
     private static final int NUMBER_OF_FRAMES = 9;
+    private static final int ARC_PATH_HEIGHT = 30;
+    private static final int ARC_PATH_WIDTH= 40;
+    private static final int ARC_PATH_START_ANGLE= 280;
+    private static final int ARC_PATH_LENGTH= 80;
 
     private GameState gameState= GameState.getInstance();
     private static        Bitmap leftBowPic = null;
@@ -38,7 +41,7 @@ public class Bow{
     private int distance=0;
     private float bm_offsetX;
     private float bm_offsetY;
-    private Bitmap[] scaledLeftBow = new Bitmap[NUMBER_OF_FRAMES];
+    private Bitmap[] scaledBow = new Bitmap[NUMBER_OF_FRAMES];
     private int currentFrame=0;
     private float degrees;
 
@@ -47,7 +50,7 @@ public class Bow{
      * @param context the context
      * @param player the PLAYER - right or left
      */
-    public Bow(Context context, Sprite.Player player, int towerHeight) {
+    public Bow(Context context, Sprite.Player player, Tower tower) {
         if (leftBowPic == null) {
             leftBowPic = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.bow); // Read resource only once
@@ -72,24 +75,34 @@ public class Bow{
         int frameWidth = leftBowPic.getWidth() / NUMBER_OF_FRAMES;
 
 
-        this.towerHeight = towerHeight;
+
+            for (int i = 0; i < NUMBER_OF_FRAMES; i++) {
+                Bitmap frameToScale;
+                if(player== Sprite.Player.LEFT) {
+                 frameToScale = Bitmap.createBitmap(leftBowPic, i * frameWidth, 0, frameWidth, frameHeight);
+                }
+                else{
+                    frameToScale = Bitmap.createBitmap(rightBowPic, i * frameWidth, 0, frameWidth, frameHeight);
+                }
+                this.scaledBow[i] = Bitmap.createScaledBitmap(frameToScale, (int) this.sprite.getScaledFrameWidth(), (int) this.sprite.getScaledFrameHeight(), false);
+            }
 
 
-        for (int i = 0; i < NUMBER_OF_FRAMES; i++) {
-            Bitmap frameToScale = Bitmap.createBitmap(this.leftBowPic, i * frameWidth, 0, frameWidth, frameHeight);
-            this.scaledLeftBow[i] = Bitmap.createScaledBitmap(frameToScale, (int) this.sprite.getScaledFrameWidth(), (int) this.sprite.getScaledFrameHeight(), false);
-        }
 
-
-        //==============temp=============
         RectF oval = new RectF();
-        oval.set(100, towerHeight - 30, 140, towerHeight + 30);
-        path.addArc(oval, 280, 80);
+        Sprite.Point towerPos = tower.getPosition();
+        float centerTowerX= (float) (towerPos.getX()+tower.getWidth()/2);
+        oval.set(centerTowerX , towerPos.getY() - ARC_PATH_HEIGHT, centerTowerX +ARC_PATH_WIDTH, towerPos.getY() + ARC_PATH_HEIGHT);
+        if(player== Sprite.Player.LEFT){
+        path.addArc(oval, ARC_PATH_START_ANGLE, ARC_PATH_LENGTH);}
+        else{
+            path.addArc(oval, ARC_PATH_START_ANGLE, -ARC_PATH_LENGTH);
+        }
 
         this.pathMeasure = new PathMeasure(path, false);
         this.pathLength = this.pathMeasure.getLength();
-        this.bm_offsetX = this.scaledLeftBow[0].getWidth() / 2;
-        this.bm_offsetY = this.scaledLeftBow[0].getHeight() / 2;
+        this.bm_offsetX = this.scaledBow[0].getWidth() / 2;
+        this.bm_offsetY = this.scaledBow[0].getHeight() / 2;
         this.resetMatrix();
         Arrow.init(context, sprite.getScaleDownFactor());
 
@@ -110,7 +123,7 @@ public class Bow{
      * @param canvas the canvas to draw on
      */
     public void render(Canvas canvas) {
-        renderBow(canvas);
+        canvas.drawBitmap(this.scaledBow[this.currentFrame], matrix, null);
 
         Paint paint =new Paint();
         paint.setColor(Color.BLACK);
@@ -184,10 +197,7 @@ public class Bow{
         this.currentFrame = NUMBER_OF_FRAMES - 1;
     }
 
-    private void renderBow(Canvas canvas){
-        canvas.drawBitmap(this.scaledLeftBow[this.currentFrame], matrix, null);
 
-    }
     public double getScaleDownFactor(){
         return this.sprite.getScaleDownFactor();
     }
