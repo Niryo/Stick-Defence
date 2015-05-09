@@ -3,12 +3,14 @@ package huji.ac.il.stick_defence;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 
 
 /**
@@ -19,7 +21,9 @@ public class GameSurface extends SurfaceView implements
 
     private GameLoopThread gameLoopThread;
     private GameState gameState = GameState.CreateGameState(getContext());
-    private SimpleGestureDetector simpleGestureDetector= new SimpleGestureDetector();
+    private SimpleGestureDetector simpleGestureDetector =
+            new SimpleGestureDetector();
+    private ProgressBar leftProgressBar, rightProgressBar;
 
     public GameSurface(Context context) {
 
@@ -33,6 +37,8 @@ public class GameSurface extends SurfaceView implements
 
         // Make the GameSurface focusable so it can handle events
         setFocusable(true);
+
+
     }
 
 
