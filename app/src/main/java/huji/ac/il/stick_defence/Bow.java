@@ -92,12 +92,13 @@ public class Bow{
 
         RectF oval = new RectF();
         Sprite.Point towerPos = tower.getPosition();
-        float centerTowerX= (float) (towerPos.getX()+tower.getWidth()/2);
-        oval.set(centerTowerX , towerPos.getY() - ARC_PATH_HEIGHT, centerTowerX +ARC_PATH_WIDTH, towerPos.getY() + ARC_PATH_HEIGHT);
+        float centerTowerX =(float) (towerPos.getX()+tower.getWidth()/2);;
         if(player== Sprite.Player.LEFT){
-        path.addArc(oval, ARC_PATH_START_ANGLE, ARC_PATH_LENGTH);}
+            oval.set(centerTowerX , towerPos.getY() - ARC_PATH_HEIGHT, centerTowerX +ARC_PATH_WIDTH, towerPos.getY() + ARC_PATH_HEIGHT);
+             path.addArc(oval, ARC_PATH_START_ANGLE, ARC_PATH_LENGTH );}
         else{
-            path.addArc(oval, ARC_PATH_START_ANGLE, -ARC_PATH_LENGTH);
+            oval.set(centerTowerX- ARC_PATH_WIDTH, towerPos.getY() - ARC_PATH_HEIGHT, centerTowerX , towerPos.getY() + ARC_PATH_HEIGHT);
+            path.addArc(oval, 540-ARC_PATH_START_ANGLE , -ARC_PATH_LENGTH);
         }
 
         this.pathMeasure = new PathMeasure(path, false);
@@ -196,10 +197,14 @@ public class Bow{
             this.gameState.addArrow(this.pos[0], this.pos[1], this.tan);
         }
         this.currentFrame = NUMBER_OF_FRAMES - 1;
+
     }
 
+public void aimAndShoot(int distance){ //todo: add animation for strach and unstrach
+    this.distance=distance;
+    resetMatrix();
+    this.gameState.addArrow(this.pos[0], this.pos[1], this.tan);
 
-    public double getScaleDownFactor(){
-        return this.sprite.getScaleDownFactor();
-    }
+}
+
 }

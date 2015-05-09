@@ -192,4 +192,8 @@ public class GameState {
             towers.get(1).reduceHP(hp);
         }
     }
+
+    public void addEnemyShot(int dist){
+        this.rightBow.aimAndShoot(dist);
+    }
 }
