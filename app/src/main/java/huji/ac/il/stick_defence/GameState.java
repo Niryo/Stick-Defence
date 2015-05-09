@@ -1,6 +1,7 @@
 package huji.ac.il.stick_defence;
 
 import android.content.Context;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 
@@ -24,8 +25,10 @@ public class GameState {
     private int                     leftTowerBeginX;
     private int                     rightPlayerSoldiers = 0;
     private int                     leftPlayerSoldiers = 0;
-    private Bow leftBow;
-    private Bow rightBow;
+    private Bow                     leftBow;
+    private Bow                     rightBow;
+    private ProgressBar             leftProgressBar;
+    private ProgressBar             rightProgressBar;
 
     /**
      * Constructor. Adds 2 towers to the sprites list.
@@ -62,6 +65,24 @@ public class GameState {
 
     public static GameState getInstance() {
         return gameState;
+    }
+
+    public void initProgressBar(ProgressBar progressBar, Sprite.Player player){
+        progressBar.setMax((int)Tower.MAX_HP);
+        progressBar.setProgress((int)Tower.MAX_HP);
+        if (Sprite.Player.LEFT == player){
+            leftProgressBar = progressBar;
+        } else {
+            rightProgressBar = progressBar;
+        }
+    }
+
+    public void setTowerProgressHP(double hp, Sprite.Player player){
+        if (Sprite.Player.LEFT == player){
+            leftProgressBar.setProgress((int)hp);
+        } else {
+            rightProgressBar.setProgress((int)hp);
+        }
     }
 
     /**
