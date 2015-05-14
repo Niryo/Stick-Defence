@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Stick-Defence</string>
-
-    <string name="hello_world2">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_main_menu">MainMenu</string>
+    <string name="single_player">Single Player</string>
+    <string name="create_league">Create League</string>
+    <string name="join_league">Join League</string>
 </resources>
