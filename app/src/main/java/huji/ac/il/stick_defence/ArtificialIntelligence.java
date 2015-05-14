@@ -64,6 +64,7 @@ public class ArtificialIntelligence {
                 break;
         }
 
+
     }
 
     public void sendSoldier(){
@@ -87,33 +88,26 @@ public class ArtificialIntelligence {
                 if (Sprite.Player.LEFT == soldier.getPlayer()){
                     int soldierX = soldier.getSoldierX();
                     int soldierY = soldier.getSoldierY();
-                    int inaccuracy = randInt(-pixelsShootRange, pixelsShootRange);
-                    Log.w("yahav", String.valueOf(inaccuracy));
-                    Sprite.Point point = new Sprite.Point(soldierX + inaccuracy, soldierY);
+                    int inaccuracy = randInt(-pixelsShootRange,
+                                              pixelsShootRange);
+                    Sprite.Point point =
+                            new Sprite.Point(soldierX + inaccuracy, soldierY);
                     aiBow.setBowDirection(point);
 
-                  //  try {
-                        aiBow.stretch();
-               //         Thread.sleep(200);
-                        aiBow.stretch();
-               //         Thread.sleep(200);
-                        aiBow.stretch();
-                //        Thread.sleep(200);
-                        aiBow.stretch();
-                //        Thread.sleep(200);
-                        aiBow.stretch();
-           /*         } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }*/
+                    //Stretch until the bow is ready to shoot
+                    aiBow.stretch();
+                    aiBow.stretch();
+                    aiBow.stretch();
+                    aiBow.stretch();
+                    aiBow.stretch();
+
+                    //Compensation on bow angle inaccuracy
                     aiBow.rotateRight();
                     aiBow.rotateRight();
                     aiBow.rotateRight();
 
                     aiBow.release();
 
-              /*      aiBow.stretch();
-
-                    aiBow.unStretch();*/
                     return;
                 }
             }
