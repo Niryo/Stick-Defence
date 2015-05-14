@@ -164,16 +164,30 @@ public class Bow{
     public void setBowDirection(Sprite.Point point){
         float newDegrees = (float) Math.toDegrees(Math.atan2(point.getY()-this.pos[1], point.getX()-this.pos[0]));
         while(Math.abs(this.degrees-newDegrees)>2){
-            if(this.degrees< newDegrees){
-                if(!rotateRight()){
-                    break;
-                };
+            if (Sprite.Player.LEFT == player){
+                if(this.degrees< newDegrees){
+                    if(!rotateRight()){
+                        break;
+                    }
+                }
+                else{
+                    if(!rotateLeft()){
+                        break;
+                    }
+                }
+            } else {
+                if(this.degrees< newDegrees){
+                    if(!rotateLeft()){
+                        break;
+                    }
+                }
+                else{
+                    if(!rotateRight()){
+                        break;
+                    }
+                }
             }
-            else{
-                if(!rotateLeft()){
-                    break;
-                };
-            }
+
         }
 
     }

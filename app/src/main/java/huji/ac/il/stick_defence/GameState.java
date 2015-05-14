@@ -217,4 +217,6 @@ public class GameState {
     public void addEnemyShot(int dist){
         this.rightBow.aimAndShoot(dist);
     }
+
+    public Context getContext(){ return this.context; }
 }
