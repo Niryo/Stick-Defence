@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="huji.ac.il.stick_defence" >
+    package="huji.ac.il.stick_defence" >
+
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -12,7 +19,6 @@
             android:name=".GameActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape" >
-
         </activity>
         <activity
             android:name=".MainMenu"
@@ -23,6 +29,17 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".MasterActivity"
+            android:label="@string/title_activity_master"
+            android:screenOrientation="landscape" >
+
+        </activity>
+        <activity
+            android:name=".SlaveActivity"
+            android:label="@string/title_activity_slave"
+            android:screenOrientation="landscape" >
         </activity>
     </application>
 

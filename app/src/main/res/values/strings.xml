@@ -5,4 +5,10 @@
     <string name="single_player">Single Player</string>
     <string name="create_league">Create League</string>
     <string name="join_league">Join League</string>
+    <string name="title_activity_master">MasterActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="clients_in_league">Clients in the league:</string>
+    <string name="title_activity_slave">SlaveActivity</string>
+    <string name="peers">Peers:</string>
 </resources>

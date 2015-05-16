@@ -24,7 +24,6 @@ public class MainMenu extends Activity {
         setContentView(R.layout.activity_main_menu);
 
         Button singlePlayer = (Button) findViewById(R.id.single_player);
-
         singlePlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -36,6 +35,28 @@ public class MainMenu extends Activity {
 
             }
         });
+
+        Button createLeague= (Button) findViewById(R.id.create_league);
+        createLeague.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              Intent createLeague= new Intent(getApplicationContext(), MasterActivity.class);
+              startActivity(createLeague);
+              finish();
+            }
+        });
+
+        Button joinLeague = (Button) findViewById(R.id.join_league);
+        joinLeague.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent createLeague= new Intent(getApplicationContext(), SlaveActivity.class);
+                startActivity(createLeague);
+                finish();
+            }
+        });
+
+
     }
 
     @Override
