@@ -14,70 +14,79 @@ import java.net.Socket;
  * Created by Nir on 15/05/2015.
  */
 public class Client {
-    private Socket socket;
     private PrintWriter out;
-    private BufferedReader in;
-    private String name="Connecting..";
-    public Protocol protocol;
+    private String name;
     private Activity currentActivity;
-    public Client(Socket socket){
-        this.socket=socket;
-        this.protocol= new Protocol(this);
+    private static Client client;
 
+
+    public static Client createClient(String name){
+        if(client==null){
+            client=new Client(name);
+        }
+        return client;
+    }
+
+    public static Client getClientInstance(){
+        return client;
+    }
+
+    private Client(String name){
+        this.name=name;
+    }
+
+public void send(String out){
+    this.out.println(out);
+}
+    public void setServer(Socket server){
         try {
-            this.out = new PrintWriter(socket.getOutputStream(), true);
-            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
+            this.out = new PrintWriter(server.getOutputStream(), true);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        new ClientSocketListener().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, server);
+
+        send(Protocol.stringify(Protocol.Action.NAME, name));
+
+
     }
 public void setCurrentActivity(Activity activity){
     this.currentActivity=activity;
 
 }
-    public void out(String data)
-    {
-        this.out.println(data);
-    }
-    public BufferedReader getInStream(){
-        return this.in;
-    }
-    public String getName(){
-        return this.name;
+
+
+
+
+
+    private void doAction(String action, String data){
+        if(action.equals(Protocol.Action.NAME_CONFIRMED.toString())){
+        }
     }
 
-    public void startListening(){
-        new SocketListener().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this.socket);
-    }
 public void switchToLeague(){
     ((SlaveActivity)this.currentActivity).switchToLeagueActivity();
 }
-public void setName(String name){
-    this.name=name;
-}
-    private class SocketListener extends AsyncTask<Socket,Void, Void> {
+
+    private class ClientSocketListener extends AsyncTask<Socket,Void, Void> {
 
         @Override
-        protected Void doInBackground(Socket[] params) {
-            Socket socket= params[0];
+        protected Void doInBackground(Socket...params) {
+            Socket server= params[0];
             Log.w("custom", "start socket listener");
             String inputLine;
-                String outputLine;
             try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(server.getInputStream()));
                 while ((inputLine = in.readLine()) != null) {
                     Log.w("custom", inputLine);
-                    protocol.parse(inputLine);
-                    // out.println("client says hi");
+                    String[] action= Protocol.parse(inputLine);
+                    doAction(action[0], action[1]);
 
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
             Log.w("custom", "finish socket listener");
-
-
-
             return null;
         };
     }

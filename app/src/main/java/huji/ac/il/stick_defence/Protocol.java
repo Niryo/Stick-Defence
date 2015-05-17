@@ -7,10 +7,12 @@ package huji.ac.il.stick_defence;
 public class Protocol {
    Client client;
 
+    public Protocol(){}
+
     public Protocol(Client client){
         this.client= client;
     }
-public static enum Command{
+public static enum Action {
     NAME,
     READY_TO_PLAY,
     GAME_RESUTLS,
@@ -20,28 +22,42 @@ public static enum Command{
     START_GAME,
 
 }
-    public void send(Command command, String data){
-        this.client.out(command.toString()+"#"+data);
+
+    public static String stringify(Action action){
+        return action.toString();
     }
-    public void parse(String line){
+
+    public static String stringify(Action action, String data){
+        return action.toString()+"#"+data;
+    }
+
+//    public void parse(String line){
+//        String[] splited= line.split("#");
+//        String command= splited[0];
+//        String data= "";
+//            if(splited.length>1){
+//                data=splited[1];
+//            }
+//
+//          if(command.equals(Command.NAME.toString())){
+//              sendNameConfirmed();
+//              this.client.setName(data);
+//          }
+//        if(command.equals(Command.NAME_CONFIRMED.toString())){
+//                client.switchToLeague();
+//        }
+//
+//    }
+
+    public static String[] parse(String line){
         String[] splited= line.split("#");
         String command= splited[0];
         String data= "";
             if(splited.length>1){
                 data=splited[1];
             }
-
-          if(command.equals(Command.NAME.toString())){
-              sendNameConfirmed();
-              this.client.setName(data);
-          }
-        if(command.equals(Command.NAME_CONFIRMED.toString())){
-                client.switchToLeague();
-        }
-
+        String[] result = {command,data};
+        return result;
     }
 
-    private void sendNameConfirmed(){
-        client.out(Command.NAME_CONFIRMED.toString());
-    }
 }

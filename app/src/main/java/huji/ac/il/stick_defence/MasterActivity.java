@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.net.wifi.p2p.WifiP2pGroup;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
@@ -27,13 +29,13 @@ import java.util.ArrayList;
 
 
 public class MasterActivity extends Activity {
-public static final int PORT=6666;
+
     WifiP2pManager mManager;
     WifiP2pManager.Channel mChannel;
-    private ArrayAdapter adapter;
-    private ArrayList<Client> clients = new ArrayList<>();
+    private ArrayAdapter adapter;    private ArrayList<Client> clients = new ArrayList<>();
+    private Server server= Server.createServer();
     private ListView list;
-    boolean serverOn = false;
+    private Client client= Client.createClient("test Master client");
 
 
     @Override
@@ -47,7 +49,7 @@ public static final int PORT=6666;
         mManager = (WifiP2pManager) getSystemService(getApplicationContext().WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(this, getMainLooper(), null);
         list = (ListView) findViewById(R.id.clients);
-        adapter = new clientsAdapter(this, android.R.layout.simple_list_item_1, clients);
+//        adapter = new clientsAdapter(this, android.R.layout.simple_list_item_1, clients);
         list.setAdapter(adapter);
 
         mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
@@ -64,39 +66,33 @@ public static final int PORT=6666;
 
             }
         });
-        if (serverOn == false) {
-            new AsyncTask<Void, Void, Void>() {
 
-                @Override
-                protected Void doInBackground(Void... params) {
-                    Log.w("custom", "starting server");
-                    serverOn = true;
-                    ServerSocket serverSocket = null;
-                    try {
-                        serverSocket = new ServerSocket(PORT);
-                        while (serverOn) {
+        mManager.requestConnectionInfo(mChannel, new WifiP2pManager.ConnectionInfoListener() {
 
-                            Socket socket = serverSocket.accept();
-                            Log.w("custom", "client excepted!");
-                            Client client = new Client(socket);
-                            client.startListening();
-                            clients.add(client);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    adapter.notifyDataSetChanged();
-                                }
-                            });
+            @Override
+            public void onConnectionInfoAvailable(final WifiP2pInfo info) {
+                Log.w("custom", "groupInfo:");
+                Log.w("custom", info.toString());
+                if (info.groupOwnerAddress != null) {
+                    Log.w("custom", info.groupOwnerAddress.getHostAddress());
+                    new AsyncTask<Void, Void, Void>() {
+                        @Override
+                        protected Void doInBackground(Void... params) {
+                            try {
+                                Socket socket = new Socket(info.groupOwnerAddress.getHostAddress(), Server.PORT);
+                                client.setServer(socket);
 
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            return null;
                         }
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
+                    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+                    ;
                 }
-            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
-        }
+
+            }
+        });
 
 
     }
@@ -121,31 +117,31 @@ public static final int PORT=6666;
     }
 
     //======================================Adapter classs==============================
-    private class clientsAdapter extends ArrayAdapter<Client> {
-
-        public clientsAdapter(Context context, int textViewResourceId) {
-            super(context, textViewResourceId);
-        }
-
-        public clientsAdapter(Context context, int resource, ArrayList<Client> items) {
-            super(context, resource, items);
-        }
-
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            if (convertView == null) {
-                LayoutInflater vi;
-                vi = LayoutInflater.from(getContext());
-                convertView = vi.inflate(android.R.layout.simple_list_item_1, null);
-            }
-
-            String title = getItem(position).getName();
-            TextView titleView = (TextView) convertView.findViewById(android.R.id.text1);
-            titleView.setText(title);
-            return convertView;
-
-        }
-    }
+//    private class clientsAdapter extends ArrayAdapter<Client> {
+//
+//        public clientsAdapter(Context context, int textViewResourceId) {
+//            super(context, textViewResourceId);
+//        }
+//
+//        public clientsAdapter(Context context, int resource, ArrayList<Client> items) {
+//            super(context, resource, items);
+//        }
+//
+//
+//        @Override
+//        public View getView(int position, View convertView, ViewGroup parent) {
+//
+//            if (convertView == null) {
+//                LayoutInflater vi;
+//                vi = LayoutInflater.from(getContext());
+//                convertView = vi.inflate(android.R.layout.simple_list_item_1, null);
+//            }
+//
+//            String title = getItem(position).getName();
+//            TextView titleView = (TextView) convertView.findViewById(android.R.id.text1);
+//            titleView.setText(title);
+//            return convertView;
+//
+//        }
+//    }
 }

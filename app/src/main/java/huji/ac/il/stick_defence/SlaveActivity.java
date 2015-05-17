@@ -9,12 +9,9 @@ import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -24,12 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,20 +37,18 @@ public class SlaveActivity extends Activity {
     private ArrayList<WifiP2pDevice> devices = new ArrayList<>();
     private String name = "test";
     private final int TIME_TO_REFRESH_PEERS = 20000;
-    private Client master;
-    private Activity slaveActivity;
+    private Client client= Client.createClient(name);
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        slaveActivity=this;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_slave);
-
+        client.setCurrentActivity(this);
         mManager = (WifiP2pManager) getSystemService(getApplicationContext().WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(this, getMainLooper(), null);
         mReceiver = new WiFiDirectBroadcastReceiver(this, mManager, mChannel);
@@ -114,12 +104,8 @@ public class SlaveActivity extends Activity {
                                         @Override
                                         protected Void doInBackground(Void... params) {
                                             try {
-                                                Socket socket = new Socket(info.groupOwnerAddress.getHostAddress(), MasterActivity.PORT);
-                                                master = new Client(socket);
-                                                master.setCurrentActivity(slaveActivity);
-                                                master.startListening();
-                                                Log.w("custom", "saying hello to server");
-                                                master.protocol.send(Protocol.Command.NAME, name);
+                                                Socket socket = new Socket(info.groupOwnerAddress.getHostAddress(), Server.PORT);
+                                                client.setServer(socket);
 
                                             } catch (IOException e) {
                                                 e.printStackTrace();
