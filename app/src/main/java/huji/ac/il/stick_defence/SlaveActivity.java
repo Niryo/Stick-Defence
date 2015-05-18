@@ -35,9 +35,8 @@ public class SlaveActivity extends Activity {
     private ArrayAdapter adapter;
     private ListView list;
     private ArrayList<WifiP2pDevice> devices = new ArrayList<>();
-    private String name = "test";
     private final int TIME_TO_REFRESH_PEERS = 20000;
-    private Client client= Client.createClient(name);
+    private Client client= Client.getClientInstance();
 
 
     @Override
@@ -60,7 +59,7 @@ public class SlaveActivity extends Activity {
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
         list = (ListView) findViewById(R.id.devices);
 
-
+//Start discovering peers in the background:
         new AsyncTask<Void, Void, Void>() {
 
             @Override
@@ -78,10 +77,11 @@ public class SlaveActivity extends Activity {
                 return null;
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
-        adapter = new peersAdapter(this, android.R.layout.simple_list_item_1, devices);
+
+
+        adapter = new DeviceAdapter(this, android.R.layout.simple_list_item_1, devices);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -153,14 +153,9 @@ public void switchToLeagueActivity(){
     Log.w("custom", "going to league");
 }
 
-    //======================================Adapter classs==============================
-    private class peersAdapter extends ArrayAdapter<WifiP2pDevice> {
-
-        public peersAdapter(Context context, int textViewResourceId) {
-            super(context, textViewResourceId);
-        }
-
-        public peersAdapter(Context context, int resource, ArrayList<WifiP2pDevice> items) {
+    //======================================Adapter class==============================
+    private class DeviceAdapter extends ArrayAdapter<WifiP2pDevice> {
+        public DeviceAdapter(Context context, int resource, ArrayList<WifiP2pDevice> items) {
             super(context, resource, items);
         }
 
@@ -174,11 +169,9 @@ public void switchToLeagueActivity(){
             }
 
             String title = getItem(position).deviceName;
-
             TextView titleView = (TextView) convertView.findViewById(android.R.id.text1);
             titleView.setText(title);
             return convertView;
-
         }
     }
 }

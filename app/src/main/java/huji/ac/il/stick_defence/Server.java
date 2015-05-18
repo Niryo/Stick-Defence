@@ -15,12 +15,17 @@ import java.util.ArrayList;
  * This class represents a server that manages all the league stuff
  * It uses the singleton pattern so that the current instance of the server doesn't depend on the calling
  * activity and his life cycle is during the whole league.
+ * The person who starts the server (by creating a new league) is just hosting the server on
+ * his machine, but from the server point of view this person his just a regular client like evryone else.
+ * In other words the server doesn't know on witch machine it is being hosted.
  */
 public class Server {
+    private int leagueParticipants=2; //todo: make it variable and set it in the constructor.
     public static final int PORT=6666; //arbitrary port
     private static Server server;
-    private  boolean running=false;
-    private   ArrayList<Peer> Peers = new ArrayList<>(); //we keep tracking all the connected peers
+    private int counter=0;
+    private  boolean acceptingNewClients =false;
+    private   ArrayList<Peer> peers = new ArrayList<>(); //we keep tracking all the connected peers
     private  ServerSocket serverSocket;
 
     private Server(){} //private constructor, for the singleton pattern.
@@ -50,7 +55,7 @@ public class Server {
      * Start the server.
      */
     private void start(){
-        this.running=true;
+        this.acceptingNewClients =true;
         //we create a new socket and listen to it on a different thread:
         new AsyncTask<Void, Void, Void>() {
 
@@ -59,11 +64,15 @@ public class Server {
                 Log.w("custom", "starting server");
                 try {
                     serverSocket = new ServerSocket(PORT);
-                    while (running) {
+                    while (acceptingNewClients) {
                         Socket socket = serverSocket.accept(); //the accept method is blocking.
                         Log.w("custom", "client excepted!"); //if we reach this line only when a new client is connected.
                         Peer peer = new Peer(socket);
-                        Peers.add(peer); //save the new client in the peers list
+                        peers.add(peer); //save the new client in the peers list
+                        if(peers.size()== leagueParticipants){
+                            acceptingNewClients=false;
+                            //todo: arrange league
+                        }
                     }
 
                 } catch (IOException e) {
@@ -83,6 +92,7 @@ public class Server {
     private void doAction(String action, String data, Peer peer){
         // if the client sends us his name, we saved the name and send confirmation.
         if(action.equals(Protocol.Action.NAME.toString())){
+            peer.approved=true;
             peer.setName(data);
             peer.send(Protocol.stringify(Protocol.Action.NAME_CONFIRMED));
         }
@@ -125,6 +135,8 @@ public class Server {
      * Instead of keeping track on raw sockets, we wrap them as peers with name, id, and usfull methods.
      */
     private class Peer {
+        private long WAIT_FOR_APPROVE = 3000;
+        private boolean approved=false; //check if the peer is an approved
         private int id; //unique id for each peer
         private String name; //name of the client. don't have to be unique.
         private PrintWriter out;
@@ -135,7 +147,28 @@ public class Server {
          * @param socket the socket to wrap
          */
             public Peer(Socket socket){
+                //start an asyncTask that will remove this peer from the peer list if it isn't approved:
+                new AsyncTask<Peer, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Peer... params) {
+                        try {
+                            Peer currentPeer=params[0];
+                            Thread.sleep(WAIT_FOR_APPROVE);
+                            if(!approved){
+                                peers.remove(currentPeer);
+                                currentPeer.socket.close();
+                                Log.w("custom", "illegal peer removed!");
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }
+                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this);
 
+            this.id = counter++;
             this.socket=socket;
             new ServerSocketListener().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this);
             try {
@@ -161,6 +194,9 @@ public class Server {
          */
         public void send(String out){
             this.out.println(out);
+        }
+        public Socket getSocket(){
+            return this.socket;
         }
 
 
