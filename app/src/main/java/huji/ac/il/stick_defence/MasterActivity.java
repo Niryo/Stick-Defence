@@ -32,10 +32,11 @@ public class MasterActivity extends Activity {
 
     WifiP2pManager mManager;
     WifiP2pManager.Channel mChannel;
-    private ArrayAdapter adapter;    private ArrayList<Client> clients = new ArrayList<>();
-    private Server server= Server.createServer();
+    private ArrayAdapter adapter;
+    private ArrayList<Client> clients = new ArrayList<>();
+    private Server server = Server.createServer();
     private ListView list;
-    private Client client= Client.createClient("test Master client");
+    private Client client = Client.createClient("test Master client");
 
 
     @Override

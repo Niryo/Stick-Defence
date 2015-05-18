@@ -2,16 +2,41 @@ package huji.ac.il.stick_defence;
 
 
 /**
- * Created by Nir on 16/05/2015.
+ * This is a static class that represents a protocol between a client and a server.
+ * All the method in this class should be static.
+ *
+ * the complete protocol:
+ * Stage 1: the client connects to the server and sent it his name.
+ * if the server is willing to accept the client it will send a name confirmation.
+ *
+ * #client: send NAME
+ * #server: send name NAME_CONFIRMED
+ *
+ * stage 2: when the server is ready it will send an information about the league to all his clients
+ * #server: send LEAGUE_INFO
+ *
+ * stage 3: clients tell the server that they are ready to play
+ * #client: send READY_TO_PLAY
+ *
+ *stage 4: server tells the clients that the game start.
+ * #server: send START_GAME
+ *
+ * stage 5: todo: during game protocol.
+ *
+ * stage 6: clients tell the server that game has been finished by sending it the game results
+ * #client: send GAME_RESUTLS
+ *
+ * stage 7: server send again information about the league
+ * #server: send LEAGUE_INFO
  */
 public class Protocol {
    Client client;
 
-    public Protocol(){}
+    private Protocol(){}
 
-    public Protocol(Client client){
-        this.client= client;
-    }
+    /**
+     * represents the actions that could be sent during a communication session
+     */
 public static enum Action {
     NAME,
     READY_TO_PLAY,
@@ -23,40 +48,38 @@ public static enum Action {
 
 }
 
+    /**
+     * Prepare an action without data for being sent over the socket.
+     * @param action the action
+     * @return a string representation of the action
+     */
     public static String stringify(Action action){
         return action.toString();
     }
 
+    /**
+     * Prepare an action with data for being sent over the socket.
+     * @param action the action
+     * @param data
+     * @return a string representation of the action and the data
+     */
     public static String stringify(Action action, String data){
         return action.toString()+"#"+data;
     }
 
-//    public void parse(String line){
-//        String[] splited= line.split("#");
-//        String command= splited[0];
-//        String data= "";
-//            if(splited.length>1){
-//                data=splited[1];
-//            }
-//
-//          if(command.equals(Command.NAME.toString())){
-//              sendNameConfirmed();
-//              this.client.setName(data);
-//          }
-//        if(command.equals(Command.NAME_CONFIRMED.toString())){
-//                client.switchToLeague();
-//        }
-//
-//    }
-
+    /**
+     * Parse a received action.
+     * @param line the received action.
+     * @return an array with the action and the data (if there is data)
+     */
     public static String[] parse(String line){
         String[] splited= line.split("#");
-        String command= splited[0];
+        String action= splited[0];
         String data= "";
             if(splited.length>1){
                 data=splited[1];
             }
-        String[] result = {command,data};
+        String[] result = {action,data};
         return result;
     }
 

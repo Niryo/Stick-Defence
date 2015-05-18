@@ -42,7 +42,6 @@ public class GameSurface extends SurfaceView implements
     }
 
 
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);
@@ -86,10 +85,10 @@ public class GameSurface extends SurfaceView implements
             soldier.render(canvas);
         }
 
-        for (Bow bow : gameState.getBows()){
+        for (Bow bow : gameState.getBows()) {
             bow.render(canvas);
         }
-        for( Arrow arrow: gameState.getArrows()){
+        for (Arrow arrow : gameState.getArrows()) {
             arrow.render(canvas);
         }
     }
