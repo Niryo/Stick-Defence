@@ -196,8 +196,8 @@ public class GameState {
         return this.leftTowerBeginX;
     }
 
-    public void addArrow(float x, float y, float[] tan){
-        this.arrows.add(new Arrow(context, x,y,tan));
+    public void addArrow(float x, float y, float[] tan, Sprite.Player player){
+        this.arrows.add(new Arrow(context, x, y, tan, player));
     }
     public void removeArrow(Arrow arrow){
         this.arrows.remove(arrow);

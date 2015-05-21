@@ -13,33 +13,42 @@ import android.graphics.Paint;
  */
 public class Arrow {
     //=======================BasicSoldier's abilities===========================
-    private static final double MOVE_PIXELS_PER_SEC = 40; // [Pixels/Sec]
+    private static final double SCREEN_WIDTH_PER_SEC = 0.021;
+    private static final double SCREEN_HEIGHT_PER_SEC = 0.037;
 
     private static Bitmap scaledArrowPic;
     private static Sprite sprite;
 
-    private GameState gameState= GameState.getInstance();
-    private float     x;
-    private float     y;
-    private float     degree;
-    private float     bm_offsetX;
-    private float     bm_offsetY;
-    private Matrix    matrix = new Matrix();
-    private int       screenWidth;
-    private int       screenHeight;
-    private long      lastUpdateTime;
+    private GameState     gameState= GameState.getInstance();
+    private float         x;
+    private float         y;
+    private float         degree;
+    private float         bm_offsetX;
+    private float         bm_offsetY;
+    private Matrix        matrix = new Matrix();
+    private int           screenWidth;
+    private int           screenHeight;
+    private long          lastUpdateTime;
+    private double        x_pixPerSec;
+    private double        y_pixPerSec;
+    private Sprite.Player player;
 
-    public Arrow(Context context, float x, float y, float[] tan){
+    public Arrow(Context context, float x, float y,
+                 float[] tan, Sprite.Player player){
         this.screenWidth =
                 context.getResources().getDisplayMetrics().widthPixels;
         this.screenHeight =
                 context.getResources().getDisplayMetrics().heightPixels;
         this.x=x;
         this.y=y;
+        this.player = player;
         this.bm_offsetX =scaledArrowPic.getWidth()/2;
         this.bm_offsetY= scaledArrowPic.getHeight()/2;
         this.degree =(float)(Math.atan2(tan[1], tan[0])*180.0/Math.PI);
         updateMatrix();
+
+        x_pixPerSec = SCREEN_WIDTH_PER_SEC * screenWidth;
+        y_pixPerSec = SCREEN_HEIGHT_PER_SEC * screenHeight;
 
         lastUpdateTime = System.currentTimeMillis();
 
@@ -56,10 +65,10 @@ public class Arrow {
         double passedTimeInSec = (double)(gameTime - lastUpdateTime) / 1000;
         this.x +=
                 Math.cos(Math.toRadians(this.degree)) *
-                MOVE_PIXELS_PER_SEC * passedTimeInSec;
+                        x_pixPerSec * passedTimeInSec;
         this.y +=
                 Math.sin(Math.toRadians(this.degree)) *
-                MOVE_PIXELS_PER_SEC * passedTimeInSec;
+                        y_pixPerSec * passedTimeInSec;
         updateMatrix();
         if(this.x>this.screenWidth || this.y>this.screenHeight){
             gameState.removeArrow(this);
@@ -71,9 +80,9 @@ public class Arrow {
     public void render(Canvas canvas){
         canvas.drawBitmap(scaledArrowPic, matrix, null);
         Paint paint=new Paint();
-        paint.setColor(Color.RED);
+        paint.setColor(this.player == Sprite.Player.RIGHT ? Color.RED : Color.BLUE);
         paint.setStrokeWidth(10);
-        canvas.drawPoint(this.getHeadX(),this.getHeadY(), paint);
+        canvas.drawPoint(this.getHeadX(), this.getHeadY(), paint);
 
     }
 
@@ -106,6 +115,8 @@ public class Arrow {
                              * scaledArrowPic.getWidth()/2);
     }
 
-
+    public Sprite.Player getPlayer(){
+        return this.player;
+    }
 
 }

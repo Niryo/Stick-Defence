@@ -27,7 +27,7 @@ public class Bow{
 
     private GameState gameState= GameState.getInstance();
     private static        Bitmap leftBowPic = null;
-    private static        Bitmap rightBowPic = null;
+//    private static        Bitmap rightBowPic = null;
     private Sprite        sprite;
     private int           towerHeight;
     private Sprite.Player player;
@@ -55,10 +55,6 @@ public class Bow{
             leftBowPic = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.bow); // Read resource only once
         }
-        if (rightBowPic == null) {
-            //rightBowPic = Sprite.mirrorBitmap(leftBowPic);
-            rightBowPic=leftBowPic;
-        }
 
         sprite = new Sprite();
 
@@ -66,7 +62,7 @@ public class Bow{
             sprite.initSprite(context, leftBowPic, NUMBER_OF_FRAMES,
                     player, SCREEN_HEIGHT_PORTION);
         } else {
-            sprite.initSprite(context, rightBowPic, NUMBER_OF_FRAMES,
+            sprite.initSprite(context, leftBowPic, NUMBER_OF_FRAMES,
                     player, SCREEN_HEIGHT_PORTION);
         }
 
@@ -75,19 +71,16 @@ public class Bow{
         int frameHeight = leftBowPic.getHeight();
         int frameWidth = leftBowPic.getWidth() / NUMBER_OF_FRAMES;
 
-
-
-            for (int i = 0; i < NUMBER_OF_FRAMES; i++) {
-                Bitmap frameToScale;
-                if(player== Sprite.Player.LEFT) {
-                 frameToScale = Bitmap.createBitmap(leftBowPic, i * frameWidth, 0, frameWidth, frameHeight);
-                }
-                else{
-                    frameToScale = Bitmap.createBitmap(rightBowPic, i * frameWidth, 0, frameWidth, frameHeight);
-                }
-                this.scaledBow[i] = Bitmap.createScaledBitmap(frameToScale, (int) this.sprite.getScaledFrameWidth(), (int) this.sprite.getScaledFrameHeight(), false);
+        for (int i = 0; i < NUMBER_OF_FRAMES; i++) {
+            Bitmap frameToScale;
+            if(player== Sprite.Player.LEFT) {
+             frameToScale = Bitmap.createBitmap(leftBowPic, i * frameWidth, 0, frameWidth, frameHeight);
             }
-
+            else{
+                frameToScale = Bitmap.createBitmap(leftBowPic, i * frameWidth, 0, frameWidth, frameHeight);
+            }
+            this.scaledBow[i] = Bitmap.createScaledBitmap(frameToScale, (int) this.sprite.getScaledFrameWidth(), (int) this.sprite.getScaledFrameHeight(), false);
+        }
 
 
         RectF oval = new RectF();
@@ -208,16 +201,17 @@ public class Bow{
     }
     public void release(){
         if(this.currentFrame==NUMBER_OF_FRAMES-4) {
-            this.gameState.addArrow(this.pos[0], this.pos[1], this.tan);
+            this.gameState.addArrow(this.pos[0], this.pos[1],
+                                    this.tan, this.player);
         }
         this.currentFrame = NUMBER_OF_FRAMES - 1;
 
     }
 
-public void aimAndShoot(int distance){ //todo: add animation for strach and unstrach
-    this.distance=distance;
+public void aimAndShoot(int distance){ //todo: add animation for strech and unstrech
+    this.distance = distance;
     resetMatrix();
-    this.gameState.addArrow(this.pos[0], this.pos[1], this.tan);
+    this.gameState.addArrow(this.pos[0], this.pos[1], this.tan, this.player);
 
 }
 
