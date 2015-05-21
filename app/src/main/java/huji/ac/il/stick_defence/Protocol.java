@@ -12,7 +12,8 @@ package huji.ac.il.stick_defence;
  * #client: send NAME
  * #server: send name NAME_CONFIRMED
  *
- * stage 2: when the server is ready it will send an information about the league to all his clients
+ * stage 2: When the server is ready it will send an information about the league to all his clients.
+ *
  * #server: send LEAGUE_INFO
  *
  * stage 3: clients tell the server that they are ready to play
@@ -45,7 +46,8 @@ public static enum Action {
     LEAGUE_INFO,
     PREPARE_GAME,
     START_GAME,
-
+        SOLDIER,
+        ARROW,
 }
 
     /**

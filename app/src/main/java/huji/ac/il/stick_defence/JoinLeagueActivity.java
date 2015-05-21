@@ -3,6 +3,7 @@ package huji.ac.il.stick_defence;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 
-public class SlaveActivity extends Activity {
+public class JoinLeagueActivity extends Activity implements DoProtocolAction{
     WifiP2pManager mManager;
     WifiP2pManager.Channel mChannel;
     BroadcastReceiver mReceiver;
@@ -35,8 +36,9 @@ public class SlaveActivity extends Activity {
     private ArrayAdapter adapter;
     private ListView list;
     private ArrayList<WifiP2pDevice> devices = new ArrayList<>();
-    private final int TIME_TO_REFRESH_PEERS = 20000;
+    private final int TIME_TO_REFRESH_PEERS = 8000;
     private Client client= Client.getClientInstance();
+    private boolean running;
 
 
     @Override
@@ -46,7 +48,7 @@ public class SlaveActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_slave);
+        setContentView(R.layout.activity_join_league);
         client.setCurrentActivity(this);
         mManager = (WifiP2pManager) getSystemService(getApplicationContext().WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(this, getMainLooper(), null);
@@ -64,7 +66,7 @@ public class SlaveActivity extends Activity {
 
             @Override
             protected Void doInBackground(Void... params) {
-                boolean running = true;
+                running=true;
                 while (running) {
                     Log.w("custom", "searching peers");
                     mManager.discoverPeers(mChannel, null);
@@ -149,9 +151,29 @@ public class SlaveActivity extends Activity {
             this.adapter.notifyDataSetChanged();
         }
     }
-public void switchToLeagueActivity(){
-    Log.w("custom", "going to league");
-}
+
+
+
+    @Override
+    public void doAction(String action, String data) {
+        if (action.equals(Protocol.Action.NAME_CONFIRMED.toString())) {
+            running=false;
+            //todo: go to wait state;
+            //todo:send the league info to the league activity
+            Log.w("custom", "going to league");
+            Intent intent= new Intent(this, LeagueActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+        if (action.equals(Protocol.Action.LEAGUE_INFO.toString())) {
+            //todo:send the league info to the league activity
+            Log.w("custom", "going to league");
+            Intent intent= new Intent(this, LeagueActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
 
     //======================================Adapter class==============================
     private class DeviceAdapter extends ArrayAdapter<WifiP2pDevice> {

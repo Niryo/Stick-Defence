@@ -15,7 +15,10 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 
-public class GameActivity extends Activity {
+public class GameActivity extends Activity implements DoProtocolAction {
+
+    private GameState gameState;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -25,16 +28,17 @@ public class GameActivity extends Activity {
 //        setContentView(R.layout.activity_main);
         FrameLayout game = new FrameLayout(this);
         RelativeLayout gameComponents = new RelativeLayout(this);
+        this.gameState = GameState.CreateGameState(getApplicationContext());
+        Client.getClientInstance().setCurrentActivity(this);
         GameSurface gameSurface = new GameSurface(this);
 
         //========================Send soldier Button===========================
         Button sendSoldier = new Button(this);
         sendSoldier.setText("Send");
-        final GameState gameStats = GameState.getInstance();
         sendSoldier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gameStats.addSoldier(Sprite.Player.LEFT);
+                gameState.addSoldier(Sprite.Player.LEFT);
             }
         });
         gameComponents.addView(sendSoldier);
@@ -59,8 +63,8 @@ public class GameActivity extends Activity {
         rightProgressBar.setY(height / 5);
         rightProgressBar.setX((float) (width / 1.15));
 
-        gameStats.initProgressBar(leftProgressBar, Sprite.Player.LEFT);
-        gameStats.initProgressBar(rightProgressBar, Sprite.Player.RIGHT);
+        gameState.initProgressBar(leftProgressBar, Sprite.Player.LEFT);
+        gameState.initProgressBar(rightProgressBar, Sprite.Player.RIGHT);
 
         gameComponents.addView(leftProgressBar);
         gameComponents.addView(rightProgressBar);
@@ -93,5 +97,16 @@ public class GameActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void doAction(String action, String data) {
+        if (action.equals(Protocol.Action.ARROW.toString())) {
+            this.gameState.addEnemyShot(Integer.parseInt(data));
+        }
+        if (action.equals(Protocol.Action.SOLDIER.toString())) {
+            this.gameState.addSoldier(Sprite.Player.RIGHT);
+        }
+
     }
 }

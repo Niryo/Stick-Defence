@@ -17,7 +17,7 @@ import java.net.Socket;
 public class Client {
     private String name; //each client as a name, dosen't have to be unique.
     private PrintWriter out;
-    private Activity currentActivity;
+    private DoProtocolAction currentActivity;
     private static Client client;
 
     private Client(){}
@@ -83,7 +83,7 @@ public class Client {
      * Sets the current activity so that the client could communicate with it.
      * @param activity the current activity.
      */
-    public void setCurrentActivity(Activity activity) {
+    public void setCurrentActivity(DoProtocolAction activity) {
         this.currentActivity = activity;
 
     }
@@ -94,14 +94,17 @@ public class Client {
      * @param data the data received from the server
      */
     private void doAction(String action, String data) {
-
-        if (action.equals(Protocol.Action.NAME_CONFIRMED.toString())) {
-        }
+            this.currentActivity.doAction(action, data);
     }
 
-    public void switchToLeague() {
-        ((SlaveActivity) this.currentActivity).switchToLeagueActivity();
+    public void reportArrow(int distance){
+        send(Protocol.stringify(Protocol.Action.ARROW, Integer.toString(distance)));
     }
+    public void reportSoldier(){
+        send(Protocol.stringify(Protocol.Action.SOLDIER));
+    }
+
+
 
     /**
      * This class represents a socket listener on a server node.
@@ -116,7 +119,7 @@ public class Client {
             try {
                 BufferedReader in = new BufferedReader(new InputStreamReader(server.getInputStream()));
                 while ((inputLine = in.readLine()) != null) { //the readLine is a blocking method.
-                    Log.w("custom", inputLine);
+                    Log.w("custom", "server sayse"+inputLine);
                     String[] action = Protocol.parse(inputLine);
                     doAction(action[0], action[1]);
 

@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="huji.ac.il.stick_defence" >
 
-
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
@@ -34,12 +33,15 @@
             android:name=".MasterActivity"
             android:label="@string/title_activity_master"
             android:screenOrientation="landscape" >
-
         </activity>
         <activity
-            android:name=".SlaveActivity"
+            android:name=".JoinLeagueActivity"
             android:label="@string/title_activity_slave"
             android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name=".LeagueActivity"
+            android:label="@string/title_activity_league" >
         </activity>
     </application>
 

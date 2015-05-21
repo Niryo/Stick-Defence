@@ -29,6 +29,7 @@ public class GameState {
     private Bow                     rightBow;
     private ProgressBar             leftProgressBar;
     private ProgressBar             rightProgressBar;
+    private Client client = Client.getClientInstance();
 
     /**
      * Constructor. Adds 2 towers to the sprites list.
@@ -150,6 +151,7 @@ public class GameState {
      */
     public void addSoldier(Sprite.Player player) {
         if (player == Sprite.Player.LEFT){
+            client.reportSoldier();
             if (this.leftPlayerSoldiers >= MAX_SOLDIERS_PER_PLAYER){
                 return;
             }
@@ -196,8 +198,11 @@ public class GameState {
         return this.leftTowerBeginX;
     }
 
-    public void addArrow(float x, float y, float[] tan){
-        this.arrows.add(new Arrow(context, x,y,tan));
+    public void addArrow(Arrow arrow, boolean report){
+        this.arrows.add(arrow);
+        if(report) {
+            client.reportArrow(this.leftBow.getDistance());
+        }
     }
     public void removeArrow(Arrow arrow){
         this.arrows.remove(arrow);

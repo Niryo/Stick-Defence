@@ -32,6 +32,7 @@ public class Bow{
     private int           towerHeight;
     private Sprite.Player player;
 
+    private Context context;
     private Path path = new Path();
     private PathMeasure pathMeasure;
     private float pathLength;
@@ -61,7 +62,7 @@ public class Bow{
         }
 
         sprite = new Sprite();
-
+        this.context= context;
         if (player == Sprite.Player.LEFT) {
             sprite.initSprite(context, leftBowPic, NUMBER_OF_FRAMES,
                     player, SCREEN_HEIGHT_PORTION);
@@ -208,7 +209,7 @@ public class Bow{
     }
     public void release(){
         if(this.currentFrame==NUMBER_OF_FRAMES-4) {
-            this.gameState.addArrow(this.pos[0], this.pos[1], this.tan);
+            this.gameState.addArrow(new Arrow(this.context ,this.pos[0], this.pos[1], this.tan),true);
         }
         this.currentFrame = NUMBER_OF_FRAMES - 1;
 
@@ -217,8 +218,11 @@ public class Bow{
 public void aimAndShoot(int distance){ //todo: add animation for strach and unstrach
     this.distance=distance;
     resetMatrix();
-    this.gameState.addArrow(this.pos[0], this.pos[1], this.tan);
 
+    this.gameState.addArrow( new Arrow(this.context,this.pos[0], this.pos[1], this.tan) ,false );
+}
+public int getDistance(){
+    return this.distance;
 }
 
 }

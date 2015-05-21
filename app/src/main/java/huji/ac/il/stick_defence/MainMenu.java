@@ -5,11 +5,8 @@ import android.content.Intent;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -19,7 +16,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 
-public class MainMenu extends Activity {
+public class MainMenu extends Activity implements DoProtocolAction{
     private String name= "test";
     private Client client= Client.createClient(name);
 
@@ -31,7 +28,7 @@ public class MainMenu extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-
+        this.client.setCurrentActivity(this);
         //========================Single player=================================
         Button singlePlayer = (Button) findViewById(R.id.single_player);
         singlePlayer.setOnClickListener(new View.OnClickListener() {
@@ -50,6 +47,7 @@ public class MainMenu extends Activity {
         createLeague.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Server.createServer();
                 WifiP2pManager mManager =(WifiP2pManager) getSystemService(getApplicationContext().WIFI_P2P_SERVICE);
                 WifiP2pManager.Channel mChannel = mManager.initialize(getApplicationContext(), getMainLooper(), null);
                 mManager.createGroup(mChannel,null);
@@ -88,11 +86,24 @@ public class MainMenu extends Activity {
         joinLeague.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent createLeague= new Intent(getApplicationContext(), SlaveActivity.class);
+                Intent createLeague= new Intent(getApplicationContext(), JoinLeagueActivity.class);
                 startActivity(createLeague);
                 finish();
             }
         });
+
+
+    }
+
+    @Override
+    public void doAction(String action, String data) {
+        if (action.equals(Protocol.Action.NAME_CONFIRMED.toString())) {
+            //todo: go into leagActivity and wait
+            Log.w("custom", "going to league");
+            Intent intent= new Intent(this, LeagueActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
 
     }

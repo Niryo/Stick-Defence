@@ -18,7 +18,7 @@ public class GameLoopThread extends Thread {
     // the frame period
     private final static int FRAME_PERIOD = 1000 / MAX_FPS;
 
-    private ArtificialIntelligence ai;
+    //private ArtificialIntelligence ai;
     private SurfaceHolder surfaceHolder;
     private GameSurface gameSurface;
     private GameState gameState;
@@ -39,7 +39,7 @@ public class GameLoopThread extends Thread {
         this.surfaceHolder = surfaceHolder;
         this.gameSurface = gameSurface;
         this.gameState = GameState.getInstance();
-        this.ai = new ArtificialIntelligence(ArtificialIntelligence.Difficulty.EASY);
+       // this.ai = new ArtificialIntelligence(ArtificialIntelligence.Difficulty.EASY);
 
     }
 
@@ -61,8 +61,8 @@ public class GameLoopThread extends Thread {
                     beginTime = System.currentTimeMillis();
                     skippedFrames = 0;    // resetting the frames skipped
 
-                    ai.sendSoldier();
-                    ai.shoot();
+                   // ai.sendSoldier();
+                   // ai.shoot();
 
                     this.gameState.update();
                     this.gameSurface.render(canvas);

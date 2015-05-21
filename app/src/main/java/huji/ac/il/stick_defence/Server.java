@@ -25,8 +25,9 @@ public class Server {
     private static Server server;
     private int counter=0;
     private  boolean acceptingNewClients =false;
-    private   ArrayList<Peer> peers = new ArrayList<>(); //we keep tracking all the connected peers
+    private   ArrayList<Peer> peers = new ArrayList<>(); //we keep tracking all the connected peers todo: change to hashmap based on id
     private  ServerSocket serverSocket;
+    private boolean test=true;
 
     private Server(){} //private constructor, for the singleton pattern.
 
@@ -83,6 +84,9 @@ public class Server {
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
+
+
+
     /**
      * This method decide what to do on each data received from a clent.
      * @param action the action received from the client
@@ -96,7 +100,30 @@ public class Server {
             peer.setName(data);
             peer.send(Protocol.stringify(Protocol.Action.NAME_CONFIRMED));
         }
+
+        if(action.equals(Protocol.Action.READY_TO_PLAY.toString())){ //todo: this is just for testing! need to be removed
+            if(test) {
+                test=false;
+                makePair(peers.get(0), peers.get(1));
+//            Pair pair= new Pair( peers.get(0).getSocket(), peers.get(1).getSocket());
+                peers.get(0).send(Protocol.stringify(Protocol.Action.START_GAME));
+                peers.get(1).send(Protocol.stringify(Protocol.Action.START_GAME));
+
+            }
+        }
+
     }
+
+    private void makePair(Peer peer1, Peer peer2){
+        peer1.setPartner(peer2);
+        peer2.setPartner(peer1);
+    }
+    private void destroyPair(Peer peer1, Peer peer2){
+        peer1.setPartner(null);
+        peer2.setPartner(null);
+    }
+
+
 
     /**
      * This class represents a socket listener on a client node.
@@ -117,6 +144,9 @@ public class Server {
                     Log.w("custom", inputLine);
                     String[] action= Protocol.parse(inputLine);
                     doAction(action[0],action[1],peer);
+                    if (peer.partner!=null){
+                        peer.partner.send(inputLine);
+                    }
                 }
 
             } catch (IOException e) {
@@ -141,13 +171,14 @@ public class Server {
         private String name; //name of the client. don't have to be unique.
         private PrintWriter out;
         private Socket socket;
+        private Peer partner=null;
 
         /**
          * Constructs a new peer.
          * @param socket the socket to wrap
          */
             public Peer(Socket socket){
-                //start an asyncTask that will remove this peer from the peer list if it isn't approved:
+                //start an asyncTask that will remove this peer from the peers list if it isn't approved:
                 new AsyncTask<Peer, Void, Void>() {
                     @Override
                     protected Void doInBackground(Peer... params) {
@@ -195,11 +226,18 @@ public class Server {
         public void send(String out){
             this.out.println(out);
         }
+
+        /**
+         * Return the peer socket
+         * @return the peer socket
+         */
         public Socket getSocket(){
             return this.socket;
         }
 
-
+        public void setPartner(Peer peer){
+            this.partner=peer;
+        }
     }
 
 }

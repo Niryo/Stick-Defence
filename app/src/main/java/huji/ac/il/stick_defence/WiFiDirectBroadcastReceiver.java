@@ -1,6 +1,5 @@
 package huji.ac.il.stick_defence;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,9 +18,9 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
 
     private WifiP2pManager mManager;
     private WifiP2pManager.Channel mChannel;
-    private SlaveActivity activity;
+    private JoinLeagueActivity activity;
 
-    public WiFiDirectBroadcastReceiver(SlaveActivity activity, WifiP2pManager manager, WifiP2pManager.Channel channel) {
+    public WiFiDirectBroadcastReceiver(JoinLeagueActivity activity, WifiP2pManager manager, WifiP2pManager.Channel channel) {
         super();
         this.activity= activity;
         this.mManager = manager;

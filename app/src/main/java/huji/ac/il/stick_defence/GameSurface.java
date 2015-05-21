@@ -20,7 +20,7 @@ public class GameSurface extends SurfaceView implements
         SurfaceHolder.Callback {
 
     private GameLoopThread gameLoopThread;
-    private GameState gameState = GameState.CreateGameState(getContext());
+    private GameState gameState = GameState.getInstance();
     private SimpleGestureDetector simpleGestureDetector =
             new SimpleGestureDetector();
     private ProgressBar leftProgressBar, rightProgressBar;
