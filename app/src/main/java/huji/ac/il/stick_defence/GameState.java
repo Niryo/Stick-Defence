@@ -198,11 +198,13 @@ public class GameState {
         return this.leftTowerBeginX;
     }
 
-    public void addArrow(Arrow arrow, boolean report){
+
+    public void addArrow(Arrow arrow){
         this.arrows.add(arrow);
-        if(report) {
+        if(arrow.getPlayer()== Sprite.Player.LEFT) {
             client.reportArrow(this.leftBow.getDistance());
         }
+
     }
     public void removeArrow(Arrow arrow){
         this.arrows.remove(arrow);

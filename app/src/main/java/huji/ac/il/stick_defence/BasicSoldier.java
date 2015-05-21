@@ -13,7 +13,7 @@ import android.util.Log;
 public class BasicSoldier extends Soldier{
 
     //=======================BasicSoldier's abilities===========================
-    private static final double RUN_PIXELS_PER_SEC = 200; // [Pixels/Sec]
+    private static final double SCREEN_WIDTH_PER_SEC = 0.1; // Run speed
     private static final int    DAMAGE_PER_SEC = 1; // [Damage/Sec]
     //==========================================================================
 
@@ -37,7 +37,7 @@ public class BasicSoldier extends Soldier{
     private Sprite.Player player;
 
     public BasicSoldier(Context context, Sprite.Player player) {
-        super(context, player, RUN_PIXELS_PER_SEC, DAMAGE_PER_SEC);
+        super(context, player, SCREEN_WIDTH_PER_SEC, DAMAGE_PER_SEC);
         if  (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
                                                   context.getResources(),

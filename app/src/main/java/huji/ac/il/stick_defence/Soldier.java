@@ -42,7 +42,7 @@ public abstract class Soldier {
     private boolean               attack;
 
 
-    protected Soldier(Context context, Sprite.Player player, double runPixelsPerSec,
+    protected Soldier(Context context, Sprite.Player player, double screenWidthPerSec,
                       int damagePerSec) {
         this.PLAYER = player;
 
@@ -53,10 +53,10 @@ public abstract class Soldier {
 
         //Set x and speed
         if (player == Sprite.Player.LEFT) {
-            this.RUN_PIXELS_PER_SEC = runPixelsPerSec;
+            this.RUN_PIXELS_PER_SEC = screenWidthPerSec * screenWidth;
             soldierX = 0;
         } else {
-            this.RUN_PIXELS_PER_SEC = -runPixelsPerSec;
+            this.RUN_PIXELS_PER_SEC = - screenWidthPerSec * screenWidth;
             soldierX = screenWidth;
         }
         this.DAMAGE_PER_SEC = damagePerSec;
@@ -102,7 +102,7 @@ public abstract class Soldier {
         sprite.render(canvas, soldierX, soldierY);
 
         Paint paint=new Paint();
-        paint.setColor(Color.RED);
+        paint.setColor(PLAYER == Sprite.Player.RIGHT ? Color.RED : Color.BLUE);
         paint.setStrokeWidth(10);
         canvas.drawLine(( float) (this.soldierX+(sprite.getScaledFrameWidth()/2) -HIT_EPSILON) ,this.soldierY, ( float) (this.soldierX+(sprite.getScaledFrameWidth()/2)+HIT_EPSILON) , this.soldierY, paint);
 
@@ -121,8 +121,11 @@ public abstract class Soldier {
 
     protected boolean checkHit(Arrow arrow){
 
-        if (this.soldierY <= arrow.getHeadY() &&
-                Math.abs(this.soldierX+sprite.getScaledFrameWidth()/2-arrow.getHeadX())<=HIT_EPSILON){
+        if (arrow.getPlayer() != this.getPlayer() &&
+                this.soldierY <= arrow.getHeadY() &&
+                Math.abs(this.soldierX +
+                        sprite.getScaledFrameWidth() / 2 - arrow.getHeadX()) <=
+                        HIT_EPSILON){
             Log.w("custom", "soldier hit!");
             return true;
         }
