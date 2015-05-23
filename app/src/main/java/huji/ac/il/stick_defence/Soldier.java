@@ -36,8 +36,8 @@ public abstract class Soldier {
     //Positions
     private int                   screenWidth;
     private int                   screenHeight;
-    private int                   soldierX;
-    private int                   soldierY;
+    private double                   soldierX;
+    private double                   soldierY;
     private long                  lastUpdateTime;
     private boolean               attack;
 
@@ -54,10 +54,9 @@ public abstract class Soldier {
         //Set x and speed
         if (player == Sprite.Player.LEFT) {
             this.RUN_PIXELS_PER_SEC = screenWidthPerSec * screenWidth;
-            soldierX = 0;
+
         } else {
             this.RUN_PIXELS_PER_SEC = - screenWidthPerSec * screenWidth;
-            soldierX = screenWidth;
         }
         this.DAMAGE_PER_SEC = damagePerSec;
         this.attack = false;
@@ -73,7 +72,11 @@ public abstract class Soldier {
 
         //set the y on the bottom of the screen
         this.soldierY = screenHeight - (int) sprite.getScaledFrameHeight();
-
+        if (this.PLAYER == Sprite.Player.LEFT) {
+            soldierX = -sprite.getScaledFrameWidth();
+        }else{
+            soldierX = screenWidth;
+        }
 
     }
 
@@ -96,23 +99,30 @@ public abstract class Soldier {
         } else {
             soldierX += (RUN_PIXELS_PER_SEC * passedTimeInSec);
         }
+
+        Log.w("custom", "run: "+ RUN_PIXELS_PER_SEC+" current:"+(RUN_PIXELS_PER_SEC * passedTimeInSec) );
     }
 
     protected void render(Canvas canvas) {
-        sprite.render(canvas, soldierX, soldierY);
+        sprite.render(canvas, getSoldierX(), getSoldierY());
 
         Paint paint=new Paint();
         paint.setColor(PLAYER == Sprite.Player.RIGHT ? Color.RED : Color.BLUE);
         paint.setStrokeWidth(10);
-        canvas.drawLine(( float) (this.soldierX+(sprite.getScaledFrameWidth()/2) -HIT_EPSILON) ,this.soldierY, ( float) (this.soldierX+(sprite.getScaledFrameWidth()/2)+HIT_EPSILON) , this.soldierY, paint);
+        canvas.drawLine((float) (getSoldierX() + (sprite.getScaledFrameWidth() / 2) - HIT_EPSILON), getSoldierY(), (float) (this.soldierX + (sprite.getScaledFrameWidth() / 2) + HIT_EPSILON), getSoldierY(), paint);
 
     }
 
     protected int getSoldierX(){
-        return this.soldierX;
+
+            return (int) Math.round(this.soldierX);
+
+
     }
     protected int getSoldierY(){
-        return this.soldierY;
+
+            return (int) Math.round(this.soldierY);
+
     }
 
     protected double getScaledFrameWidth(){

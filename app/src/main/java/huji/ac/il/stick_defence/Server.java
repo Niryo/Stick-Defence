@@ -105,7 +105,6 @@ public class Server {
             if(test) {
                 test=false;
                 makePair(peers.get(0), peers.get(1));
-//            Pair pair= new Pair( peers.get(0).getSocket(), peers.get(1).getSocket());
                 peers.get(0).send(Protocol.stringify(Protocol.Action.START_GAME));
                 peers.get(1).send(Protocol.stringify(Protocol.Action.START_GAME));
 

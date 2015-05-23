@@ -36,7 +36,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction{
     private ArrayAdapter adapter;
     private ListView list;
     private ArrayList<WifiP2pDevice> devices = new ArrayList<>();
-    private final int TIME_TO_REFRESH_PEERS = 8000;
+    private final int TIME_TO_REFRESH_PEERS = 20000;
     private Client client= Client.getClientInstance();
     private boolean running;
 
@@ -69,7 +69,17 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction{
                 running=true;
                 while (running) {
                     Log.w("custom", "searching peers");
-                    mManager.discoverPeers(mChannel, null);
+                    mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onFailure(int reason) {
+                            Log.w("custom", "fail searching peers "+ reason);
+                        }
+                    });
                     try {
                         Thread.sleep(TIME_TO_REFRESH_PEERS);
                     } catch (InterruptedException e) {
