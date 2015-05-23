@@ -1,6 +1,7 @@
 package huji.ac.il.stick_defence;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.ProgressBar;
 
 import java.util.ArrayList;
@@ -153,20 +154,26 @@ public class GameState {
      *
      * @param player the requested PLAYER
      */
-    public void addSoldier(Sprite.Player player) {
+    public void addSoldier(Sprite.Player player, long timeStamp) {
+        double delay;
+        long currentTime= getSyncTime();
         if (player == Sprite.Player.LEFT){
+            delay=0;
             client.reportSoldier();
             if (this.leftPlayerSoldiers >= MAX_SOLDIERS_PER_PLAYER){
                 return;
             }
             this.leftPlayerSoldiers++;
         } else {
+            delay= currentTime-timeStamp;
+            delay=delay/1000; //convert to seconds;
+            Log.w("custom", "the delay is: " +delay);
             if (this.rightPlayerSoldiers >= MAX_SOLDIERS_PER_PLAYER){
                 return;
             }
             this.rightPlayerSoldiers++;
         }
-        soldiers.add(new BasicSoldier(context, player));
+        soldiers.add(new BasicSoldier(context, player,delay));
     }
 
     public void removeSoldier(Soldier soldier) {
@@ -231,8 +238,8 @@ public class GameState {
 
     public Context getContext(){ return this.context; }
 
-    public void setTime(long serverTimeInMillisecond){
-        this.timeDifference= serverTimeInMillisecond- System.currentTimeMillis();
+    public void setTime(long localTimeInMillisecond,long serverTimeInMillisecond){
+        this.timeDifference= serverTimeInMillisecond - localTimeInMillisecond;
     }
     private Long getSyncTime(){
         return System.currentTimeMillis()+this.timeDifference;

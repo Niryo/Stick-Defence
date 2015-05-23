@@ -105,8 +105,9 @@ public class Server {
             if(test) {
                 test=false;
                 makePair(peers.get(0), peers.get(1));
-                peers.get(0).send(Protocol.stringify(Protocol.Action.START_GAME));
-                peers.get(1).send(Protocol.stringify(Protocol.Action.START_GAME));
+                String currentTime= Long.toString(System.currentTimeMillis());
+                peers.get(0).send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
+                peers.get(1).send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
 
             }
         }
@@ -144,6 +145,7 @@ public class Server {
                     String[] action= Protocol.parse(inputLine);
                     doAction(action[0],action[1],peer);
                     if (peer.partner!=null){
+                        inputLine+="#"+System.currentTimeMillis();//add time stamp to the action;
                         peer.partner.send(inputLine);
                     }
                 }

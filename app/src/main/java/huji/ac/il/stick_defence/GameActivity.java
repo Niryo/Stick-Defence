@@ -2,6 +2,7 @@ package huji.ac.il.stick_defence;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
@@ -42,7 +43,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
         sendSoldier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gameState.addSoldier(Sprite.Player.LEFT);
+                gameState.addSoldier(Sprite.Player.LEFT,0);
             }
         });
         gameComponents.addView(sendSoldier);
@@ -78,7 +79,12 @@ public class GameActivity extends Activity implements DoProtocolAction {
         game.addView(gameComponents);
 //        setContentView(new GameSurface(this));
         setContentView(game);
-
+        ProgressDialog dialog = new ProgressDialog(this);
+        //todo: ProgressDialog dialog = new ProgressDialog(this);
+//        dialog.setMessage("Thinking...");
+//        dialog.setIndeterminate(true);
+//        dialog.setCancelable(false);
+//        dialog.show();
         waitDialog= new AlertDialog.Builder(this)
                 //.setTitle("Waiting for opponent..")
                 .setPositiveButton("ready", new DialogInterface.OnClickListener() {
@@ -126,11 +132,12 @@ public class GameActivity extends Activity implements DoProtocolAction {
             this.gameState.addEnemyShot(Integer.parseInt(data));
         }
         if (action.equals(Protocol.Action.SOLDIER.toString())) {
-            this.gameState.addSoldier(Sprite.Player.RIGHT);
+            this.gameState.addSoldier(Sprite.Player.RIGHT,Long.parseLong(data));
         }
 
         if (action.equals(Protocol.Action.START_GAME.toString())) {
-            this.gameState.setTime(Long.parseLong(data));
+
+            this.gameState.setTime(System.currentTimeMillis(),Long.parseLong(data));
             this.waitDialog.dismiss();
 
         }

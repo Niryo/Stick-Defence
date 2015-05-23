@@ -69,9 +69,8 @@ public class ArtificialIntelligence {
 
     public void sendSoldier(){
         long currentTime = System.currentTimeMillis();
-
         if ((currentTime - lastSoldierInMillisec)/1000 >= secondsToSendSoldier){
-            gameState.addSoldier(Sprite.Player.RIGHT);
+            gameState.addSoldier(Sprite.Player.RIGHT, 0);
             this.lastSoldierInMillisec = currentTime;
         }
     }

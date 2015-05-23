@@ -13,7 +13,7 @@ import android.util.Log;
 public class BasicSoldier extends Soldier{
 
     //=======================BasicSoldier's abilities===========================
-    private static final double SCREEN_WIDTH_PER_SEC = 0.1; // Run speed
+    private static final double TIME_TO_CROSS_SCREEN_IN_MILLI=10;
     private static final int    DAMAGE_PER_SEC = 1; // [Damage/Sec]
     //==========================================================================
 
@@ -36,8 +36,8 @@ public class BasicSoldier extends Soldier{
 
     private Sprite.Player player;
 
-    public BasicSoldier(Context context, Sprite.Player player) {
-        super(context, player, SCREEN_WIDTH_PER_SEC, DAMAGE_PER_SEC);
+    public BasicSoldier(Context context, Sprite.Player player,double delayInSec) {
+        super(context, player, TIME_TO_CROSS_SCREEN_IN_MILLI, DAMAGE_PER_SEC, delayInSec);
         if  (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
                                                   context.getResources(),
@@ -72,19 +72,19 @@ public class BasicSoldier extends Soldier{
     }
 
     public void update(long gameTime) {
-        if (!super.isAttack()){
-            if (player == Sprite.Player.LEFT){
-                if (getSoldierX() + getScaledFrameWidth() / 2 >=
-                        gameState.getRightTowerLeftX()){
-                    super.attack(leftAttackSoldierPic);
-                }
-            } else {
-                if (getSoldierX() + getScaledFrameWidth() / 2 <=
-                        gameState.getLeftTowerRightX()){
-                    super.attack(rightAttackSoldierPic);
-                }
-            }
-        }
+//        if (!super.isAttack()){
+//            if (player == Sprite.Player.LEFT){
+//                if (getSoldierX() + getScaledFrameWidth() / 2 >=
+//                        gameState.getRightTowerLeftX()){
+//                    super.attack(leftAttackSoldierPic);
+//                }
+//            } else {
+//                if (getSoldierX() + getScaledFrameWidth() / 2 <=
+//                        gameState.getLeftTowerRightX()){
+//                    super.attack(rightAttackSoldierPic);
+//                }
+//            }
+//        }
         super.update(gameTime);
     }
 

@@ -23,7 +23,7 @@ public abstract class Soldier {
     //Characteristics
     private final Sprite.Player   PLAYER;
     private final int             DAMAGE_PER_SEC;
-    private final double          RUN_PIXELS_PER_SEC;
+    private double          RUN_PIXELS_PER_SEC;
 
     //Soldier pictures
     private static Bitmap         leftSoldierPic = null;
@@ -40,10 +40,12 @@ public abstract class Soldier {
     private double                   soldierY;
     private long                  lastUpdateTime;
     private boolean               attack;
+    private double timeToCrossScreen;
+    private double delay;
 
 
-    protected Soldier(Context context, Sprite.Player player, double screenWidthPerSec,
-                      int damagePerSec) {
+    protected Soldier(Context context, Sprite.Player player, double timeToCrossScreen,
+                      int damagePerSec, double delay) {
         this.PLAYER = player;
 
         this.screenWidth =
@@ -51,16 +53,12 @@ public abstract class Soldier {
         this.screenHeight =
                 context.getResources().getDisplayMetrics().heightPixels;
 
-        //Set x and speed
-        if (player == Sprite.Player.LEFT) {
-            this.RUN_PIXELS_PER_SEC = screenWidthPerSec * screenWidth;
 
-        } else {
-            this.RUN_PIXELS_PER_SEC = - screenWidthPerSec * screenWidth;
-        }
         this.DAMAGE_PER_SEC = damagePerSec;
         this.attack = false;
         lastUpdateTime = System.currentTimeMillis();
+        this.delay=delay;
+        this.timeToCrossScreen=timeToCrossScreen;
     }
 
     protected void initSprite(Context context, Bitmap soldierPic, int nFrames,
@@ -76,6 +74,14 @@ public abstract class Soldier {
             soldierX = -sprite.getScaledFrameWidth();
         }else{
             soldierX = screenWidth;
+        }
+
+        //Set x and speed
+        if (this.PLAYER == Sprite.Player.LEFT) {
+            this.RUN_PIXELS_PER_SEC =  ((double)screenWidth+ sprite.getScaledFrameHeight()) /(timeToCrossScreen-delay);
+
+        } else {
+            this.RUN_PIXELS_PER_SEC = - (( (double) screenWidth)+sprite.getScaledFrameHeight())/(timeToCrossScreen-delay);
         }
 
     }
@@ -100,7 +106,7 @@ public abstract class Soldier {
             soldierX += (RUN_PIXELS_PER_SEC * passedTimeInSec);
         }
 
-        Log.w("custom", "run: "+ RUN_PIXELS_PER_SEC+" current:"+(RUN_PIXELS_PER_SEC * passedTimeInSec) );
+        //Log.w("custom", "run: "+ RUN_PIXELS_PER_SEC+" current:"+(RUN_PIXELS_PER_SEC * passedTimeInSec) );
     }
 
     protected void render(Canvas canvas) {

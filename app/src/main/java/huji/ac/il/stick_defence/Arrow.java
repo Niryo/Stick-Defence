@@ -15,6 +15,8 @@ public class Arrow {
     //=======================BasicSoldier's abilities===========================
     private static final double SCREEN_WIDTH_PER_SEC = 0.021;
     private static final double SCREEN_HEIGHT_PER_SEC = 0.037;
+    private static final double TIME_TO_CROSS_SCREEN_SCREEN_WIDTH=10;
+    private static final double TIME_TO_CROSS_SCREEN_SCREEN_HEIGHT=10;
 
     private static Bitmap scaledArrowPic;
     private static Sprite sprite;
