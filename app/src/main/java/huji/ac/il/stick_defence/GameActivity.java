@@ -1,6 +1,9 @@
 package huji.ac.il.stick_defence;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
@@ -18,6 +21,7 @@ import android.widget.RelativeLayout;
 public class GameActivity extends Activity implements DoProtocolAction {
 
     private GameState gameState;
+    private AlertDialog waitDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +78,23 @@ public class GameActivity extends Activity implements DoProtocolAction {
         game.addView(gameComponents);
 //        setContentView(new GameSurface(this));
         setContentView(game);
+
+        waitDialog= new AlertDialog.Builder(this)
+                //.setTitle("Waiting for opponent..")
+                .setPositiveButton("ready", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Client.getClientInstance().send(Protocol.stringify(Protocol.Action.READY_TO_PLAY));
+                    }
+                })
+                .setMessage("Waiting for opponent..")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setCancelable(false)
+                .show();
+
+        //Client.getClientInstance().send(Protocol.stringify(Protocol.Action.READY_TO_PLAY));
+
+
     }
 
 
@@ -106,6 +127,12 @@ public class GameActivity extends Activity implements DoProtocolAction {
         }
         if (action.equals(Protocol.Action.SOLDIER.toString())) {
             this.gameState.addSoldier(Sprite.Player.RIGHT);
+        }
+
+        if (action.equals(Protocol.Action.START_GAME.toString())) {
+            this.gameState.setTime(Long.parseLong(data));
+            this.waitDialog.dismiss();
+
         }
 
     }

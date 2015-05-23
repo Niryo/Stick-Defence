@@ -19,7 +19,7 @@ package huji.ac.il.stick_defence;
  * stage 3: clients tell the server that they are ready to play
  * #client: send READY_TO_PLAY
  *
- *stage 4: server tells the clients that the game start.
+ *stage 4: server tells the clients start the game and send a time stamp.
  * #server: send START_GAME
  *
  * stage 5: todo: during game protocol.

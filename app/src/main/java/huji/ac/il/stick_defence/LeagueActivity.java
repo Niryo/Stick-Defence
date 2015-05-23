@@ -20,8 +20,11 @@ public class LeagueActivity extends ActionBarActivity implements DoProtocolActio
         Button readyButton = (Button) findViewById(R.id.ready_to_play);
         readyButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                client.send(Protocol.stringify(Protocol.Action.READY_TO_PLAY));
+            public void onClick(View v) { //todo: switch to game and only then send ready to play.
+                Intent gameIntent = new Intent(getApplicationContext(),
+                        GameActivity.class);
+                startActivity(gameIntent);
+                finish();
             }
         });
     }

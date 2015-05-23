@@ -4,6 +4,9 @@ import android.content.Context;
 import android.widget.ProgressBar;
 
 import java.util.ArrayList;
+import java.util.Date;
+
+import huji.ac.il.stick_defence.util.SystemUiHider;
 
 
 /**
@@ -30,6 +33,7 @@ public class GameState {
     private ProgressBar             leftProgressBar;
     private ProgressBar             rightProgressBar;
     private Client client = Client.getClientInstance();
+    private Long timeDifference;
 
     /**
      * Constructor. Adds 2 towers to the sprites list.
@@ -226,4 +230,11 @@ public class GameState {
     }
 
     public Context getContext(){ return this.context; }
+
+    public void setTime(long serverTimeInMillisecond){
+        this.timeDifference= serverTimeInMillisecond- System.currentTimeMillis();
+    }
+    private Long getSyncTime(){
+        return System.currentTimeMillis()+this.timeDifference;
+    }
 }
