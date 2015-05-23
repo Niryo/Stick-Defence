@@ -72,19 +72,19 @@ public class BasicSoldier extends Soldier{
     }
 
     public void update(long gameTime) {
-//        if (!super.isAttack()){
-//            if (player == Sprite.Player.LEFT){
-//                if (getSoldierX() + getScaledFrameWidth() / 2 >=
-//                        gameState.getRightTowerLeftX()){
-//                    super.attack(leftAttackSoldierPic);
-//                }
-//            } else {
-//                if (getSoldierX() + getScaledFrameWidth() / 2 <=
-//                        gameState.getLeftTowerRightX()){
-//                    super.attack(rightAttackSoldierPic);
-//                }
-//            }
-//        }
+        if (!super.isAttack()){
+            if (player == Sprite.Player.LEFT){
+                if (getSoldierX() + getScaledFrameWidth() / 2 >=
+                        gameState.getRightTowerLeftX()){
+                    super.attack(leftAttackSoldierPic);
+                }
+            } else {
+                if (getSoldierX() + getScaledFrameWidth() / 2 <=
+                        gameState.getLeftTowerRightX()){
+                    super.attack(rightAttackSoldierPic);
+                }
+            }
+        }
         super.update(gameTime);
     }
 
