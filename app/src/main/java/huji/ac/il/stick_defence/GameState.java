@@ -132,18 +132,22 @@ public class GameState {
     public void touch(SimpleGestureDetector.Gesture move, Sprite.Point point) {
         if (move == SimpleGestureDetector.Gesture.DOWN) {
             this.leftBow.unStretch();
+       //     this.leftBow.rotateRight();
         }
         if (move == SimpleGestureDetector.Gesture.UP) {
             this.leftBow.stretch();
+       //     this.leftBow.rotateLeft();
         }
 
         if (move == SimpleGestureDetector.Gesture.RIGHT) {
-            this.leftBow.rotateLeft();
+            this.leftBow.unStretch();
+       //     this.leftBow.rotateLeft();
             // this.rightBow.rotateLeft();
 
         }
         if (move == SimpleGestureDetector.Gesture.LEFT) {
-            this.leftBow.rotateRight();
+            this.leftBow.stretch();
+        //    this.leftBow.rotateRight();
             //this.rightBow.rotateRight();
         }
         if (move == SimpleGestureDetector.Gesture.TOUCH_UP) {

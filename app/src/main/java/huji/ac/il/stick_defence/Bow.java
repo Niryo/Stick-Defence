@@ -121,11 +121,11 @@ public class Bow{
     public void render(Canvas canvas) {
         canvas.drawBitmap(this.scaledBow[this.currentFrame], matrix, null);
 
-        Paint paint =new Paint();
+   /*     Paint paint =new Paint();
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(3);
         paint.setStyle(Paint.Style.STROKE);
-        canvas.drawPath(this.path, paint);
+        canvas.drawPath(this.path, paint);*/
     }
 
 
