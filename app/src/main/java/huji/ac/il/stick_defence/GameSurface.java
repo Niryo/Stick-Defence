@@ -25,7 +25,7 @@ public class GameSurface extends SurfaceView implements
             new SimpleGestureDetector();
     private ProgressBar leftProgressBar, rightProgressBar;
 
-    public GameSurface(Context context) {
+    public GameSurface(Context context, boolean isMultiplayer) {
 
         super(context);
 
@@ -33,7 +33,7 @@ public class GameSurface extends SurfaceView implements
         getHolder().addCallback(this);
 
         // Create the GameLoopThread
-        gameLoopThread = new GameLoopThread(getHolder(), this);
+        gameLoopThread = new GameLoopThread(getHolder(), this, isMultiplayer);
 
         // Make the GameSurface focusable so it can handle events
         setFocusable(true);

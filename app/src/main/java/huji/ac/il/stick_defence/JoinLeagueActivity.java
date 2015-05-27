@@ -28,7 +28,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 
-public class JoinLeagueActivity extends Activity implements DoProtocolAction{
+public class JoinLeagueActivity extends Activity implements DoProtocolAction {
+    private final int TIME_TO_REFRESH_PEERS = 20000;
     WifiP2pManager mManager;
     WifiP2pManager.Channel mChannel;
     BroadcastReceiver mReceiver;
@@ -36,8 +37,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction{
     private ArrayAdapter adapter;
     private ListView list;
     private ArrayList<WifiP2pDevice> devices = new ArrayList<>();
-    private final int TIME_TO_REFRESH_PEERS = 20000;
-    private Client client= Client.getClientInstance();
+    private Client client = Client.getClientInstance();
     private boolean running;
 
 
@@ -66,7 +66,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction{
 
             @Override
             protected Void doInBackground(Void... params) {
-                running=true;
+                running = true;
                 while (running) {
                     Log.w("custom", "searching peers");
                     mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
@@ -77,7 +77,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction{
 
                         @Override
                         public void onFailure(int reason) {
-                            Log.w("custom", "fail searching peers "+ reason);
+                            Log.w("custom", "fail searching peers " + reason);
                         }
                     });
                     try {
@@ -116,7 +116,9 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction{
                                         @Override
                                         protected Void doInBackground(Void... params) {
                                             try {
-                                                Socket socket = new Socket(info.groupOwnerAddress.getHostAddress(), Server.PORT);
+                                                Socket socket =
+                                                        new Socket(info.groupOwnerAddress.getHostAddress(),
+                                                                Server.PORT);
                                                 client.setServer(socket);
 
                                             } catch (IOException e) {
@@ -163,15 +165,14 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction{
     }
 
 
-
     @Override
     public void doAction(String action, String data) {
         if (action.equals(Protocol.Action.NAME_CONFIRMED.toString())) {
-            running=false;
+            running = false;
             //todo: go to wait state;
             //todo:send the league info to the league activity
             Log.w("custom", "going to league");
-            Intent intent= new Intent(this, LeagueActivity.class);
+            Intent intent = new Intent(this, LeagueActivity.class);
             startActivity(intent);
             finish();
         }
@@ -179,7 +180,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction{
         if (action.equals(Protocol.Action.LEAGUE_INFO.toString())) {
             //todo:send the league info to the league activity
             Log.w("custom", "going to league");
-            Intent intent= new Intent(this, LeagueActivity.class);
+            Intent intent = new Intent(this, LeagueActivity.class);
             startActivity(intent);
             finish();
         }

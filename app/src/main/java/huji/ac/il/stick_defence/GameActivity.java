@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
@@ -21,21 +20,27 @@ import android.widget.RelativeLayout;
 
 public class GameActivity extends Activity implements DoProtocolAction {
 
-    private GameState gameState;
+    private GameState   gameState;
     private AlertDialog waitDialog;
+    private boolean isMultiplayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                             WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
+
+        isMultiplayer = getIntent().getBooleanExtra("Multiplayer" ,true);
 //        setContentView(R.layout.activity_main);
         FrameLayout game = new FrameLayout(this);
         RelativeLayout gameComponents = new RelativeLayout(this);
         this.gameState = GameState.CreateGameState(getApplicationContext());
+        if (!isMultiplayer){
+            this.gameState.setSinglePlayer();
+        }
         Client.getClientInstance().setCurrentActivity(this);
-        GameSurface gameSurface = new GameSurface(this);
+        GameSurface gameSurface = new GameSurface(this, isMultiplayer);
 
         //========================Send soldier Button===========================
         Button sendSoldier = new Button(this);
@@ -43,7 +48,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
         sendSoldier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gameState.addSoldier(Sprite.Player.LEFT,0);
+                gameState.addSoldier(Sprite.Player.LEFT, 0);
             }
         });
         gameComponents.addView(sendSoldier);
@@ -55,12 +60,10 @@ public class GameActivity extends Activity implements DoProtocolAction {
         display.getSize(size);
         int width = size.x;
         int height = size.y;
-        ProgressBar leftProgressBar =
-                new ProgressBar(this, null,
-                                android.R.attr.progressBarStyleHorizontal);
-        ProgressBar rightProgressBar =
-                new ProgressBar(this, null,
-                                android.R.attr.progressBarStyleHorizontal);
+        ProgressBar leftProgressBar = new ProgressBar(this, null, android.R
+                .attr.progressBarStyleHorizontal);
+        ProgressBar rightProgressBar = new ProgressBar(this, null, android.R
+                .attr.progressBarStyleHorizontal);
 
         leftProgressBar.setY(height / 5);
         leftProgressBar.setX(width / 20);
@@ -79,26 +82,28 @@ public class GameActivity extends Activity implements DoProtocolAction {
         game.addView(gameComponents);
 //        setContentView(new GameSurface(this));
         setContentView(game);
-        ProgressDialog dialog = new ProgressDialog(this);
-        //todo: ProgressDialog dialog = new ProgressDialog(this);
+        if (isMultiplayer){
+            ProgressDialog dialog = new ProgressDialog(this);
+            //todo: ProgressDialog dialog = new ProgressDialog(this);
 //        dialog.setMessage("Thinking...");
 //        dialog.setIndeterminate(true);
 //        dialog.setCancelable(false);
 //        dialog.show();
-        waitDialog= new AlertDialog.Builder(this)
-                //.setTitle("Waiting for opponent..")
-                .setPositiveButton("ready", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Client.getClientInstance().send(Protocol.stringify(Protocol.Action.READY_TO_PLAY));
-                    }
-                })
-                .setMessage("Waiting for opponent..")
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setCancelable(false)
-                .show();
+            waitDialog = new AlertDialog.Builder(this)
+                    //.setTitle("Waiting for opponent..")
+                    .setPositiveButton("ready", new DialogInterface
+                            .OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Client.getClientInstance().send(Protocol.stringify
+                                    (Protocol.Action.READY_TO_PLAY));
+                        }
+                    }).setMessage("Waiting for opponent..").setIcon(android.R
+                            .drawable.ic_dialog_alert).setCancelable(false).show();
 
-        //Client.getClientInstance().send(Protocol.stringify(Protocol.Action.READY_TO_PLAY));
+            //Client.getClientInstance().send(Protocol.stringify(Protocol.Action
+            // .READY_TO_PLAY));
+        }
 
 
     }
@@ -132,12 +137,14 @@ public class GameActivity extends Activity implements DoProtocolAction {
             this.gameState.addEnemyShot(Integer.parseInt(data));
         }
         if (action.equals(Protocol.Action.SOLDIER.toString())) {
-            this.gameState.addSoldier(Sprite.Player.RIGHT,Long.parseLong(data));
+            this.gameState.addSoldier(Sprite.Player.RIGHT,
+                                      Long.parseLong(data));
         }
 
         if (action.equals(Protocol.Action.START_GAME.toString())) {
 
-            this.gameState.setTime(System.currentTimeMillis(),Long.parseLong(data));
+            this.gameState.setTime(System.currentTimeMillis(),
+                                   Long.parseLong(data));
             this.waitDialog.dismiss();
 
         }

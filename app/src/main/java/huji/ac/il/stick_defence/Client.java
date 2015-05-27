@@ -12,18 +12,28 @@ import java.net.Socket;
 
 /**
  * A client for managing all the communication with the server.
- * It uses the singleton pattern so that it will be accessible from all the different activities.
+ * It uses the singleton pattern so that it will be accessible from all the
+ * different activities.
  */
 public class Client {
+    private static Client client;
     private String name; //each client as a name, dosen't have to be unique.
     private PrintWriter out;
     private DoProtocolAction currentActivity;
-    private static Client client;
 
-    private Client(){}
+    private Client() {
+    }
 
     /**
+     * Constructs a new client with the given name
      *
+     * @param name the name of the client
+     */
+    private Client(String name) {
+        this.name = name;
+    }
+
+    /**
      * Creates a new client if the current static client is null
      *
      * @param name the name of the client
@@ -37,7 +47,8 @@ public class Client {
     }
 
     /**
-     * Returns an instance of the client. Could return null if no one called "createClient" before
+     * Returns an instance of the client. Could return null if no one called
+     * "createClient" before
      *
      * @return an instance of the client.
      */
@@ -46,15 +57,8 @@ public class Client {
     }
 
     /**
-     * Constructs a new client with the given name
-     * @param name the name of the client
-     */
-    private Client(String name) {
-        this.name = name;
-    }
-
-    /**
      * Sends data to the server
+     *
      * @param out the data to send
      */
     public void send(String out) {
@@ -69,18 +73,23 @@ public class Client {
      */
     public void setServer(Socket server) {
         try {
-            this.out = new PrintWriter(server.getOutputStream(), true); //save the output stream of the server.
+            this.out = new PrintWriter(server.getOutputStream(), true);
+            //save the output stream of the server.
         } catch (IOException e) {
             e.printStackTrace();
         }
-        new ClientSocketListener().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, server); //start listen to the server on a different thread
-        send(Protocol.stringify(Protocol.Action.NAME, name)); //send the client name to the server.
+        new ClientSocketListener().executeOnExecutor(AsyncTask
+                .THREAD_POOL_EXECUTOR, server); //start listen to the server
+                // on a different thread
+        send(Protocol.stringify(Protocol.Action.NAME, name)); //send the
+        // client name to the server.
 
 
     }
 
     /**
      * Sets the current activity so that the client could communicate with it.
+     *
      * @param activity the current activity.
      */
     public void setCurrentActivity(DoProtocolAction activity) {
@@ -90,20 +99,22 @@ public class Client {
 
     /**
      * This method decide what to do on each data received from the server.
+     *
      * @param action the action received from the server
-     * @param data the data received from the server
+     * @param data   the data received from the server
      */
     private void doAction(String action, String data) {
-            this.currentActivity.doAction(action, data);
+        this.currentActivity.doAction(action, data);
     }
 
-    public void reportArrow(int distance){
-        send(Protocol.stringify(Protocol.Action.ARROW, Integer.toString(distance)));
+    public void reportArrow(int distance) {
+        send(Protocol.stringify(Protocol.Action.ARROW, Integer.toString
+                (distance)));
     }
-    public void reportSoldier(){
+
+    public void reportSoldier() {
         send(Protocol.stringify(Protocol.Action.SOLDIER));
     }
-
 
 
     /**
@@ -117,9 +128,11 @@ public class Client {
             Log.w("custom", "start listening to server");
             String inputLine;
             try {
-                BufferedReader in = new BufferedReader(new InputStreamReader(server.getInputStream()));
-                while ((inputLine = in.readLine()) != null) { //the readLine is a blocking method.
-                    Log.w("custom", "server sayse"+inputLine);
+                BufferedReader in = new BufferedReader(new InputStreamReader
+                        (server.getInputStream()));
+                while ((inputLine = in.readLine()) != null) { //the readLine
+                // is a blocking method.
+                    Log.w("custom", "server says: " + inputLine);
                     String[] action = Protocol.parse(inputLine);
                     doAction(action[0], action[1]);
 

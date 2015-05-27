@@ -12,16 +12,15 @@ import android.graphics.Paint;
  * Created by Nir on 03/05/2015.
  */
 public class Arrow {
-    //=======================BasicSoldier's abilities===========================
-    private static final double SCREEN_WIDTH_PER_SEC = 0.021;
-    private static final double SCREEN_HEIGHT_PER_SEC = 0.037;
-    private static final double TIME_TO_CROSS_SCREEN_SCREEN_WIDTH=47;
-    private static final double TIME_TO_CROSS_SCREEN_SCREEN_HEIGHT=10;
+    //===========================Arrow's abilities==============================
+    private static final double SEC_TO_SCREEN_WIDTH = 0.021;
+    private static final double SEC_TO_SCREEN_HEIGHT = 0.037;
 
+    //============================Arrow's picture===============================
     private static Bitmap scaledArrowPic;
     private static Sprite sprite;
 
-    private GameState     gameState= GameState.getInstance();
+    private GameState     gameState = GameState.getInstance();
     private float         x;
     private float         y;
     private float         degree;
@@ -49,8 +48,8 @@ public class Arrow {
         this.degree =(float)(Math.atan2(tan[1], tan[0])*180.0/Math.PI);
         updateMatrix();
 
-        x_pixPerSec = SCREEN_WIDTH_PER_SEC * screenWidth;
-        y_pixPerSec = SCREEN_HEIGHT_PER_SEC * screenHeight;
+        x_pixPerSec = SEC_TO_SCREEN_WIDTH * screenWidth;
+        y_pixPerSec = SEC_TO_SCREEN_HEIGHT * screenHeight;
 
         lastUpdateTime = System.currentTimeMillis();
 
