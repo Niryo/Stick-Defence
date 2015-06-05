@@ -12,4 +12,8 @@
     <string name="title_activity_slave">SlaveActivity</string>
     <string name="peers">Peers:</string>
     <string name="title_activity_league">LeagueActivity</string>
+    <string name="title_activity_market">Market</string>
+    <string name="welcome_to_the_market">Welcome to the market!</string>
+    <string name="ok">OK</string>
+    <string name="exit_to_main_menu">Exit to Main Menu</string>
 </resources>

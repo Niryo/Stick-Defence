@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.net.Socket;
 
 /**
@@ -15,7 +16,7 @@ import java.net.Socket;
  * It uses the singleton pattern so that it will be accessible from all the
  * different activities.
  */
-public class Client {
+public class Client implements DoProtocolAction, Serializable{
     private static Client client;
     private String name; //each client as a name, dosen't have to be unique.
     private PrintWriter out;
@@ -103,8 +104,9 @@ public class Client {
      * @param action the action received from the server
      * @param data   the data received from the server
      */
-    private void doAction(String action, String data) {
+    public void doAction(String action, String data) {
         this.currentActivity.doAction(action, data);
+
     }
 
     public void reportArrow(int distance) {
@@ -114,6 +116,14 @@ public class Client {
 
     public void reportSoldier() {
         send(Protocol.stringify(Protocol.Action.SOLDIER));
+    }
+
+    public void reportWin(Sprite.Player player) {
+        if (Sprite.Player.LEFT == player) {
+            send(Protocol.stringify(Protocol.Action.LEFT_WIN));
+        } else {
+            send(Protocol.stringify(Protocol.Action.RIGHT_WIN));
+        }
     }
 
 

@@ -8,12 +8,14 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 
+import java.io.Serializable;
+
 /**
  * This class represents an abstract soldier figure.
  * Extension of this class must handle the transition to the attack mode
  * by itself. This can be handled by attack() and isAttack() methods.
  */
-public abstract class Soldier {
+public abstract class Soldier implements Serializable{
     //Epsilon to hit soldier from his center
     private static final int HIT_EPSILON = 15;
 
@@ -54,7 +56,7 @@ public abstract class Soldier {
 
         this.DAMAGE_PER_SEC = damagePerSec;
         this.attack = false;
-        lastUpdateTime = System.currentTimeMillis();
+        resetUpdateTime();
         this.delayInSec = delayInSec;
         this.secToScreenWidth = secToScreenWidth;
     }
@@ -110,6 +112,10 @@ public abstract class Soldier {
 
         //Log.w("custom", "run: "+ runPixelsPerSec+" current:"+
         // (runPixelsPerSec * passedTimeInSec) );
+    }
+
+    public void resetUpdateTime(){
+        lastUpdateTime = System.currentTimeMillis();
     }
 
     protected void render(Canvas canvas) {

@@ -67,7 +67,7 @@ public class Server {
                     serverSocket = new ServerSocket(PORT);
                     while (acceptingNewClients) {
                         Socket socket = serverSocket.accept(); //the accept method is blocking.
-                        Log.w("custom", "client excepted!"); //if we reach this line only when a new client is connected.
+                        Log.w("custom", "client accepted!"); //if we reach this line only when a new client is connected.
                         Peer peer = new Peer(socket);
                         peers.add(peer); //save the new client in the peers list
                         if(peers.size()== leagueParticipants){
@@ -88,28 +88,41 @@ public class Server {
 
 
     /**
-     * This method decide what to do on each data received from a clent.
+     * This method decide what to do on each data received from a client.
      * @param action the action received from the client
      * @param data the data received from the client
-     * @param peer the clent that send us the action.
+     * @param peer the client that send us the action.
      */
     private void doAction(String action, String data, Peer peer){
         // if the client sends us his name, we saved the name and send confirmation.
-        if(action.equals(Protocol.Action.NAME.toString())){
-            peer.approved=true;
-            peer.setName(data);
-            peer.send(Protocol.stringify(Protocol.Action.NAME_CONFIRMED));
-        }
+        Protocol.Action protAction = Protocol.Action.valueOf(action);
+        switch (protAction){
+            case NAME:
+                peer.approved = true;
+                peer.setName(data);
+                peer.send(Protocol.stringify(Protocol.Action.NAME_CONFIRMED));
+                break;
 
-        if(action.equals(Protocol.Action.READY_TO_PLAY.toString())){ //todo: this is just for testing! need to be removed
-            if(test) {
-                test=false;
-                makePair(peers.get(0), peers.get(1));
-                String currentTime= Long.toString(System.currentTimeMillis());
-                peers.get(0).send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
-                peers.get(1).send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
+            case READY_TO_PLAY:
+                if(test) {
+                    test=false;
+                    makePair(peers.get(0), peers.get(1));
+                    String currentTime= Long.toString(System.currentTimeMillis());
+                    peers.get(0).send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
+                    peers.get(1).send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
 
-            }
+                }
+                break;
+
+            case PAUSE:
+                Log.w("yahav", "Distribute pauses");
+                for (Peer iPeer : peers){
+                    if (peer != iPeer){
+                        Log.w("yahav", "Send pause to " + peer.toString());
+                        peer.send(action);
+                    }
+                }
+                break;
         }
 
     }

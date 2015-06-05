@@ -8,10 +8,12 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 
+import java.io.Serializable;
+
 /**
  * Created by Nir on 03/05/2015.
  */
-public class Arrow {
+public class Arrow implements Serializable{
     //===========================Arrow's abilities==============================
     private static final double SEC_TO_SCREEN_WIDTH = 0.021;
     private static final double SEC_TO_SCREEN_HEIGHT = 0.037;
@@ -51,7 +53,7 @@ public class Arrow {
         x_pixPerSec = SEC_TO_SCREEN_WIDTH * screenWidth;
         y_pixPerSec = SEC_TO_SCREEN_HEIGHT * screenHeight;
 
-        lastUpdateTime = System.currentTimeMillis();
+        resetUpdateTime();
 
     }
 
@@ -74,8 +76,10 @@ public class Arrow {
         if(this.x>this.screenWidth || this.y>this.screenHeight){
             gameState.removeArrow(this);
         }
+    }
 
-
+    public void resetUpdateTime(){
+        lastUpdateTime = System.currentTimeMillis();
     }
 
     public void render(Canvas canvas){

@@ -127,7 +127,6 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
                                             return null;
                                         }
                                     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
-                                    ;
                                 }
 
                             }

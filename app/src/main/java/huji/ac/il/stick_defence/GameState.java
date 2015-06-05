@@ -4,6 +4,13 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.ProgressBar;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -15,8 +22,9 @@ import huji.ac.il.stick_defence.util.SystemUiHider;
  * That is contains all sprites, handle them and manage
  * the interactions between them.
  */
-public class GameState {
+public class GameState implements Serializable{
     private static GameState gameState;
+    public static final String fileName = "game_state.sav";
 
     private static int MAX_SOLDIERS_PER_PLAYER = 20;
 
@@ -36,6 +44,8 @@ public class GameState {
     private Client client = Client.getClientInstance();
     private long timeDifference;
     private boolean isMultiplayer = true;
+    private boolean leftPlayerWin = false;
+    private boolean rightPlayerWin = false;
 
     /**
      * Constructor. Adds 2 towers to the sprites list.
@@ -48,14 +58,22 @@ public class GameState {
 
     public static GameState CreateGameState(Context context) {
         if (gameState == null) {
-            gameState = new GameState(context);
-            gameState.init();
+            gameState = load(context);
+            if (null == gameState){
+                gameState = new GameState(context);
+                gameState.init();
+            }
+
         }
         return gameState;
     }
 
     public static GameState getInstance() {
         return gameState;
+    }
+
+    public static void reset(){
+        gameState = null;
     }
 
     private void init() {
@@ -114,7 +132,15 @@ public class GameState {
             tower.update(System.currentTimeMillis());
         }
         this.checkHits();
+    }
 
+    public void resetUpdateTimes(){
+        for (Soldier soldier : this.getSoldiers()) {
+            soldier.resetUpdateTime();
+        }
+        for (Arrow arrow : this.getArrows()) {
+            arrow.resetUpdateTime();
+        }
     }
 
     private void checkHits() {
@@ -243,10 +269,22 @@ public class GameState {
 
     public void hitTower(Sprite.Player player, double hp) {
         if (player == Sprite.Player.RIGHT) {
-            towers.get(0).reduceHP(hp);
+            if (!towers.get(0).reduceHP(hp)){
+                this.rightPlayerWin = true;
+            }
         } else {
-            towers.get(1).reduceHP(hp);
+            if (!towers.get(1).reduceHP(hp)){
+                this.leftPlayerWin = true;
+            }
         }
+    }
+
+    public boolean isRightPlayerWin(){
+        return this.rightPlayerWin;
+    }
+
+    public boolean isLeftPlayerWin(){
+        return this.leftPlayerWin;
     }
 
     public void addEnemyShot(int dist) {
@@ -263,5 +301,54 @@ public class GameState {
 
     private long getSyncTime() {
         return System.currentTimeMillis() + this.timeDifference;
+    }
+
+    public boolean isMultiplayer(){
+        return this.isMultiplayer;
+    }
+
+    private boolean isGameOver(){
+        return isRightPlayerWin() || isLeftPlayerWin();
+    }
+
+    public void save(File file){
+        if (isGameOver()){
+            Log.w("yahav", "Game over, don't save");
+            return;
+        }
+        try{
+            Log.w("yahav", "Saving to" + context.getFilesDir());
+            ObjectOutputStream oos =
+                    new ObjectOutputStream(new FileOutputStream(file));
+            oos.writeObject(this);
+            oos.flush();
+            oos.close();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static GameState load(Context context){
+        File file = new File(context.getFilesDir(), fileName);
+        if (file.exists()){
+            Log.w("yahav", "Loading from" + context.getFilesDir());
+            try{
+                ObjectInputStream ois =
+                        new ObjectInputStream(new FileInputStream(
+                                new File(context.getFilesDir(),
+                                        fileName)));
+                GameState gameState = (GameState) ois.readObject();
+                ois.close();
+                return gameState;
+            } catch (IOException e){
+                e.printStackTrace();
+            } catch (ClassNotFoundException e){
+                e.printStackTrace(); //May be deleted
+            }
+        } else {
+            Log.w("yahav", "Tried to load a nonexistent file");
+        }
+
+        return null;
     }
 }

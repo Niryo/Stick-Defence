@@ -2,6 +2,8 @@ package huji.ac.il.stick_defence;
 
 import android.app.Activity;
 import android.content.Intent;
+
+import java.io.File;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.AsyncTask;
@@ -29,6 +31,20 @@ public class MainMenu extends Activity implements DoProtocolAction {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         this.client.setCurrentActivity(this);
+        File file = new File(getFilesDir(), GameState.fileName);
+    /*    if (file.exists()){
+            Log.w("yahav", "File exists");
+            GameState gameState = GameState.CreateGameState(getApplicationContext());
+            Intent gameIntent = new Intent(getApplicationContext(),
+                    GameActivity.class);
+            gameIntent.putExtra("Multiplayer", gameState.isMultiplayer());
+            gameIntent.putExtra("NewGame", false);
+            startActivity(gameIntent);
+            finish();
+        } else {
+            Log.w("yahav", "File doesn't exists");
+        }*/
+
         //========================Single player=================================
         Button singlePlayer = (Button) findViewById(R.id.single_player);
         singlePlayer.setOnClickListener(new View.OnClickListener() {
@@ -37,6 +53,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 Intent gameIntent = new Intent(getApplicationContext(),
                         GameActivity.class);
                 gameIntent.putExtra("Multiplayer", false);
+                gameIntent.putExtra("NewGame", true);
                 startActivity(gameIntent);
                 finish();
 
@@ -72,7 +89,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
                                                 .groupOwnerAddress
                                                 .getHostAddress(), Server.PORT);
                                         client.setServer(socket);
-                                        //todo:switch to leagMode
+                                        //todo:switch to leagueMode
 
                                     } catch (IOException e) {
                                         e.printStackTrace();
@@ -81,7 +98,6 @@ public class MainMenu extends Activity implements DoProtocolAction {
                                 }
                             }.executeOnExecutor(AsyncTask
                                     .THREAD_POOL_EXECUTOR, null);
-                            ;
                         }
 
                     }

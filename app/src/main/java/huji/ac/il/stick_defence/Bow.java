@@ -11,10 +11,12 @@ import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.RectF;
 
+import java.io.Serializable;
+
 /**
  * Created by yahav on 01/05/15.
  */
-public class Bow{
+public class Bow implements Serializable{
     //Bow height in relation to the screen height.
     //0-1 double. For instance, 0.5 will cause the
     //bow to span over a half of the screen height.

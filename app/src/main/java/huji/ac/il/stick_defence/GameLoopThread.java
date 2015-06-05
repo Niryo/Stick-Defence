@@ -1,6 +1,7 @@
 package huji.ac.il.stick_defence;
 
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.Button;
@@ -72,7 +73,6 @@ public class GameLoopThread extends Thread {
                          ai.shoot();
                     }
 
-
                     this.gameState.update();
                     this.gameSurface.render(canvas);
 
@@ -96,6 +96,15 @@ public class GameLoopThread extends Thread {
                         this.gameState.update(); // update without rendering
                         sleepTime += FRAME_PERIOD;    // add frame period to check if in next frame
                         skippedFrames++;
+                    }
+
+                    //Check if one of the players win
+                    if (gameState.isLeftPlayerWin() ||
+                            gameState.isRightPlayerWin()){
+                        Log.w("custom", "game over! bye bye!");
+                        running = false;
+                        gameSurface.goToMarket();
+
                     }
 
                 }

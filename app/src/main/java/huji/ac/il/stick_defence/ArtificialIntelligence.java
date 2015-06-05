@@ -64,7 +64,7 @@ public class ArtificialIntelligence {
                 break;
         }
 
-
+        lastSoldierInMillisec = lastShootInMillisec = System.currentTimeMillis();
     }
 
     public void sendSoldier(){
@@ -74,6 +74,7 @@ public class ArtificialIntelligence {
             this.lastSoldierInMillisec = currentTime;
         }
     }
+
 
     public void shoot(){
 
