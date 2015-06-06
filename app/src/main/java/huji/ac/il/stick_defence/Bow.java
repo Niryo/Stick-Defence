@@ -40,7 +40,7 @@ public class Bow implements Serializable{
     private float pathLength;
     private float[] pos= new float[2];
     private float[] tan= new float[2];
-    private Matrix matrix= new Matrix();
+    private transient Matrix matrix= new Matrix();
     private int distance=0;
     private float bm_offsetX;
     private float bm_offsetY;

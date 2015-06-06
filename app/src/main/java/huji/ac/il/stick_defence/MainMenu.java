@@ -30,9 +30,10 @@ public class MainMenu extends Activity implements DoProtocolAction {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+        //client = Client.createClient(name);
         this.client.setCurrentActivity(this);
-        File file = new File(getFilesDir(), GameState.fileName);
-    /*    if (file.exists()){
+        /*File file = new File(getFilesDir(), GameState.fileName);
+        if (file.exists()){
             Log.w("yahav", "File exists");
             GameState gameState = GameState.CreateGameState(getApplicationContext());
             Intent gameIntent = new Intent(getApplicationContext(),

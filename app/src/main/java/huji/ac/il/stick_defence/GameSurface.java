@@ -74,6 +74,14 @@ public class GameSurface extends SurfaceView implements
         }
     }
 
+    public void sleep(){
+        gameLoopThread.sleep();
+    }
+
+    public void wakeUp(){
+        gameLoopThread.wakeUp();
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);

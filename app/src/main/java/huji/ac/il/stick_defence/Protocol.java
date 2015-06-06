@@ -50,7 +50,8 @@ public static enum Action {
     ARROW,
     LEFT_WIN,
     RIGHT_WIN,
-    PAUSE
+    PAUSE,
+    RESUME
 }
 
     /**

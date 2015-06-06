@@ -25,10 +25,7 @@ public class GameLoopThread extends Thread {
     private GameSurface gameSurface;
     private GameState gameState;
     private boolean running;
-
-
-    //Testing
-    private int sendSoldierTimeout = 0;
+    private boolean sleep;
 
 
     public void setRunning(boolean running) {
@@ -46,8 +43,17 @@ public class GameLoopThread extends Thread {
         if (!multiplayer){
             this.ai = new ArtificialIntelligence(ArtificialIntelligence.Difficulty.EASY);
         }
-       //
+        sleep = false;
+    }
 
+    public void sleep(){
+        Log.w("yahav", "GameLoop is going to sleep");
+        this.sleep = true;
+    }
+
+    public void wakeUp(){
+        Log.w("yahav", "GameLoop wake up");
+        this.sleep = false;
     }
 
     @Override
@@ -61,21 +67,24 @@ public class GameLoopThread extends Thread {
         sleepTime = 0;
 
         while (running) {
+
             canvas = null;
             try {
+
                 canvas = this.surfaceHolder.lockCanvas();
                 synchronized (surfaceHolder) {
                     beginTime = System.currentTimeMillis();
                     skippedFrames = 0;    // resetting the frames skipped
 
-                    if (!isMultiplayer){
-                         ai.sendSoldier();
-                         ai.shoot();
+                    if (!sleep){
+                        if (!isMultiplayer){
+                             ai.sendSoldier();
+                             ai.shoot();
+                        }
+
+                        this.gameState.update();
+                        this.gameSurface.render(canvas);
                     }
-
-                    this.gameState.update();
-                    this.gameSurface.render(canvas);
-
 
                     timeDiff = System.currentTimeMillis() - beginTime;
 
@@ -91,7 +100,7 @@ public class GameLoopThread extends Thread {
                         }
                     }
 
-                    while (sleepTime < 0 && skippedFrames < MAX_FRAME_SKIPS) {
+                    while (!sleep && sleepTime < 0 && skippedFrames < MAX_FRAME_SKIPS) {
                         // we need to catch up
                         this.gameState.update(); // update without rendering
                         sleepTime += FRAME_PERIOD;    // add frame period to check if in next frame

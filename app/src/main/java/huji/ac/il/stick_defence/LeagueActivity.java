@@ -37,6 +37,7 @@ public class LeagueActivity extends Activity implements DoProtocolAction {
         Button startButton = (Button) findViewById(R.id.start);
         final TextView nPlayersText = (TextView) findViewById(R.id.num_of_players);
         RadioGroup networkChoice = (RadioGroup) findViewById(R.id.network_choice);
+        networkChoice.check(R.id.wifi);
         nPlayersText.setText(String.valueOf(nPlayers));
 
         increasePlayersButton.setOnClickListener(new View.OnClickListener() {

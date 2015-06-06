@@ -28,7 +28,7 @@ public class Arrow implements Serializable{
     private float         degree;
     private float         bm_offsetX;
     private float         bm_offsetY;
-    private Matrix        matrix = new Matrix();
+    private transient  Matrix matrix = new Matrix();
     private int           screenWidth;
     private int           screenHeight;
     private long          lastUpdateTime;

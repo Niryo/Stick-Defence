@@ -55,7 +55,7 @@ public class Tower {
     //tower to span over a half of the screen height.
     private static final double SCREEN_HEIGHT_PORTION = 0.6;
 
-    public static final double MAX_HP = 1.0;//100.0;
+    public static final double MAX_HP = 10.0;//100.0;
 
     private static Bitmap   leftTowerPic = null;
     private static Bitmap   rightTowerPic = null;

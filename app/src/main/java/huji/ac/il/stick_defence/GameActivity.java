@@ -2,6 +2,7 @@ package huji.ac.il.stick_defence;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,6 +29,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
     private AlertDialog waitDialog;
     private boolean isMultiplayer;
     private GameSurface gameSurface;
+
+    private AlertDialog         pauseDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,33 +117,50 @@ public class GameActivity extends Activity implements DoProtocolAction {
                             Client.getClientInstance().send(Protocol.stringify
                                     (Protocol.Action.READY_TO_PLAY));
                         }
+                    }).setNegativeButton("Wipe all data", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            File file = new File(getFilesDir(), GameState.fileName);
+                            Log.w("yahav", getFilesDir().toString());
+                            if (!file.delete()) {
+                                Log.w("yahav", "Failed to delete file");
+                            } else {
+                                Log.w("yahav", "File deleted successfully");
+                            }
+                            Intent mainMenuIntent =
+                                    new Intent(getApplicationContext(),
+                                            MainMenu.class);
+                            startActivity(mainMenuIntent);
+                            finish();
+                        }
                     }).setMessage("Waiting for opponent..").setIcon(android.R
                             .drawable.ic_dialog_alert).setCancelable(false).show();
 
             //Client.getClientInstance().send(Protocol.stringify(Protocol.Action
             // .READY_TO_PLAY));
+
+            AlertDialog.Builder pauseDialogBuilder;
+            pauseDialogBuilder = new AlertDialog.Builder(this)
+                    .setTitle("Pause")
+                    .setMessage("Wait! Other player in a break")
+                    .setIcon(android.R.drawable.ic_dialog_alert);
+
+            pauseDialog = pauseDialogBuilder.create();
         }
     }
 
     @Override
     protected void onPause() {
-        Client.getClientInstance().send(Protocol.stringify(Protocol.Action.PAUSE));
+        if (isMultiplayer){
+            Client.getClientInstance().
+                    send(Protocol.stringify(Protocol.Action.PAUSE));
+        }
+
         gameState.save(new File(getFilesDir(), GameState.fileName));
         gameSurface.stopGameLoop();
         super.onPause();
     }
 
- /*   @Override
-    protected void onDestroy() {
-        File file = new File(getFilesDir(), GameState.fileName);
-        Log.w("yahav", getFilesDir().toString());
-        if (!file.delete()){
-            Log.w("yahav", "Failed to delete file");
-        } else {
-            Log.w("yahav", "File deleted successfully");
-        }
-        super.onDestroy();
-    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -194,9 +214,20 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 break;
 
             case PAUSE:
-                
-                this.onPause();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        pauseDialog.show();
+                    }
+                });
 
+                this.gameSurface.sleep();
+                break;
+
+            case RESUME:
+                pauseDialog.cancel();
+                this.gameSurface.wakeUp();
+                break;
         }
 
 
