@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * In other words the server doesn't know on witch machine it is being hosted.
  */
 public class Server {
-    private int leagueParticipants; //todo: make it variable and set it in the constructor.
+    private int leagueParticipants;
     public static final int PORT=6666; //arbitrary port
     private static Server server;
     private int counter=0;
@@ -74,7 +74,7 @@ public class Server {
                     serverSocket = new ServerSocket(PORT);
                     while (acceptingNewClients) {
                         Socket socket = serverSocket.accept(); //the accept method is blocking.
-                        Log.w("custom", "client excepted!"); //if we reach this line only when a new client is connected.
+                        Log.w("custom", "client accepted!"); //if we reach this line only when a new client is connected.
                         Peer peer = new Peer(socket);
                         peers.add(peer); //save the new client in the peers list
                         if(peers.size()== leagueParticipants){ //todo: sleep some time to see that no one is disconnecting
@@ -101,40 +101,42 @@ private void sendLeagueInfo(String info){
 
 
     /**
-     * This method decide what to do on each data received from a clent.
+     * This method decide what to do on each data received from a client.
      * @param action the action received from the client
      * @param data the data received from the client
-     * @param peer the clent that send us the action.
+     * @param peer the client that send us the action.
      */
     private void doAction(String action, String data, Peer peer){
+        Protocol.Action protAction = Protocol.Action.valueOf(action);
+        switch (protAction){
         // if the client sends us his name, we saved the name and send confirmation.
-        if(action.equals(Protocol.Action.NAME.toString())){
-            peer.approved=true;
-            peer.setName(data);
-            peer.send(Protocol.stringify(Protocol.Action.NAME_CONFIRMED));
-        }
+            case NAME:
+                peer.approved = true;
+                peer.setName(data);
+                peer.send(Protocol.stringify(Protocol.Action.NAME_CONFIRMED));
+                break;
 
-        if(action.equals(Protocol.Action.READY_TO_PLAY.toString())){ //todo: this is just for testing! need to be removed
-//            if(test) {
-//                test=false;
-//                makePair(peers.get(0), peers.get(1));
-//                String currentTime= Long.toString(System.currentTimeMillis());
-//                peers.get(0).send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
-//                peers.get(1).send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
-//            }
+            case READY_TO_PLAY:
+                peer.readyToPlay=true;
+                if(peer.partner.readyToPlay){
+                    String currentTime= Long.toString(System.currentTimeMillis());
+                    peer.send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
+                    peer.partner.send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
+                    //clear the readyToPlayFlag for the next time:
+                    peer.readyToPlay=false;
+                    peer.partner.readyToPlay=false;
+                }
+                break;
 
-            peer.readyToPlay=true;
-            if(peer.partner.readyToPlay){
-                String currentTime= Long.toString(System.currentTimeMillis());
-                peer.send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
-                peer.partner.send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
-                //clear the readyToPlayFlag for the next time:
-                peer.readyToPlay=false;
-                peer.partner.readyToPlay=false;
-            }
-
-
-
+            case PAUSE:
+                Log.w("yahav", "Distribute pauses");
+                for (Peer iPeer : peers){
+                    if (peer != iPeer){
+                        Log.w("yahav", "Send pause to " + peer.toString());
+                        peer.send(action);
+                    }
+                }
+                break;
         }
 
     }

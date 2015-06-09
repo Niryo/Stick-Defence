@@ -2,11 +2,13 @@ package huji.ac.il.stick_defence;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,24 +20,46 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import java.io.File;
+
 
 public class GameActivity extends Activity implements DoProtocolAction {
 
-    private GameState gameState;
+    private GameState   gameState;
     private ProgressDialog waitDialog;
+    private boolean isMultiplayer;
+    private GameSurface gameSurface;
+    private AlertDialog         pauseDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                             WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
+
+        Log.w("yahav", "Starting GameActivity");
+        boolean newGame = getIntent().getBooleanExtra("NewGame", true);
+        if (newGame){
+            Log.w("yahav", "New game");
+            GameState.reset();
+            this.gameState = GameState.CreateGameState(getApplicationContext());
+            isMultiplayer = getIntent().getBooleanExtra("Multiplayer", true);
+        } else {
+            this.gameState = GameState.CreateGameState(getApplicationContext());
+            isMultiplayer = gameState.isMultiplayer();
+        }
 //        setContentView(R.layout.activity_main);
         FrameLayout game = new FrameLayout(this);
         RelativeLayout gameComponents = new RelativeLayout(this);
-        this.gameState = GameState.CreateGameState(getApplicationContext());
+
+        if (!isMultiplayer){
+            this.gameState.setSinglePlayer();
+        }
+        gameState.resetUpdateTimes();
         Client.getClientInstance().setCurrentActivity(this);
-        GameSurface gameSurface = new GameSurface(this);
+        gameSurface = new GameSurface(this, isMultiplayer);
 
         //========================Send soldier Button===========================
         Button sendSoldier = new Button(this);
@@ -43,7 +67,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
         sendSoldier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gameState.addSoldier(Sprite.Player.LEFT,0);
+                gameState.addSoldier(Sprite.Player.LEFT, 0);
             }
         });
         gameComponents.addView(sendSoldier);
@@ -55,12 +79,10 @@ public class GameActivity extends Activity implements DoProtocolAction {
         display.getSize(size);
         int width = size.x;
         int height = size.y;
-        ProgressBar leftProgressBar =
-                new ProgressBar(this, null,
-                                android.R.attr.progressBarStyleHorizontal);
-        ProgressBar rightProgressBar =
-                new ProgressBar(this, null,
-                                android.R.attr.progressBarStyleHorizontal);
+        ProgressBar leftProgressBar = new ProgressBar(this, null, android.R
+                .attr.progressBarStyleHorizontal);
+        ProgressBar rightProgressBar = new ProgressBar(this, null, android.R
+                .attr.progressBarStyleHorizontal);
 
         leftProgressBar.setY(height / 5);
         leftProgressBar.setX(width / 20);
@@ -80,6 +102,9 @@ public class GameActivity extends Activity implements DoProtocolAction {
 //        setContentView(new GameSurface(this));
         setContentView(game);
 
+
+
+       if (isMultiplayer){
         waitDialog = new ProgressDialog(this);
         waitDialog.setMessage("Waiting for opponent..");
         waitDialog.setIndeterminate(true);
@@ -87,8 +112,58 @@ public class GameActivity extends Activity implements DoProtocolAction {
         waitDialog.show();
 
         Client.getClientInstance().send(Protocol.stringify(Protocol.Action.READY_TO_PLAY));
+//
+//            waitDialog = new AlertDialog.Builder(this)
+//                    //.setTitle("Waiting for opponent..")
+//                    .setPositiveButton("ready", new DialogInterface
+//                            .OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            Client.getClientInstance().send(Protocol.stringify
+//                                    (Protocol.Action.READY_TO_PLAY));
+//                        }
+//                    }).setNegativeButton("Wipe all data", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            File file = new File(getFilesDir(), GameState.fileName);
+//                            Log.w("yahav", getFilesDir().toString());
+//                            if (!file.delete()) {
+//                                Log.w("yahav", "Failed to delete file");
+//                            } else {
+//                                Log.w("yahav", "File deleted successfully");
+//                            }
+//                            Intent mainMenuIntent =
+//                                    new Intent(getApplicationContext(),
+//                                            MainMenu.class);
+//                            startActivity(mainMenuIntent);
+//                            finish();
+//                        }
+//                    }).setMessage("Waiting for opponent..").setIcon(android.R
+//                            .drawable.ic_dialog_alert).setCancelable(false).show();
 
 
+
+            AlertDialog.Builder pauseDialogBuilder;
+            pauseDialogBuilder = new AlertDialog.Builder(this)
+                    .setTitle("Pause")
+                    .setMessage("Wait! Other player in a break")
+                    .setIcon(android.R.drawable.ic_dialog_alert);
+
+            pauseDialog = pauseDialogBuilder.create();
+        }
+    }
+
+
+    @Override
+    protected void onPause() {
+        if (isMultiplayer){
+            Client.getClientInstance().
+                    send(Protocol.stringify(Protocol.Action.PAUSE));
+        }
+
+        gameState.save(new File(getFilesDir(), GameState.fileName));
+        gameSurface.stopGameLoop();
+        super.onPause();
     }
 
 
@@ -107,7 +182,16 @@ public class GameActivity extends Activity implements DoProtocolAction {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.exit_to_main_menu) {
+            File file = new File(getFilesDir(), GameState.fileName);
+            if (!file.delete()){
+                Log.w("yahav", "Failed to delete file");
+            } else {
+                Log.w("yahav", "File deleted successfully");
+            }
+            Intent intent = new Intent(getApplicationContext(), MainMenu.class);
+            startActivity(intent);
+            finish();
             return true;
         }
 
@@ -116,19 +200,41 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
     @Override
     public void doAction(String action, String data) {
-        if (action.equals(Protocol.Action.ARROW.toString())) {
-            this.gameState.addEnemyShot(Integer.parseInt(data));
-        }
-        if (action.equals(Protocol.Action.SOLDIER.toString())) {
-            this.gameState.addSoldier(Sprite.Player.RIGHT,Long.parseLong(data));
+        Protocol.Action protAction = Protocol.Action.valueOf(action);
+
+        switch (protAction){
+            case ARROW:
+                this.gameState.addEnemyShot(Integer.parseInt(data));
+                break;
+
+            case SOLDIER:
+                this.gameState.addSoldier(Sprite.Player.RIGHT,
+                        Long.parseLong(data));
+                break;
+
+            case START_GAME:
+                this.gameState.setTime(System.currentTimeMillis(),
+                        Long.parseLong(data));
+                this.waitDialog.dismiss();
+                break;
+
+            case PAUSE:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        pauseDialog.show();
+                    }
+                });
+
+                this.gameSurface.sleep();
+                break;
+
+            case RESUME:
+                pauseDialog.cancel();
+                this.gameSurface.wakeUp();
+                break;
         }
 
-        if (action.equals(Protocol.Action.START_GAME.toString())) {
-
-            this.gameState.setTime(System.currentTimeMillis(),Long.parseLong(data));
-            this.waitDialog.dismiss();
-
-        }
 
     }
 }

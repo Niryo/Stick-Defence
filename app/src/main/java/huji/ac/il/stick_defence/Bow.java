@@ -11,10 +11,12 @@ import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.RectF;
 
+import java.io.Serializable;
+
 /**
  * Created by yahav on 01/05/15.
  */
-public class Bow{
+public class Bow implements Serializable{
     //Bow height in relation to the screen height.
     //0-1 double. For instance, 0.5 will cause the
     //bow to span over a half of the screen height.
@@ -38,7 +40,7 @@ public class Bow{
     private float pathLength;
     private float[] pos= new float[2];
     private float[] tan= new float[2];
-    private Matrix matrix= new Matrix();
+    private transient Matrix matrix= new Matrix();
     private int distance=0;
     private float bm_offsetX;
     private float bm_offsetY;
@@ -121,11 +123,11 @@ public class Bow{
     public void render(Canvas canvas) {
         canvas.drawBitmap(this.scaledBow[this.currentFrame], matrix, null);
 
-        Paint paint =new Paint();
+   /*     Paint paint =new Paint();
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(3);
         paint.setStyle(Paint.Style.STROKE);
-        canvas.drawPath(this.path, paint);
+        canvas.drawPath(this.path, paint);*/
     }
 
 

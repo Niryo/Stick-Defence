@@ -8,26 +8,36 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 
+import java.io.Serializable;
+
 /**
  * Created by Nir on 03/05/2015.
  */
+<<<<<<< HEAD
 public class Arrow {
     //=======================BasicSoldier's abilities===========================
     private static final double SCREEN_WIDTH_PER_SEC = 0.021;
     private static final double SCREEN_HEIGHT_PER_SEC = 0.037;
     private static final double TIME_TO_CROSS_SCREEN_WIDTH=47;
     private static final double TIME_TO_CROSS_SCREEN_HEIGHT=10;
+=======
+public class Arrow implements Serializable{
+    //===========================Arrow's abilities==============================
+    private static final double SEC_TO_SCREEN_WIDTH = 0.021;
+    private static final double SEC_TO_SCREEN_HEIGHT = 0.037;
+>>>>>>> origin/master
 
+    //============================Arrow's picture===============================
     private static Bitmap scaledArrowPic;
     private static Sprite sprite;
 
-    private GameState     gameState= GameState.getInstance();
+    private GameState     gameState = GameState.getInstance();
     private float         x;
     private float         y;
     private float         degree;
     private float         bm_offsetX;
     private float         bm_offsetY;
-    private Matrix        matrix = new Matrix();
+    private transient  Matrix matrix = new Matrix();
     private int           screenWidth;
     private int           screenHeight;
     private long          lastUpdateTime;
@@ -49,10 +59,10 @@ public class Arrow {
         this.degree =(float)(Math.atan2(tan[1], tan[0])*180.0/Math.PI);
         updateMatrix();
 
-        x_pixPerSec = SCREEN_WIDTH_PER_SEC * screenWidth;
-        y_pixPerSec = SCREEN_HEIGHT_PER_SEC * screenHeight;
+        x_pixPerSec = SEC_TO_SCREEN_WIDTH * screenWidth;
+        y_pixPerSec = SEC_TO_SCREEN_HEIGHT * screenHeight;
 
-        lastUpdateTime = System.currentTimeMillis();
+        resetUpdateTime();
 
     }
 
@@ -75,8 +85,10 @@ public class Arrow {
         if(this.x>this.screenWidth || this.y>this.screenHeight){
             gameState.removeArrow(this);
         }
+    }
 
-
+    public void resetUpdateTime(){
+        lastUpdateTime = System.currentTimeMillis();
     }
 
     public void render(Canvas canvas){

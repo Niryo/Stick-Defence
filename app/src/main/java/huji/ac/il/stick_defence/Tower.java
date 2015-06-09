@@ -55,7 +55,7 @@ public class Tower {
     //tower to span over a half of the screen height.
     private static final double SCREEN_HEIGHT_PORTION = 0.6;
 
-    public static final double MAX_HP = 100.0;
+    public static final double MAX_HP = 10.0;//100.0;
 
     private static Bitmap   leftTowerPic = null;
     private static Bitmap   rightTowerPic = null;
@@ -154,7 +154,13 @@ public class Tower {
     public int getRightX() { return this.towerX +
                                     (int) towerSprite.getScaledFrameWidth(); }
 
-    public void reduceHP(double hp){
+    /**
+     * Reduces HP to the tower and handle the fire. Returns true iff there
+     * is enough hp to reduce.
+     * @param hp the hp amount to reduce
+     * @return true iff there is enough hp to reduce
+     */
+    public boolean reduceHP(double hp){
         this.hp -= hp;
 
         if (this.hp < 75 && this.fires.size() < 1){
@@ -170,6 +176,8 @@ public class Tower {
             this.fires.add(new Fire(context));
         }
         gameState.setTowerProgressHP(this.hp, player);
+
+        return this.hp > 0;
     }
 
 }

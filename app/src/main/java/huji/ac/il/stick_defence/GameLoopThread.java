@@ -1,6 +1,7 @@
 package huji.ac.il.stick_defence;
 
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.Button;
@@ -18,15 +19,13 @@ public class GameLoopThread extends Thread {
     // the frame period
     private final static int FRAME_PERIOD = 1000 / MAX_FPS;
 
-    //private ArtificialIntelligence ai;
+    private ArtificialIntelligence ai;
+    private boolean isMultiplayer;
     private SurfaceHolder surfaceHolder;
     private GameSurface gameSurface;
     private GameState gameState;
     private boolean running;
-
-
-    //Testing
-    private int sendSoldierTimeout = 0;
+    private boolean sleep;
 
 
     public void setRunning(boolean running) {
@@ -34,13 +33,27 @@ public class GameLoopThread extends Thread {
     }
 
     public GameLoopThread(SurfaceHolder surfaceHolder,
-                          GameSurface gameSurface) {
+                          GameSurface gameSurface, boolean multiplayer) {
         super();
         this.surfaceHolder = surfaceHolder;
         this.gameSurface = gameSurface;
         this.gameState = GameState.getInstance();
-       // this.ai = new ArtificialIntelligence(ArtificialIntelligence.Difficulty.EASY);
 
+        this.isMultiplayer = multiplayer;
+        if (!multiplayer){
+            this.ai = new ArtificialIntelligence(ArtificialIntelligence.Difficulty.EASY);
+        }
+        sleep = false;
+    }
+
+    public void sleep(){
+        Log.w("yahav", "GameLoop is going to sleep");
+        this.sleep = true;
+    }
+
+    public void wakeUp(){
+        Log.w("yahav", "GameLoop wake up");
+        this.sleep = false;
     }
 
     @Override
@@ -54,19 +67,24 @@ public class GameLoopThread extends Thread {
         sleepTime = 0;
 
         while (running) {
+
             canvas = null;
             try {
+
                 canvas = this.surfaceHolder.lockCanvas();
                 synchronized (surfaceHolder) {
                     beginTime = System.currentTimeMillis();
                     skippedFrames = 0;    // resetting the frames skipped
 
-                   // ai.sendSoldier();
-                   // ai.shoot();
+                    if (!sleep){
+                        if (!isMultiplayer){
+                             ai.sendSoldier();
+                             ai.shoot();
+                        }
 
-                    this.gameState.update();
-                    this.gameSurface.render(canvas);
-
+                        this.gameState.update();
+                        this.gameSurface.render(canvas);
+                    }
 
                     timeDiff = System.currentTimeMillis() - beginTime;
 
@@ -82,11 +100,20 @@ public class GameLoopThread extends Thread {
                         }
                     }
 
-                    while (sleepTime < 0 && skippedFrames < MAX_FRAME_SKIPS) {
+                    while (!sleep && sleepTime < 0 && skippedFrames < MAX_FRAME_SKIPS) {
                         // we need to catch up
                         this.gameState.update(); // update without rendering
                         sleepTime += FRAME_PERIOD;    // add frame period to check if in next frame
                         skippedFrames++;
+                    }
+
+                    //Check if one of the players win
+                    if (gameState.isLeftPlayerWin() ||
+                            gameState.isRightPlayerWin()){
+                        Log.w("custom", "game over! bye bye!");
+                        running = false;
+                        gameSurface.goToMarket();
+
                     }
 
                 }

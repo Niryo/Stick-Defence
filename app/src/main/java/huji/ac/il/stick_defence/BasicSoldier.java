@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.util.Log;
 
 /**
  * This class represents a basic soldier.
@@ -13,7 +12,7 @@ import android.util.Log;
 public class BasicSoldier extends Soldier{
 
     //=======================BasicSoldier's abilities===========================
-    private static final double TIME_TO_CROSS_SCREEN_IN_MILLI=10;
+    private static final double SEC_TO_SCREEN_WIDTH = 10;
     private static final int    DAMAGE_PER_SEC = 1; // [Damage/Sec]
     //==========================================================================
 
@@ -37,7 +36,7 @@ public class BasicSoldier extends Soldier{
     private Sprite.Player player;
 
     public BasicSoldier(Context context, Sprite.Player player,double delayInSec) {
-        super(context, player, TIME_TO_CROSS_SCREEN_IN_MILLI, DAMAGE_PER_SEC, delayInSec);
+        super(context, player, SEC_TO_SCREEN_WIDTH, DAMAGE_PER_SEC, delayInSec);
         if  (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
                                                   context.getResources(),

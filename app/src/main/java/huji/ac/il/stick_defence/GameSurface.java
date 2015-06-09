@@ -1,6 +1,8 @@
 package huji.ac.il.stick_defence;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.service.notification.StatusBarNotification;
@@ -11,6 +13,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+
+import java.io.File;
 
 
 /**
@@ -23,9 +27,9 @@ public class GameSurface extends SurfaceView implements
     private GameState gameState = GameState.getInstance();
     private SimpleGestureDetector simpleGestureDetector =
             new SimpleGestureDetector();
-    private ProgressBar leftProgressBar, rightProgressBar;
+    private Context context;
 
-    public GameSurface(Context context) {
+    public GameSurface(Context context, boolean isMultiplayer) {
 
         super(context);
 
@@ -33,14 +37,50 @@ public class GameSurface extends SurfaceView implements
         getHolder().addCallback(this);
 
         // Create the GameLoopThread
-        gameLoopThread = new GameLoopThread(getHolder(), this);
+        gameLoopThread = new GameLoopThread(getHolder(), this, isMultiplayer);
 
         // Make the GameSurface focusable so it can handle events
         setFocusable(true);
 
+        this.context = context;
 
     }
 
+    public void goToMarket(){
+        stopGameLoop();
+        File file = new File(context.getFilesDir(), GameState.fileName);
+        Log.w("yahav", context.getFilesDir().toString());
+        if (!file.delete()){
+            Log.w("yahav", "Failed to delete file");
+        } else {
+            Log.w("yahav", "File deleted successfully");
+        }
+        Intent gameIntent = new Intent(context, Market.class);
+// TODO - Save an object with points[player], nPlayers, isMultiplayer, etc.
+        gameIntent.putExtra("Multiplayer", gameState.isMultiplayer());
+        context.startActivity(gameIntent);
+        ((Activity) context).finish();
+    }
+
+    public void stopGameLoop(){
+        if (null != gameLoopThread){
+            gameLoopThread.setRunning(false);
+     /*       try{
+                gameLoopThread.join();
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            }*/
+
+        }
+    }
+
+    public void sleep(){
+        gameLoopThread.sleep();
+    }
+
+    public void wakeUp(){
+        gameLoopThread.wakeUp();
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -66,9 +106,11 @@ public class GameSurface extends SurfaceView implements
         boolean retry = true;
         while (retry) {
             try {
+                gameLoopThread.setRunning(false);
                 gameLoopThread.join();
                 retry = false;
             } catch (InterruptedException e) {
+                e.printStackTrace();
                 // try again shutting down the gameLoopThread
             }
         }

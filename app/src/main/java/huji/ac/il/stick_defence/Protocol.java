@@ -46,8 +46,12 @@ public static enum Action {
     LEAGUE_INFO,
     PREPARE_GAME,
     START_GAME,
-        SOLDIER,
-        ARROW,
+    SOLDIER,
+    ARROW,
+    LEFT_WIN,
+    RIGHT_WIN,
+    PAUSE,
+    RESUME
 }
 
     /**

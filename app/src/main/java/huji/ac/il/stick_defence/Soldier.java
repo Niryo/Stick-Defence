@@ -3,66 +3,66 @@ package huji.ac.il.stick_defence;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
-import android.widget.Toast;
+
+import java.io.Serializable;
 
 /**
  * This class represents an abstract soldier figure.
  * Extension of this class must handle the transition to the attack mode
  * by itself. This can be handled by attack() and isAttack() methods.
- *
  */
-public abstract class Soldier {
+public abstract class Soldier implements Serializable{
+    //Epsilon to hit soldier from his center
+    private static final int HIT_EPSILON = 15;
 
-    protected GameState           gameState = GameState.getInstance();
-
-    //Characteristics
-    private final Sprite.Player   PLAYER;
-    private final int             DAMAGE_PER_SEC;
-    private double          RUN_PIXELS_PER_SEC;
+    protected GameState gameState = GameState.getInstance();
 
     //Soldier pictures
-    private static Bitmap         leftSoldierPic = null;
-    private static Bitmap         rightSoldierPic = null;
-    private static Bitmap         leftAttackSoldierPic = null;
-    private static Bitmap         rightAttackSoldierPic = null;
-    private static int            HIT_EPSILON=15;
-    private Sprite                sprite;
+    private static Bitmap leftSoldierPic = null;
+    private static Bitmap rightSoldierPic = null;
+    private static Bitmap leftAttackSoldierPic = null;
+    private static Bitmap rightAttackSoldierPic = null;
+    private Sprite        sprite;
+
+    //Characteristics
+    private final Sprite.Player PLAYER;
+    private final int           DAMAGE_PER_SEC;
+    private double              runPixelsPerSec;
 
     //Positions
-    private int                   screenWidth;
-    private int                   screenHeight;
-    private double                   soldierX;
-    private double                   soldierY;
-    private long                  lastUpdateTime;
-    private boolean               attack;
-    private double timeToCrossScreen;
-    private double delay;
+    private int      screenWidth;
+    private int      screenHeight;
+    private double   soldierX;
+    private double   soldierY;
+    private long     lastUpdateTime;
+    private boolean  attack;
+    private double   secToScreenWidth;
+    private double   delayInSec;
 
 
-    protected Soldier(Context context, Sprite.Player player, double timeToCrossScreen,
-                      int damagePerSec, double delay) {
+    protected Soldier(Context context, Sprite.Player player, double
+            secToScreenWidth, int damagePerSec, double delayInSec) {
         this.PLAYER = player;
 
-        this.screenWidth =
-                context.getResources().getDisplayMetrics().widthPixels;
-        this.screenHeight =
-                context.getResources().getDisplayMetrics().heightPixels;
+        this.screenWidth = context.getResources().getDisplayMetrics()
+                .widthPixels;
+        this.screenHeight = context.getResources().getDisplayMetrics()
+                .heightPixels;
 
 
         this.DAMAGE_PER_SEC = damagePerSec;
         this.attack = false;
-        lastUpdateTime = System.currentTimeMillis();
-        this.delay=delay;
-        this.timeToCrossScreen=timeToCrossScreen;
+        resetUpdateTime();
+        this.delayInSec = delayInSec;
+        this.secToScreenWidth = secToScreenWidth;
     }
 
-    protected void initSprite(Context context, Bitmap soldierPic, int nFrames,
-                              double screenPortion, int animationSpeed){
+    protected void initSprite(Context context, Bitmap soldierPic, int
+            nFrames, double screenPortion, int animationSpeed) {
 
         sprite = new Sprite();
         sprite.initSprite(context, soldierPic, nFrames, PLAYER, screenPortion);
@@ -70,78 +70,90 @@ public abstract class Soldier {
 
         //set the y on the bottom of the screen
         this.soldierY = screenHeight - (int) sprite.getScaledFrameHeight();
+
+        //Set x
         if (this.PLAYER == Sprite.Player.LEFT) {
-            soldierX = -sprite.getScaledFrameWidth();
-        }else{
-            soldierX = screenWidth;
+            soldierX = - sprite.getScaledFrameWidth(); //Start hidden
+        } else {
+            soldierX = screenWidth; //Start hidden
         }
 
-        //Set x and speed
+        //Set speed
         if (this.PLAYER == Sprite.Player.LEFT) {
-            this.RUN_PIXELS_PER_SEC =  ((double)screenWidth+ sprite.getScaledFrameHeight()) /(timeToCrossScreen-delay);
+            this.runPixelsPerSec = ((double) screenWidth + sprite
+                    .getScaledFrameWidth()) / (secToScreenWidth - delayInSec);
 
         } else {
-            this.RUN_PIXELS_PER_SEC = - (( (double) screenWidth)+sprite.getScaledFrameHeight())/(timeToCrossScreen-delay);
+            this.runPixelsPerSec = - ((double) screenWidth + sprite
+                    .getScaledFrameWidth()) / (secToScreenWidth - delayInSec);
         }
 
     }
 
-    protected void attack(Bitmap attackSoldierPic){
+    protected void attack(Bitmap attackSoldierPic) {
         this.attack = true;
         sprite.setPic(attackSoldierPic);
     }
 
-    protected boolean isAttack(){
+    protected boolean isAttack() {
         return this.attack;
     }
 
     protected void update(long gameTime) {
         sprite.update(gameTime);
-        double passedTimeInSec = (double)(gameTime - lastUpdateTime) / 1000;
+        double passedTimeInSec = (double) (gameTime - lastUpdateTime) / 1000;
         lastUpdateTime = gameTime;
 
-        if (attack){
+        if (attack) {
             gameState.hitTower(PLAYER, DAMAGE_PER_SEC * passedTimeInSec);
         } else {
-            soldierX += (RUN_PIXELS_PER_SEC * passedTimeInSec);
+            soldierX += (runPixelsPerSec * passedTimeInSec);
         }
 
-        //Log.w("custom", "run: "+ RUN_PIXELS_PER_SEC+" current:"+(RUN_PIXELS_PER_SEC * passedTimeInSec) );
+        //Log.w("custom", "run: "+ runPixelsPerSec+" current:"+
+        // (runPixelsPerSec * passedTimeInSec) );
+    }
+
+    public void resetUpdateTime(){
+        lastUpdateTime = System.currentTimeMillis();
     }
 
     protected void render(Canvas canvas) {
         sprite.render(canvas, getSoldierX(), getSoldierY());
 
-        Paint paint=new Paint();
+        Paint paint = new Paint();
         paint.setColor(PLAYER == Sprite.Player.RIGHT ? Color.RED : Color.BLUE);
         paint.setStrokeWidth(10);
-        canvas.drawLine((float) (getSoldierX() + (sprite.getScaledFrameWidth() / 2) - HIT_EPSILON), getSoldierY(), (float) (this.soldierX + (sprite.getScaledFrameWidth() / 2) + HIT_EPSILON), getSoldierY(), paint);
+        canvas.drawLine((float) (getSoldierX() + (sprite.getScaledFrameWidth
+                () / 2) - HIT_EPSILON), getSoldierY(), (float) (this.soldierX
+                + (sprite.getScaledFrameWidth() / 2) + HIT_EPSILON),
+                getSoldierY(), paint);
 
     }
 
-    protected int getSoldierX(){
+    protected int getSoldierX() {
 
-            return (int) Math.round(this.soldierX);
+        return (int) Math.round(this.soldierX);
 
-
-    }
-    protected int getSoldierY(){
-
-            return (int) Math.round(this.soldierY);
 
     }
 
-    protected double getScaledFrameWidth(){
+    protected int getSoldierY() {
+
+        return (int) Math.round(this.soldierY);
+
+    }
+
+    protected double getScaledFrameWidth() {
         return sprite.getScaledFrameWidth();
     }
 
-    protected boolean checkHit(Arrow arrow){
+    protected boolean checkHit(Arrow arrow) {
 
         if (arrow.getPlayer() != this.getPlayer() &&
                 this.soldierY <= arrow.getHeadY() &&
-                Math.abs(this.soldierX +
-                        sprite.getScaledFrameWidth() / 2 - arrow.getHeadX()) <=
-                        HIT_EPSILON){
+                Math.abs(this.soldierX + sprite.getScaledFrameWidth() / 2 -
+                        arrow.getHeadX()) <= HIT_EPSILON) {
             Log.w("custom", "soldier hit!");
             return true;
         }
@@ -149,7 +161,7 @@ public abstract class Soldier {
         return false;
     }
 
-    public Sprite.Player getPlayer(){
+    public Sprite.Player getPlayer() {
         return this.PLAYER;
     }
 
