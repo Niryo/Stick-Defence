@@ -47,7 +47,7 @@ public class MainMenu extends Activity implements DoProtocolAction{
         createLeague.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Server.createServer();
+                Server.createServer(2); //todo: change to variable;
                 WifiP2pManager mManager =(WifiP2pManager) getSystemService(getApplicationContext().WIFI_P2P_SERVICE);
                 WifiP2pManager.Channel mChannel = mManager.initialize(getApplicationContext(), getMainLooper(), null);
                 mManager.createGroup(mChannel,null);

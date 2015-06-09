@@ -22,7 +22,7 @@ import android.widget.RelativeLayout;
 public class GameActivity extends Activity implements DoProtocolAction {
 
     private GameState gameState;
-    private AlertDialog waitDialog;
+    private ProgressDialog waitDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,26 +79,14 @@ public class GameActivity extends Activity implements DoProtocolAction {
         game.addView(gameComponents);
 //        setContentView(new GameSurface(this));
         setContentView(game);
-        ProgressDialog dialog = new ProgressDialog(this);
-        //todo: ProgressDialog dialog = new ProgressDialog(this);
-//        dialog.setMessage("Thinking...");
-//        dialog.setIndeterminate(true);
-//        dialog.setCancelable(false);
-//        dialog.show();
-        waitDialog= new AlertDialog.Builder(this)
-                //.setTitle("Waiting for opponent..")
-                .setPositiveButton("ready", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Client.getClientInstance().send(Protocol.stringify(Protocol.Action.READY_TO_PLAY));
-                    }
-                })
-                .setMessage("Waiting for opponent..")
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setCancelable(false)
-                .show();
 
-        //Client.getClientInstance().send(Protocol.stringify(Protocol.Action.READY_TO_PLAY));
+        waitDialog = new ProgressDialog(this);
+        waitDialog.setMessage("Waiting for opponent..");
+        waitDialog.setIndeterminate(true);
+        waitDialog.setCancelable(false);
+        waitDialog.show();
+
+        Client.getClientInstance().send(Protocol.stringify(Protocol.Action.READY_TO_PLAY));
 
 
     }

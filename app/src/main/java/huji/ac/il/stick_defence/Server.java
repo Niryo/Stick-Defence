@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * In other words the server doesn't know on witch machine it is being hosted.
  */
 public class Server {
-    private int leagueParticipants=2; //todo: make it variable and set it in the constructor.
+    private int leagueParticipants; //todo: make it variable and set it in the constructor.
     public static final int PORT=6666; //arbitrary port
     private static Server server;
     private int counter=0;
@@ -28,16 +28,23 @@ public class Server {
     private   ArrayList<Peer> peers = new ArrayList<>(); //we keep tracking all the connected peers todo: change to hashmap based on id
     private  ServerSocket serverSocket;
     private boolean test=true;
+    private LeagueManager leagueManager;
 
-    private Server(){} //private constructor, for the singleton pattern.
+    /**
+     * private constructor, for the singleton pattern.
+     * @param participants
+     */
+    private Server(int participants){
+        this.leagueParticipants =  participants;
+    }
 
     /**
      * Creates a new server if the current static server is null
      * @return an instance of the server
      */
-    public static Server createServer(){
+    public static Server createServer(int participants){
         if(server==null){
-            server=new Server();
+            server=new Server(participants);
             server.start();
         }
         return server;
@@ -70,9 +77,11 @@ public class Server {
                         Log.w("custom", "client excepted!"); //if we reach this line only when a new client is connected.
                         Peer peer = new Peer(socket);
                         peers.add(peer); //save the new client in the peers list
-                        if(peers.size()== leagueParticipants){
+                        if(peers.size()== leagueParticipants){ //todo: sleep some time to see that no one is disconnecting
                             acceptingNewClients=false;
-                            //todo: arrange league
+                            leagueManager = new LeagueManager(peers, leagueParticipants);
+                            String info= leagueManager.getLeagueInfo();
+                            sendLeagueInfo(info);
                         }
                     }
 
@@ -84,7 +93,11 @@ public class Server {
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
-
+private void sendLeagueInfo(String info){
+    for (Peer peer : this.peers){
+        peer.send(Protocol.stringify(Protocol.Action.LEAGUE_INFO, info));
+    }
+}
 
 
     /**
@@ -102,19 +115,31 @@ public class Server {
         }
 
         if(action.equals(Protocol.Action.READY_TO_PLAY.toString())){ //todo: this is just for testing! need to be removed
-            if(test) {
-                test=false;
-                makePair(peers.get(0), peers.get(1));
-                String currentTime= Long.toString(System.currentTimeMillis());
-                peers.get(0).send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
-                peers.get(1).send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
+//            if(test) {
+//                test=false;
+//                makePair(peers.get(0), peers.get(1));
+//                String currentTime= Long.toString(System.currentTimeMillis());
+//                peers.get(0).send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
+//                peers.get(1).send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
+//            }
 
+            peer.readyToPlay=true;
+            if(peer.partner.readyToPlay){
+                String currentTime= Long.toString(System.currentTimeMillis());
+                peer.send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
+                peer.partner.send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
+                //clear the readyToPlayFlag for the next time:
+                peer.readyToPlay=false;
+                peer.partner.readyToPlay=false;
             }
+
+
+
         }
 
     }
 
-    private void makePair(Peer peer1, Peer peer2){
+    public void makePair(Peer peer1, Peer peer2){
         peer1.setPartner(peer2);
         peer2.setPartner(peer1);
     }
@@ -165,7 +190,7 @@ public class Server {
      * A socket wrapper.
      * Instead of keeping track on raw sockets, we wrap them as peers with name, id, and usfull methods.
      */
-    private class Peer {
+    public class Peer {
         private long WAIT_FOR_APPROVE = 3000;
         private boolean approved=false; //check if the peer is an approved
         private int id; //unique id for each peer
@@ -173,7 +198,9 @@ public class Server {
         private PrintWriter out;
         private Socket socket;
         private Peer partner=null;
-
+        private int score=0;
+        private int wins=0;
+        private Boolean readyToPlay=false;
         /**
          * Constructs a new peer.
          * @param socket the socket to wrap
@@ -239,6 +266,10 @@ public class Server {
         public void setPartner(Peer peer){
             this.partner=peer;
         }
+        public int getScore(){
+            return this.score;
+        }
+        public int getWins(){return this.wins;}
     }
 
 }
