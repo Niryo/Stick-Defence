@@ -79,7 +79,7 @@ public class Server {
                         peers.add(peer); //save the new client in the peers list
                         if(peers.size()== leagueParticipants){ //todo: sleep some time to see that no one is disconnecting
                             acceptingNewClients=false;
-                            leagueManager = new LeagueManager(peers, leagueParticipants);
+                            leagueManager = new LeagueManager(peers);
                             String info= leagueManager.getLeagueInfo();
                             sendLeagueInfo(info);
                         }

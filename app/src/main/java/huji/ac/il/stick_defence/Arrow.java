@@ -13,19 +13,13 @@ import java.io.Serializable;
 /**
  * Created by Nir on 03/05/2015.
  */
-<<<<<<< HEAD
-public class Arrow {
-    //=======================BasicSoldier's abilities===========================
-    private static final double SCREEN_WIDTH_PER_SEC = 0.021;
-    private static final double SCREEN_HEIGHT_PER_SEC = 0.037;
-    private static final double TIME_TO_CROSS_SCREEN_WIDTH=47;
-    private static final double TIME_TO_CROSS_SCREEN_HEIGHT=10;
-=======
+
+
 public class Arrow implements Serializable{
     //===========================Arrow's abilities==============================
     private static final double SEC_TO_SCREEN_WIDTH = 0.021;
     private static final double SEC_TO_SCREEN_HEIGHT = 0.037;
->>>>>>> origin/master
+
 
     //============================Arrow's picture===============================
     private static Bitmap scaledArrowPic;
