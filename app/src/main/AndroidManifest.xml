@@ -43,7 +43,7 @@
             android:screenOrientation="landscape" >
         </activity>
         <activity
-            android:name=".LeagueActivity"
+            android:name=".LeagueInfoActivity"
             android:label="@string/title_activity_league"
             android:screenOrientation="landscape" >
         </activity>

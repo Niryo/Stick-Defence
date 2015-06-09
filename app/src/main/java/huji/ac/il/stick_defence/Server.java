@@ -118,7 +118,12 @@ private void sendLeagueInfo(String info){
 
             case READY_TO_PLAY:
                 peer.readyToPlay=true;
-                if(peer.partner.readyToPlay){
+                if(peer.partner.readyToPlay){ //both peers are ready to play
+                    try {
+                        Thread.sleep(3000); //sleep for a second, just to give the players some time to finish loading his game
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     String currentTime= Long.toString(System.currentTimeMillis());
                     peer.send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
                     peer.partner.send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));

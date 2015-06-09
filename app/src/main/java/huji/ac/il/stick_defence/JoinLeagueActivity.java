@@ -171,7 +171,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
             //todo: go to wait state;
             //todo:send the league info to the league activity
             Log.w("custom", "going to league");
-            Intent intent = new Intent(this, LeagueActivity.class);
+            Intent intent = new Intent(this, LeagueInfoActivity.class);
             startActivity(intent);
             finish();
         }
@@ -179,7 +179,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
         if (action.equals(Protocol.Action.LEAGUE_INFO.toString())) {
             //todo:send the league info to the league activity
             Log.w("custom", "going to league");
-            Intent intent = new Intent(this, LeagueActivity.class);
+            Intent intent = new Intent(this, LeagueInfoActivity.class);
             startActivity(intent);
             finish();
         }
