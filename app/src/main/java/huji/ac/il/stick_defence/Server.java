@@ -135,12 +135,13 @@ private void sendLeagueInfo(String info){
 
             case PAUSE:
                 Log.w("yahav", "Distribute pauses");
-                for (Peer iPeer : peers){
+              /*  for (Peer iPeer : peers){
                     if (peer != iPeer){
                         Log.w("yahav", "Send pause to " + peer.toString());
                         peer.send(action);
                     }
-                }
+                }*/
+                peer.send(action);
                 break;
         }
 

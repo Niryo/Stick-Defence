@@ -63,6 +63,7 @@ public class Client implements DoProtocolAction, Serializable{
      * @param out the data to send
      */
     public void send(String out) {
+        Log.w("yahav", "Sending: " + out);
         this.out.println(out);
     }
 
@@ -73,6 +74,7 @@ public class Client implements DoProtocolAction, Serializable{
      * @param server the current server
      */
     public void setServer(Socket server) {
+        Log.w("yahav", "Entering setServer");
         try {
             this.out = new PrintWriter(server.getOutputStream(), true);
             //save the output stream of the server.
@@ -82,8 +84,14 @@ public class Client implements DoProtocolAction, Serializable{
         new ClientSocketListener().executeOnExecutor(AsyncTask
                 .THREAD_POOL_EXECUTOR, server); //start listen to the server
                 // on a different thread
-        send(Protocol.stringify(Protocol.Action.NAME, name)); //send the
-        // client name to the server.
+        GameState gameState = GameState.getInstance();
+        if (gameState != null && GameState.getInstance().isGameInProcces()){
+            send(Protocol.stringify(Protocol.Action.RESUME));
+        } else {
+            send(Protocol.stringify(Protocol.Action.NAME, name)); //send the
+            // client name to the server.
+        }
+
 
 
     }

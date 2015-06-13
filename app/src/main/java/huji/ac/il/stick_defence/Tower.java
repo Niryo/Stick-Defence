@@ -163,16 +163,16 @@ public class Tower {
     public boolean reduceHP(double hp){
         this.hp -= hp;
 
-        if (this.hp < 75 && this.fires.size() < 1){
+        if (this.hp < 0.75 * MAX_HP && this.fires.size() < 1){
             this.fires.add(new Fire(context));
         }
-        if (this.hp < 50 && this.fires.size() < 2){
+        if (this.hp < 0.5 * MAX_HP && this.fires.size() < 2){
             this.fires.add(new Fire(context));
         }
-        if (this.hp < 25 && this.fires.size() < 3){
+        if (this.hp < 0.25 * MAX_HP && this.fires.size() < 3){
             this.fires.add(new Fire(context));
         }
-        if (this.hp < 10 && this.fires.size() < 4){
+        if (this.hp < 0.1 * MAX_HP && this.fires.size() < 4){
             this.fires.add(new Fire(context));
         }
         gameState.setTowerProgressHP(this.hp, player);

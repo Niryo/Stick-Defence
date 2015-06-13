@@ -12,9 +12,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
-
-import huji.ac.il.stick_defence.util.SystemUiHider;
 
 
 /**
@@ -24,7 +21,7 @@ import huji.ac.il.stick_defence.util.SystemUiHider;
  */
 public class GameState implements Serializable{
     private static GameState gameState;
-    public static final String fileName = "game_state.sav";
+    public static final String FILE_NAME = "game_state.sav";
 
     private static int MAX_SOLDIERS_PER_PLAYER = 20;
 
@@ -145,12 +142,17 @@ public class GameState implements Serializable{
 
     private void checkHits() {
         for (Arrow arrow : this.getArrows()) {
+            boolean hit = false;
             for (Soldier soldier : this.getSoldiers()) {
-                boolean hit = soldier.checkHit(arrow);
+                hit = soldier.checkHit(arrow);
                 if (hit) {
-                    //          removeArrow(arrow);
+                    removeArrow(arrow);
                     removeSoldier(soldier);
+                    break;
                 }
+            }
+            if (hit){
+                continue;
             }
         }
     }
@@ -329,14 +331,14 @@ public class GameState implements Serializable{
     }
 
     public static GameState load(Context context){
-        File file = new File(context.getFilesDir(), fileName);
+        File file = new File(context.getFilesDir(), FILE_NAME);
         if (file.exists()){
             Log.w("yahav", "Loading from" + context.getFilesDir());
             try{
                 ObjectInputStream ois =
                         new ObjectInputStream(new FileInputStream(
                                 new File(context.getFilesDir(),
-                                        fileName)));
+                                        FILE_NAME)));
                 GameState gameState = (GameState) ois.readObject();
                 ois.close();
                 return gameState;
@@ -350,5 +352,10 @@ public class GameState implements Serializable{
         }
 
         return null;
+    }
+
+    public boolean isGameInProcces(){
+        File file = new File(context.getFilesDir(), FILE_NAME);
+        return file.exists();
     }
 }

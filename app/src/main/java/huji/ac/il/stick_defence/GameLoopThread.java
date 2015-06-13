@@ -28,9 +28,11 @@ public class GameLoopThread extends Thread {
     private boolean sleep;
 
 
-    public void setRunning(boolean running) {
+    public synchronized void setRunning(boolean running) {
         this.running = running;
     }
+
+    public synchronized boolean isRunning(){ return this.running; }
 
     public GameLoopThread(SurfaceHolder surfaceHolder,
                           GameSurface gameSurface, boolean multiplayer) {

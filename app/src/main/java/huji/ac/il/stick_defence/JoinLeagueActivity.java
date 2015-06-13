@@ -19,9 +19,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -50,6 +52,25 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_league);
         client.setCurrentActivity(this);
+
+        Button exitToMainMenuButton =
+                (Button) findViewById(R.id.exit_to_main_menu);
+        exitToMainMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final File file = new File(getFilesDir(), GameState.FILE_NAME);
+                if (file.delete()){
+                    Log.w("yahav", "File deleted successfully");
+                } else{
+                    Log.w("yahav", "Failed to delete file");
+                }
+                Intent mainMenuIntent = new Intent(getApplicationContext(),
+                                                   MainMenu.class);
+                startActivity(mainMenuIntent);
+                finish();
+            }
+        });
+
         mManager = (WifiP2pManager) getSystemService(getApplicationContext().WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(this, getMainLooper(), null);
         mReceiver = new WiFiDirectBroadcastReceiver(this, mManager, mChannel);
