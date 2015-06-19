@@ -49,7 +49,6 @@ public static enum Action {
     BASIC_SOLDIER,
     BAZOOKA_SOLDIER,
     ARROW,
-    BAZOOKA_SHOOT,
     LEFT_WIN,
     RIGHT_WIN,
     PAUSE,

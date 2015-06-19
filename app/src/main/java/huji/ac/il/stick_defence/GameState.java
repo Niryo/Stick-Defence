@@ -300,9 +300,6 @@ public class GameState implements Serializable{
 
     public void addBazookaBullet(BazookaBullet bullet) {
         this.bazookaBullets.add(bullet);
-        if (isMultiplayer && bullet.getPlayer() == Sprite.Player.LEFT) {
-            client.reportBazookaBullet();
-        }
     }
 
     public void removeBazookaBullet(BazookaBullet bullet) {

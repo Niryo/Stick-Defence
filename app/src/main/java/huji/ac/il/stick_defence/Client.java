@@ -121,10 +121,6 @@ public class Client implements DoProtocolAction, Serializable{
                 (distance)));
     }
 
-    public void reportBazookaBullet() {
-        send(Protocol.stringify(Protocol.Action.BAZOOKA_SHOOT));
-    }
-
     public void reportBasicSoldier() {
         send(Protocol.stringify(Protocol.Action.BASIC_SOLDIER));
     }

@@ -25,7 +25,7 @@ public class BazookaSoldier extends Soldier {
     //============================Sprite constants==============================
     private static final int    NUMBER_OF_FRAMES = 7;
     private static final int    HIT_NUMBER_OF_FRAMES = 3;
-    private static final int    ANIMATION_SPEED = 10;
+    private static final int    ANIMATION_SPEED = 4;
     //==========================================================================
 
     private static Bitmap         leftSoldierPic = null;
