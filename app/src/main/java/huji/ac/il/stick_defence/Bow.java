@@ -77,12 +77,18 @@ public class Bow implements Serializable{
         for (int i = 0; i < NUMBER_OF_FRAMES; i++) {
             Bitmap frameToScale;
             if(player== Sprite.Player.LEFT) {
-             frameToScale = Bitmap.createBitmap(leftBowPic, i * frameWidth, 0, frameWidth, frameHeight);
+             frameToScale = Bitmap.createBitmap(leftBowPic, i * frameWidth, 0,
+                                                frameWidth, frameHeight);
             }
             else{
-                frameToScale = Bitmap.createBitmap(leftBowPic, i * frameWidth, 0, frameWidth, frameHeight);
+                frameToScale = Bitmap.createBitmap(leftBowPic, i * frameWidth,
+                                                    0, frameWidth, frameHeight);
             }
-            this.scaledBow[i] = Bitmap.createScaledBitmap(frameToScale, (int) this.sprite.getScaledFrameWidth(), (int) this.sprite.getScaledFrameHeight(), false);
+            this.scaledBow[i] = Bitmap.
+                    createScaledBitmap(frameToScale,
+                                       (int) this.sprite.getScaledFrameWidth(),
+                                       (int) this.sprite.getScaledFrameHeight(),
+                                       false);
         }
 
 

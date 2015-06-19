@@ -70,7 +70,9 @@ public class GameActivity extends Activity implements DoProtocolAction {
         sendSoldier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gameState.addSoldier(Sprite.Player.LEFT, 0);
+                gameState.addSoldier(Sprite.Player.LEFT, 0,
+                        Protocol.Action.BAZOOKA_SOLDIER);
+                        //TODO - change to the required soldier
             }
         });
         gameComponents.addView(sendSoldier);
@@ -215,11 +217,19 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 this.gameState.addEnemyShot(Integer.parseInt(data));
                 break;
 
-            case SOLDIER:
-                this.gameState.addSoldier(Sprite.Player.RIGHT,
-                        Long.parseLong(data));
+            case BAZOOKA_SHOOT: // TODO - Validate that only one bullet shot and not 2 from both directions!!
+                this.gameState.addEnemyBazookaBullet();
                 break;
 
+            case BASIC_SOLDIER:
+                this.gameState.addSoldier(Sprite.Player.RIGHT,
+                        Long.parseLong(data), Protocol.Action.BASIC_SOLDIER);
+                break;
+
+            case BAZOOKA_SOLDIER:
+                this.gameState.addSoldier(Sprite.Player.RIGHT,
+                        Long.parseLong(data), Protocol.Action.BAZOOKA_SOLDIER);
+                break;
             case START_GAME:
                 this.gameState.setTime(System.currentTimeMillis(),
                         Long.parseLong(data));

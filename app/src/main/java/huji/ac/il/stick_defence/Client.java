@@ -1,6 +1,5 @@
 package huji.ac.il.stick_defence;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -122,8 +121,16 @@ public class Client implements DoProtocolAction, Serializable{
                 (distance)));
     }
 
-    public void reportSoldier() {
-        send(Protocol.stringify(Protocol.Action.SOLDIER));
+    public void reportBazookaBullet() {
+        send(Protocol.stringify(Protocol.Action.BAZOOKA_SHOOT));
+    }
+
+    public void reportBasicSoldier() {
+        send(Protocol.stringify(Protocol.Action.BASIC_SOLDIER));
+    }
+
+    public void reportBazookaSoldier(){
+        send(Protocol.stringify(Protocol.Action.BAZOOKA_SOLDIER));
     }
 
     public void reportWin(Sprite.Player player) {

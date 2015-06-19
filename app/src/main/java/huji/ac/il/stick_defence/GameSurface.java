@@ -124,6 +124,10 @@ public class GameSurface extends SurfaceView implements
             tower.render(canvas);
         }
 
+        for (BazookaBullet bullet : gameState.getBazookaBullets()){
+            bullet.render(canvas);
+        }
+
         for (Soldier soldier : gameState.getSoldiers()) {
             soldier.render(canvas);
         }
