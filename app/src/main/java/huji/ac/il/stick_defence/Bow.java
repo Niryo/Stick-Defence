@@ -204,7 +204,7 @@ public class Bow implements Serializable{
     }
     public void release(){
         if(this.currentFrame==NUMBER_OF_FRAMES-4) {
-            this.gameState.addArrow(new Arrow(this.context ,this.pos[0], this.pos[1], this.tan, this.player));
+            this.gameState.addArrow(new Arrow(this.context ,this.pos[0], this.pos[1], this.tan, this.player,0));
 
 
         }
@@ -212,10 +212,10 @@ public class Bow implements Serializable{
 
     }
 
-public void aimAndShoot(int distance){ //todo: add animation for strech and unstrech
+public void aimAndShoot(int distance,double delayInSec){ //todo: add animation for strech and unstrech
     this.distance = distance;
     resetMatrix();
-    this.gameState.addArrow( new Arrow(this.context,this.pos[0], this.pos[1], this.tan,this.player));
+    this.gameState.addArrow( new Arrow(this.context,this.pos[0], this.pos[1], this.tan,this.player, delayInSec));
 
 }
 public int getDistance(){

@@ -205,6 +205,9 @@ public class GameState implements Serializable{
             this.leftPlayerSoldiers++;
         } else { // Opponent
             delay = currentTime - timeStamp;
+            if(delay<0){
+                delay=0;
+            }
             delay = delay / 1000; //convert to seconds;
             Log.w("custom", "the delay is: " + delay);
             if (this.rightPlayerSoldiers >= MAX_SOLDIERS_PER_PLAYER) {
@@ -287,8 +290,16 @@ public class GameState implements Serializable{
         return this.leftPlayerWin;
     }
 
-    public void addEnemyShot(int dist) {
-        this.rightBow.aimAndShoot(dist);
+    public void addEnemyShot(int dist,double timeStamp) {
+        long currentTime = getSyncTime();
+        double delay = currentTime - timeStamp;
+        if(delay<0){
+            delay=0;
+        }
+        Log.w("custom", "delay is: "+ delay);
+        //delay = currentTime - timeStamp;
+        delay = delay / 1000; //convert to seconds;
+        this.rightBow.aimAndShoot(dist, delay);
     }
 
     public Context getContext() {
@@ -297,6 +308,7 @@ public class GameState implements Serializable{
 
     public void setTime(long localTimeInMillisecond, long serverTimeInMillisecond) {
         this.timeDifference = serverTimeInMillisecond - localTimeInMillisecond;
+        Log.w("custom", "time deference is: "+ timeDifference);
     }
 
     private long getSyncTime() {

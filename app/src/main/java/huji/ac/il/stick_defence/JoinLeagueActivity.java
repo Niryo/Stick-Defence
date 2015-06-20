@@ -165,24 +165,31 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
 
 
     @Override
-    public void doAction(String action, String data) {
-        if (action.equals(Protocol.Action.NAME_CONFIRMED.toString())) {
-            running = false;
-            //todo: go to wait state;
-            //todo:send the league info to the league activity
-            Log.w("custom", "going to league");
-            Intent intent = new Intent(this, LeagueInfoActivity.class);
-            startActivity(intent);
-            finish();
+    public void doAction(String rawInput) {
+        Protocol.Action action = Protocol.getAction(rawInput);
+
+        switch (action){
+            case NAME_CONFIRMED:
+                running = false;
+                //todo: go to wait state;
+                Log.w("custom", "going to league");
+                Intent intent = new Intent(this, LeagueInfoActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+
+            case LEAGUE_INFO:
+                //todo:send the league info to the league activity
+                Log.w("custom", "going to league");
+                Intent intentWithInfo = new Intent(this, LeagueInfoActivity.class);
+                startActivity(intentWithInfo);
+                finish();
+                break;
+
+
         }
 
-        if (action.equals(Protocol.Action.LEAGUE_INFO.toString())) {
-            //todo:send the league info to the league activity
-            Log.w("custom", "going to league");
-            Intent intent = new Intent(this, LeagueInfoActivity.class);
-            startActivity(intent);
-            finish();
-        }
+
     }
 
     //======================================Adapter class==============================

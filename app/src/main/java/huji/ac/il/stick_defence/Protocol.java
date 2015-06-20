@@ -1,6 +1,9 @@
 package huji.ac.il.stick_defence;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * This is a static class that represents a protocol between a client and a server.
  * All the method in this class should be static.
@@ -31,7 +34,8 @@ package huji.ac.il.stick_defence;
  * #server: send LEAGUE_INFO
  */
 public class Protocol {
-   Client client;
+   private Client client;
+
 
     private Protocol(){}
 
@@ -60,7 +64,13 @@ public static enum Action {
      * @return a string representation of the action
      */
     public static String stringify(Action action){
-        return action.toString();
+        JSONObject jObject = new JSONObject();
+        try {
+            jObject.put("command", action.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jObject.toString();
     }
 
     /**
@@ -70,23 +80,78 @@ public static enum Action {
      * @return a string representation of the action and the data
      */
     public static String stringify(Action action, String data){
-        return action.toString()+"#"+data;
+        JSONObject jObject = new JSONObject();
+        try {
+            jObject.put("command", action.toString());
+            jObject.put("data", data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jObject.toString();
     }
 
-    /**
-     * Parse a received action.
-     * @param line the received action.
-     * @return an array with the action and the data (if there is data)
-     */
-    public static String[] parse(String line){
-        String[] splited= line.split("#");
-        String action= splited[0];
-        String data= "";
-            if(splited.length>1){
-                data=splited[1];
-            }
-        String[] result = {action,data};
-        return result;
+    public static String stringify(Action action, String data, Long timeStamp){
+        JSONObject jObject = new JSONObject();
+        try {
+            jObject.put("command", action.toString());
+            jObject.put("data", data);
+            jObject.put("time", Long.toString(timeStamp));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jObject.toString();
+    }
+    public static String stringify(Action action, Long timeStamp){
+        JSONObject jObject = new JSONObject();
+        try {
+            jObject.put("command", action.toString());
+            jObject.put("time", Long.toString(timeStamp));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jObject.toString();
+    }
+public static Action getAction(String rawInput){
+    try {
+        return Action.valueOf(new JSONObject(rawInput).getString("command"));
+    } catch (JSONException e) {
+        e.printStackTrace();
+    }
+    return null;
+}
+
+    public static String getData(String rawInput){
+        try {
+             JSONObject jsonObject = new JSONObject(rawInput);
+            return jsonObject.getString("data");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Long getTimeStamp(String rawInput){
+        try {
+            JSONObject jsonObject = new JSONObject(rawInput);
+            return jsonObject.getLong("timeStamp");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String addTimeStampToRawInput(String rawInput){
+        try {
+            JSONObject jsonObject = new JSONObject(rawInput);
+            jsonObject.put("timeStamp", System.currentTimeMillis());
+            return jsonObject.toString();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

@@ -31,13 +31,11 @@ public class LeagueInfoActivity extends ActionBarActivity implements DoProtocolA
 
 
     @Override
-    public void doAction(String action, String data) {
-        if (action.equals(Protocol.Action.START_GAME.toString())) {
-            Intent gameIntent = new Intent(getApplicationContext(),
-                    GameActivity.class);
-            startActivity(gameIntent);
-            finish();
+    public void doAction(String rawInput) {
+        Protocol.Action action = Protocol.getAction(rawInput);
 
+        switch (action){
+            case LEAGUE_INFO: break; //todo: remove the waiting dialog
         }
     }
 }

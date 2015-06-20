@@ -40,12 +40,12 @@ public abstract class Soldier implements Serializable{
     private double   soldierY;
     private long     lastUpdateTime;
     private boolean  attack;
-    private double   secToScreenWidth;
+    private double secToCrossScreen;
     private double   delayInSec;
 
 
     protected Soldier(Context context, Sprite.Player player, double
-            secToScreenWidth, int damagePerSec, double delayInSec) {
+            secToCrossScreen, int damagePerSec, double delayInSec) {
         this.PLAYER = player;
 
         this.screenWidth = context.getResources().getDisplayMetrics()
@@ -58,7 +58,7 @@ public abstract class Soldier implements Serializable{
         this.attack = false;
         resetUpdateTime();
         this.delayInSec = delayInSec;
-        this.secToScreenWidth = secToScreenWidth;
+        this.secToCrossScreen = secToCrossScreen;
     }
 
     protected void initSprite(Context context, Bitmap soldierPic, int
@@ -80,13 +80,12 @@ public abstract class Soldier implements Serializable{
 
         //Set speed
         if (this.PLAYER == Sprite.Player.LEFT) {
-            this.runPixelsPerSec = ((double) screenWidth + sprite
-                    .getScaledFrameWidth()) / (secToScreenWidth - delayInSec);
+            this.runPixelsPerSec = ((double) screenWidth + sprite.getScaledFrameWidth()) / (secToCrossScreen - delayInSec);
 
         } else {
-            this.runPixelsPerSec = - ((double) screenWidth + sprite
-                    .getScaledFrameWidth()) / (secToScreenWidth - delayInSec);
+            this.runPixelsPerSec = - ((double) screenWidth + sprite.getScaledFrameWidth()) / (secToCrossScreen - delayInSec);
         }
+        Log.w("custom", "Soldier pix per sec: "+ runPixelsPerSec);
 
     }
 

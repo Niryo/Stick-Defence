@@ -199,22 +199,22 @@ public class GameActivity extends Activity implements DoProtocolAction {
     }
 
     @Override
-    public void doAction(String action, String data) {
-        Protocol.Action protAction = Protocol.Action.valueOf(action);
-
-        switch (protAction){
+    public void doAction(String rawInput) {
+        Protocol.Action action = Protocol.getAction(rawInput);
+        switch (action){
             case ARROW:
-                this.gameState.addEnemyShot(Integer.parseInt(data));
+                int arrowDistance =Integer.parseInt(Protocol.getData(rawInput));
+                long timeStamp = Protocol.getTimeStamp(rawInput);
+                this.gameState.addEnemyShot(arrowDistance, timeStamp);
                 break;
 
             case SOLDIER:
-                this.gameState.addSoldier(Sprite.Player.RIGHT,
-                        Long.parseLong(data));
+                this.gameState.addSoldier(Sprite.Player.RIGHT, Protocol.getTimeStamp(rawInput));
                 break;
 
             case START_GAME:
                 this.gameState.setTime(System.currentTimeMillis(),
-                        Long.parseLong(data));
+                        Long.parseLong(Protocol.getData(rawInput)));
                 this.waitDialog.dismiss();
                 break;
 

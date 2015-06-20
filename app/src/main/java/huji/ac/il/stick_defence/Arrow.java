@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.util.Log;
 
 import java.io.Serializable;
 
@@ -19,6 +20,8 @@ public class Arrow implements Serializable{
     //===========================Arrow's abilities==============================
     private static final double SEC_TO_SCREEN_WIDTH = 0.021;
     private static final double SEC_TO_SCREEN_HEIGHT = 0.037;
+    private static final double SEC_TO_CROSS_SCREEN = 50;
+
 
 
     //============================Arrow's picture===============================
@@ -40,7 +43,7 @@ public class Arrow implements Serializable{
     private Sprite.Player player;
 
     public Arrow(Context context, float x, float y,
-                 float[] tan, Sprite.Player player){
+                 float[] tan, Sprite.Player player, double delayInSec){
         this.screenWidth =
                 context.getResources().getDisplayMetrics().widthPixels;
         this.screenHeight =
@@ -53,8 +56,11 @@ public class Arrow implements Serializable{
         this.degree =(float)(Math.atan2(tan[1], tan[0])*180.0/Math.PI);
         updateMatrix();
 
-        x_pixPerSec = SEC_TO_SCREEN_WIDTH * screenWidth;
-        y_pixPerSec = SEC_TO_SCREEN_HEIGHT * screenHeight;
+        x_pixPerSec = ((double) screenWidth) / (SEC_TO_CROSS_SCREEN - delayInSec);
+        Log.w("custom", "pixPerSec:" + x_pixPerSec);
+        y_pixPerSec = ((double) screenHeight) / (SEC_TO_CROSS_SCREEN - delayInSec);
+
+
 
         resetUpdateTime();
 
@@ -68,13 +74,13 @@ public class Arrow implements Serializable{
     }
 
     public void update(long gameTime){
-        double passedTimeInSec = (double)(gameTime - lastUpdateTime) / 1000;
+        double passedTimeInSec = ((double)(gameTime - lastUpdateTime)) / 1000;
         this.x +=
                 Math.cos(Math.toRadians(this.degree)) *
                         x_pixPerSec * passedTimeInSec;
         this.y +=
                 Math.sin(Math.toRadians(this.degree)) *
-                        y_pixPerSec * passedTimeInSec;
+                        x_pixPerSec * passedTimeInSec;
         updateMatrix();
         if(this.x>this.screenWidth || this.y>this.screenHeight){
             gameState.removeArrow(this);

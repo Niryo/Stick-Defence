@@ -44,7 +44,7 @@
         </activity>
         <activity
             android:name=".LeagueInfoActivity"
-            android:label="@string/title_activity_league"
+            android:label="LeagueInfoActivity"
             android:screenOrientation="landscape" >
         </activity>
         <activity

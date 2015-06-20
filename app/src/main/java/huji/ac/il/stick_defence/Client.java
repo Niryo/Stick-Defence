@@ -98,14 +98,9 @@ public class Client implements DoProtocolAction, Serializable{
 
     }
 
-    /**
-     * This method decide what to do on each data received from the server.
-     *
-     * @param action the action received from the server
-     * @param data   the data received from the server
-     */
-    public void doAction(String action, String data) {
-        this.currentActivity.doAction(action, data);
+
+    public void doAction(String rawInput) {
+        this.currentActivity.doAction(rawInput);
 
     }
 
@@ -143,8 +138,7 @@ public class Client implements DoProtocolAction, Serializable{
                 while ((inputLine = in.readLine()) != null) { //the readLine
                 // is a blocking method.
                     Log.w("custom", "server says: " + inputLine);
-                    String[] action = Protocol.parse(inputLine);
-                    doAction(action[0], action[1]);
+                    doAction(inputLine);
 
                 }
             } catch (IOException e) {

@@ -188,16 +188,15 @@ public class MainMenu extends Activity implements DoProtocolAction {
     }
 
     @Override
-    public void doAction(String action, String data) {
-        if (action.equals(Protocol.Action.NAME_CONFIRMED.toString())) {
-            //todo: go into leagActivity and wait
-            Log.w("custom", "going to league");
-            Intent intent = new Intent(this, LeagueInfoActivity.class);
-            startActivity(intent);
-            finish();
+    public void doAction(String rawInput) {
+        Protocol.Action action = Protocol.getAction(rawInput);
+        switch (action){
+            case NAME_CONFIRMED:
+                Log.w("custom", "going to league");
+                Intent intent = new Intent(this, LeagueInfoActivity.class);
+                startActivity(intent);
+                finish();
+
         }
-
-
     }
-
 }

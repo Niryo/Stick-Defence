@@ -5,6 +5,6 @@ package huji.ac.il.stick_defence;
  */
 public interface DoProtocolAction {
 
-    public void doAction(String action ,String data);
+    public void doAction(String rawInput);
 
 }

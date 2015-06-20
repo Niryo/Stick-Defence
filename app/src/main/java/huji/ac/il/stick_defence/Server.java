@@ -102,24 +102,22 @@ private void sendLeagueInfo(String info){
 
     /**
      * This method decide what to do on each data received from a client.
-     * @param action the action received from the client
-     * @param data the data received from the client
+     * @param rawInput the input line that has been received from the client
      * @param peer the client that send us the action.
      */
-    private void doAction(String action, String data, Peer peer){
-        Protocol.Action protAction = Protocol.Action.valueOf(action);
-        switch (protAction){
-        // if the client sends us his name, we saved the name and send confirmation.
+    private void doAction(String rawInput, Peer peer){
+        Protocol.Action action = Protocol.getAction(rawInput);
+        switch (action){
             case NAME:
                 peer.approved = true;
-                peer.setName(data);
+                peer.setName(Protocol.getData(rawInput));
                 peer.send(Protocol.stringify(Protocol.Action.NAME_CONFIRMED));
                 break;
 
             case READY_TO_PLAY:
                 peer.readyToPlay=true;
                 if(peer.partner.readyToPlay){ //both peers are ready to play
-                    try {
+                    try {//todo: remove, the delay is only for testing the timestamps
                         Thread.sleep(3000); //sleep for a second, just to give the players some time to finish loading his game
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -130,16 +128,6 @@ private void sendLeagueInfo(String info){
                     //clear the readyToPlayFlag for the next time:
                     peer.readyToPlay=false;
                     peer.partner.readyToPlay=false;
-                }
-                break;
-
-            case PAUSE:
-                Log.w("yahav", "Distribute pauses");
-                for (Peer iPeer : peers){
-                    if (peer != iPeer){
-                        Log.w("yahav", "Send pause to " + peer.toString());
-                        peer.send(action);
-                    }
                 }
                 break;
         }
@@ -174,10 +162,10 @@ private void sendLeagueInfo(String info){
             BufferedReader in= new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 while ((inputLine = in.readLine()) != null) { //the readLine is a blocking method.
                     Log.w("custom", inputLine);
-                    String[] action= Protocol.parse(inputLine);
-                    doAction(action[0],action[1],peer);
+                    doAction(inputLine ,peer);
                     if (peer.partner!=null){
-                        inputLine+="#"+System.currentTimeMillis();//add time stamp to the action;
+                        inputLine= Protocol.addTimeStampToRawInput(inputLine);//add time stamp to the action;
+                       // Thread.sleep(4000);//add delay for testing reasons. TODO:REMOVE!
                         peer.partner.send(inputLine);
                     }
                 }
@@ -185,6 +173,9 @@ private void sendLeagueInfo(String info){
             } catch (IOException e) {
                 e.printStackTrace();
             }
+//            catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
             Log.w("custom", "finish socket listener");
 
 

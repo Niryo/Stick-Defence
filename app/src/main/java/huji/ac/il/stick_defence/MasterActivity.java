@@ -138,7 +138,7 @@ public class MasterActivity extends Activity {
 //                convertView = vi.inflate(android.R.layout.simple_list_item_1, null);
 //            }
 //
-//            String title = getItem(position).getName();
+//            String title = getItem(position).getData();
 //            TextView titleView = (TextView) convertView.findViewById(android.R.id.text1);
 //            titleView.setText(title);
 //            return convertView;
