@@ -12,9 +12,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
-
-import huji.ac.il.stick_defence.util.SystemUiHider;
 
 
 /**
@@ -24,7 +21,7 @@ import huji.ac.il.stick_defence.util.SystemUiHider;
  */
 public class GameState implements Serializable{
     private static GameState gameState;
-    public static final String fileName = "game_state.sav";
+    public static final String FILE_NAME = "game_state.sav";
 
     private static int MAX_SOLDIERS_PER_PLAYER = 20;
 
@@ -32,6 +29,7 @@ public class GameState implements Serializable{
     private ArrayList<Tower> towers = new ArrayList<>();
     private ArrayList<Bow> bows = new ArrayList<>();
     private ArrayList<Arrow> arrows = new ArrayList<>();
+    private ArrayList<BazookaBullet> bazookaBullets = new ArrayList<>();
     private Context context;
     private int rightTowerLeftX;
     private int leftTowerBeginX;
@@ -119,17 +117,21 @@ public class GameState implements Serializable{
      * Update the place and pictures of the sprites, but doesn't print them.
      */
     public void update() {
+        long currentTimeMillis = System.currentTimeMillis();
         for (Soldier soldier : this.getSoldiers()) {
-            soldier.update(System.currentTimeMillis());
+            soldier.update(currentTimeMillis);
+        }
+        for (BazookaBullet bullet : this.getBazookaBullets()){
+            bullet.update(currentTimeMillis);
         }
         for (Bow bow : this.getBows()) {
-            bow.update(System.currentTimeMillis());
+            bow.update(currentTimeMillis);
         }
         for (Arrow arrow : this.getArrows()) {
-            arrow.update(System.currentTimeMillis());
+            arrow.update(currentTimeMillis);
         }
         for (Tower tower : this.getTowers()) {
-            tower.update(System.currentTimeMillis());
+            tower.update(currentTimeMillis);
         }
         this.checkHits();
     }
@@ -145,12 +147,17 @@ public class GameState implements Serializable{
 
     private void checkHits() {
         for (Arrow arrow : this.getArrows()) {
+            boolean hit = false;
             for (Soldier soldier : this.getSoldiers()) {
-                boolean hit = soldier.checkHit(arrow);
+                hit = soldier.checkHit(arrow);
                 if (hit) {
-                    //          removeArrow(arrow);
+                    removeArrow(arrow);
                     removeSoldier(soldier);
+                    break;
                 }
+            }
+            if (hit){
+                continue;
             }
         }
     }
@@ -190,13 +197,26 @@ public class GameState implements Serializable{
      *
      * @param player the requested PLAYER
      */
-    public void addSoldier(Sprite.Player player, long timeStamp) {
+    public void addSoldier(Sprite.Player player, long timeStamp,
+                           final Protocol.Action soldierType) {
         double delay;
         long currentTime = getSyncTime();
         if (player == Sprite.Player.LEFT) { // Us
             delay = 0;
             if (isMultiplayer){
-                client.reportSoldier();
+                switch (soldierType){
+                    case BASIC_SOLDIER:
+                        client.reportBasicSoldier();
+                        break;
+                    case BAZOOKA_SOLDIER:
+                        client.reportBazookaSoldier();
+                        break;
+                    default:
+                        Log.e("yahav",
+                              "Wrong soldier type " + soldierType.toString());
+                        return;
+                }
+
             }
 
             if (this.leftPlayerSoldiers >= MAX_SOLDIERS_PER_PLAYER) {
@@ -215,7 +235,19 @@ public class GameState implements Serializable{
             }
             this.rightPlayerSoldiers++;
         }
-        soldiers.add(new BasicSoldier(context, player, delay));
+        switch (soldierType){
+            case BASIC_SOLDIER:
+                soldiers.add(new BasicSoldier(context, player, delay));
+                break;
+            case BAZOOKA_SOLDIER:
+                soldiers.add(new BazookaSoldier(context, player, delay));
+                break;
+            default:
+                Log.e("yahav",
+                        "Wrong soldier type " + soldierType.toString());
+                break;
+        }
+
     }
 
     public void removeSoldier(Soldier soldier) {
@@ -235,6 +267,10 @@ public class GameState implements Serializable{
      */
     public ArrayList<Soldier> getSoldiers() {
         return (ArrayList<Soldier>) this.soldiers.clone();
+    }
+
+    public ArrayList<BazookaBullet> getBazookaBullets(){
+        return (ArrayList<BazookaBullet>)this.bazookaBullets.clone();
     }
 
     public ArrayList<Tower> getTowers() {
@@ -259,11 +295,18 @@ public class GameState implements Serializable{
         if (isMultiplayer && arrow.getPlayer() == Sprite.Player.LEFT) {
             client.reportArrow(this.leftBow.getDistance());
         }
-
     }
 
     public void removeArrow(Arrow arrow) {
         this.arrows.remove(arrow);
+    }
+
+    public void addBazookaBullet(BazookaBullet bullet) {
+        this.bazookaBullets.add(bullet);
+    }
+
+    public void removeBazookaBullet(BazookaBullet bullet) {
+        this.bazookaBullets.remove(bullet);
     }
 
     public ArrayList<Arrow> getArrows() {
@@ -300,6 +343,15 @@ public class GameState implements Serializable{
         //delay = currentTime - timeStamp;
         delay = delay / 1000; //convert to seconds;
         this.rightBow.aimAndShoot(dist, delay);
+    }
+
+    public void addEnemyBazookaBullet(){
+        int screenWidth = context.getResources().getDisplayMetrics()
+                .widthPixels;
+        BazookaBullet bullet = new BazookaBullet(getContext(), screenWidth / 2,
+                                                 BazookaSoldier.getBazookaSoldierY(),
+                                                 Sprite.Player.LEFT);
+        addBazookaBullet(bullet);
     }
 
     public Context getContext() {
@@ -341,14 +393,14 @@ public class GameState implements Serializable{
     }
 
     public static GameState load(Context context){
-        File file = new File(context.getFilesDir(), fileName);
+        File file = new File(context.getFilesDir(), FILE_NAME);
         if (file.exists()){
             Log.w("yahav", "Loading from" + context.getFilesDir());
             try{
                 ObjectInputStream ois =
                         new ObjectInputStream(new FileInputStream(
                                 new File(context.getFilesDir(),
-                                        fileName)));
+                                        FILE_NAME)));
                 GameState gameState = (GameState) ois.readObject();
                 ois.close();
                 return gameState;
@@ -362,5 +414,10 @@ public class GameState implements Serializable{
         }
 
         return null;
+    }
+
+    public boolean isGameInProcces(){
+        File file = new File(context.getFilesDir(), FILE_NAME);
+        return file.exists();
     }
 }

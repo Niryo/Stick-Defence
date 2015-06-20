@@ -7,6 +7,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 /**
  * This class represents a sprite animation object
@@ -92,6 +93,7 @@ public class Sprite{
      */
     public void setAnimationSpeed(int fps){
         this.fps = fps;
+        this.framePeriod = 100 / fps;
     }
 
     /**
@@ -117,13 +119,14 @@ public class Sprite{
                         currentFrame = nFrames - 1;
                     }
                 }
+
             }
-
+            this.frameRect.left = this.currentFrame * frameWidth;
+            this.frameRect.right = this.frameRect.left + frameWidth;
         }
-
-        this.frameRect.left = this.currentFrame * frameWidth;
-        this.frameRect.right = this.frameRect.left + frameWidth;
     }
+
+    int getCurrentFrame(){ return this.currentFrame; }
 
     /**
      * Draws the sprite on the canvas in the given point. the sprite will be drawn from the
@@ -218,10 +221,11 @@ public class Sprite{
 
 
 
-    public void setPic(Bitmap bitmap){
+    public void setPic(Bitmap bitmap, int nFrames){
         this.bitmap = bitmap;
-//        this.frameHeight=bitmap.getHeight();
-//        this.frameWidth= bitmap.getWidth();
+        this.nFrames = nFrames;
+        this.frameHeight = bitmap.getHeight();
+        this.frameWidth = (bitmap.getWidth() / nFrames);
     }
 
 }

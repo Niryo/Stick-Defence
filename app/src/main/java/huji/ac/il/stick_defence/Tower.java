@@ -55,7 +55,7 @@ public class Tower {
     //tower to span over a half of the screen height.
     private static final double SCREEN_HEIGHT_PORTION = 0.6;
 
-    public static final double MAX_HP = 10.0;//100.0;
+    public static final double MAX_HP = 100.0;
 
     private static Bitmap   leftTowerPic = null;
     private static Bitmap   rightTowerPic = null;
@@ -163,16 +163,16 @@ public class Tower {
     public boolean reduceHP(double hp){
         this.hp -= hp;
 
-        if (this.hp < 75 && this.fires.size() < 1){
+        if (this.hp < 0.75 * MAX_HP && this.fires.size() < 1){
             this.fires.add(new Fire(context));
         }
-        if (this.hp < 50 && this.fires.size() < 2){
+        if (this.hp < 0.5 * MAX_HP && this.fires.size() < 2){
             this.fires.add(new Fire(context));
         }
-        if (this.hp < 25 && this.fires.size() < 3){
+        if (this.hp < 0.25 * MAX_HP && this.fires.size() < 3){
             this.fires.add(new Fire(context));
         }
-        if (this.hp < 10 && this.fires.size() < 4){
+        if (this.hp < 0.1 * MAX_HP && this.fires.size() < 4){
             this.fires.add(new Fire(context));
         }
         gameState.setTowerProgressHP(this.hp, player);

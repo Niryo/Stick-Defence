@@ -130,6 +130,7 @@ private void sendLeagueInfo(String info){
                     peer.partner.readyToPlay=false;
                 }
                 break;
+
         }
 
     }

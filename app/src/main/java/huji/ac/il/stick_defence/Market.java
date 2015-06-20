@@ -56,7 +56,7 @@ public class Market extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.exit_to_main_menu) {
-            File file = new File(getFilesDir(), GameState.fileName);
+            File file = new File(getFilesDir(), GameState.FILE_NAME);
             if (!file.delete()){
                 Log.w("yahav", "Failed to delete file");
             }

@@ -42,6 +42,7 @@ public abstract class Soldier implements Serializable{
     private boolean  attack;
     private double secToCrossScreen;
     private double   delayInSec;
+    private Context  context;
 
 
     protected Soldier(Context context, Sprite.Player player, double
@@ -52,7 +53,7 @@ public abstract class Soldier implements Serializable{
                 .widthPixels;
         this.screenHeight = context.getResources().getDisplayMetrics()
                 .heightPixels;
-
+        this.context = context;
 
         this.DAMAGE_PER_SEC = damagePerSec;
         this.attack = false;
@@ -89,10 +90,15 @@ public abstract class Soldier implements Serializable{
 
     }
 
-    protected void attack(Bitmap attackSoldierPic) {
+    protected Context getContext(){ return this.context; }
+
+    protected void attack(Bitmap attackSoldierPic, int nFrames, int fps) {
         this.attack = true;
-        sprite.setPic(attackSoldierPic);
+        sprite.setPic(attackSoldierPic, nFrames);
+        sprite.setAnimationSpeed(fps);
     }
+
+    protected double getScaledDownFactor(){ return sprite.getScaleDownFactor();}
 
     protected boolean isAttack() {
         return this.attack;
@@ -164,4 +170,7 @@ public abstract class Soldier implements Serializable{
         return this.PLAYER;
     }
 
+    public int getScreenWidth(){ return this.screenWidth; }
+
+    public int getCurrentFrame(){ return sprite.getCurrentFrame(); }
 }

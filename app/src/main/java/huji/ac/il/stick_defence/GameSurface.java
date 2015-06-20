@@ -5,14 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 
 import java.io.File;
 
@@ -48,7 +44,7 @@ public class GameSurface extends SurfaceView implements
 
     public void goToMarket(){
         stopGameLoop();
-        File file = new File(context.getFilesDir(), GameState.fileName);
+        File file = new File(context.getFilesDir(), GameState.FILE_NAME);
         Log.w("yahav", context.getFilesDir().toString());
         if (!file.delete()){
             Log.w("yahav", "Failed to delete file");
@@ -97,12 +93,17 @@ public class GameSurface extends SurfaceView implements
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        gameLoopThread.setRunning(true);
-        gameLoopThread.start();
+        if (gameLoopThread.getState() == Thread.State.NEW){
+            Log.w("yahav", "surfaceCreated");
+            gameLoopThread.setRunning(true);
+            gameLoopThread.start();
+        }
+
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        Log.w("yahav", "surfaceDestroyed");
         boolean retry = true;
         while (retry) {
             try {
@@ -121,6 +122,10 @@ public class GameSurface extends SurfaceView implements
 
         for (Tower tower : gameState.getTowers()) {
             tower.render(canvas);
+        }
+
+        for (BazookaBullet bullet : gameState.getBazookaBullets()){
+            bullet.render(canvas);
         }
 
         for (Soldier soldier : gameState.getSoldiers()) {

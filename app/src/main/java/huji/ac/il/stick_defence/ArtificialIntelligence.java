@@ -70,7 +70,9 @@ public class ArtificialIntelligence {
     public void sendSoldier(){
         long currentTime = System.currentTimeMillis();
         if ((currentTime - lastSoldierInMillisec)/1000 >= secondsToSendSoldier){
-            gameState.addSoldier(Sprite.Player.RIGHT, System.currentTimeMillis());
+            gameState.addSoldier(Sprite.Player.RIGHT, System.currentTimeMillis(),
+                                 Protocol.Action.BAZOOKA_SOLDIER);
+            //TODO - change to required soldier
             this.lastSoldierInMillisec = currentTime;
         }
     }

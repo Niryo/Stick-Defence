@@ -2,9 +2,7 @@ package huji.ac.il.stick_defence;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -40,6 +38,11 @@ public class GameActivity extends Activity implements DoProtocolAction {
         super.onCreate(savedInstanceState);
 
         Log.w("yahav", "Starting GameActivity");
+        File file = new File(getFilesDir(), GameState.FILE_NAME);
+        /*boolean newGame = true;
+        if (file.exists()){
+            newGame = false;
+        }*/
         boolean newGame = getIntent().getBooleanExtra("NewGame", true);
         if (newGame){
             Log.w("yahav", "New game");
@@ -67,7 +70,9 @@ public class GameActivity extends Activity implements DoProtocolAction {
         sendSoldier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gameState.addSoldier(Sprite.Player.LEFT, 0);
+                gameState.addSoldier(Sprite.Player.LEFT, 0,
+                        Protocol.Action.BAZOOKA_SOLDIER);
+                        //TODO - change to the required soldier
             }
         });
         gameComponents.addView(sendSoldier);
@@ -105,13 +110,13 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
 
        if (isMultiplayer){
-        waitDialog = new ProgressDialog(this);
-        waitDialog.setMessage("Waiting for opponent..");
-        waitDialog.setIndeterminate(true);
-        waitDialog.setCancelable(false);
-        waitDialog.show();
+            waitDialog = new ProgressDialog(this);
+            waitDialog.setMessage("Waiting for opponent..");
+            waitDialog.setIndeterminate(true);
+            waitDialog.setCancelable(false);
+            waitDialog.show();
 
-        Client.getClientInstance().send(Protocol.stringify(Protocol.Action.READY_TO_PLAY));
+            Client.getClientInstance().send(Protocol.stringify(Protocol.Action.READY_TO_PLAY));
 //
 //            waitDialog = new AlertDialog.Builder(this)
 //                    //.setTitle("Waiting for opponent..")
@@ -125,7 +130,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
 //                    }).setNegativeButton("Wipe all data", new DialogInterface.OnClickListener() {
 //                        @Override
 //                        public void onClick(DialogInterface dialog, int which) {
-//                            File file = new File(getFilesDir(), GameState.fileName);
+//                            File file = new File(getFilesDir(), GameState.FILE_NAME);
 //                            Log.w("yahav", getFilesDir().toString());
 //                            if (!file.delete()) {
 //                                Log.w("yahav", "Failed to delete file");
@@ -153,6 +158,11 @@ public class GameActivity extends Activity implements DoProtocolAction {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.w("yahav", "onResume");
+    }
 
     @Override
     protected void onPause() {
@@ -161,7 +171,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
                     send(Protocol.stringify(Protocol.Action.PAUSE));
         }
 
-        gameState.save(new File(getFilesDir(), GameState.fileName));
+        gameState.save(new File(getFilesDir(), GameState.FILE_NAME));
         gameSurface.stopGameLoop();
         super.onPause();
     }
@@ -183,7 +193,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.exit_to_main_menu) {
-            File file = new File(getFilesDir(), GameState.fileName);
+            File file = new File(getFilesDir(), GameState.FILE_NAME);
             if (!file.delete()){
                 Log.w("yahav", "Failed to delete file");
             } else {
@@ -208,10 +218,16 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 this.gameState.addEnemyShot(arrowDistance, timeStamp);
                 break;
 
-            case SOLDIER:
-                this.gameState.addSoldier(Sprite.Player.RIGHT, Protocol.getTimeStamp(rawInput));
+
+            case BASIC_SOLDIER:
+                this.gameState.addSoldier(Sprite.Player.RIGHT, Protocol.getTimeStamp(rawInput), Protocol.Action.BASIC_SOLDIER);
+
                 break;
 
+            case BAZOOKA_SOLDIER:
+                this.gameState.addSoldier(Sprite.Player.RIGHT,
+                        Protocol.getTimeStamp(rawInput), Protocol.Action.BAZOOKA_SOLDIER);
+                break;
             case START_GAME:
                 this.gameState.setTime(System.currentTimeMillis(),
                         Long.parseLong(Protocol.getData(rawInput)));
@@ -219,18 +235,24 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 break;
 
             case PAUSE:
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        pauseDialog.show();
-                    }
-                });
+                try{
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            pauseDialog.show();
+                        }
+                    });
+                } catch (android.view.WindowManager.BadTokenException e){
+                    // Do nothing
+                }
+
+
 
                 this.gameSurface.sleep();
                 break;
 
             case RESUME:
-                pauseDialog.cancel();
+                pauseDialog.dismiss();
                 this.gameSurface.wakeUp();
                 break;
         }

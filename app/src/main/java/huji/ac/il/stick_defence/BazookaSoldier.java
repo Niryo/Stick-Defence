@@ -1,19 +1,18 @@
 package huji.ac.il.stick_defence;
 
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 /**
- * This class represents a basic soldier.
+ * Created by yahav on 18/06/15.
  */
-public class BasicSoldier extends Soldier{
+public class BazookaSoldier extends Soldier {
 
-    //=======================BasicSoldier's abilities===========================
-    private static final double SEC_TO_CROSS_SCREEN = 10;
-    private static final int    DAMAGE_PER_SEC = 1; // [Damage/Sec]
+    //======================BazookaSoldier's abilities==========================
+    private static final double SEC_TO_SCREEN_WIDTH = 20;
+    private static final int    DAMAGE_PER_SEC = 5; // [Damage/Sec]
     //==========================================================================
 
     //==========================================================================
@@ -24,24 +23,25 @@ public class BasicSoldier extends Soldier{
     //==========================================================================
 
     //============================Sprite constants==============================
-    private static final int    NUMBER_OF_FRAMES = 9;
-    private static final int ATTACK_N_FRAMES = 19;
-    private static final int FPS = 4;
+    private static final int    NUMBER_OF_FRAMES = 7;
+    private static final int    HIT_NUMBER_OF_FRAMES = 3;
+    private static final int    ANIMATION_SPEED = 4;
     //==========================================================================
 
     private static Bitmap         leftSoldierPic = null;
     private static Bitmap         rightSoldierPic = null;
     private static Bitmap         leftAttackSoldierPic = null;
     private static Bitmap         rightAttackSoldierPic = null;
+    private static float          bazookaSoldierY = 0;
 
     private Sprite.Player player;
 
-    public BasicSoldier(Context context, Sprite.Player player,double delayInSec) {
-        super(context, player, SEC_TO_CROSS_SCREEN, DAMAGE_PER_SEC, delayInSec);
+    public BazookaSoldier(Context context, Sprite.Player player,double delayInSec) {
+        super(context, player, SEC_TO_SCREEN_WIDTH, DAMAGE_PER_SEC, delayInSec);
         if  (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
-                                                  context.getResources(),
-                                                  R.drawable.basic_soldier_run);
+                    context.getResources(),
+                    R.drawable.bazooka);
         }
 
         if (null == rightSoldierPic){
@@ -51,7 +51,7 @@ public class BasicSoldier extends Soldier{
         if (null == leftAttackSoldierPic){
             leftAttackSoldierPic =
                     BitmapFactory.decodeResource(context.getResources(),
-                            R.drawable.basic_soldier_hit);
+                            R.drawable.bazooka_shoot);
         }
 
         if(null == rightAttackSoldierPic){
@@ -60,15 +60,17 @@ public class BasicSoldier extends Soldier{
 
         if (Sprite.Player.LEFT == player){
             super.initSprite(context, leftSoldierPic, NUMBER_OF_FRAMES,
-                    SCREEN_HEIGHT_PORTION, FPS);
+                    SCREEN_HEIGHT_PORTION, ANIMATION_SPEED);
         } else {
             super.initSprite(context, rightSoldierPic, NUMBER_OF_FRAMES,
-                    SCREEN_HEIGHT_PORTION, FPS);
+                    SCREEN_HEIGHT_PORTION, ANIMATION_SPEED);
         }
 
+        BazookaBullet.init(context, getScaledDownFactor());
+
+        bazookaSoldierY = super.getSoldierY(); // TODO - verify
 
         this.player = player;
-
 
     }
 
@@ -76,19 +78,31 @@ public class BasicSoldier extends Soldier{
         if (!super.isAttack()){
             if (player == Sprite.Player.LEFT){
                 if (getSoldierX() + getScaledFrameWidth() / 2 >=
-                        gameState.getRightTowerLeftX()){
-                    super.attack(leftAttackSoldierPic, ATTACK_N_FRAMES,
-                            FPS);
+                        getScreenWidth() / 2){
+                    super.attack(leftAttackSoldierPic, HIT_NUMBER_OF_FRAMES, 1);
                 }
             } else {
                 if (getSoldierX() + getScaledFrameWidth() / 2 <=
-                        gameState.getLeftTowerRightX()){
-                    super.attack(rightAttackSoldierPic, ATTACK_N_FRAMES,
-                            FPS);
+                        getScreenWidth() / 2){
+                    super.attack(rightAttackSoldierPic, HIT_NUMBER_OF_FRAMES, 1);
                 }
+            }
+        } else { // Attack
+            if (super.getCurrentFrame() == 0){
+                float bulletX = getSoldierX();
+                if (Sprite.Player.LEFT == player){
+                    bulletX += (float)getScaledFrameWidth() / 2;
+                }
+                BazookaBullet bullet = new BazookaBullet(getContext(),
+                                                         bulletX,
+                                                         getSoldierY(),
+                                                         getPlayer());
+
+                gameState.addBazookaBullet(bullet);
             }
         }
         super.update(gameTime);
+
     }
 
     public void render(Canvas canvas) {
@@ -99,4 +113,5 @@ public class BasicSoldier extends Soldier{
         return super.checkHit(arrow);
     }
 
+    public static float getBazookaSoldierY(){ return bazookaSoldierY; }
 }
