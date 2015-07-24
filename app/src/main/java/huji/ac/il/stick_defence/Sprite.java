@@ -21,6 +21,9 @@ public class Sprite{
         RIGHT
     }
 
+    private static final int DEFAULT_FPS = 40;
+    private static final int MILLISEC_IN_SEC = 1000;
+
     private Bitmap  bitmap;
     private Rect    frameRect;  // the rectangle to be drawn from the animation bitmap
     private RectF   destRect;
@@ -28,10 +31,10 @@ public class Sprite{
     private int     frameWidth;
     private int     currentFrame = 0;    // the current frame
 
-    private int     nFrames = 9;        // number of frames in animation
-    private int     fps = 4;             //the speed of the animation
+    private int     nFrames;            // number of frames in animation
+    private int     fps = DEFAULT_FPS;           //the speed of the animation
     private int     framePeriod
-            = 100 / fps;    // milliseconds between each frame (1000/fps)
+       = MILLISEC_IN_SEC / fps;    // milliseconds between each frame (1000/fps)
     private long    frameTicker = 01;    // the time of the last frame update
     private double  scaleDownFactor;
     private Player  player;
@@ -93,7 +96,7 @@ public class Sprite{
      */
     public void setAnimationSpeed(int fps){
         this.fps = fps;
-        this.framePeriod = 100 / fps;
+        this.framePeriod = 1000 / fps;
     }
 
     /**
@@ -138,7 +141,10 @@ public class Sprite{
      */
     public void render(Canvas canvas, int x, int y){
         // where to draw the sprite
-        destRect.set(x, y, (x + (int)getScaledFrameWidth()), (y + (int)getScaledFrameHeight()));
+        destRect.set(x,
+                     y,
+                     (x + (int)getScaledFrameWidth()),
+                     (y + (int)getScaledFrameHeight()));
 
         canvas.drawBitmap(this.bitmap, this.frameRect, destRect, null);
     }

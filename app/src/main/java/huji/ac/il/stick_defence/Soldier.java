@@ -40,7 +40,7 @@ public abstract class Soldier implements Serializable{
     private double   soldierY;
     private long     lastUpdateTime;
     private boolean  attack;
-    private double secToCrossScreen;
+    private double   secToCrossScreen;
     private double   delayInSec;
     private Context  context;
 

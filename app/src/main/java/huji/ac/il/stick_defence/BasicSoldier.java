@@ -26,7 +26,7 @@ public class BasicSoldier extends Soldier{
     //============================Sprite constants==============================
     private static final int    NUMBER_OF_FRAMES = 9;
     private static final int ATTACK_N_FRAMES = 19;
-    private static final int FPS = 4;
+    private static final int FPS = 40;
     //==========================================================================
 
     private static Bitmap         leftSoldierPic = null;

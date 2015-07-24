@@ -25,7 +25,9 @@ public class BazookaSoldier extends Soldier {
     //============================Sprite constants==============================
     private static final int    NUMBER_OF_FRAMES = 7;
     private static final int    HIT_NUMBER_OF_FRAMES = 3;
-    private static final int    ANIMATION_SPEED = 4;
+    private static final int    WALK_FPS = 40;
+    private static final int    ATTACK_FPS = 8;
+    private static final float  BAZOOKA_HEIGHT_RELATIVE = 0.99f;
     //==========================================================================
 
     private static Bitmap         leftSoldierPic = null;
@@ -33,7 +35,7 @@ public class BazookaSoldier extends Soldier {
     private static Bitmap         leftAttackSoldierPic = null;
     private static Bitmap         rightAttackSoldierPic = null;
     private static float          bazookaSoldierY = 0;
-
+    private boolean canShoot = false;
     private Sprite.Player player;
 
     public BazookaSoldier(Context context, Sprite.Player player,double delayInSec) {
@@ -60,10 +62,10 @@ public class BazookaSoldier extends Soldier {
 
         if (Sprite.Player.LEFT == player){
             super.initSprite(context, leftSoldierPic, NUMBER_OF_FRAMES,
-                    SCREEN_HEIGHT_PORTION, ANIMATION_SPEED);
+                    SCREEN_HEIGHT_PORTION, WALK_FPS);
         } else {
             super.initSprite(context, rightSoldierPic, NUMBER_OF_FRAMES,
-                    SCREEN_HEIGHT_PORTION, ANIMATION_SPEED);
+                    SCREEN_HEIGHT_PORTION, WALK_FPS);
         }
 
         BazookaBullet.init(context, getScaledDownFactor());
@@ -79,26 +81,33 @@ public class BazookaSoldier extends Soldier {
             if (player == Sprite.Player.LEFT){
                 if (getSoldierX() + getScaledFrameWidth() / 2 >=
                         getScreenWidth() / 2){
-                    super.attack(leftAttackSoldierPic, HIT_NUMBER_OF_FRAMES, 1);
+                    super.attack(leftAttackSoldierPic, HIT_NUMBER_OF_FRAMES,
+                            ATTACK_FPS);
                 }
             } else {
                 if (getSoldierX() + getScaledFrameWidth() / 2 <=
                         getScreenWidth() / 2){
-                    super.attack(rightAttackSoldierPic, HIT_NUMBER_OF_FRAMES, 1);
+                    super.attack(rightAttackSoldierPic, HIT_NUMBER_OF_FRAMES,
+                            ATTACK_FPS);
                 }
             }
         } else { // Attack
             if (super.getCurrentFrame() == 0){
-                float bulletX = getSoldierX();
-                if (Sprite.Player.LEFT == player){
-                    bulletX += (float)getScaledFrameWidth() / 2;
-                }
-                BazookaBullet bullet = new BazookaBullet(getContext(),
-                                                         bulletX,
-                                                         getSoldierY(),
-                                                         getPlayer());
+                if (canShoot) {
+                    float bulletX = getSoldierX();
+                    if (Sprite.Player.LEFT == player) {
+                        bulletX += (float) getScaledFrameWidth() / 2;
+                    }
+                    BazookaBullet bullet = new BazookaBullet(getContext(),
+                            bulletX,
+                            getSoldierY()/BAZOOKA_HEIGHT_RELATIVE,
+                            getPlayer());
 
-                gameState.addBazookaBullet(bullet);
+                    gameState.addBazookaBullet(bullet);
+                    canShoot = false;
+                }
+            } else {
+                canShoot = true;
             }
         }
         super.update(gameTime);
