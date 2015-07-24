@@ -1,8 +1,12 @@
 package huji.ac.il.stick_defence;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,6 +16,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.logging.LogRecord;
 
 
 /**
@@ -35,10 +40,13 @@ public class GameState implements Serializable{
     private int leftTowerBeginX;
     private int rightPlayerSoldiers = 0;
     private int leftPlayerSoldiers = 0;
-    private Bow leftBow;
-    private Bow rightBow;
-    private ProgressBar leftProgressBar;
-    private ProgressBar rightProgressBar;
+    private Bow leftBow, rightBow;
+    private ProgressBar leftProgressBar, rightProgressBar;
+    private TextView leftPointsTv, rightPointsTv;
+    private int leftPoints, rightPoints;
+    private int leftTmpPoints, rightTmpPoints;
+    private AddPointsThread addPointsThread;
+    private static Handler leftPointsHandler, rightPointsHandler;
     private Client client = Client.getClientInstance();
     private long timeDifference;
     private boolean isMultiplayer = true;
@@ -105,6 +113,19 @@ public class GameState implements Serializable{
         }
     }
 
+    public void initPoints(final TextView leftPointsTv, final TextView rightPointsTv){
+        this.leftPointsTv = leftPointsTv;
+        this.rightPointsTv = rightPointsTv;
+
+        addPointsThread = new AddPointsThread(leftPointsTv, rightPointsTv);
+        addPointsThread.setRunning(true);
+        addPointsThread.start();
+    }
+
+    public void addPoints(int pointsToAdd, Sprite.Player player){
+        addPointsThread.addPoints(pointsToAdd, player);
+    }
+
     public void setTowerProgressHP(double hp, Sprite.Player player) {
         if (Sprite.Player.LEFT == player) {
             leftProgressBar.setProgress((int) hp);
@@ -151,8 +172,10 @@ public class GameState implements Serializable{
             for (Soldier soldier : this.getSoldiers()) {
                 hit = soldier.checkHit(arrow);
                 if (hit) {
+                    addPoints(10, arrow.getPlayer());
                     removeArrow(arrow);
                     removeSoldier(soldier);
+
                     break;
                 }
             }

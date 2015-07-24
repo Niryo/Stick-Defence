@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.io.File;
 
@@ -102,6 +103,25 @@ public class GameActivity extends Activity implements DoProtocolAction {
         gameComponents.addView(rightProgressBar);
         //======================================================================
 
+        //============================== Points ================================
+
+        TextView leftPoints = new TextView(this);
+        TextView rightPoints = new TextView(this);
+        gameState.initPoints(leftPoints, rightPoints);
+        leftPoints.setY(height / 4);
+        leftPoints.setX(width / 20);
+
+        rightPoints.setY(height / 4);
+        rightPoints.setX((float) (width / 1.15));
+
+
+        gameComponents.addView(leftPoints);
+        gameComponents.addView(rightPoints);
+
+
+
+
+        //======================================================================
         game.addView(gameSurface);
         game.addView(gameComponents);
 //        setContentView(new GameSurface(this));
