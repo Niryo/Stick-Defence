@@ -105,18 +105,20 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         //============================== Points ================================
 
-        TextView leftPoints = new TextView(this);
-        TextView rightPoints = new TextView(this);
-        gameState.initPoints(leftPoints, rightPoints);
-        leftPoints.setY(height / 4);
-        leftPoints.setX(width / 20);
-
-        rightPoints.setY(height / 4);
-        rightPoints.setX((float) (width / 1.15));
+        TextView leftPointsTv = new TextView(this);
+        TextView rightPointsTv = new TextView(this);
 
 
-        gameComponents.addView(leftPoints);
-        gameComponents.addView(rightPoints);
+        gameState.initCredits(leftPointsTv, rightPointsTv);
+        leftPointsTv.setY(height / 4);
+        leftPointsTv.setX(width / 20);
+
+        rightPointsTv.setY(height / 4);
+        rightPointsTv.setX((float) (width / 1.15));
+
+
+        gameComponents.addView(leftPointsTv);
+        gameComponents.addView(rightPointsTv);
 
 
 

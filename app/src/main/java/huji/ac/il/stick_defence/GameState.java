@@ -1,9 +1,6 @@
 package huji.ac.il.stick_defence;
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -16,7 +13,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.logging.LogRecord;
 
 
 /**
@@ -29,6 +25,7 @@ public class GameState implements Serializable{
     public static final String FILE_NAME = "game_state.sav";
 
     private static int MAX_SOLDIERS_PER_PLAYER = 20;
+    private static int CREDITS_ON_WIN = 100;
 
     private ArrayList<Soldier> soldiers = new ArrayList<>();
     private ArrayList<Tower> towers = new ArrayList<>();
@@ -42,11 +39,8 @@ public class GameState implements Serializable{
     private int leftPlayerSoldiers = 0;
     private Bow leftBow, rightBow;
     private ProgressBar leftProgressBar, rightProgressBar;
-    private TextView leftPointsTv, rightPointsTv;
-    private int leftPoints, rightPoints;
-    private int leftTmpPoints, rightTmpPoints;
-    private AddPointsThread addPointsThread;
-    private static Handler leftPointsHandler, rightPointsHandler;
+    private TextView leftCreditsTv, rightCreditsTv;
+    private IncreaseCredits increaseCredits;
     private Client client = Client.getClientInstance();
     private long timeDifference;
     private boolean isMultiplayer = true;
@@ -113,17 +107,18 @@ public class GameState implements Serializable{
         }
     }
 
-    public void initPoints(final TextView leftPointsTv, final TextView rightPointsTv){
-        this.leftPointsTv = leftPointsTv;
-        this.rightPointsTv = rightPointsTv;
+    public void initCredits(TextView leftCreditsTv, TextView rightCreditsTv){
+        this.leftCreditsTv  = leftCreditsTv;
+        this.rightCreditsTv = rightCreditsTv;
+        this.increaseCredits = new IncreaseCredits(leftCreditsTv,
+                                                   rightCreditsTv);
 
-        addPointsThread = new AddPointsThread(leftPointsTv, rightPointsTv);
-        addPointsThread.setRunning(true);
-        addPointsThread.start();
+        increaseCredits.setRunning(true);
+        increaseCredits.start();
     }
 
-    public void addPoints(int pointsToAdd, Sprite.Player player){
-        addPointsThread.addPoints(pointsToAdd, player);
+    public void addCredits(double creditsToAdd, Sprite.Player player){
+        increaseCredits.addCredits(creditsToAdd, player);
     }
 
     public void setTowerProgressHP(double hp, Sprite.Player player) {
@@ -172,7 +167,7 @@ public class GameState implements Serializable{
             for (Soldier soldier : this.getSoldiers()) {
                 hit = soldier.checkHit(arrow);
                 if (hit) {
-                    addPoints(10, arrow.getPlayer());
+                    addCredits(10, arrow.getPlayer());
                     removeArrow(arrow);
                     removeSoldier(soldier);
 
@@ -337,13 +332,17 @@ public class GameState implements Serializable{
     }
 
     public void hitTower(Sprite.Player player, double hp) {
+        Log.w("yahav", "Adding credits " + String.valueOf(hp));
+        addCredits(hp, player);
         if (player == Sprite.Player.RIGHT) {
             if (!towers.get(0).reduceHP(hp)){
                 this.rightPlayerWin = true;
+                addCredits(CREDITS_ON_WIN, player);
             }
         } else {
             if (!towers.get(1).reduceHP(hp)){
                 this.leftPlayerWin = true;
+                addCredits(CREDITS_ON_WIN, player);
             }
         }
     }
