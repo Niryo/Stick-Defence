@@ -43,14 +43,8 @@ public class GameSurface extends SurfaceView implements
     }
 
     public void goToMarket(){
+        gameState.saveAndFinish();
         stopGameLoop();
-        File file = new File(context.getFilesDir(), GameState.FILE_NAME);
-        Log.w("yahav", context.getFilesDir().toString());
-        if (!file.delete()){
-            Log.w("yahav", "Failed to delete file");
-        } else {
-            Log.w("yahav", "File deleted successfully");
-        }
         Intent gameIntent = new Intent(context, Market.class);
 // TODO - Save an object with points[player], nPlayers, isMultiplayer, etc.
         gameIntent.putExtra("Multiplayer", gameState.isMultiplayer());

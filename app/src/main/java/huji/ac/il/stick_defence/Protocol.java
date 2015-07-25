@@ -55,6 +55,7 @@ public static enum Action {
     ARROW,
     LEFT_WIN,
     RIGHT_WIN,
+    GAME_OVER,
     PAUSE,
     RESUME
 }

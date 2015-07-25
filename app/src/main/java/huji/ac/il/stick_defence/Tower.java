@@ -154,6 +154,9 @@ public class Tower {
     public int getRightX() { return this.towerX +
                                     (int) towerSprite.getScaledFrameWidth(); }
 
+    public int getCentralX(){ return this.towerX +
+                                (int) towerSprite.getScaledFrameWidth() / 2;}
+
     /**
      * Reduces HP to the tower and handle the fire. Returns true iff there
      * is enough hp to reduce.

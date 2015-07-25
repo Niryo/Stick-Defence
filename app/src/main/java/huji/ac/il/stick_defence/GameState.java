@@ -4,14 +4,6 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 
@@ -20,9 +12,11 @@ import java.util.ArrayList;
  * That is contains all sprites, handle them and manage
  * the interactions between them.
  */
-public class GameState implements Serializable{
+public class GameState{
+
+
     private static GameState gameState;
-    public static final String FILE_NAME = "game_state.sav";
+
 
     private static int MAX_SOLDIERS_PER_PLAYER = 20;
     private static int CREDITS_ON_WIN = 100;
@@ -33,19 +27,19 @@ public class GameState implements Serializable{
     private ArrayList<Arrow> arrows = new ArrayList<>();
     private ArrayList<BazookaBullet> bazookaBullets = new ArrayList<>();
     private Context context;
-    private int rightTowerLeftX;
-    private int leftTowerBeginX;
+    private int rightTowerLeftX, leftTowerBeginX;
+    private int rightTowerCentralX, leftTowerCentralX;
     private int rightPlayerSoldiers = 0;
     private int leftPlayerSoldiers = 0;
     private Bow leftBow, rightBow;
     private ProgressBar leftProgressBar, rightProgressBar;
-    private TextView leftCreditsTv, rightCreditsTv;
-    private IncreaseCredits increaseCredits;
+    private CreditManager creditManager;
     private Client client = Client.getClientInstance();
     private long timeDifference;
     private boolean isMultiplayer = true;
     private boolean leftPlayerWin = false;
     private boolean rightPlayerWin = false;
+    PlayerStorage playerStorage;
 
     /**
      * Constructor. Adds 2 towers to the sprites list.
@@ -54,22 +48,25 @@ public class GameState implements Serializable{
      */
     private GameState(Context context) {
         this.context = context;
+        playerStorage = PlayerStorage.load(context);
     }
 
     public static GameState CreateGameState(Context context) {
-        if (gameState == null) {
-            gameState = load(context);
-            if (null == gameState){
-                gameState = new GameState(context);
-                gameState.init();
-            }
 
+        if (null == gameState){
+            gameState = new GameState(context);
+            gameState.init();
         }
+
         return gameState;
     }
 
     public static GameState getInstance() {
         return gameState;
+    }
+
+    public boolean isGameInProcces(){
+        return this.playerStorage.isGameInProcess();
     }
 
     public static void reset(){
@@ -91,10 +88,20 @@ public class GameState implements Serializable{
 
         rightTowerLeftX = rightTower.getLeftX();
         leftTowerBeginX = leftTower.getRightX();
+        rightTowerCentralX = rightTower.getCentralX();
+        leftTowerCentralX = leftTower.getCentralX();
+
     }
 
     public void setSinglePlayer(){
         this.isMultiplayer = false;
+    }
+
+    public void saveAndFinish(){
+        playerStorage.setCredits(creditManager.getCredits(Sprite.Player.LEFT));
+        playerStorage.save();
+
+        creditManager.setRunning(false);
     }
 
     public void initProgressBar(ProgressBar progressBar, Sprite.Player player) {
@@ -108,17 +115,16 @@ public class GameState implements Serializable{
     }
 
     public void initCredits(TextView leftCreditsTv, TextView rightCreditsTv){
-        this.leftCreditsTv  = leftCreditsTv;
-        this.rightCreditsTv = rightCreditsTv;
-        this.increaseCredits = new IncreaseCredits(leftCreditsTv,
-                                                   rightCreditsTv);
+        this.creditManager =
+                new CreditManager(leftCreditsTv,
+                                    this.playerStorage.getCredits(), 0); //TODO - support right player
 
-        increaseCredits.setRunning(true);
-        increaseCredits.start();
+        creditManager.setRunning(true);
+        creditManager.start();
     }
 
     public void addCredits(double creditsToAdd, Sprite.Player player){
-        increaseCredits.addCredits(creditsToAdd, player);
+        creditManager.addCredits(creditsToAdd, player);
     }
 
     public void setTowerProgressHP(double hp, Sprite.Player player) {
@@ -307,6 +313,14 @@ public class GameState implements Serializable{
         return this.leftTowerBeginX;
     }
 
+    public int getRightTowerCentralX(){
+        return this.rightTowerCentralX;
+    }
+
+    public int getLeftTowerCentralX(){
+        return this.leftTowerCentralX;
+    }
+
 
     public void addArrow(Arrow arrow) {
         this.arrows.add(arrow);
@@ -332,7 +346,9 @@ public class GameState implements Serializable{
     }
 
     public void hitTower(Sprite.Player player, double hp) {
-        Log.w("yahav", "Adding credits " + String.valueOf(hp));
+        if (this.rightPlayerWin || this.leftPlayerWin){
+            return;
+        }
         addCredits(hp, player);
         if (player == Sprite.Player.RIGHT) {
             if (!towers.get(0).reduceHP(hp)){
@@ -367,15 +383,6 @@ public class GameState implements Serializable{
         this.rightBow.aimAndShoot(dist, delay);
     }
 
-    public void addEnemyBazookaBullet(){
-        int screenWidth = context.getResources().getDisplayMetrics()
-                .widthPixels;
-        BazookaBullet bullet = new BazookaBullet(getContext(), screenWidth / 2,
-                                                 BazookaSoldier.getBazookaSoldierY(),
-                                                 Sprite.Player.LEFT);
-        addBazookaBullet(bullet);
-    }
-
     public Context getContext() {
         return this.context;
     }
@@ -395,51 +402,5 @@ public class GameState implements Serializable{
 
     private boolean isGameOver(){
         return isRightPlayerWin() || isLeftPlayerWin();
-    }
-
-    public void save(File file){
-        if (isGameOver()){
-            Log.w("yahav", "Game over, don't save");
-            return;
-        }
-        try{
-            Log.w("yahav", "Saving to" + context.getFilesDir());
-            ObjectOutputStream oos =
-                    new ObjectOutputStream(new FileOutputStream(file));
-            oos.writeObject(this);
-            oos.flush();
-            oos.close();
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-
-    public static GameState load(Context context){
-        File file = new File(context.getFilesDir(), FILE_NAME);
-        if (file.exists()){
-            Log.w("yahav", "Loading from" + context.getFilesDir());
-            try{
-                ObjectInputStream ois =
-                        new ObjectInputStream(new FileInputStream(
-                                new File(context.getFilesDir(),
-                                        FILE_NAME)));
-                GameState gameState = (GameState) ois.readObject();
-                ois.close();
-                return gameState;
-            } catch (IOException e){
-                e.printStackTrace();
-            } catch (ClassNotFoundException e){
-                e.printStackTrace(); //May be deleted
-            }
-        } else {
-            Log.w("yahav", "Tried to load a nonexistent file");
-        }
-
-        return null;
-    }
-
-    public boolean isGameInProcces(){
-        File file = new File(context.getFilesDir(), FILE_NAME);
-        return file.exists();
     }
 }

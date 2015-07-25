@@ -58,7 +58,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
         exitToMainMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final File file = new File(getFilesDir(), GameState.FILE_NAME);
+                final File file = new File(getFilesDir(), PlayerStorage.FILE_NAME);
                 if (file.delete()){
                     Log.w("yahav", "File deleted successfully");
                 } else{

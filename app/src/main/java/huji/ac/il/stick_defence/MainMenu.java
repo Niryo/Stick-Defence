@@ -23,20 +23,21 @@ import java.net.Socket;
 public class MainMenu extends Activity implements DoProtocolAction {
     private String name = "test";
     private Client client;// = Client.createClient(name);
-    private boolean isCreateLeagueOptionsVisible=false;
+    private boolean isCreateLeagueOptionsVisible = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                             WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         client = Client.createClient(name);
         this.client.setCurrentActivity(this);
 
+        deleteOldGameData();
      //   checkForOngoingGame();
 
         //========================Single player=================================
@@ -185,9 +186,13 @@ public class MainMenu extends Activity implements DoProtocolAction {
         }
     }
 
-
-    private void checkForOngoingGame(){
-        final File file = new File(getFilesDir(), GameState.FILE_NAME);
+    private void deleteOldGameData(){
+        final File file = new File(getFilesDir(), PlayerStorage.FILE_NAME);
+        file.delete();
+    }
+/*
+    private boolean checkForOngoingGame(){
+        final File file = new File(getFilesDir(), PlayerStorage.FILE_NAME);
         if (file.exists()){
             Log.w("yahav", "File exists");
             GameState gameState = GameState.CreateGameState(getApplicationContext());
@@ -206,10 +211,8 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 finish();
             }
 
-        } else {
-            Log.w("yahav", "File doesn't exists");
         }
-    }
+    }*/
 
 
 }

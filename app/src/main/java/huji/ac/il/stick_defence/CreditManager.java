@@ -6,23 +6,24 @@ import android.os.Handler;
 /**
  * Created by yahav on 24/07/15.
  */
-public class IncreaseCredits extends Thread {
+public class CreditManager extends Thread {
     private static final int SLEEP_IN_MSEC = 60;
     GameState gameState = GameState.getInstance();
     boolean running;
-    private TextView rightCreditsTv, leftCreditsTv;
-    private double rightCredits, leftCredits;
-    private int rightCreditsTmp, leftCreditsTmp;
+    private TextView leftCreditsTv;
+    private double leftCredits, rightCredits;
+    private int tmpCredits;
     Handler handler;
 
-    public IncreaseCredits(TextView leftCreditsTv, TextView rightCreditsTv){
+    public CreditManager(TextView leftCreditsTv,
+                         int leftCredits, int rightCredits){
         this.leftCreditsTv = leftCreditsTv;
-        this.rightCreditsTv = rightCreditsTv;
+        this.leftCredits = leftCredits;
+        this.tmpCredits = leftCredits;
 
-        leftCredits = rightCredits = 0.0;
-        rightCreditsTmp = leftCreditsTmp = 0;
-        leftCreditsTv.setText("Credits: 0");
-        rightCreditsTv.setText("Credits: 0");
+        this.rightCredits = rightCredits;
+
+        leftCreditsTv.setText(leftCredits + "$");
         handler = new Handler();
     }
 
@@ -32,6 +33,14 @@ public class IncreaseCredits extends Thread {
         } else {
             rightCredits += creditsToAdd;
         }
+
+
+    }
+    public int getCredits(Sprite.Player player){
+        if (Sprite.Player.LEFT == player){
+            return (int) this.leftCredits;
+        }
+        return (int) rightCredits;
     }
 
     public void setRunning(boolean running){
@@ -42,20 +51,14 @@ public class IncreaseCredits extends Thread {
     public void run() {
         super.run();
         while (running){
-            if (leftCreditsTmp < (int) leftCredits){
-                leftCreditsTmp ++;
-            }
-            if (rightCreditsTmp < (int) rightCredits){
-                rightCreditsTmp ++;
+            if (tmpCredits < (int) leftCredits){
+                tmpCredits++;
             }
 
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    leftCreditsTv.setText("Credits: " +
-                            String.valueOf(leftCreditsTmp));
-                    rightCreditsTv.setText("Credits: " +
-                            String.valueOf(rightCreditsTmp));
+                    leftCreditsTv.setText(String.valueOf(tmpCredits) + "$");
                 }
             });
 

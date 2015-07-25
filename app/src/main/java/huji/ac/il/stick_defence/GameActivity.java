@@ -1,5 +1,6 @@
 package huji.ac.il.stick_defence;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -8,6 +9,7 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +25,6 @@ import java.io.File;
 
 
 public class GameActivity extends Activity implements DoProtocolAction {
-
     private GameState   gameState;
     private ProgressDialog waitDialog;
     private boolean isMultiplayer;
@@ -39,8 +40,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
         super.onCreate(savedInstanceState);
 
         Log.w("yahav", "Starting GameActivity");
-        File file = new File(getFilesDir(), GameState.FILE_NAME);
-        /*boolean newGame = true;
+        /*File file = new File(getFilesDir(), GameState.FILE_NAME);
+        boolean newGame = true;
         if (file.exists()){
             newGame = false;
         }*/
@@ -68,6 +69,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
         //========================Send soldier Button===========================
         Button sendSoldier = new Button(this);
         sendSoldier.setText("Send");
+        sendSoldier.setId(PlayerStorage.SoldiersEnum.BASIC_SOLDIER.ordinal()+1);
         sendSoldier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,17 +110,15 @@ public class GameActivity extends Activity implements DoProtocolAction {
         TextView leftPointsTv = new TextView(this);
         TextView rightPointsTv = new TextView(this);
 
-
+        leftPointsTv.setTextSize(50);
+        RelativeLayout.LayoutParams params =
+                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.RIGHT_OF, sendSoldier.getId());
         gameState.initCredits(leftPointsTv, rightPointsTv);
-        leftPointsTv.setY(height / 4);
-        leftPointsTv.setX(width / 20);
 
-        rightPointsTv.setY(height / 4);
-        rightPointsTv.setX((float) (width / 1.15));
-
-
-        gameComponents.addView(leftPointsTv);
-        gameComponents.addView(rightPointsTv);
+        gameComponents.addView(leftPointsTv, params);
+     //   gameComponents.addView(rightPointsTv);
 
 
 
@@ -192,8 +192,6 @@ public class GameActivity extends Activity implements DoProtocolAction {
             Client.getClientInstance().
                     send(Protocol.stringify(Protocol.Action.PAUSE));
         }
-
-        gameState.save(new File(getFilesDir(), GameState.FILE_NAME));
         gameSurface.stopGameLoop();
         super.onPause();
     }
@@ -215,7 +213,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.exit_to_main_menu) {
-            File file = new File(getFilesDir(), GameState.FILE_NAME);
+            File file = new File(getFilesDir(), PlayerStorage.FILE_NAME);
             if (!file.delete()){
                 Log.w("yahav", "Failed to delete file");
             } else {
@@ -242,13 +240,14 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
 
             case BASIC_SOLDIER:
-                this.gameState.addSoldier(Sprite.Player.RIGHT, Protocol.getTimeStamp(rawInput), Protocol.Action.BASIC_SOLDIER);
-
+                this.gameState.addSoldier(Sprite.Player.RIGHT,
+                                          Protocol.getTimeStamp(rawInput),
+                                          Protocol.Action.BASIC_SOLDIER);
                 break;
-
             case BAZOOKA_SOLDIER:
                 this.gameState.addSoldier(Sprite.Player.RIGHT,
-                        Protocol.getTimeStamp(rawInput), Protocol.Action.BAZOOKA_SOLDIER);
+                        Protocol.getTimeStamp(rawInput),
+                        Protocol.Action.BAZOOKA_SOLDIER);
                 break;
             case START_GAME:
                 this.gameState.setTime(System.currentTimeMillis(),
@@ -257,25 +256,17 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 break;
 
             case PAUSE:
-                try{
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            pauseDialog.show();
-                        }
-                    });
-                } catch (android.view.WindowManager.BadTokenException e){
-                    // Do nothing
-                }
-
-
-
+                gameSurface.goToMarket();
                 this.gameSurface.sleep();
                 break;
 
             case RESUME:
-                pauseDialog.dismiss();
                 this.gameSurface.wakeUp();
+                break;
+
+            case GAME_OVER:
+                gameState.saveAndFinish();
+                gameSurface.goToMarket();
                 break;
         }
 

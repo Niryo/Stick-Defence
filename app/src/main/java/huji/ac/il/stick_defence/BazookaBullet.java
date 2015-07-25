@@ -52,8 +52,8 @@ public class BazookaBullet implements Serializable{
         double passedTimeInSec = (double)(gameTime - lastUpdateTime) / 1000;
         this.x += x_pixPerSec * passedTimeInSec;
 
-        if (this.x <= gameState.getLeftTowerRightX() ||
-            this.x >= gameState.getRightTowerLeftX()){
+        if (this.x <= gameState.getLeftTowerCentralX() ||
+            this.x >= gameState.getRightTowerCentralX()){
             gameState.removeBazookaBullet(this);
         }
     }
