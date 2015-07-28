@@ -114,7 +114,7 @@ public class GameState{
         }
     }
 
-    public void initCredits(TextView leftCreditsTv, TextView rightCreditsTv){
+    public void initCredits(TextView leftCreditsTv){
         this.creditManager =
                 new CreditManager(leftCreditsTv,
                                     this.playerStorage.getCredits(), 0); //TODO - support right player

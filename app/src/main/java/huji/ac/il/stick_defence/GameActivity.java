@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
@@ -107,17 +108,17 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         //============================== Points ================================
 
-        TextView leftPointsTv = new TextView(this);
-        TextView rightPointsTv = new TextView(this);
+        TextView pointsTv = new TextView(this);
 
-        leftPointsTv.setTextSize(50);
-        RelativeLayout.LayoutParams params =
+        pointsTv.setTextSize(50);
+        pointsTv.setTextColor(Color.rgb(255,215,0));
+        RelativeLayout.LayoutParams pointsLayoutParams =
                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                                                 RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.RIGHT_OF, sendSoldier.getId());
-        gameState.initCredits(leftPointsTv, rightPointsTv);
+        pointsLayoutParams.addRule(RelativeLayout.RIGHT_OF, sendSoldier.getId());
+        gameState.initCredits(pointsTv);
 
-        gameComponents.addView(leftPointsTv, params);
+        gameComponents.addView(pointsTv, pointsLayoutParams);
      //   gameComponents.addView(rightPointsTv);
 
 
