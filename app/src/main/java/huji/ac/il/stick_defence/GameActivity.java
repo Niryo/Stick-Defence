@@ -140,34 +140,6 @@ public class GameActivity extends Activity implements DoProtocolAction {
             waitDialog.show();
 
             Client.getClientInstance().send(Protocol.stringify(Protocol.Action.READY_TO_PLAY));
-//
-//            waitDialog = new AlertDialog.Builder(this)
-//                    //.setTitle("Waiting for opponent..")
-//                    .setPositiveButton("ready", new DialogInterface
-//                            .OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            Client.getClientInstance().send(Protocol.stringify
-//                                    (Protocol.Action.READY_TO_PLAY));
-//                        }
-//                    }).setNegativeButton("Wipe all data", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            File file = new File(getFilesDir(), GameState.FILE_NAME);
-//                            Log.w("yahav", getFilesDir().toString());
-//                            if (!file.delete()) {
-//                                Log.w("yahav", "Failed to delete file");
-//                            } else {
-//                                Log.w("yahav", "File deleted successfully");
-//                            }
-//                            Intent mainMenuIntent =
-//                                    new Intent(getApplicationContext(),
-//                                            MainMenu.class);
-//                            startActivity(mainMenuIntent);
-//                            finish();
-//                        }
-//                    }).setMessage("Waiting for opponent..").setIcon(android.R
-//                            .drawable.ic_dialog_alert).setCancelable(false).show();
 
 
 

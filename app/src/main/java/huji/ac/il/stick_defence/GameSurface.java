@@ -3,6 +3,8 @@ package huji.ac.il.stick_defence;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.Log;
@@ -24,6 +26,7 @@ public class GameSurface extends SurfaceView implements
     private SimpleGestureDetector simpleGestureDetector =
             new SimpleGestureDetector();
     private Context context;
+    private Bitmap scaledBackground;
 
     public GameSurface(Context context, boolean isMultiplayer) {
 
@@ -87,12 +90,18 @@ public class GameSurface extends SurfaceView implements
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        Bitmap background = BitmapFactory.decodeResource(getResources(),
+                                                         R.drawable.background);
+        float scale = (float) background.getHeight() / (float) getHeight();
+        int newWidth = Math.round(background.getWidth() / scale);
+        int newHeight = Math.round(background.getHeight() / scale);
+        scaledBackground = Bitmap.createScaledBitmap(background, newWidth, newHeight, true);
+
         if (gameLoopThread.getState() == Thread.State.NEW){
             Log.w("yahav", "surfaceCreated");
             gameLoopThread.setRunning(true);
             gameLoopThread.start();
         }
-
     }
 
     @Override
@@ -112,8 +121,8 @@ public class GameSurface extends SurfaceView implements
     }
 
     public void render(Canvas canvas) {
-        canvas.drawColor(Color.WHITE);
-
+    //    canvas.drawColor(Color.WHITE);
+        canvas.drawBitmap(scaledBackground, 0, 0, null); // draw the background
         for (Tower tower : gameState.getTowers()) {
             tower.render(canvas);
         }
