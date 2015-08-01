@@ -5,9 +5,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -68,18 +74,41 @@ public class GameActivity extends Activity implements DoProtocolAction {
         gameSurface = new GameSurface(this, isMultiplayer);
 
         //========================Send soldier Button===========================
-        Button sendSoldier = new Button(this);
-        sendSoldier.setText("Send");
-        sendSoldier.setId(PlayerStorage.SoldiersEnum.BASIC_SOLDIER.ordinal()+1);
-        sendSoldier.setOnClickListener(new View.OnClickListener() {
+        Button sendBasicSoldier = new Button(this);
+        sendBasicSoldier.
+                setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.basic_soldier_icon, 0, 0, 0);
+        sendBasicSoldier.
+                setId(PlayerStorage.SoldiersEnum.BASIC_SOLDIER.ordinal() + 1);
+        sendBasicSoldier.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gameState.addSoldier(Sprite.Player.LEFT, 0,
+                        Protocol.Action.BASIC_SOLDIER);
+            }
+        });
+        gameComponents.addView(sendBasicSoldier);
+
+        Button sendBazookaSoldier = new Button(this);
+        sendBazookaSoldier.
+                setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.bazooka_icon, 0, 0, 0);
+        sendBazookaSoldier.
+                setId(PlayerStorage.SoldiersEnum.BAZOOKA_SOLDIER.ordinal() + 1);
+        sendBazookaSoldier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 gameState.addSoldier(Sprite.Player.LEFT, 0,
                         Protocol.Action.BAZOOKA_SOLDIER);
-                        //TODO - change to the required soldier
             }
         });
-        gameComponents.addView(sendSoldier);
+        RelativeLayout.LayoutParams bazookaLayoutParams =
+                new RelativeLayout.
+                        LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                                     RelativeLayout.LayoutParams.WRAP_CONTENT);
+        bazookaLayoutParams.addRule(RelativeLayout.RIGHT_OF, sendBasicSoldier.getId());
+        gameComponents.addView(sendBazookaSoldier, bazookaLayoutParams);
+
         //======================================================================
 
         //=====================ProgressBar(Tower's HP)==========================
@@ -115,7 +144,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
         RelativeLayout.LayoutParams pointsLayoutParams =
                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                                                 RelativeLayout.LayoutParams.WRAP_CONTENT);
-        pointsLayoutParams.addRule(RelativeLayout.RIGHT_OF, sendSoldier.getId());
+        pointsLayoutParams.addRule(RelativeLayout.RIGHT_OF, sendBazookaSoldier.getId());
         gameState.initCredits(pointsTv);
 
         gameComponents.addView(pointsTv, pointsLayoutParams);

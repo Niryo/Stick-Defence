@@ -47,9 +47,6 @@ public class MainMenu extends Activity implements DoProtocolAction {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.activity_main_menu, null);
-
         client = Client.createClient(name);
         this.client.setCurrentActivity(this);
 

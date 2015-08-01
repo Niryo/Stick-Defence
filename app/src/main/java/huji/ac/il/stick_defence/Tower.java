@@ -82,10 +82,11 @@ public class Tower {
     public Tower(Context context, Sprite.Player player) {
         if (null == leftTowerPic){
             leftTowerPic = BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.tower); // Read resource only once
+                    R.drawable.blue_tower); // Read resource only once
         }
         if (null == rightTowerPic){
-            rightTowerPic = Sprite.mirrorBitmap(leftTowerPic);
+            rightTowerPic = BitmapFactory.decodeResource(context.getResources(),
+                    R.drawable.red_tower); // Read resource only once
         }
 
         if (null == firePic){

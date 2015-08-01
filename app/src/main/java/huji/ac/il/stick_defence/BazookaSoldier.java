@@ -24,10 +24,11 @@ public class BazookaSoldier extends Soldier {
 
     //============================Sprite constants==============================
     private static final int    NUMBER_OF_FRAMES = 7;
-    private static final int    HIT_NUMBER_OF_FRAMES = 3;
+    private static final int    SHOOT_NUMBER_OF_FRAMES = 2;
     private static final int    WALK_FPS = 40;
-    private static final int    ATTACK_FPS = 8;
+    private static final int    ATTACK_FPS = 2;
     private static final float  BAZOOKA_HEIGHT_RELATIVE = 0.99f;
+    private static final int    ATTACK_PIC_INDEX = 1;
     //==========================================================================
 
     private static Bitmap         leftSoldierPic = null;
@@ -80,19 +81,21 @@ public class BazookaSoldier extends Soldier {
         if (!super.isAttack()){
             if (player == Sprite.Player.LEFT){
                 if (getSoldierX() + getScaledFrameWidth() / 2 >=
-                        getScreenWidth() / 2){
-                    super.attack(leftAttackSoldierPic, HIT_NUMBER_OF_FRAMES,
+                        getScreenWidth() * 0.25){
+                    super.attack(leftAttackSoldierPic, SHOOT_NUMBER_OF_FRAMES,
                             ATTACK_FPS);
+                    bazookaSoldierY = super.getSoldierY();
                 }
             } else {
                 if (getSoldierX() + getScaledFrameWidth() / 2 <=
-                        getScreenWidth() / 2){
-                    super.attack(rightAttackSoldierPic, HIT_NUMBER_OF_FRAMES,
+                        (float)getScreenWidth() * 0.75){
+                    super.attack(rightAttackSoldierPic, SHOOT_NUMBER_OF_FRAMES,
                             ATTACK_FPS);
+                    bazookaSoldierY = super.getSoldierY();
                 }
             }
         } else { // Attack
-            if (super.getCurrentFrame() == 0){
+            if (super.getCurrentFrame() == ATTACK_PIC_INDEX){
                 if (canShoot) {
                     float bulletX = getSoldierX();
                     if (Sprite.Player.LEFT == player) {
@@ -100,7 +103,7 @@ public class BazookaSoldier extends Soldier {
                     }
                     BazookaBullet bullet = new BazookaBullet(getContext(),
                             bulletX,
-                            getSoldierY()/BAZOOKA_HEIGHT_RELATIVE,
+                            getSoldierY() / BAZOOKA_HEIGHT_RELATIVE,
                             getPlayer());
 
                     gameState.addBazookaBullet(bullet);

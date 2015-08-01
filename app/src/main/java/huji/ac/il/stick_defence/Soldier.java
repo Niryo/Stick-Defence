@@ -96,13 +96,12 @@ public abstract class Soldier implements Serializable{
         this.attack = true;
         sprite.setPic(attackSoldierPic, nFrames);
         sprite.setAnimationSpeed(fps);
+        this.soldierY = screenHeight - (int) sprite.getScaledFrameHeight();
     }
 
     protected double getScaledDownFactor(){ return sprite.getScaleDownFactor();}
 
-    protected boolean isAttack() {
-        return this.attack;
-    }
+    protected boolean isAttack() { return this.attack; }
 
     protected void update(long gameTime) {
         sprite.update(gameTime);

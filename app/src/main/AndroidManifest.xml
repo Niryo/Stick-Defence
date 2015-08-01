@@ -49,7 +49,8 @@
         </activity>
         <activity
             android:name=".Market"
-            android:label="@string/title_activity_market" >
+            android:label="@string/title_activity_market"
+            android:screenOrientation="landscape">
         </activity>
     </application>
 
