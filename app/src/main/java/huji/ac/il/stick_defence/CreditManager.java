@@ -33,9 +33,23 @@ public class CreditManager extends Thread {
         } else {
             rightCredits += creditsToAdd;
         }
-
-
     }
+
+    synchronized public boolean decCredits(double creditsToDec, Sprite.Player player){
+        if (Sprite.Player.LEFT == player){
+            if (leftCredits < creditsToDec){
+                return false;
+            }
+            leftCredits -= creditsToDec;
+        } else {
+            if (rightCredits < creditsToDec){
+                return false;
+            }
+            rightCredits -= creditsToDec;
+        }
+        return true;
+    }
+
     public int getCredits(Sprite.Player player){
         if (Sprite.Player.LEFT == player){
             return (int) this.leftCredits;
@@ -53,6 +67,8 @@ public class CreditManager extends Thread {
         while (running){
             if (tmpCredits < (int) leftCredits){
                 tmpCredits++;
+            } else if (tmpCredits > (int) leftCredits){
+                tmpCredits --;
             }
 
             handler.post(new Runnable() {

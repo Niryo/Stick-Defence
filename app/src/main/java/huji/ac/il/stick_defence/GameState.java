@@ -2,6 +2,8 @@ package huji.ac.il.stick_defence;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import java.util.ArrayList;
@@ -18,8 +20,9 @@ public class GameState{
     private static GameState gameState;
 
 
-    private static int MAX_SOLDIERS_PER_PLAYER = 20;
-    private static int CREDITS_ON_WIN = 100;
+    private static final int MAX_SOLDIERS_PER_PLAYER = 20;
+    private static final int CREDITS_ON_WIN = 100;
+    private static final int BAZOOKA_SEND_PRICE = 10;
 
     private ArrayList<Soldier> soldiers = new ArrayList<>();
     private ArrayList<Tower> towers = new ArrayList<>();
@@ -39,7 +42,8 @@ public class GameState{
     private boolean isMultiplayer = true;
     private boolean leftPlayerWin = false;
     private boolean rightPlayerWin = false;
-    PlayerStorage playerStorage;
+    private PlayerStorage playerStorage;
+    private Button sendBazookaSoldierButton;
 
     /**
      * Constructor. Adds 2 towers to the sprites list.
@@ -99,9 +103,28 @@ public class GameState{
 
     public void saveAndFinish(){
         playerStorage.setCredits(creditManager.getCredits(Sprite.Player.LEFT));
-        playerStorage.save();
-
+        save();
         creditManager.setRunning(false);
+    }
+
+    public void save(){
+        playerStorage.save();
+    }
+
+    public boolean isHaveSoldier(PlayerStorage.SoldiersEnum iSoldier){
+        return this.playerStorage.isHaveSoldier(iSoldier);
+    }
+
+    public void buySoldier(PlayerStorage.SoldiersEnum iSoldier, int price){
+        this.playerStorage.buySoldier(iSoldier);
+        this.playerStorage.setCredits(this.playerStorage.getCredits() - price);
+    }
+
+    public void initBazookaSoldierButton(Button button){
+        if (playerStorage.isHaveSoldier(
+                PlayerStorage.SoldiersEnum.BAZOOKA_SOLDIER)){
+            button.setVisibility(View.VISIBLE);
+        }
     }
 
     public void initProgressBar(ProgressBar progressBar, Sprite.Player player) {
@@ -125,6 +148,10 @@ public class GameState{
 
     public void addCredits(double creditsToAdd, Sprite.Player player){
         creditManager.addCredits(creditsToAdd, player);
+    }
+
+    public int getCredits(Sprite.Player player){
+        return creditManager.getCredits(player);
     }
 
     public void setTowerProgressHP(double hp, Sprite.Player player) {
@@ -171,7 +198,7 @@ public class GameState{
         for (Arrow arrow : this.getArrows()) {
             boolean hit = false;
             for (Soldier soldier : this.getSoldiers()) {
-                hit = soldier.checkHit(arrow);
+                hit = soldier.isHitByArrow(arrow);
                 if (hit) {
                     addCredits(10, arrow.getPlayer());
                     removeArrow(arrow);
@@ -264,7 +291,10 @@ public class GameState{
                 soldiers.add(new BasicSoldier(context, player, delay));
                 break;
             case BAZOOKA_SOLDIER:
-                soldiers.add(new BazookaSoldier(context, player, delay));
+                if (creditManager.decCredits(BAZOOKA_SEND_PRICE, player)){
+                    soldiers.add(new BazookaSoldier(context, player, delay));
+                }
+
                 break;
             default:
                 Log.e("yahav",

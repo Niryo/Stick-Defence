@@ -135,24 +135,17 @@ public abstract class Soldier implements Serializable{
 
     }
 
-    protected int getSoldierX() {
+    protected int getSoldierX() { return (int) Math.round(this.soldierX); }
 
-        return (int) Math.round(this.soldierX);
+    protected void setSoldierX(int soldierX) { this.soldierX = soldierX; }
 
-
-    }
-
-    protected int getSoldierY() {
-
-        return (int) Math.round(this.soldierY);
-
-    }
+    protected int getSoldierY() { return (int) Math.round(this.soldierY); }
 
     protected double getScaledFrameWidth() {
         return sprite.getScaledFrameWidth();
     }
 
-    protected boolean checkHit(Arrow arrow) {
+    protected boolean isHitByArrow(Arrow arrow) {
 
         if (arrow.getPlayer() != this.getPlayer() &&
                 this.soldierY <= arrow.getHeadY() &&

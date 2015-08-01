@@ -87,6 +87,7 @@ public class Tower {
         if (null == rightTowerPic){
             rightTowerPic = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.red_tower); // Read resource only once
+            rightTowerPic = Sprite.mirrorBitmap(rightTowerPic);
         }
 
         if (null == firePic){

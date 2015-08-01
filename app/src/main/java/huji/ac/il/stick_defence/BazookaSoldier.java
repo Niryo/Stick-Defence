@@ -121,8 +121,8 @@ public class BazookaSoldier extends Soldier {
         super.render(canvas);
     }
 
-    public boolean checkHit(Arrow arrow){
-        return super.checkHit(arrow);
+    public boolean isHitByArrow(Arrow arrow){
+        return super.isHitByArrow(arrow);
     }
 
     public static float getBazookaSoldierY(){ return bazookaSoldierY; }

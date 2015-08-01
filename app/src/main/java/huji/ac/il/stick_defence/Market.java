@@ -2,7 +2,6 @@ package huji.ac.il.stick_defence;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -11,22 +10,25 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.io.File;
 
 
 public class Market extends Activity {
 
+    private static final int BAZOOKA_BUY_PRICE = 100; // TODO - change to 1000
+    private static final String CREDITS = "Credits: ";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-       // requestWindowFeature(Window.FEATURE_NO_TITLE);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_market);
 
         final boolean isMultiplayer = getIntent().getBooleanExtra("Multiplayer", true);
-        Button continueButton = (Button) findViewById(R.id.market_ok_button);
+        Button continueButton = (Button) findViewById(R.id.market_play_button);
 
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,6 +41,34 @@ public class Market extends Activity {
                 finish();
             }
         });
+
+        final GameState gameState = GameState.getInstance();
+        int credits = gameState.getCredits(Sprite.Player.LEFT);
+
+        final TextView creditsTv = (TextView) findViewById(R.id.market_credits_tv);
+        creditsTv.setText(CREDITS + credits + "$");
+        Button buyBazookaSoldier = (Button) findViewById(R.id.buy_bazooka_soldier);
+
+        if (gameState.isHaveSoldier(PlayerStorage.SoldiersEnum.BAZOOKA_SOLDIER)){
+            buyBazookaSoldier.setVisibility(View.INVISIBLE);
+        } else {
+            buyBazookaSoldier.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    gameState.
+                            buySoldier(PlayerStorage.SoldiersEnum.BAZOOKA_SOLDIER,
+                                    BAZOOKA_BUY_PRICE);
+                    int credits = gameState.getCredits(Sprite.Player.LEFT);
+                    credits -= BAZOOKA_BUY_PRICE;
+                    creditsTv.setText(CREDITS + credits + "$");
+                    gameState.save();
+                    v.setVisibility(View.INVISIBLE);
+                }
+            });
+        }
+
+
+
     }
 
     @Override

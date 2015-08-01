@@ -73,7 +73,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
         Client.getClientInstance().setCurrentActivity(this);
         gameSurface = new GameSurface(this, isMultiplayer);
 
-        //========================Send soldier Button===========================
+        //======================Send soldiers Buttons===========================
         Button sendBasicSoldier = new Button(this);
         sendBasicSoldier.
                 setCompoundDrawablesWithIntrinsicBounds(
@@ -108,6 +108,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
                                      RelativeLayout.LayoutParams.WRAP_CONTENT);
         bazookaLayoutParams.addRule(RelativeLayout.RIGHT_OF, sendBasicSoldier.getId());
         gameComponents.addView(sendBazookaSoldier, bazookaLayoutParams);
+        sendBazookaSoldier.setVisibility(View.INVISIBLE);
+        gameState.initBazookaSoldierButton(sendBazookaSoldier);
 
         //======================================================================
 

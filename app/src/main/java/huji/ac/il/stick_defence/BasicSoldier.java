@@ -24,9 +24,10 @@ public class BasicSoldier extends Soldier{
     //==========================================================================
 
     //============================Sprite constants==============================
-    private static final int    NUMBER_OF_FRAMES = 9;
-    private static final int ATTACK_N_FRAMES = 19;
-    private static final int FPS = 40;
+    private static final int NUMBER_OF_FRAMES = 9;
+    private static final int ATTACK_N_FRAMES = 11;
+    private static final int MOVE_FPS = 40;
+    private static final int ATTACK_FPS = 20;
     //==========================================================================
 
     private static Bitmap         leftSoldierPic = null;
@@ -60,10 +61,10 @@ public class BasicSoldier extends Soldier{
 
         if (Sprite.Player.LEFT == player){
             super.initSprite(context, leftSoldierPic, NUMBER_OF_FRAMES,
-                    SCREEN_HEIGHT_PORTION, FPS);
+                    SCREEN_HEIGHT_PORTION, MOVE_FPS);
         } else {
             super.initSprite(context, rightSoldierPic, NUMBER_OF_FRAMES,
-                    SCREEN_HEIGHT_PORTION, FPS);
+                    SCREEN_HEIGHT_PORTION, MOVE_FPS);
         }
 
 
@@ -78,13 +79,17 @@ public class BasicSoldier extends Soldier{
                 if (getSoldierX() + getScaledFrameWidth() / 2 >=
                         gameState.getRightTowerLeftX()){
                     super.attack(leftAttackSoldierPic, ATTACK_N_FRAMES,
-                            FPS);
+                            ATTACK_FPS);
+                    super.setSoldierX(getSoldierX() +
+                                      (int) getScaledFrameWidth());
                 }
             } else {
                 if (getSoldierX() + getScaledFrameWidth() / 2 <=
                         gameState.getLeftTowerRightX()){
                     super.attack(rightAttackSoldierPic, ATTACK_N_FRAMES,
-                            FPS);
+                            ATTACK_FPS);
+                    super.setSoldierX(getSoldierX() +
+                            (int) getScaledFrameWidth());
                 }
             }
         }
@@ -95,8 +100,8 @@ public class BasicSoldier extends Soldier{
         super.render(canvas);
     }
 
-    public boolean checkHit(Arrow arrow){
-        return super.checkHit(arrow);
+    public boolean isHitByArrow(Arrow arrow){
+        return super.isHitByArrow(arrow);
     }
 
 }
