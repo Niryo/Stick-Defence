@@ -1,6 +1,8 @@
 package huji.ac.il.stick_defence;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -98,5 +100,34 @@ public class Market extends Activity {
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle("Quit")
+                .setMessage("Are you sure you want to quit to main menu?")
+                .setPositiveButton(android.R.string.yes,
+                                   new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        File file = new File(getFilesDir(),
+                                             PlayerStorage.FILE_NAME);
+                        if (!file.delete()){
+                            Log.w("yahav", "Failed to delete file");
+                        }
+                        Intent intent = new Intent(getApplicationContext(),
+                                                   MainMenu.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setNegativeButton(android.R.string.no,
+                                   new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 }
