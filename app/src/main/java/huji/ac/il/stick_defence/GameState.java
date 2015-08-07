@@ -25,7 +25,6 @@ public class GameState{
 
     private static GameState gameState;
 
-
     private static final int MAX_SOLDIERS_PER_PLAYER = 20;
     private static final int CREDITS_ON_WIN = 100;
     private static final int BAZOOKA_SEND_PRICE = 10;

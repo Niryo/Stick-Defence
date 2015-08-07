@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -18,9 +19,11 @@ import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -46,6 +49,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.game_activity);
+
 
         Log.w("yahav", "Starting GameActivity");
         /*File file = new File(getFilesDir(), GameState.FILE_NAME);
@@ -64,7 +69,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
             isMultiplayer = gameState.isMultiplayer();
         }
 //        setContentView(R.layout.activity_main);
-        FrameLayout game = new FrameLayout(this);
+        FrameLayout game = (FrameLayout) findViewById(R.id.game);
         RelativeLayout gameComponents = new RelativeLayout(this);
 
         if (!isMultiplayer){
@@ -73,6 +78,12 @@ public class GameActivity extends Activity implements DoProtocolAction {
         gameState.resetUpdateTimes();
         Client.getClientInstance().setCurrentActivity(this);
         gameSurface = new GameSurface(this, isMultiplayer);
+        FrameLayout surfaceFrame = (FrameLayout) findViewById(R.id.surface_frame);
+        ViewGroup.LayoutParams params = surfaceFrame.getLayoutParams();
+        params.width=400; //TODO
+        params.height=400;//TODO
+        surfaceFrame.setLayoutParams(params);
+        surfaceFrame.addView(gameSurface);
 
         //======================Send soldiers Buttons===========================
         Button sendBasicSoldier = new Button(this);
@@ -157,7 +168,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
 
         //======================================================================
-        game.addView(gameSurface);
+        //game.addView(gameSurface);
+       // game.addView(surfaceFrame);
         game.addView(gameComponents);
 //        setContentView(new GameSurface(this));
         setContentView(game);
