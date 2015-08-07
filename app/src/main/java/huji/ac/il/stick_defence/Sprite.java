@@ -24,6 +24,7 @@ public class Sprite{
     private static final int DEFAULT_FPS = 40;
     private static final int MILLISEC_IN_SEC = 1000;
 
+    private GameState gameState= GameState.getInstance();
     private Bitmap  bitmap;
     private Rect    frameRect;  // the rectangle to be drawn from the animation bitmap
     private RectF   destRect;
@@ -68,7 +69,7 @@ public class Sprite{
         this.frameRect = new Rect(0, 0, frameWidth, frameHeight);
         this.destRect = new RectF();
         int screenHeight =
-                context.getResources().getDisplayMetrics().heightPixels;
+                gameState.getCanvasHeight();
         setScaleDownFactor(((double) this.frameHeight / (double) screenHeight)
                 / screenHeightPortion);
 

@@ -95,8 +95,8 @@ public class Tower {
                     R.drawable.fire);
         }
 
-        this.screenWidth = context.getResources().getDisplayMetrics().widthPixels;
-        this.screenHeight = context.getResources().getDisplayMetrics().heightPixels;
+        this.screenWidth = gameState.getCanvasWidth();
+        this.screenHeight = gameState.getCanvasHeight();
 
         towerSprite = new Sprite();
 

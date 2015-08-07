@@ -59,13 +59,16 @@ public class GameActivity extends Activity implements DoProtocolAction {
             newGame = false;
         }*/
         boolean newGame = getIntent().getBooleanExtra("NewGame", true);
+        int screenWidth = getApplicationContext().getResources().getDisplayMetrics().widthPixels;
+
+        int newScreenHeight = (int)Math.round(((double)9*screenWidth)/16  );//set the height to be proportional to the width
         if (newGame){
             Log.w("yahav", "New game");
             GameState.reset();
-            this.gameState = GameState.CreateGameState(getApplicationContext());
+            this.gameState = GameState.CreateGameState(getApplicationContext(),screenWidth,newScreenHeight);
             isMultiplayer = getIntent().getBooleanExtra("Multiplayer", true);
         } else {
-            this.gameState = GameState.CreateGameState(getApplicationContext());
+            this.gameState = GameState.CreateGameState(getApplicationContext(),screenWidth,newScreenHeight);
             isMultiplayer = gameState.isMultiplayer();
         }
 //        setContentView(R.layout.activity_main);
@@ -80,8 +83,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
         gameSurface = new GameSurface(this, isMultiplayer);
         FrameLayout surfaceFrame = (FrameLayout) findViewById(R.id.surface_frame);
         ViewGroup.LayoutParams params = surfaceFrame.getLayoutParams();
-        params.width=400; //TODO
-        params.height=400;//TODO
+        params.height=newScreenHeight;
         surfaceFrame.setLayoutParams(params);
         surfaceFrame.addView(gameSurface);
 

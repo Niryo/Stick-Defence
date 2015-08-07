@@ -45,9 +45,9 @@ public class Arrow implements Serializable{
     public Arrow(Context context, float x, float y,
                  float[] tan, Sprite.Player player, double delayInSec){
         this.screenWidth =
-                context.getResources().getDisplayMetrics().widthPixels;
+                gameState.getCanvasWidth();
         this.screenHeight =
-                context.getResources().getDisplayMetrics().heightPixels;
+                gameState.getCanvasHeight();
         this.x=x;
         this.y=y;
         this.player = player;

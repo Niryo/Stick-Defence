@@ -28,6 +28,8 @@ public class GameState{
     private static final int MAX_SOLDIERS_PER_PLAYER = 20;
     private static final int CREDITS_ON_WIN = 100;
     private static final int BAZOOKA_SEND_PRICE = 10;
+    private static int canvas_height;
+    private static int canvas_width;
 
     private ArrayList<Soldier> soldiers = new ArrayList<>();
     private ArrayList<Tower> towers = new ArrayList<>();
@@ -60,11 +62,11 @@ public class GameState{
         playerStorage = PlayerStorage.load(context);
     }
 
-    public static GameState CreateGameState(Context context) {
+    public static GameState CreateGameState(Context context,int canvasWidth, int canvasHeight) {
 
         if (null == gameState){
             gameState = new GameState(context);
-            gameState.init();
+            gameState.init(canvasWidth,canvasHeight);
         }
 
         return gameState;
@@ -82,7 +84,8 @@ public class GameState{
         gameState = null;
     }
 
-    private void init() {
+    private void init(int canvasWidth, int canvasHeight) {
+        setCanvasDimentions(canvasWidth,canvasHeight );
         Tower leftTower = new Tower(context, Sprite.Player.LEFT);
         Tower rightTower = new Tower(context, Sprite.Player.RIGHT);
 
@@ -438,5 +441,14 @@ public class GameState{
     private boolean isGameOver(){
         return isRightPlayerWin() || isLeftPlayerWin();
     }
-
+public static void setCanvasDimentions(int width, int height){
+    canvas_height=height;
+    canvas_width=width;
+}
+    public static int getCanvasHeight(){
+        return canvas_height;
+    }
+    public static int getCanvasWidth(){
+        return canvas_width;
+    }
 }

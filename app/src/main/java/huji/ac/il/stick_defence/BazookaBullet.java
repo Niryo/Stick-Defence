@@ -28,9 +28,9 @@ public class BazookaBullet implements Serializable{
     public BazookaBullet(Context context, float x, float y,
                          Sprite.Player player){
         this.screenWidth =
-                context.getResources().getDisplayMetrics().widthPixels;
+                gameState.getCanvasWidth();
         this.screenHeight =
-                context.getResources().getDisplayMetrics().heightPixels;
+                gameState.getCanvasHeight();
         this.x=x;
         this.y=y;
         this.player = player;
