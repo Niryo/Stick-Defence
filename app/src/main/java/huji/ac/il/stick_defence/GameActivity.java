@@ -67,7 +67,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
         if (!isMultiplayer){
             this.gameState.setSinglePlayer();
         }
-        gameState.resetUpdateTimes();
+
         Client.getClientInstance().setCurrentActivity(this);
         gameSurface = new GameSurface(this, isMultiplayer);
         FrameLayout surfaceFrame = (FrameLayout) findViewById(R.id.canvas_frame);

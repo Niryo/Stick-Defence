@@ -203,6 +203,8 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
                 //todo:send the league info to the league activity
                 Log.w("custom", "going to league");
                 Intent intentWithInfo = new Intent(this, LeagueInfoActivity.class);
+                String info= Protocol.getData(rawInput);
+                intentWithInfo.putExtra("info",info);
                 startActivity(intentWithInfo);
                 finish();
                 break;

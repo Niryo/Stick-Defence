@@ -56,7 +56,7 @@ public abstract class Soldier implements Serializable{
 
         this.DAMAGE_PER_SEC = damagePerSec;
         this.attack = false;
-        resetUpdateTime();
+        lastUpdateTime = System.currentTimeMillis();
         this.delayInSec = delayInSec;
         this.secToCrossScreen = secToCrossScreen;
     }
@@ -80,10 +80,10 @@ public abstract class Soldier implements Serializable{
 
         //Set speed
         if (this.PLAYER == Sprite.Player.LEFT) {
-            this.runPixelsPerSec = ((double) screenWidth + sprite.getScaledFrameWidth()) / (secToCrossScreen - delayInSec);
+            this.runPixelsPerSec = ((double) screenWidth ) / (secToCrossScreen - delayInSec);
 
         } else {
-            this.runPixelsPerSec = - ((double) screenWidth + sprite.getScaledFrameWidth()) / (secToCrossScreen - delayInSec);
+            this.runPixelsPerSec = - ((double) screenWidth ) / (secToCrossScreen - delayInSec);
         }
         Log.w("custom", "Soldier pix per sec: "+ runPixelsPerSec);
 
@@ -105,7 +105,7 @@ public abstract class Soldier implements Serializable{
     protected void update(long gameTime) {
         sprite.update(gameTime);
         double passedTimeInSec = (double) (gameTime - lastUpdateTime) / 1000;
-        lastUpdateTime = gameTime;
+        lastUpdateTime = System.currentTimeMillis();
 
         if (attack) {
             gameState.hitTower(PLAYER, DAMAGE_PER_SEC * passedTimeInSec);
@@ -117,9 +117,7 @@ public abstract class Soldier implements Serializable{
         // (runPixelsPerSec * passedTimeInSec) );
     }
 
-    public void resetUpdateTime(){
-        lastUpdateTime = System.currentTimeMillis();
-    }
+
 
     protected void render(Canvas canvas) {
         sprite.render(canvas, getSoldierX(), getSoldierY());

@@ -193,14 +193,7 @@ public class GameState{
         this.checkHits();
     }
 
-    public void resetUpdateTimes(){
-        for (Soldier soldier : this.getSoldiers()) {
-            soldier.resetUpdateTime();
-        }
-        for (Arrow arrow : this.getArrows()) {
-            arrow.resetUpdateTime();
-        }
-    }
+
 
     private void checkHits() {
         for (Arrow arrow : this.getArrows()) {

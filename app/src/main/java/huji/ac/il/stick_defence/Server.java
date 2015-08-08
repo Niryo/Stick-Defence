@@ -77,7 +77,13 @@ public class Server {
                         Log.w("custom", "client accepted!"); //if we reach this line only when a new client is connected.
                         Peer peer = new Peer(socket);
                         peers.add(peer); //save the new client in the peers list
-                        if(peers.size()== leagueParticipants){ //todo: sleep some time to see that no one is disconnecting
+                        if(peers.size()== leagueParticipants){
+                         //todo: sleep some time to see that no one is disconnecting
+                            try {
+                                Thread.sleep(2000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                             acceptingNewClients=false;
                             leagueManager = new LeagueManager(peers);
                             String info= leagueManager.getLeagueInfo();
@@ -117,8 +123,8 @@ private void sendLeagueInfo(String info){
             case READY_TO_PLAY:
                 peer.readyToPlay=true;
                 if(peer.partner.readyToPlay){ //both peers are ready to play
-                    try {//todo: remove, the delay is only for testing the timestamps
-                        Thread.sleep(3000); //sleep for a second, just to give the players some time to finish loading his game
+                    try {
+                        Thread.sleep(3000); //sleep for a few seconds, just to give the players some time to finish loading his game
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -166,17 +172,15 @@ private void sendLeagueInfo(String info){
                     doAction(inputLine ,peer);
                     if (peer.partner!=null){
                         inputLine= Protocol.addTimeStampToRawInput(inputLine);//add time stamp to the action;
-                       // Thread.sleep(1000);//add delay for testing reasons. TODO:REMOVE!
+//                      Thread.sleep(4000);//add delay for testing reasons. TODO:REMOVE!
                         peer.partner.send(inputLine);
                     }
                 }
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-//            catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
+
             Log.w("custom", "finish socket listener");
 
 
@@ -245,6 +249,7 @@ private void sendLeagueInfo(String info){
         public void setName(String name){
             this.name=name;
         }
+        public String getName(){return name;}
 
         /**
          * Send data to the socket
