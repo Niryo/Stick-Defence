@@ -3,17 +3,20 @@
 
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/game"
+    android:id="@+id/game_surface"
      android:layout_height="fill_parent"
     android:layout_width="fill_parent"
+    android:background="@drawable/background"
     >
 
+
 <FrameLayout
-    android:id="@+id/surface_frame"
+    android:id="@+id/canvas_frame"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_gravity="center"
     >
+
 
 </FrameLayout>
 

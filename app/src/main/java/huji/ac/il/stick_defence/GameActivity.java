@@ -1,25 +1,13 @@
 package huji.ac.il.stick_defence;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.Point;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ImageSpan;
 import android.util.Log;
-import android.view.Display;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +16,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -72,8 +61,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
             isMultiplayer = gameState.isMultiplayer();
         }
 //        setContentView(R.layout.activity_main);
-        FrameLayout game = (FrameLayout) findViewById(R.id.game);
-        RelativeLayout gameComponents = new RelativeLayout(this);
+        FrameLayout game = (FrameLayout) findViewById(R.id.game_surface);
+        LinearLayout buttons = new LinearLayout(this);
 
         if (!isMultiplayer){
             this.gameState.setSinglePlayer();
@@ -81,11 +70,13 @@ public class GameActivity extends Activity implements DoProtocolAction {
         gameState.resetUpdateTimes();
         Client.getClientInstance().setCurrentActivity(this);
         gameSurface = new GameSurface(this, isMultiplayer);
-        FrameLayout surfaceFrame = (FrameLayout) findViewById(R.id.surface_frame);
+        FrameLayout surfaceFrame = (FrameLayout) findViewById(R.id.canvas_frame);
         ViewGroup.LayoutParams params = surfaceFrame.getLayoutParams();
         params.height=newScreenHeight;
         surfaceFrame.setLayoutParams(params);
         surfaceFrame.addView(gameSurface);
+        LinearLayout gameComponents = new LinearLayout(this);
+        gameComponents.setOrientation(LinearLayout.VERTICAL);
 
         //======================Send soldiers Buttons===========================
         Button sendBasicSoldier = new Button(this);
@@ -101,7 +92,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
                         Protocol.Action.BASIC_SOLDIER);
             }
         });
-        gameComponents.addView(sendBasicSoldier);
+        buttons.addView(sendBasicSoldier);
 
         Button sendBazookaSoldier = new Button(this);
         sendBazookaSoldier.
@@ -121,34 +112,32 @@ public class GameActivity extends Activity implements DoProtocolAction {
                         LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                                      RelativeLayout.LayoutParams.WRAP_CONTENT);
         bazookaLayoutParams.addRule(RelativeLayout.RIGHT_OF, sendBasicSoldier.getId());
-        gameComponents.addView(sendBazookaSoldier, bazookaLayoutParams);
+        buttons.addView(sendBazookaSoldier, bazookaLayoutParams);
         sendBazookaSoldier.setVisibility(View.INVISIBLE);
         gameState.initBazookaSoldierButton(sendBazookaSoldier);
+        gameComponents.addView(buttons);
 
         //======================================================================
 
         //=====================ProgressBar(Tower's HP)==========================
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-        int height = size.y;
+
         ProgressBar leftProgressBar = new ProgressBar(this, null, android.R
                 .attr.progressBarStyleHorizontal);
         ProgressBar rightProgressBar = new ProgressBar(this, null, android.R
                 .attr.progressBarStyleHorizontal);
-
-        leftProgressBar.setY(height / 5);
-        leftProgressBar.setX(width / 20);
-
-        rightProgressBar.setY(height / 5);
-        rightProgressBar.setX((float) (width / 1.15));
-
         gameState.initProgressBar(leftProgressBar, Sprite.Player.LEFT);
         gameState.initProgressBar(rightProgressBar, Sprite.Player.RIGHT);
+        LinearLayout progressBarComponent = new LinearLayout(this);
+        progressBarComponent.setOrientation(LinearLayout.HORIZONTAL);
+        progressBarComponent.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        gameComponents.addView(leftProgressBar);
-        gameComponents.addView(rightProgressBar);
+        progressBarComponent.addView(leftProgressBar);
+        progressBarComponent.addView(rightProgressBar);
+
+        gameComponents.addView(progressBarComponent);
+
         //======================================================================
 
         //============================== Points ================================
@@ -163,8 +152,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
         pointsLayoutParams.addRule(RelativeLayout.RIGHT_OF, sendBazookaSoldier.getId());
         gameState.initCredits(pointsTv);
 
-        gameComponents.addView(pointsTv, pointsLayoutParams);
-     //   gameComponents.addView(rightPointsTv);
+        buttons.addView(pointsTv, pointsLayoutParams);
+     //   buttons.addView(rightPointsTv);
 
 
 

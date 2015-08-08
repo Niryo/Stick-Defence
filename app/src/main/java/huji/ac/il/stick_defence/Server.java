@@ -166,7 +166,7 @@ private void sendLeagueInfo(String info){
                     doAction(inputLine ,peer);
                     if (peer.partner!=null){
                         inputLine= Protocol.addTimeStampToRawInput(inputLine);//add time stamp to the action;
-                       // Thread.sleep(4000);//add delay for testing reasons. TODO:REMOVE!
+                       // Thread.sleep(1000);//add delay for testing reasons. TODO:REMOVE!
                         peer.partner.send(inputLine);
                     }
                 }
