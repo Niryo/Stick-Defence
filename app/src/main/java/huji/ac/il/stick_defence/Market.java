@@ -25,6 +25,7 @@ public class Market extends Activity implements DoProtocolAction {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         Client.getClientInstance().setCurrentActivity(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -33,17 +34,33 @@ public class Market extends Activity implements DoProtocolAction {
         setContentView(R.layout.activity_market);
 
         final boolean isMultiplayer = getIntent().getBooleanExtra("Multiplayer", true);
+        if (isMultiplayer) {
+            Client.getClientInstance().
+                    send(Protocol.stringify(Protocol.Action.GAME_OVER, String.valueOf(GameState.getInstance().isLeftPlayerWin())));
+        }
         Button continueButton = (Button) findViewById(R.id.market_play_button);
 
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),
-                        GameActivity.class);
-                intent.putExtra("Multiplayer", isMultiplayer);
-                intent.putExtra("NewGame", true);
-                startActivity(intent);
-                finish();
+                if(!isMultiplayer) {
+                    Intent intent = new Intent(getApplicationContext(),
+                            GameActivity.class);
+                    intent.putExtra("Multiplayer", isMultiplayer);
+                    intent.putExtra("NewGame", true);
+                    startActivity(intent);
+                    finish();
+                }
+                else{ //go to league info
+                    Intent intent = new Intent(getApplicationContext(),
+                            LeagueInfoActivity.class);
+                    if(savedLeagueInfo!= null){
+                        intent.putExtra("info", savedLeagueInfo);
+                    }
+                    startActivity(intent);
+                    finish();
+                }
+
             }
         });
 

@@ -138,22 +138,28 @@ public class LeagueManager {
 
     public String getLeagueInfo() {
         //TODO: if stage == ? return finish league.
-        if (true) {
-            return fakeInfoForTesting();
-        }
+        String info="";
+
         switch (this.peers.size()) {
             case 2:
-                return twoPersonLeague();
+                info= twoPersonLeague();
+                break;
             case 4:
-                return fourPersonLeague();
+                info= fourPersonLeague();
+                break;
             case 6:
-                return sixPersonLeague();
+                info= sixPersonLeague();
+                break;
             case 8:
-                return eightPersonLeague();
+                info= eightPersonLeague();
+                break;
             default:
-                return "";
+                info= "";
         }
-
+        if (true) {
+            info= fakeInfoForTesting();
+        }
+        return info;
     }
 
     private void addStatistics(JSONObject info) {

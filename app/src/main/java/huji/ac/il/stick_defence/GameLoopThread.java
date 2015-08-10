@@ -115,13 +115,6 @@ public class GameLoopThread extends Thread {
                     if (gameState.isLeftPlayerWin() ||
                             gameState.isRightPlayerWin()) {
                         Log.w("custom", "game over! bye bye!");
-
-                        if (isMultiplayer) {
-
-                            Client.getClientInstance().
-                                    send(Protocol.stringify(Protocol.Action.GAME_OVER, String.valueOf(gameState.isLeftPlayerWin())));
-                        }
-
                         running = false;
                         gameSurface.goToMarket();
 

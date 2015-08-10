@@ -129,7 +129,7 @@ public class Server {
                 peer.readyToPlay = true;
                 if (peer.partner.readyToPlay) { //both peers are ready to play
                     try {
-                        Thread.sleep(3000); //sleep for a few seconds, just to give the players some time to finish loading his game
+                        Thread.sleep(3000); //sleep for a few seconds, just to give the player some time to finish loading his game
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

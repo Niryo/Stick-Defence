@@ -259,19 +259,18 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 this.waitDialog.dismiss();
                 break;
 
-            case PAUSE:
-                gameSurface.goToMarket();
-                this.gameSurface.sleep();
-                break;
+//            case PAUSE:
+//                gameSurface.goToMarket();
+//                this.gameSurface.sleep();
+//                break;
 
             case RESUME:
                 this.gameSurface.wakeUp();
                 break;
 
-            case GAME_OVER:
-                gameState.saveAndFinish();
-                gameSurface.goToMarket();
-                break;
+
+
+
         }
 
 

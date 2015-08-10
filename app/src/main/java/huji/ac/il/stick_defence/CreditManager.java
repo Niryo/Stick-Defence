@@ -7,6 +7,7 @@ import android.os.Handler;
  * Created by yahav on 24/07/15.
  */
 public class CreditManager extends Thread {
+    //TODO: REMOVE OPPONENT'S CREDIT.
     private static final int SLEEP_IN_MSEC = 60;
     GameState gameState = GameState.getInstance();
     boolean running;

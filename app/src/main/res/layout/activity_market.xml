@@ -67,7 +67,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/play"
+        android:text="Continue"
         android:id="@+id/market_play_button"
         android:layout_gravity="center"
         android:layout_weight="1"/>

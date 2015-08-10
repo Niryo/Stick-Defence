@@ -286,7 +286,7 @@ public class GameState {
                 soldiers.add(new BasicSoldier(context, player, delay));
                 break;
             case BAZOOKA_SOLDIER:
-                if (creditManager.decCredits(BAZOOKA_SEND_PRICE, player)) {
+                if (creditManager.decCredits(BAZOOKA_SEND_PRICE, player) || player== Sprite.Player.RIGHT) {
                     soldiers.add(new BazookaSoldier(context, player, delay));
                 }
 
