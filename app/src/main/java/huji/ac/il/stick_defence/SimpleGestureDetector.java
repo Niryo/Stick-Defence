@@ -1,6 +1,5 @@
 package huji.ac.il.stick_defence;
 
-import android.util.Log;
 import android.view.MotionEvent;
 
 /**
@@ -23,42 +22,42 @@ public class SimpleGestureDetector {
     private float lastX;
     private GameState gameState = GameState.getInstance();
 
-    public void detect(MotionEvent event ){
+    public void detect(MotionEvent event) {
 
-        switch (event.getAction()){
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                this.lastX=event.getX();
-                this.lastY=event.getY();
+                this.lastX = event.getX();
+                this.lastY = event.getY();
                 gameState.touch(Gesture.TOUCH_DOWN,
-                                new Sprite.Point(this.lastX, this.lastY));
+                        new Sprite.Point(this.lastX, this.lastY));
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                float currentY= event.getY();
-                float currentX= event.getX();
+                float currentY = event.getY();
+                float currentX = event.getX();
 
-                if(currentY-this.lastY > DISTANCE){
-                    this.lastX=event.getX();
-                    this.lastY=event.getY();
+                if (currentY - this.lastY > DISTANCE) {
+                    this.lastX = event.getX();
+                    this.lastY = event.getY();
                     gameState.touch(Gesture.DOWN, null); //moveDown
 
                 }
-                if(currentY-this.lastY < -DISTANCE){
-                    this.lastX=event.getX();
-                    this.lastY=event.getY();
+                if (currentY - this.lastY < -DISTANCE) {
+                    this.lastX = event.getX();
+                    this.lastY = event.getY();
                     gameState.touch(Gesture.UP, null);
 
                 }
 
-                if(currentX-this.lastX > DISTANCE){
-                    this.lastX=event.getX();
-                    this.lastY=event.getY();
+                if (currentX - this.lastX > DISTANCE) {
+                    this.lastX = event.getX();
+                    this.lastY = event.getY();
                     gameState.touch(Gesture.RIGHT, null); //moveRight
 
                 }
-                if(currentX-this.lastX < -DISTANCE) {
-                    this.lastX=event.getX();
-                    this.lastY=event.getY();
+                if (currentX - this.lastX < -DISTANCE) {
+                    this.lastX = event.getX();
+                    this.lastY = event.getY();
                     gameState.touch(Gesture.LEFT, null);
 
                 }
@@ -66,7 +65,7 @@ public class SimpleGestureDetector {
                 break;
 
             case MotionEvent.ACTION_UP:
-               gameState.touch(Gesture.TOUCH_UP, null);
+                gameState.touch(Gesture.TOUCH_UP, null);
                 break;
         }
     }

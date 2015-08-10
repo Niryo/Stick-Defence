@@ -25,11 +25,11 @@ import java.io.File;
 
 
 public class GameActivity extends Activity implements DoProtocolAction {
-    private GameState   gameState;
+    private GameState gameState;
     private ProgressDialog waitDialog;
     private boolean isMultiplayer;
     private GameSurface gameSurface;
-    private AlertDialog         pauseDialog;
+    private AlertDialog pauseDialog;
 
 
     @Override
@@ -50,21 +50,21 @@ public class GameActivity extends Activity implements DoProtocolAction {
         boolean newGame = getIntent().getBooleanExtra("NewGame", true);
         int screenWidth = getApplicationContext().getResources().getDisplayMetrics().widthPixels;
 
-        int newScreenHeight = (int)Math.round(((double)9*screenWidth)/16  );//set the height to be proportional to the width
-        if (newGame){
+        int newScreenHeight = (int) Math.round(((double) 9 * screenWidth) / 16);//set the height to be proportional to the width
+        if (newGame) {
             Log.w("yahav", "New game");
             GameState.reset();
-            this.gameState = GameState.CreateGameState(getApplicationContext(),screenWidth,newScreenHeight);
+            this.gameState = GameState.CreateGameState(getApplicationContext(), screenWidth, newScreenHeight);
             isMultiplayer = getIntent().getBooleanExtra("Multiplayer", true);
         } else {
-            this.gameState = GameState.CreateGameState(getApplicationContext(),screenWidth,newScreenHeight);
+            this.gameState = GameState.CreateGameState(getApplicationContext(), screenWidth, newScreenHeight);
             isMultiplayer = gameState.isMultiplayer();
         }
 //        setContentView(R.layout.activity_main);
         FrameLayout game = (FrameLayout) findViewById(R.id.game_surface);
         LinearLayout buttons = new LinearLayout(this);
 
-        if (!isMultiplayer){
+        if (!isMultiplayer) {
             this.gameState.setSinglePlayer();
         }
 
@@ -72,7 +72,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
         gameSurface = new GameSurface(this, isMultiplayer);
         FrameLayout surfaceFrame = (FrameLayout) findViewById(R.id.canvas_frame);
         ViewGroup.LayoutParams params = surfaceFrame.getLayoutParams();
-        params.height=newScreenHeight;
+        params.height = newScreenHeight;
         surfaceFrame.setLayoutParams(params);
         surfaceFrame.addView(gameSurface);
         LinearLayout gameComponents = new LinearLayout(this);
@@ -110,7 +110,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
         RelativeLayout.LayoutParams bazookaLayoutParams =
                 new RelativeLayout.
                         LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                                     RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        RelativeLayout.LayoutParams.WRAP_CONTENT);
         bazookaLayoutParams.addRule(RelativeLayout.RIGHT_OF, sendBasicSoldier.getId());
         buttons.addView(sendBazookaSoldier, bazookaLayoutParams);
         sendBazookaSoldier.setVisibility(View.INVISIBLE);
@@ -145,29 +145,26 @@ public class GameActivity extends Activity implements DoProtocolAction {
         TextView pointsTv = new TextView(this);
 
         pointsTv.setTextSize(50);
-        pointsTv.setTextColor(Color.rgb(255,215,0));
+        pointsTv.setTextColor(Color.rgb(255, 215, 0));
         RelativeLayout.LayoutParams pointsLayoutParams =
                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        RelativeLayout.LayoutParams.WRAP_CONTENT);
         pointsLayoutParams.addRule(RelativeLayout.RIGHT_OF, sendBazookaSoldier.getId());
         gameState.initCredits(pointsTv);
 
         buttons.addView(pointsTv, pointsLayoutParams);
-     //   buttons.addView(rightPointsTv);
-
-
+        //   buttons.addView(rightPointsTv);
 
 
         //======================================================================
         //game.addView(gameSurface);
-       // game.addView(surfaceFrame);
+        // game.addView(surfaceFrame);
         game.addView(gameComponents);
 //        setContentView(new GameSurface(this));
         setContentView(game);
 
 
-
-       if (isMultiplayer){
+        if (isMultiplayer) {
             waitDialog = new ProgressDialog(this);
             waitDialog.setMessage("Waiting for opponent..");
             waitDialog.setIndeterminate(true);
@@ -175,7 +172,6 @@ public class GameActivity extends Activity implements DoProtocolAction {
             waitDialog.show();
 
             Client.getClientInstance().send(Protocol.stringify(Protocol.Action.READY_TO_PLAY));
-
 
 
             AlertDialog.Builder pauseDialogBuilder;
@@ -196,7 +192,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
     @Override
     protected void onPause() {
-        if (isMultiplayer){
+        if (isMultiplayer) {
             Client.getClientInstance().
                     send(Protocol.stringify(Protocol.Action.PAUSE));
         }
@@ -222,7 +218,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
         //noinspection SimplifiableIfStatement
         if (id == R.id.exit_to_main_menu) {
             File file = new File(getFilesDir(), PlayerStorage.FILE_NAME);
-            if (!file.delete()){
+            if (!file.delete()) {
                 Log.w("yahav", "Failed to delete file");
             } else {
                 Log.w("yahav", "File deleted successfully");
@@ -239,9 +235,9 @@ public class GameActivity extends Activity implements DoProtocolAction {
     @Override
     public void doAction(String rawInput) {
         Protocol.Action action = Protocol.getAction(rawInput);
-        switch (action){
+        switch (action) {
             case ARROW:
-                double arrowDistance =Double.parseDouble(Protocol.getData(rawInput));
+                double arrowDistance = Double.parseDouble(Protocol.getData(rawInput));
                 long timeStamp = Protocol.getTimeStamp(rawInput);
                 this.gameState.addEnemyShot(arrowDistance, timeStamp);
                 break;
@@ -249,8 +245,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
             case BASIC_SOLDIER:
                 this.gameState.addSoldier(Sprite.Player.RIGHT,
-                                          Protocol.getTimeStamp(rawInput),
-                                          Protocol.Action.BASIC_SOLDIER);
+                        Protocol.getTimeStamp(rawInput),
+                        Protocol.Action.BASIC_SOLDIER);
                 break;
             case BAZOOKA_SOLDIER:
                 this.gameState.addSoldier(Sprite.Player.RIGHT,
@@ -287,25 +283,25 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 .setTitle("Quit")
                 .setMessage("Are you sure you want to quit to main menu?")
                 .setPositiveButton(android.R.string.yes,
-                                   new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        File file = new File(getFilesDir(),
-                                             PlayerStorage.FILE_NAME);
-                        if (!file.delete()){
-                            Log.w("yahav", "Failed to delete file");
-                        }
-                        Intent intent = new Intent(getApplicationContext(),
-                                                   MainMenu.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                })
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                File file = new File(getFilesDir(),
+                                        PlayerStorage.FILE_NAME);
+                                if (!file.delete()) {
+                                    Log.w("yahav", "Failed to delete file");
+                                }
+                                Intent intent = new Intent(getApplicationContext(),
+                                        MainMenu.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        })
                 .setNegativeButton(android.R.string.no,
-                                   new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
-                    }
-                })
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }

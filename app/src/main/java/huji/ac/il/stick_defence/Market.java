@@ -17,12 +17,15 @@ import android.widget.TextView;
 import java.io.File;
 
 
-public class Market extends Activity {
-
+public class Market extends Activity implements DoProtocolAction {
+//TODO: CREATE A BUTTON THAT MOVES YOU INTO LEAGUE_INFO ACTIVITY AND IF THERE IS INFO, SEND EXTRA IN THE INTENT
     private static final int BAZOOKA_BUY_PRICE = 100; // TODO - change to 1000
     private static final String CREDITS = "Credits: ";
+    private String savedLeagueInfo=null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Client.getClientInstance().setCurrentActivity(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -36,7 +39,7 @@ public class Market extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(),
-                                           GameActivity.class);
+                        GameActivity.class);
                 intent.putExtra("Multiplayer", isMultiplayer);
                 intent.putExtra("NewGame", true);
                 startActivity(intent);
@@ -51,7 +54,7 @@ public class Market extends Activity {
         creditsTv.setText(CREDITS + credits + "$");
         Button buyBazookaSoldier = (Button) findViewById(R.id.buy_bazooka_soldier);
 
-        if (gameState.isHaveSoldier(PlayerStorage.SoldiersEnum.BAZOOKA_SOLDIER)){
+        if (gameState.isHaveSoldier(PlayerStorage.SoldiersEnum.BAZOOKA_SOLDIER)) {
             buyBazookaSoldier.setVisibility(View.INVISIBLE);
         } else {
             buyBazookaSoldier.setOnClickListener(new View.OnClickListener() {
@@ -68,7 +71,6 @@ public class Market extends Activity {
                 }
             });
         }
-
 
 
     }
@@ -90,7 +92,7 @@ public class Market extends Activity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.exit_to_main_menu) {
             File file = new File(getFilesDir(), PlayerStorage.FILE_NAME);
-            if (!file.delete()){
+            if (!file.delete()) {
                 Log.w("yahav", "Failed to delete file");
             }
             Intent intent = new Intent(getApplicationContext(), MainMenu.class);
@@ -108,26 +110,39 @@ public class Market extends Activity {
                 .setTitle("Quit")
                 .setMessage("Are you sure you want to quit to main menu?")
                 .setPositiveButton(android.R.string.yes,
-                                   new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        File file = new File(getFilesDir(),
-                                             PlayerStorage.FILE_NAME);
-                        if (!file.delete()){
-                            Log.w("yahav", "Failed to delete file");
-                        }
-                        Intent intent = new Intent(getApplicationContext(),
-                                                   MainMenu.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                })
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                File file = new File(getFilesDir(),
+                                        PlayerStorage.FILE_NAME);
+                                if (!file.delete()) {
+                                    Log.w("yahav", "Failed to delete file");
+                                }
+                                Intent intent = new Intent(getApplicationContext(),
+                                        MainMenu.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        })
                 .setNegativeButton(android.R.string.no,
-                                   new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
-                    }
-                })
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+    }
+
+    @Override
+    public void doAction(String rawInput) {
+        Protocol.Action action = Protocol.getAction(rawInput);
+        String rawInfo = Protocol.getData(rawInput);
+
+
+        switch (action) {
+            case LEAGUE_INFO:
+                savedLeagueInfo = Protocol.getData(rawInput);
+                break;
+        }
     }
 }

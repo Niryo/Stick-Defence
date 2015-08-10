@@ -1,29 +1,16 @@
 package huji.ac.il.stick_defence;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.Point;
-import android.graphics.drawable.Drawable;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -51,7 +38,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
         this.client.setCurrentActivity(this);
 
         deleteOldGameData();
-     //   checkForOngoingGame();
+        //   checkForOngoingGame();
 
         //========================Single player=================================
         Button singlePlayer = (Button) findViewById(R.id.single_player);
@@ -79,45 +66,45 @@ public class MainMenu extends Activity implements DoProtocolAction {
                     return;
 
                 }
-                    final int MAX_N_PLAYERS = 8;
-                    final int MIN_N_PLAYERS = 2;
-                    final int[] nPlayers = {2};
-                    final boolean isWifi = true;
+                final int MAX_N_PLAYERS = 8;
+                final int MIN_N_PLAYERS = 2;
+                final int[] nPlayers = {2};
+                final boolean isWifi = true;
 
-                    findViewById(R.id.create_league_options).setVisibility(View.VISIBLE);
-                isCreateLeagueOptionsVisible=true;
-                    Button increasePlayersButton = (Button) findViewById(R.id.more_players);
-                    Button decreasePlayersButton = (Button) findViewById(R.id.less_players);
-                    Button startButton = (Button) findViewById(R.id.start);
-                    final TextView nPlayersText = (TextView) findViewById(R.id.num_of_players);
-                    RadioGroup networkChoice = (RadioGroup) findViewById(R.id.network_choice);
-                    networkChoice.check(R.id.wifi);
-                    nPlayersText.setText(String.valueOf(nPlayers[0]));
+                findViewById(R.id.create_league_options).setVisibility(View.VISIBLE);
+                isCreateLeagueOptionsVisible = true;
+                Button increasePlayersButton = (Button) findViewById(R.id.more_players);
+                Button decreasePlayersButton = (Button) findViewById(R.id.less_players);
+                Button startButton = (Button) findViewById(R.id.start);
+                final TextView nPlayersText = (TextView) findViewById(R.id.num_of_players);
+                RadioGroup networkChoice = (RadioGroup) findViewById(R.id.network_choice);
+                networkChoice.check(R.id.wifi);
+                nPlayersText.setText(String.valueOf(nPlayers[0]));
 
-                    increasePlayersButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (nPlayers[0] < MAX_N_PLAYERS) {
-                                nPlayers[0]++;
-                            }
-                            nPlayersText.setText(String.valueOf(nPlayers[0]));
+                increasePlayersButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (nPlayers[0] < MAX_N_PLAYERS) {
+                            nPlayers[0]++;
                         }
-                    });
+                        nPlayersText.setText(String.valueOf(nPlayers[0]));
+                    }
+                });
 
-                    decreasePlayersButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (nPlayers[0] > MIN_N_PLAYERS) {
-                                nPlayers[0]--;
-                            }
-                            nPlayersText.setText(String.valueOf(nPlayers[0]));
+                decreasePlayersButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (nPlayers[0] > MIN_N_PLAYERS) {
+                            nPlayers[0]--;
                         }
-                    });
+                        nPlayersText.setText(String.valueOf(nPlayers[0]));
+                    }
+                });
 
 
-                    startButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
+                startButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
                         Server.createServer(nPlayers[0]);
                         WifiP2pManager mManager = (WifiP2pManager) getSystemService(getApplicationContext().WIFI_P2P_SERVICE);
                         WifiP2pManager.Channel mChannel = mManager.initialize(getApplicationContext(), getMainLooper(), null);
@@ -127,32 +114,32 @@ public class MainMenu extends Activity implements DoProtocolAction {
                             @Override
                             public void onConnectionInfoAvailable(final WifiP2pInfo
                                                                           info) {
-                            Log.w("custom", "groupInfo:");
-                            Log.w("custom", info.toString());
-                            if (info.groupOwnerAddress != null) {
-                                Log.w("custom", info.groupOwnerAddress
-                                        .getHostAddress());
-                                new AsyncTask<Void, Void, Void>() {
-                                    @Override
-                                    protected Void doInBackground(Void... params) {
-                                        try {
-                                            Socket socket = new Socket(info
-                                                    .groupOwnerAddress
-                                                    .getHostAddress(), Server.PORT);
-                                            client.setServer(socket);
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
+                                Log.w("custom", "groupInfo:");
+                                Log.w("custom", info.toString());
+                                if (info.groupOwnerAddress != null) {
+                                    Log.w("custom", info.groupOwnerAddress
+                                            .getHostAddress());
+                                    new AsyncTask<Void, Void, Void>() {
+                                        @Override
+                                        protected Void doInBackground(Void... params) {
+                                            try {
+                                                Socket socket = new Socket(info
+                                                        .groupOwnerAddress
+                                                        .getHostAddress(), Server.PORT);
+                                                client.setServer(socket);
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+                                            return null;
                                         }
-                                        return null;
-                                    }
-                                }.executeOnExecutor(AsyncTask
-                                        .THREAD_POOL_EXECUTOR, null);
-                            }
+                                    }.executeOnExecutor(AsyncTask
+                                            .THREAD_POOL_EXECUTOR, null);
+                                }
 
                             }
                         });
-                        }
-                    });
+                    }
+                });
 
 
 //                        Intent gameIntent = new Intent(getApplicationContext(),
@@ -161,14 +148,9 @@ public class MainMenu extends Activity implements DoProtocolAction {
 //                        gameIntent.putExtra("isWifi", isWifi);
 //                        startActivity(gameIntent);
 //                        finish();
-                }
+            }
 
-                });
-
-
-
-
-
+        });
 
 
         //========================Join league=================================
@@ -189,7 +171,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
     @Override
     public void doAction(String rawInput) {
         Protocol.Action action = Protocol.getAction(rawInput);
-        switch (action){
+        switch (action) {
             case NAME_CONFIRMED:
                 Log.w("custom", "going to league");
                 Intent intent = new Intent(this, LeagueInfoActivity.class);
@@ -199,7 +181,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
         }
     }
 
-    private void deleteOldGameData(){
+    private void deleteOldGameData() {
         final File file = new File(getFilesDir(), PlayerStorage.FILE_NAME);
         file.delete();
     }

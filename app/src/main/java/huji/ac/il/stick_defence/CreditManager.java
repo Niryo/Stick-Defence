@@ -16,7 +16,7 @@ public class CreditManager extends Thread {
     Handler handler;
 
     public CreditManager(TextView leftCreditsTv,
-                         int leftCredits, int rightCredits){
+                         int leftCredits, int rightCredits) {
         this.leftCreditsTv = leftCreditsTv;
         this.leftCredits = leftCredits;
         this.tmpCredits = leftCredits;
@@ -27,22 +27,22 @@ public class CreditManager extends Thread {
         handler = new Handler();
     }
 
-    synchronized public void addCredits(double creditsToAdd, Sprite.Player player){
-        if (Sprite.Player.LEFT == player){
+    synchronized public void addCredits(double creditsToAdd, Sprite.Player player) {
+        if (Sprite.Player.LEFT == player) {
             leftCredits += creditsToAdd;
         } else {
             rightCredits += creditsToAdd;
         }
     }
 
-    synchronized public boolean decCredits(double creditsToDec, Sprite.Player player){
-        if (Sprite.Player.LEFT == player){
-            if (leftCredits < creditsToDec){
+    synchronized public boolean decCredits(double creditsToDec, Sprite.Player player) {
+        if (Sprite.Player.LEFT == player) {
+            if (leftCredits < creditsToDec) {
                 return false;
             }
             leftCredits -= creditsToDec;
         } else {
-            if (rightCredits < creditsToDec){
+            if (rightCredits < creditsToDec) {
                 return false;
             }
             rightCredits -= creditsToDec;
@@ -50,25 +50,25 @@ public class CreditManager extends Thread {
         return true;
     }
 
-    public int getCredits(Sprite.Player player){
-        if (Sprite.Player.LEFT == player){
+    public int getCredits(Sprite.Player player) {
+        if (Sprite.Player.LEFT == player) {
             return (int) this.leftCredits;
         }
         return (int) rightCredits;
     }
 
-    public void setRunning(boolean running){
+    public void setRunning(boolean running) {
         this.running = running;
     }
 
     @Override
     public void run() {
         super.run();
-        while (running){
-            if (tmpCredits < (int) leftCredits){
+        while (running) {
+            if (tmpCredits < (int) leftCredits) {
                 tmpCredits++;
-            } else if (tmpCredits > (int) leftCredits){
-                tmpCredits --;
+            } else if (tmpCredits > (int) leftCredits) {
+                tmpCredits--;
             }
 
             handler.post(new Runnable() {

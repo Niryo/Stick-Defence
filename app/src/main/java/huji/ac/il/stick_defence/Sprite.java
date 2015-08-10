@@ -7,16 +7,15 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 /**
  * This class represents a sprite animation object
  */
-public class Sprite{
+public class Sprite {
     /**
      * Represents left or right PLAYER
      */
-    public enum Player{
+    public enum Player {
         LEFT,
         RIGHT
     }
@@ -24,41 +23,42 @@ public class Sprite{
     private static final int DEFAULT_FPS = 40;
     private static final int MILLISEC_IN_SEC = 1000;
 
-    private GameState gameState= GameState.getInstance();
-    private Bitmap  bitmap;
-    private Rect    frameRect;  // the rectangle to be drawn from the animation bitmap
-    private RectF   destRect;
-    private int     frameHeight;
-    private int     frameWidth;
-    private int     currentFrame = 0;    // the current frame
+    private GameState gameState = GameState.getInstance();
+    private Bitmap bitmap;
+    private Rect frameRect;  // the rectangle to be drawn from the animation bitmap
+    private RectF destRect;
+    private int frameHeight;
+    private int frameWidth;
+    private int currentFrame = 0;    // the current frame
 
-    private int     nFrames;            // number of frames in animation
-    private int     fps = DEFAULT_FPS;           //the speed of the animation
-    private int     framePeriod
-       = MILLISEC_IN_SEC / fps;    // milliseconds between each frame (1000/fps)
-    private long    frameTicker = 01;    // the time of the last frame update
-    private double  scaleDownFactor;
-    private Player  player;
+    private int nFrames;            // number of frames in animation
+    private int fps = DEFAULT_FPS;           //the speed of the animation
+    private int framePeriod
+            = MILLISEC_IN_SEC / fps;    // milliseconds between each frame (1000/fps)
+    private long frameTicker = 01;    // the time of the last frame update
+    private double scaleDownFactor;
+    private Player player;
 
 
     /**
      * Default Constructor
      */
-    public Sprite(){}
+    public Sprite() {
+    }
 
     /**
      * Initialize the sprite. Must be called after construct.
      *
-     * @param context the context
-     * @param bitmap the bitmap of the sprite
-     * @param nFrames the number of frames in the sprite
-     * @param player left or right PLAYER
+     * @param context             the context
+     * @param bitmap              the bitmap of the sprite
+     * @param nFrames             the number of frames in the sprite
+     * @param player              left or right PLAYER
      * @param screenHeightPortion sprite height in relation to the screen height.
      *                            0-1 double. For instance, 0.5 will cause the
      *                            sprite to span over a half of the screen height.
      */
     public void initSprite(Context context, Bitmap bitmap, int nFrames,
-                              Player player, double screenHeightPortion){
+                           Player player, double screenHeightPortion) {
 
         this.bitmap = bitmap;
 
@@ -81,7 +81,7 @@ public class Sprite{
      * @param src the bitmap to mirror
      * @return a mirrored bitmap
      */
-    public static Bitmap mirrorBitmap(Bitmap src){
+    public static Bitmap mirrorBitmap(Bitmap src) {
         Matrix m = new Matrix();
         m.preScale(-1, 1);
         Bitmap dst = Bitmap.createBitmap(src, 0, 0, src.getWidth(),
@@ -95,7 +95,7 @@ public class Sprite{
      *
      * @param fps
      */
-    public void setAnimationSpeed(int fps){
+    public void setAnimationSpeed(int fps) {
         this.fps = fps;
         this.framePeriod = 1000 / fps;
     }
@@ -110,16 +110,16 @@ public class Sprite{
         if (gameTime > frameTicker + framePeriod) {
             frameTicker = gameTime;
 
-            if (nFrames > 1){
+            if (nFrames > 1) {
                 // increment the frame
-                if (player == Player.LEFT){
+                if (player == Player.LEFT) {
                     currentFrame++;
                     if (currentFrame >= nFrames) {
                         currentFrame = 0;
                     }
                 } else {
                     currentFrame--;
-                    if (currentFrame < 0){
+                    if (currentFrame < 0) {
                         currentFrame = nFrames - 1;
                     }
                 }
@@ -130,105 +130,113 @@ public class Sprite{
         }
     }
 
-    int getCurrentFrame(){ return this.currentFrame; }
+    int getCurrentFrame() {
+        return this.currentFrame;
+    }
 
     /**
      * Draws the sprite on the canvas in the given point. the sprite will be drawn from the
      * top left.
      *
      * @param canvas the canvas
-     * @param x the x axis
-     * @param y the y axis
+     * @param x      the x axis
+     * @param y      the y axis
      */
-    public void render(Canvas canvas, int x, int y){
+    public void render(Canvas canvas, int x, int y) {
         // where to draw the sprite
         destRect.set(x,
-                     y,
-                     (x + (int)getScaledFrameWidth()),
-                     (y + (int)getScaledFrameHeight()));
+                y,
+                (x + (int) getScaledFrameWidth()),
+                (y + (int) getScaledFrameHeight()));
 
         canvas.drawBitmap(this.bitmap, this.frameRect, destRect, null);
     }
 
-    public Rect getFrameRect(){
+    public Rect getFrameRect() {
         return this.frameRect;
     }
-    public RectF getDestRect(){
+
+    public RectF getDestRect() {
         return this.destRect;
     }
 
     /**
      * Set the scale factor of the bitmap. if the bitmap is big and you want it to appear small, set
      * a high scale factor.
+     *
      * @param scale the amount of scale
      */
-    public void setScaleDownFactor(double scale){
+    public void setScaleDownFactor(double scale) {
         this.scaleDownFactor = scale;
     }
 
     /**
      * Returns the scan down factor, that is a factor that shrink or enlarge
      * the sprite in relation to the screen dimensions.
+     *
      * @return scaleDownFactor
      */
-    protected double getScaleDownFactor(){
+    protected double getScaleDownFactor() {
         return this.scaleDownFactor;
     }
 
     /**
      * Get the actual height of the sprite frame after scaling
+     *
      * @return height of frame in pixels
      */
-    public double getScaledFrameHeight(){
-        return this.frameHeight/this.scaleDownFactor;
+    public double getScaledFrameHeight() {
+        return this.frameHeight / this.scaleDownFactor;
     }
 
     /**
      * Get the actual width of the sprite frame after scaling
+     *
      * @return width of frame in pixels
      */
-    public double getScaledFrameWidth(){
-        return this.frameWidth/this.scaleDownFactor;
+    public double getScaledFrameWidth() {
+        return this.frameWidth / this.scaleDownFactor;
     }
 
     /**
      * This class represents a point in the (x,y) cartesian system.
      * Designed to reduce memory allocations.
      */
-    public static class Point{
-        float  x = 0;
-        float  y = 0;
+    public static class Point {
+        float x = 0;
+        float y = 0;
         boolean isInitialized = false;
 
-        public Point(float x, float y){
+        public Point(float x, float y) {
             this.x = x;
             this.y = y;
         }
-        float getX(){
+
+        float getX() {
             return this.x;
         }
-        float getY(){
+
+        float getY() {
             return this.y;
         }
 
-        void set(float x, float y){
+        void set(float x, float y) {
             this.x = x;
             this.y = y;
             isInitialized = true;
         }
 
-        boolean isInitialized(){
+        boolean isInitialized() {
             return this.isInitialized;
         }
 
-        void invalidate(){
+        void invalidate() {
             this.isInitialized = false;
         }
     }
 
 
-
-    public void setPic(Bitmap bitmap, int nFrames){
+    public void setPic(Bitmap bitmap, int nFrames) {
         this.bitmap = bitmap;
         this.nFrames = nFrames;
         this.frameHeight = bitmap.getHeight();

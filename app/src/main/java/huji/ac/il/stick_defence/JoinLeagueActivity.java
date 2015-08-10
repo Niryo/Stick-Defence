@@ -59,13 +59,13 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
             @Override
             public void onClick(View v) {
                 final File file = new File(getFilesDir(), PlayerStorage.FILE_NAME);
-                if (file.delete()){
+                if (file.delete()) {
                     Log.w("yahav", "File deleted successfully");
-                } else{
+                } else {
                     Log.w("yahav", "Failed to delete file");
                 }
                 Intent mainMenuIntent = new Intent(getApplicationContext(),
-                                                   MainMenu.class);
+                        MainMenu.class);
                 startActivity(mainMenuIntent);
                 finish();
             }
@@ -189,7 +189,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
     public void doAction(String rawInput) {
         Protocol.Action action = Protocol.getAction(rawInput);
 
-        switch (action){
+        switch (action) {
             case NAME_CONFIRMED:
                 running = false;
                 //todo: go to wait state;
@@ -200,11 +200,10 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
                 break;
 
             case LEAGUE_INFO:
-                //todo:send the league info to the league activity
                 Log.w("custom", "going to league");
                 Intent intentWithInfo = new Intent(this, LeagueInfoActivity.class);
-                String info= Protocol.getData(rawInput);
-                intentWithInfo.putExtra("info",info);
+                String info = Protocol.getData(rawInput);
+                intentWithInfo.putExtra("info", info);
                 startActivity(intentWithInfo);
                 finish();
                 break;

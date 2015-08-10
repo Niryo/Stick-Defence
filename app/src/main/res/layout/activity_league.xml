@@ -8,6 +8,7 @@
         android:baselineAligned="false">
 
 
+
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -51,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/league_info_layout"
-   
+                android:gravity="center"
                 >
 
 

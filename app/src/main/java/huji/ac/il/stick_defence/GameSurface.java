@@ -45,7 +45,7 @@ public class GameSurface extends SurfaceView implements
 
     }
 
-    public void goToMarket(){
+    public void goToMarket() {
         gameState.saveAndFinish();
         stopGameLoop();
         Intent gameIntent = new Intent(context, Market.class);
@@ -55,8 +55,8 @@ public class GameSurface extends SurfaceView implements
         ((Activity) context).finish();
     }
 
-    public void stopGameLoop(){
-        if (null != gameLoopThread){
+    public void stopGameLoop() {
+        if (null != gameLoopThread) {
             gameLoopThread.setRunning(false);
      /*       try{
                 gameLoopThread.join();
@@ -67,11 +67,11 @@ public class GameSurface extends SurfaceView implements
         }
     }
 
-    public void sleep(){
+    public void sleep() {
         gameLoopThread.sleep();
     }
 
-    public void wakeUp(){
+    public void wakeUp() {
         gameLoopThread.wakeUp();
     }
 
@@ -91,13 +91,13 @@ public class GameSurface extends SurfaceView implements
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         Bitmap background = BitmapFactory.decodeResource(getResources(),
-                                                         R.drawable.background);
+                R.drawable.background);
         float scale = (float) background.getHeight() / (float) getHeight();
         int newWidth = Math.round(background.getWidth() / scale);
         int newHeight = Math.round(background.getHeight() / scale);
         scaledBackground = Bitmap.createScaledBitmap(background, newWidth, newHeight, true);
 
-        if (gameLoopThread.getState() == Thread.State.NEW){
+        if (gameLoopThread.getState() == Thread.State.NEW) {
             Log.w("yahav", "surfaceCreated");
             gameLoopThread.setRunning(true);
             gameLoopThread.start();
@@ -121,13 +121,13 @@ public class GameSurface extends SurfaceView implements
     }
 
     public void render(Canvas canvas) {
-    //    canvas.drawColor(Color.WHITE);
+        //    canvas.drawColor(Color.WHITE);
         canvas.drawBitmap(scaledBackground, 0, 0, null); // draw the background
         for (Tower tower : gameState.getTowers()) {
             tower.render(canvas);
         }
 
-        for (BazookaBullet bullet : gameState.getBazookaBullets()){
+        for (BazookaBullet bullet : gameState.getBazookaBullets()) {
             bullet.render(canvas);
         }
 

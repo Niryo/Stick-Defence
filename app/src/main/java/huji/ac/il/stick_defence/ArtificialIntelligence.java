@@ -9,11 +9,12 @@ import java.util.Random;
  * Created by yahav on 09/05/15.
  */
 public class ArtificialIntelligence {
-    public enum Difficulty{
+    public enum Difficulty {
         EASY,
         MEDIUM,
         HARD
     }
+
     //================================Easy======================================
     private static final float EASY_SECONDS_TO_SEND_SOLDIER = 4.0f;
     private static final float EASY_SECONDS_TO_SHOOT = 3.0f;
@@ -32,18 +33,18 @@ public class ArtificialIntelligence {
     GameState gameState = GameState.getInstance();
     private Difficulty difficulty;
 
-    private long  lastSoldierInMillisec;
-    private long  lastShootInMillisec;
+    private long lastSoldierInMillisec;
+    private long lastShootInMillisec;
     private float secondsToSendSoldier;
     private float secondsToShoot;
-    private int   pixelsShootRange;
+    private int pixelsShootRange;
 
-    ArtificialIntelligence(Difficulty difficulty){
+    ArtificialIntelligence(Difficulty difficulty) {
         this.difficulty = difficulty;
         int screenWidth = gameState.getContext().getResources().
                 getDisplayMetrics().widthPixels;
 
-        switch (difficulty){
+        switch (difficulty) {
             case EASY:
                 secondsToSendSoldier = EASY_SECONDS_TO_SEND_SOLDIER;
                 secondsToShoot = EASY_SECONDS_TO_SHOOT;
@@ -67,31 +68,31 @@ public class ArtificialIntelligence {
         lastSoldierInMillisec = lastShootInMillisec = System.currentTimeMillis();
     }
 
-    public void sendSoldier(){
+    public void sendSoldier() {
         long currentTime = System.currentTimeMillis();
-        if ((currentTime - lastSoldierInMillisec)/1000 >= secondsToSendSoldier){
+        if ((currentTime - lastSoldierInMillisec) / 1000 >= secondsToSendSoldier) {
             gameState.addSoldier(Sprite.Player.RIGHT, System.currentTimeMillis(),
-                                 Protocol.Action.BASIC_SOLDIER);
+                    Protocol.Action.BASIC_SOLDIER);
             //TODO - change to required soldier
             this.lastSoldierInMillisec = currentTime;
         }
     }
 
 
-    public void shoot(){
+    public void shoot() {
 
         long currentTime = System.currentTimeMillis();
 
-        if ((currentTime - lastShootInMillisec)/1000 >= secondsToShoot){
+        if ((currentTime - lastShootInMillisec) / 1000 >= secondsToShoot) {
             this.lastShootInMillisec = currentTime;
             ArrayList<Soldier> soldiers = gameState.getSoldiers();
             Bow aiBow = gameState.getBows().get(1);
-            for (Soldier soldier : soldiers){
-                if (Sprite.Player.LEFT == soldier.getPlayer()){
+            for (Soldier soldier : soldiers) {
+                if (Sprite.Player.LEFT == soldier.getPlayer()) {
                     int soldierX = soldier.getSoldierX();
                     int soldierY = soldier.getSoldierY();
                     int inaccuracy = randInt(-pixelsShootRange,
-                                              pixelsShootRange);
+                            pixelsShootRange);
                     Sprite.Point point =
                             new Sprite.Point(soldierX + inaccuracy, soldierY);
                     aiBow.setBowDirection(point);
@@ -117,6 +118,7 @@ public class ArtificialIntelligence {
         }
 
     }
+
     public static int randInt(int min, int max) {
 
         // NOTE: Usually this should be a field rather than a method

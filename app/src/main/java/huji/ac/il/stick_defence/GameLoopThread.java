@@ -32,7 +32,9 @@ public class GameLoopThread extends Thread {
         this.running = running;
     }
 
-    public synchronized boolean isRunning(){ return this.running; }
+    public synchronized boolean isRunning() {
+        return this.running;
+    }
 
     public GameLoopThread(SurfaceHolder surfaceHolder,
                           GameSurface gameSurface, boolean multiplayer) {
@@ -42,18 +44,18 @@ public class GameLoopThread extends Thread {
         this.gameState = GameState.getInstance();
 
         this.isMultiplayer = multiplayer;
-        if (!multiplayer){
+        if (!multiplayer) {
             this.ai = new ArtificialIntelligence(ArtificialIntelligence.Difficulty.EASY);
         }
         sleep = false;
     }
 
-    public void sleep(){
+    public void sleep() {
         Log.w("yahav", "GameLoop is going to sleep");
         this.sleep = true;
     }
 
-    public void wakeUp(){
+    public void wakeUp() {
         Log.w("yahav", "GameLoop wake up");
         this.sleep = false;
     }
@@ -78,10 +80,10 @@ public class GameLoopThread extends Thread {
                     beginTime = System.currentTimeMillis();
                     skippedFrames = 0;    // resetting the frames skipped
 
-                    if (!sleep){
-                        if (!isMultiplayer){
-                             ai.sendSoldier();
-                             ai.shoot();
+                    if (!sleep) {
+                        if (!isMultiplayer) {
+                            ai.sendSoldier();
+                            ai.shoot();
                         }
 
                         this.gameState.update();
@@ -111,12 +113,13 @@ public class GameLoopThread extends Thread {
 
                     //Check if one of the players win
                     if (gameState.isLeftPlayerWin() ||
-                            gameState.isRightPlayerWin()){
+                            gameState.isRightPlayerWin()) {
                         Log.w("custom", "game over! bye bye!");
 
-                        if (isMultiplayer){
+                        if (isMultiplayer) {
+
                             Client.getClientInstance().
-                                    send(Protocol.stringify(Protocol.Action.GAME_OVER));
+                                    send(Protocol.stringify(Protocol.Action.GAME_OVER, String.valueOf(gameState.isLeftPlayerWin())));
                         }
 
                         running = false;

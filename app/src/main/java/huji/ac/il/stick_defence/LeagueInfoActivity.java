@@ -1,29 +1,19 @@
 package huji.ac.il.stick_defence;
 
 import android.annotation.TargetApi;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -111,9 +101,9 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
                         }
                     });
 
-                }else{
-                    ArrayList<PlayerWins> dataToSort= new ArrayList<>();
-                    final  TableLayout  table= (TableLayout) findViewById(R.id.statistics_table);
+                } else {
+                    ArrayList<PlayerWins> dataToSort = new ArrayList<>();
+                    final TableLayout table = (TableLayout) findViewById(R.id.statistics_table);
                     JSONObject stats = (JSONObject) info.get(key);
                     Iterator<?> statKeys = stats.keys();
                     while (statKeys.hasNext()) {
@@ -123,19 +113,19 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
                     Collections.sort(dataToSort, new Comparator<PlayerWins>() {
                         @Override
                         public int compare(PlayerWins first, PlayerWins second) {
-                            return second.wins-first.wins;
+                            return second.wins - first.wins;
                         }
                     });
-                    int count=1;
+                    int count = 1;
 
-                    for(PlayerWins pw : dataToSort){
-                        final TableRow tr= new TableRow(this);
+                    for (PlayerWins pw : dataToSort) {
+                        final TableRow tr = new TableRow(this);
                         AutoResizeTextView place = new AutoResizeTextView(this);
                         place.setBackground(getResources().getDrawable(R.drawable.cell_shape));
                         place.setText("" + count);
                         place.setGravity(Gravity.CENTER);
                         count++;
-                        AutoResizeTextView name  = new AutoResizeTextView(this);
+                        AutoResizeTextView name = new AutoResizeTextView(this);
                         name.setText(pw.name);
                         name.setGravity(Gravity.CENTER);
                         name.setBackground(getResources().getDrawable(R.drawable.cell_shape));
@@ -160,7 +150,6 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
                     }
 
 
-
                 }
             }
 
@@ -169,24 +158,25 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
         }
     }
 
-    private class PlayerWins{
+    private class PlayerWins {
         private String name;
         private int wins;
-        PlayerWins(String name, int wins){
-            this.name=name;
-            this.wins=wins;
+
+        PlayerWins(String name, int wins) {
+            this.name = name;
+            this.wins = wins;
         }
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void buildTableHead(){
-        final  TableLayout  table= (TableLayout) findViewById(R.id.statistics_table);
-        final TableRow tr= new TableRow(this);
+    private void buildTableHead() {
+        final TableLayout table = (TableLayout) findViewById(R.id.statistics_table);
+        final TableRow tr = new TableRow(this);
         AutoResizeTextView place = new AutoResizeTextView(this);
         place.setBackground(getResources().getDrawable(R.drawable.cell_shape));
         place.setText("Place");
         place.setGravity(Gravity.CENTER);
-        AutoResizeTextView name  = new AutoResizeTextView(this);
+        AutoResizeTextView name = new AutoResizeTextView(this);
         name.setText("Name");
         name.setGravity(Gravity.CENTER);
         name.setBackground(getResources().getDrawable(R.drawable.cell_shape));

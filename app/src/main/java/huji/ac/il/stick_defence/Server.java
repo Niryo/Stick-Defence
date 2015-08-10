@@ -21,31 +21,34 @@ import java.util.ArrayList;
  */
 public class Server {
     private int leagueParticipants;
-    public static final int PORT=6666; //arbitrary port
+    public static final int PORT = 6666; //arbitrary port
     private static Server server;
-    private int counter=0;
-    private  boolean acceptingNewClients =false;
-    private   ArrayList<Peer> peers = new ArrayList<>(); //we keep tracking all the connected peers todo: change to hashmap based on id
-    private  ServerSocket serverSocket;
-    private boolean test=true;
+    private int counter = 0;
+    private boolean acceptingNewClients = false;
+    private ArrayList<Peer> peers = new ArrayList<>(); //we keep tracking all the connected peers todo: change to hashmap based on id
+    private ServerSocket serverSocket;
+    private boolean test = true;
     private LeagueManager leagueManager;
+    private int gameOverCounter = 0;
 
 
     /**
      * private constructor, for the singleton pattern.
+     *
      * @param participants
      */
-    private Server(int participants){
-        this.leagueParticipants =  participants;
+    private Server(int participants) {
+        this.leagueParticipants = participants;
     }
 
     /**
      * Creates a new server if the current static server is null
+     *
      * @return an instance of the server
      */
-    public static Server createServer(int participants){
-        if(server==null){
-            server=new Server(participants);
+    public static Server createServer(int participants) {
+        if (server == null) {
+            server = new Server(participants);
             server.start();
         }
         return server;
@@ -56,15 +59,15 @@ public class Server {
      *
      * @return an instance of the server.
      */
-    public static Server getServerInstance(){
+    public static Server getServerInstance() {
         return server;
     }
 
     /**
      * Start the server.
      */
-    private void start(){
-        this.acceptingNewClients =true;
+    private void start() {
+        this.acceptingNewClients = true;
         //we create a new socket and listen to it on a different thread:
         new AsyncTask<Void, Void, Void>() {
 
@@ -78,16 +81,16 @@ public class Server {
                         Log.w("custom", "client accepted!"); //if we reach this line only when a new client is connected.
                         Peer peer = new Peer(socket);
                         peers.add(peer); //save the new client in the peers list
-                        if(peers.size()== leagueParticipants){
-                         //todo: sleep some time to see that no one is disconnecting
+                        if (peers.size() == leagueParticipants) {
+                            //todo: sleep some time to see that no one is disconnecting
                             try {
                                 Thread.sleep(2000);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                            acceptingNewClients=false;
+                            acceptingNewClients = false;
                             leagueManager = new LeagueManager(peers);
-                            String info= leagueManager.getLeagueInfo();
+                            String info = leagueManager.getLeagueInfo();
                             sendLeagueInfo(info);
                         }
                     }
@@ -100,21 +103,22 @@ public class Server {
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
-private void sendLeagueInfo(String info){
-    for (Peer peer : this.peers){
-        peer.send(Protocol.stringify(Protocol.Action.LEAGUE_INFO, info));
+    private void sendLeagueInfo(String info) {
+        for (Peer peer : this.peers) {
+            peer.send(Protocol.stringify(Protocol.Action.LEAGUE_INFO, info));
+        }
     }
-}
 
 
     /**
      * This method decide what to do on each data received from a client.
+     *
      * @param rawInput the input line that has been received from the client
-     * @param peer the client that send us the action.
+     * @param peer     the client that send us the action.
      */
-    private void doAction(String rawInput, Peer peer){
+    private void doAction(String rawInput, Peer peer) {
         Protocol.Action action = Protocol.getAction(rawInput);
-        switch (action){
+        switch (action) {
             case NAME:
                 peer.approved = true; //TODO: check that name is available
                 peer.setName(Protocol.getData(rawInput));
@@ -122,19 +126,33 @@ private void sendLeagueInfo(String info){
                 break;
 
             case READY_TO_PLAY:
-                peer.readyToPlay=true;
-                if(peer.partner.readyToPlay){ //both peers are ready to play
+                peer.readyToPlay = true;
+                if (peer.partner.readyToPlay) { //both peers are ready to play
                     try {
                         Thread.sleep(3000); //sleep for a few seconds, just to give the players some time to finish loading his game
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    String currentTime= Long.toString(System.currentTimeMillis());
+                    String currentTime = Long.toString(System.currentTimeMillis());
                     peer.send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
                     peer.partner.send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
                     //clear the readyToPlayFlag for the next time:
-                    peer.readyToPlay=false;
-                    peer.partner.readyToPlay=false;
+                    peer.readyToPlay = false;
+                    peer.partner.readyToPlay = false;
+                }
+                break;
+
+            case GAME_OVER:
+                this.gameOverCounter++;
+                if (gameOverCounter == this.leagueParticipants) {
+                    this.gameOverCounter = 0;
+                    leagueManager.updateLeugeStage();
+                    String leagueInfo = leagueManager.getLeagueInfo();
+                    sendLeagueInfo(leagueInfo);
+                }
+                boolean isPeerWin = Boolean.getBoolean(Protocol.getData(rawInput));
+                if (isPeerWin) {
+                    peer.wins++;
                 }
                 break;
 
@@ -142,37 +160,37 @@ private void sendLeagueInfo(String info){
 
     }
 
-    public void makePair(Peer peer1, Peer peer2){
+    public void makePair(Peer peer1, Peer peer2) {
         peer1.setPartner(peer2);
         peer2.setPartner(peer1);
     }
-    private void destroyPair(Peer peer1, Peer peer2){
+
+    private void destroyPair(Peer peer1, Peer peer2) {
         peer1.setPartner(null);
         peer2.setPartner(null);
     }
 
 
-
     /**
      * This class represents a socket listener on a client node.
      */
-    private class ServerSocketListener extends AsyncTask<Peer,Void, Void> {
+    private class ServerSocketListener extends AsyncTask<Peer, Void, Void> {
 
         @Override
         protected Void doInBackground(Peer[] params) {
-            Peer peer= params[0];
+            Peer peer = params[0];
             Socket socket = peer.socket;
 
             Log.w("custom", "start socket listener");
             String inputLine;
 
             try {
-            BufferedReader in= new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 while ((inputLine = in.readLine()) != null) { //the readLine is a blocking method.
                     Log.w("custom", inputLine);
-                    doAction(inputLine ,peer);
-                    if (peer.partner!=null){
-                        inputLine= Protocol.addTimeStampToRawInput(inputLine);//add time stamp to the action;
+                    doAction(inputLine, peer);
+                    if (peer.partner != null) {
+                        inputLine = Protocol.addTimeStampToRawInput(inputLine);//add time stamp to the action;
 //                      Thread.sleep(4000);//add delay for testing reasons. TODO:REMOVE!
                         peer.partner.send(inputLine);
                     }
@@ -185,9 +203,10 @@ private void sendLeagueInfo(String info){
             Log.w("custom", "finish socket listener");
 
 
-
             return null;
-        };
+        }
+
+        ;
     }
 
     /**
@@ -196,43 +215,45 @@ private void sendLeagueInfo(String info){
      */
     public class Peer {
         private long WAIT_FOR_APPROVE = 3000;
-        private boolean approved=false; //check if the peer is an approved
+        private boolean approved = false; //check if the peer is an approved
         private int id; //unique id for each peer
         private String name; //name of the client. don't have to be unique.
         private PrintWriter out;
         private Socket socket;
-        private Peer partner=null;
-        private int score=0;
-        private int wins=0;
-        private Boolean readyToPlay=false;
+        private Peer partner = null;
+        private int score = 0;
+        private int wins = 0;
+        private Boolean readyToPlay = false;
+
         /**
          * Constructs a new peer.
+         *
          * @param socket the socket to wrap
          */
-            public Peer(Socket socket){
-                //start an asyncTask that will remove this peer from the peers list if it isn't approved:
-                new AsyncTask<Peer, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(Peer... params) { //TODO: remove this process and make that server to it instead
-                        try {
-                            Peer currentPeer=params[0];
-                            Thread.sleep(WAIT_FOR_APPROVE);
-                            if(!approved){
-                                peers.remove(currentPeer);
-                                currentPeer.socket.close();
-                                Log.w("custom", "illegal peer removed!");
-                            }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+        public Peer(Socket socket) {
+            //start an asyncTask that will remove this peer from the peers list if it isn't approved:
+            new AsyncTask<Peer, Void, Void>() {
+                @Override
+                protected Void doInBackground(Peer... params) { //TODO: remove this process and make that server to it instead
+                    try {
+                        Peer currentPeer = params[0];
+                        Thread.sleep(WAIT_FOR_APPROVE);
+                        if (!approved) {
+                            peers.remove(currentPeer);
+                            currentPeer.socket.close();
+                            Log.w("custom", "illegal peer removed!");
                         }
-                        return null;
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this);
+                    return null;
+                }
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this);
 
             this.id = counter++;
-            this.socket=socket;
+            this.socket = socket;
             new ServerSocketListener().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this);
             try {
                 this.out = new PrintWriter(socket.getOutputStream(), true);
@@ -245,36 +266,46 @@ private void sendLeagueInfo(String info){
 
         /**
          * Sets the name of the client this peer belongs too.
+         *
          * @param name the name of the client.
          */
-        public void setName(String name){
-            this.name=name;
+        public void setName(String name) {
+            this.name = name;
         }
-        public String getName(){return name;}
+
+        public String getName() {
+            return name;
+        }
 
         /**
          * Send data to the socket
+         *
          * @param out the data to be sent.
          */
-        public void send(String out){
+        public void send(String out) {
             this.out.println(out);
         }
 
         /**
          * Return the peer socket
+         *
          * @return the peer socket
          */
-        public Socket getSocket(){
+        public Socket getSocket() {
             return this.socket;
         }
 
-        public void setPartner(Peer peer){
-            this.partner=peer;
+        public void setPartner(Peer peer) {
+            this.partner = peer;
         }
-        public int getScore(){
+
+        public int getScore() {
             return this.score;
         }
-        public int getWins(){return this.wins;}
+
+        public int getWins() {
+            return this.wins;
+        }
 
     }
 

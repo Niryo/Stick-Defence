@@ -22,7 +22,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
 
     public WiFiDirectBroadcastReceiver(JoinLeagueActivity activity, WifiP2pManager manager, WifiP2pManager.Channel channel) {
         super();
-        this.activity= activity;
+        this.activity = activity;
         this.mManager = manager;
         this.mChannel = channel;
 
@@ -45,11 +45,11 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
             if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
                 // Call WifiP2pManager.requestPeers() to get a list of current peers
                 if (mManager != null) {
-                    mManager.requestPeers(mChannel, new WifiP2pManager.PeerListListener(){
+                    mManager.requestPeers(mChannel, new WifiP2pManager.PeerListListener() {
 
                         @Override
                         public void onPeersAvailable(WifiP2pDeviceList peers) {
-                            Collection<WifiP2pDevice> deviceList= peers.getDeviceList();
+                            Collection<WifiP2pDevice> deviceList = peers.getDeviceList();
                             activity.addDevices(deviceList);
                             Log.w("custom", "List of devices:");
                             Log.w("custom", deviceList.toString());

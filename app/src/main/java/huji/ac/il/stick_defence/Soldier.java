@@ -15,7 +15,7 @@ import java.io.Serializable;
  * Extension of this class must handle the transition to the attack mode
  * by itself. This can be handled by attack() and isAttack() methods.
  */
-public abstract class Soldier implements Serializable{
+public abstract class Soldier implements Serializable {
     //Epsilon to hit soldier from his center
     private static final int HIT_EPSILON = 15;
 
@@ -26,23 +26,23 @@ public abstract class Soldier implements Serializable{
     private static Bitmap rightSoldierPic = null;
     private static Bitmap leftAttackSoldierPic = null;
     private static Bitmap rightAttackSoldierPic = null;
-    private Sprite        sprite;
+    private Sprite sprite;
 
     //Characteristics
     private final Sprite.Player PLAYER;
-    private final int           DAMAGE_PER_SEC;
-    private double              runPixelsPerSec;
+    private final int DAMAGE_PER_SEC;
+    private double runPixelsPerSec;
 
     //Positions
-    private int      screenWidth;
-    private int      screenHeight;
-    private double   soldierX;
-    private double   soldierY;
-    private long     lastUpdateTime;
-    private boolean  attack;
-    private double   secToCrossScreen;
-    private double   delayInSec;
-    private Context  context;
+    private int screenWidth;
+    private int screenHeight;
+    private double soldierX;
+    private double soldierY;
+    private long lastUpdateTime;
+    private boolean attack;
+    private double secToCrossScreen;
+    private double delayInSec;
+    private Context context;
 
 
     protected Soldier(Context context, Sprite.Player player, double
@@ -73,23 +73,25 @@ public abstract class Soldier implements Serializable{
 
         //Set x
         if (this.PLAYER == Sprite.Player.LEFT) {
-            soldierX = - sprite.getScaledFrameWidth(); //Start hidden
+            soldierX = -sprite.getScaledFrameWidth(); //Start hidden
         } else {
             soldierX = screenWidth; //Start hidden
         }
 
         //Set speed
         if (this.PLAYER == Sprite.Player.LEFT) {
-            this.runPixelsPerSec = ((double) screenWidth ) / (secToCrossScreen - delayInSec);
+            this.runPixelsPerSec = ((double) screenWidth) / (secToCrossScreen - delayInSec);
 
         } else {
-            this.runPixelsPerSec = - ((double) screenWidth ) / (secToCrossScreen - delayInSec);
+            this.runPixelsPerSec = -((double) screenWidth) / (secToCrossScreen - delayInSec);
         }
-        Log.w("custom", "Soldier pix per sec: "+ runPixelsPerSec);
+        Log.w("custom", "Soldier pix per sec: " + runPixelsPerSec);
 
     }
 
-    protected Context getContext(){ return this.context; }
+    protected Context getContext() {
+        return this.context;
+    }
 
     protected void attack(Bitmap attackSoldierPic, int nFrames, int fps) {
         this.attack = true;
@@ -98,9 +100,13 @@ public abstract class Soldier implements Serializable{
         this.soldierY = screenHeight - (int) sprite.getScaledFrameHeight();
     }
 
-    protected double getScaledDownFactor(){ return sprite.getScaleDownFactor();}
+    protected double getScaledDownFactor() {
+        return sprite.getScaleDownFactor();
+    }
 
-    protected boolean isAttack() { return this.attack; }
+    protected boolean isAttack() {
+        return this.attack;
+    }
 
     protected void update(long gameTime) {
         sprite.update(gameTime);
@@ -118,7 +124,6 @@ public abstract class Soldier implements Serializable{
     }
 
 
-
     protected void render(Canvas canvas) {
         sprite.render(canvas, getSoldierX(), getSoldierY());
 
@@ -126,17 +131,23 @@ public abstract class Soldier implements Serializable{
         paint.setColor(PLAYER == Sprite.Player.RIGHT ? Color.RED : Color.BLUE);
         paint.setStrokeWidth(10);
         canvas.drawLine((float) (getSoldierX() + (sprite.getScaledFrameWidth
-                () / 2) - HIT_EPSILON), getSoldierY(), (float) (this.soldierX
-                + (sprite.getScaledFrameWidth() / 2) + HIT_EPSILON),
+                        () / 2) - HIT_EPSILON), getSoldierY(), (float) (this.soldierX
+                        + (sprite.getScaledFrameWidth() / 2) + HIT_EPSILON),
                 getSoldierY(), paint);
 
     }
 
-    protected int getSoldierX() { return (int) Math.round(this.soldierX); }
+    protected int getSoldierX() {
+        return (int) Math.round(this.soldierX);
+    }
 
-    protected void setSoldierX(int soldierX) { this.soldierX = soldierX; }
+    protected void setSoldierX(int soldierX) {
+        this.soldierX = soldierX;
+    }
 
-    protected int getSoldierY() { return (int) Math.round(this.soldierY); }
+    protected int getSoldierY() {
+        return (int) Math.round(this.soldierY);
+    }
 
     protected double getScaledFrameWidth() {
         return sprite.getScaledFrameWidth();
@@ -159,7 +170,11 @@ public abstract class Soldier implements Serializable{
         return this.PLAYER;
     }
 
-    public int getScreenWidth(){ return this.screenWidth; }
+    public int getScreenWidth() {
+        return this.screenWidth;
+    }
 
-    public int getCurrentFrame(){ return sprite.getCurrentFrame(); }
+    public int getCurrentFrame() {
+        return sprite.getCurrentFrame();
+    }
 }

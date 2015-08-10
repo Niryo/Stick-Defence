@@ -9,11 +9,11 @@ import android.graphics.Canvas;
 /**
  * This class represents a basic soldier.
  */
-public class BasicSoldier extends Soldier{
+public class BasicSoldier extends Soldier {
 
     //=======================BasicSoldier's abilities===========================
     private static final double SEC_TO_CROSS_SCREEN = 10;
-    private static final int    DAMAGE_PER_SEC = 1; // [Damage/Sec]
+    private static final int DAMAGE_PER_SEC = 1; // [Damage/Sec]
     //==========================================================================
 
     //==========================================================================
@@ -30,36 +30,36 @@ public class BasicSoldier extends Soldier{
     private static final int ATTACK_FPS = 20;
     //==========================================================================
 
-    private static Bitmap         leftSoldierPic = null;
-    private static Bitmap         rightSoldierPic = null;
-    private static Bitmap         leftAttackSoldierPic = null;
-    private static Bitmap         rightAttackSoldierPic = null;
+    private static Bitmap leftSoldierPic = null;
+    private static Bitmap rightSoldierPic = null;
+    private static Bitmap leftAttackSoldierPic = null;
+    private static Bitmap rightAttackSoldierPic = null;
 
     private Sprite.Player player;
 
-    public BasicSoldier(Context context, Sprite.Player player,double delayInSec) {
+    public BasicSoldier(Context context, Sprite.Player player, double delayInSec) {
         super(context, player, SEC_TO_CROSS_SCREEN, DAMAGE_PER_SEC, delayInSec);
-        if  (null == leftSoldierPic) {
+        if (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
-                                                  context.getResources(),
-                                                  R.drawable.basic_soldier_run);
+                    context.getResources(),
+                    R.drawable.basic_soldier_run);
         }
 
-        if (null == rightSoldierPic){
+        if (null == rightSoldierPic) {
             rightSoldierPic = Sprite.mirrorBitmap(leftSoldierPic);
         }
 
-        if (null == leftAttackSoldierPic){
+        if (null == leftAttackSoldierPic) {
             leftAttackSoldierPic =
                     BitmapFactory.decodeResource(context.getResources(),
                             R.drawable.basic_soldier_hit);
         }
 
-        if(null == rightAttackSoldierPic){
+        if (null == rightAttackSoldierPic) {
             rightAttackSoldierPic = Sprite.mirrorBitmap(leftAttackSoldierPic);
         }
 
-        if (Sprite.Player.LEFT == player){
+        if (Sprite.Player.LEFT == player) {
             super.initSprite(context, leftSoldierPic, NUMBER_OF_FRAMES,
                     SCREEN_HEIGHT_PORTION, MOVE_FPS);
         } else {
@@ -74,18 +74,18 @@ public class BasicSoldier extends Soldier{
     }
 
     public void update(long gameTime) {
-        if (!super.isAttack()){
-            if (player == Sprite.Player.LEFT){
+        if (!super.isAttack()) {
+            if (player == Sprite.Player.LEFT) {
                 if (getSoldierX() + getScaledFrameWidth() / 2 >=
-                        gameState.getRightTowerLeftX()){
+                        gameState.getRightTowerLeftX()) {
                     super.attack(leftAttackSoldierPic, ATTACK_N_FRAMES,
                             ATTACK_FPS);
                     super.setSoldierX(getSoldierX() +
-                                      (int) getScaledFrameWidth());
+                            (int) getScaledFrameWidth());
                 }
             } else {
                 if (getSoldierX() + getScaledFrameWidth() / 2 <=
-                        gameState.getLeftTowerRightX()){
+                        gameState.getLeftTowerRightX()) {
                     super.attack(rightAttackSoldierPic, ATTACK_N_FRAMES,
                             ATTACK_FPS);
                     super.setSoldierX(getSoldierX() +
@@ -100,7 +100,7 @@ public class BasicSoldier extends Soldier{
         super.render(canvas);
     }
 
-    public boolean isHitByArrow(Arrow arrow){
+    public boolean isHitByArrow(Arrow arrow) {
         return super.isHitByArrow(arrow);
     }
 

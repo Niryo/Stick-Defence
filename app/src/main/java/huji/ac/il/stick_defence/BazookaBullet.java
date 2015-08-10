@@ -7,37 +7,37 @@ import android.graphics.Canvas;
 
 import java.io.Serializable;
 
-public class BazookaBullet implements Serializable{
+public class BazookaBullet implements Serializable {
     //======================BazookaBullet's abilities===========================
     private static final double SEC_TO_SCREEN_WIDTH = 0.021;
 
     //========================BazookaBullet's picture===========================
     private static Sprite leftBulletSprite, rightBulletSprite;
 
-    private GameState     gameState = GameState.getInstance();
-    private float         x;
-    private float         y;
-    private int           screenWidth;
-    private int           screenHeight;
-    private long          lastUpdateTime;
-    private double        x_pixPerSec;
+    private GameState gameState = GameState.getInstance();
+    private float x;
+    private float y;
+    private int screenWidth;
+    private int screenHeight;
+    private long lastUpdateTime;
+    private double x_pixPerSec;
     private Sprite.Player player;
-    private Sprite        sprite;
+    private Sprite sprite;
     private static double scaleDownFactor;
 
     public BazookaBullet(Context context, float x, float y,
-                         Sprite.Player player){
+                         Sprite.Player player) {
         this.screenWidth =
                 gameState.getCanvasWidth();
         this.screenHeight =
                 gameState.getCanvasHeight();
-        this.x=x;
-        this.y=y;
+        this.x = x;
+        this.y = y;
         this.player = player;
 
         x_pixPerSec = SEC_TO_SCREEN_WIDTH * screenWidth;
 
-        if (Sprite.Player.RIGHT == player){
+        if (Sprite.Player.RIGHT == player) {
             sprite = rightBulletSprite;
             x_pixPerSec *= -1;
         } else {
@@ -48,26 +48,26 @@ public class BazookaBullet implements Serializable{
 
     }
 
-    public void update(long gameTime){
-        double passedTimeInSec = (double)(gameTime - lastUpdateTime) / 1000;
+    public void update(long gameTime) {
+        double passedTimeInSec = (double) (gameTime - lastUpdateTime) / 1000;
         this.x += x_pixPerSec * passedTimeInSec;
 
         if (this.x <= gameState.getLeftTowerCentralX() ||
-            this.x >= gameState.getRightTowerCentralX()){
+                this.x >= gameState.getRightTowerCentralX()) {
             gameState.removeBazookaBullet(this);
         }
     }
 
-    public void resetUpdateTime(){
+    public void resetUpdateTime() {
         lastUpdateTime = System.currentTimeMillis();
     }
 
-    public void render(Canvas canvas){
+    public void render(Canvas canvas) {
         sprite.render(canvas, getHeadX(), getHeadY());
 
     }
 
-    public static void init(Context context, double scaleDownFactor){
+    public static void init(Context context, double scaleDownFactor) {
 
         Bitmap leftBazookaBulletPic = BitmapFactory.decodeResource(context.getResources(),
                 R.drawable.bazooka_bullet); // Read resource only once
@@ -85,15 +85,15 @@ public class BazookaBullet implements Serializable{
 
     }
 
-    public int  getHeadX(){
-        return (int) (this.x + sprite.getScaledFrameWidth()/2);
+    public int getHeadX() {
+        return (int) (this.x + sprite.getScaledFrameWidth() / 2);
     }
 
-    public int  getHeadY(){
-        return (int) (this.y + sprite.getScaledFrameHeight()/2);
+    public int getHeadY() {
+        return (int) (this.y + sprite.getScaledFrameHeight() / 2);
     }
 
-    public Sprite.Player getPlayer(){
+    public Sprite.Player getPlayer() {
         return this.player;
     }
 

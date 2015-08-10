@@ -16,14 +16,11 @@ import android.widget.TextView;
 public class AutoResizeTextView extends TextView {
     private interface SizeTester {
         /**
-         *
-         * @param suggestedSize
-         *            Size of text to be tested
-         * @param availableSpace
-         *            available space in which text must fit
+         * @param suggestedSize  Size of text to be tested
+         * @param availableSpace available space in which text must fit
          * @return an integer < 0 if after applying {@code suggestedSize} to
-         *         text, it takes less space than {@code availableSpace}, > 0
-         *         otherwise
+         * text, it takes less space than {@code availableSpace}, > 0
+         * otherwise
          */
         public int onTestSize(int suggestedSize, RectF availableSpace);
     }
@@ -227,8 +224,7 @@ public class AutoResizeTextView extends TextView {
      * size against getText().length() Be careful though while enabling it as 0
      * takes more space than 1 on some fonts and so on.
      *
-     * @param enable
-     *            enable font size caching
+     * @param enable enable font size caching
      */
     public void enableSizeCache(boolean enable) {
         mEnableSizeCache = enable;

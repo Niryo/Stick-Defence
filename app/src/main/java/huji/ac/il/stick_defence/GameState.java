@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * That is contains all sprites, handle them and manage
  * the interactions between them.
  */
-public class GameState{
+public class GameState {
 
 
     private static GameState gameState;
@@ -57,11 +57,11 @@ public class GameState{
         playerStorage = PlayerStorage.load(context);
     }
 
-    public static GameState CreateGameState(Context context,int canvasWidth, int canvasHeight) {
+    public static GameState CreateGameState(Context context, int canvasWidth, int canvasHeight) {
 
-        if (null == gameState){
+        if (null == gameState) {
             gameState = new GameState(context);
-            gameState.init(canvasWidth,canvasHeight);
+            gameState.init(canvasWidth, canvasHeight);
         }
 
         return gameState;
@@ -71,16 +71,16 @@ public class GameState{
         return gameState;
     }
 
-    public boolean isGameInProcces(){
+    public boolean isGameInProcces() {
         return this.playerStorage.isGameInProcess();
     }
 
-    public static void reset(){
+    public static void reset() {
         gameState = null;
     }
 
     private void init(int canvasWidth, int canvasHeight) {
-        setCanvasDimentions(canvasWidth,canvasHeight );
+        setCanvasDimentions(canvasWidth, canvasHeight);
         Tower leftTower = new Tower(context, Sprite.Player.LEFT);
         Tower rightTower = new Tower(context, Sprite.Player.RIGHT);
 
@@ -100,32 +100,32 @@ public class GameState{
 
     }
 
-    public void setSinglePlayer(){
+    public void setSinglePlayer() {
         this.isMultiplayer = false;
     }
 
-    public void saveAndFinish(){
+    public void saveAndFinish() {
         playerStorage.setCredits(creditManager.getCredits(Sprite.Player.LEFT));
         save();
         creditManager.setRunning(false);
     }
 
-    public void save(){
+    public void save() {
         playerStorage.save();
     }
 
-    public boolean isHaveSoldier(PlayerStorage.SoldiersEnum iSoldier){
+    public boolean isHaveSoldier(PlayerStorage.SoldiersEnum iSoldier) {
         return this.playerStorage.isHaveSoldier(iSoldier);
     }
 
-    public void buySoldier(PlayerStorage.SoldiersEnum iSoldier, int price){
+    public void buySoldier(PlayerStorage.SoldiersEnum iSoldier, int price) {
         this.playerStorage.buySoldier(iSoldier);
         this.playerStorage.setCredits(this.playerStorage.getCredits() - price);
     }
 
-    public void initBazookaSoldierButton(Button button){
+    public void initBazookaSoldierButton(Button button) {
         if (playerStorage.isHaveSoldier(
-                PlayerStorage.SoldiersEnum.BAZOOKA_SOLDIER)){
+                PlayerStorage.SoldiersEnum.BAZOOKA_SOLDIER)) {
             button.setVisibility(View.VISIBLE);
         }
     }
@@ -140,20 +140,20 @@ public class GameState{
         }
     }
 
-    public void initCredits(TextView leftCreditsTv){
+    public void initCredits(TextView leftCreditsTv) {
         this.creditManager =
                 new CreditManager(leftCreditsTv,
-                                    this.playerStorage.getCredits(), 0); //TODO - support right player
+                        this.playerStorage.getCredits(), 0); //TODO - support right player
 
         creditManager.setRunning(true);
         creditManager.start();
     }
 
-    public void addCredits(double creditsToAdd, Sprite.Player player){
+    public void addCredits(double creditsToAdd, Sprite.Player player) {
         creditManager.addCredits(creditsToAdd, player);
     }
 
-    public int getCredits(Sprite.Player player){
+    public int getCredits(Sprite.Player player) {
         return creditManager.getCredits(player);
     }
 
@@ -173,7 +173,7 @@ public class GameState{
         for (Soldier soldier : this.getSoldiers()) {
             soldier.update(currentTimeMillis);
         }
-        for (BazookaBullet bullet : this.getBazookaBullets()){
+        for (BazookaBullet bullet : this.getBazookaBullets()) {
             bullet.update(currentTimeMillis);
         }
         for (Bow bow : this.getBows()) {
@@ -189,7 +189,6 @@ public class GameState{
     }
 
 
-
     private void checkHits() {
         for (Arrow arrow : this.getArrows()) {
             boolean hit = false;
@@ -203,7 +202,7 @@ public class GameState{
                     break;
                 }
             }
-            if (hit){
+            if (hit) {
                 continue;
             }
         }
@@ -212,22 +211,22 @@ public class GameState{
     public void touch(SimpleGestureDetector.Gesture move, Sprite.Point point) {
         if (move == SimpleGestureDetector.Gesture.DOWN) {
             this.leftBow.unStretch();
-       //     this.leftBow.rotateRight();
+            //     this.leftBow.rotateRight();
         }
         if (move == SimpleGestureDetector.Gesture.UP) {
             this.leftBow.stretch();
-       //     this.leftBow.rotateLeft();
+            //     this.leftBow.rotateLeft();
         }
 
         if (move == SimpleGestureDetector.Gesture.RIGHT) {
             this.leftBow.unStretch();
-       //     this.leftBow.rotateLeft();
+            //     this.leftBow.rotateLeft();
             // this.rightBow.rotateLeft();
 
         }
         if (move == SimpleGestureDetector.Gesture.LEFT) {
             this.leftBow.stretch();
-        //    this.leftBow.rotateRight();
+            //    this.leftBow.rotateRight();
             //this.rightBow.rotateRight();
         }
         if (move == SimpleGestureDetector.Gesture.TOUCH_UP) {
@@ -250,8 +249,8 @@ public class GameState{
         long currentTime = getSyncTime();
         if (player == Sprite.Player.LEFT) { // Us
             delay = 0;
-            if (isMultiplayer){
-                switch (soldierType){
+            if (isMultiplayer) {
+                switch (soldierType) {
                     case BASIC_SOLDIER:
                         client.reportBasicSoldier();
                         break;
@@ -260,7 +259,7 @@ public class GameState{
                         break;
                     default:
                         Log.e("yahav",
-                              "Wrong soldier type " + soldierType.toString());
+                                "Wrong soldier type " + soldierType.toString());
                         return;
                 }
 
@@ -272,8 +271,8 @@ public class GameState{
             this.leftPlayerSoldiers++;
         } else { // Opponent
             delay = currentTime - timeStamp;
-            if(delay<0){
-                delay=0;
+            if (delay < 0) {
+                delay = 0;
             }
             delay = delay / 1000; //convert to seconds;
             Log.w("custom", "the delay is: " + delay);
@@ -282,12 +281,12 @@ public class GameState{
             }
             this.rightPlayerSoldiers++;
         }
-        switch (soldierType){
+        switch (soldierType) {
             case BASIC_SOLDIER:
                 soldiers.add(new BasicSoldier(context, player, delay));
                 break;
             case BAZOOKA_SOLDIER:
-                if (creditManager.decCredits(BAZOOKA_SEND_PRICE, player)){
+                if (creditManager.decCredits(BAZOOKA_SEND_PRICE, player)) {
                     soldiers.add(new BazookaSoldier(context, player, delay));
                 }
 
@@ -319,8 +318,8 @@ public class GameState{
         return (ArrayList<Soldier>) this.soldiers.clone();
     }
 
-    public ArrayList<BazookaBullet> getBazookaBullets(){
-        return (ArrayList<BazookaBullet>)this.bazookaBullets.clone();
+    public ArrayList<BazookaBullet> getBazookaBullets() {
+        return (ArrayList<BazookaBullet>) this.bazookaBullets.clone();
     }
 
     public ArrayList<Tower> getTowers() {
@@ -339,11 +338,11 @@ public class GameState{
         return this.leftTowerBeginX;
     }
 
-    public int getRightTowerCentralX(){
+    public int getRightTowerCentralX() {
         return this.rightTowerCentralX;
     }
 
-    public int getLeftTowerCentralX(){
+    public int getLeftTowerCentralX() {
         return this.leftTowerCentralX;
     }
 
@@ -373,38 +372,38 @@ public class GameState{
     }
 
     public void hitTower(Sprite.Player player, double hp) {
-        if (this.rightPlayerWin || this.leftPlayerWin){
+        if (this.rightPlayerWin || this.leftPlayerWin) {
             return;
         }
         addCredits(hp, player);
         if (player == Sprite.Player.RIGHT) {
-            if (!towers.get(0).reduceHP(hp)){
+            if (!towers.get(0).reduceHP(hp)) {
                 this.rightPlayerWin = true;
                 addCredits(CREDITS_ON_WIN, player);
             }
         } else {
-            if (!towers.get(1).reduceHP(hp)){
+            if (!towers.get(1).reduceHP(hp)) {
                 this.leftPlayerWin = true;
                 addCredits(CREDITS_ON_WIN, player);
             }
         }
     }
 
-    public boolean isRightPlayerWin(){
+    public boolean isRightPlayerWin() {
         return this.rightPlayerWin;
     }
 
-    public boolean isLeftPlayerWin(){
+    public boolean isLeftPlayerWin() {
         return this.leftPlayerWin;
     }
 
-    public void addEnemyShot(double dist,double timeStamp) {
+    public void addEnemyShot(double dist, double timeStamp) {
         long currentTime = getSyncTime();
         double delay = currentTime - timeStamp;
-        if(delay<0){
-            delay=0;
+        if (delay < 0) {
+            delay = 0;
         }
-        Log.w("custom", "delay is: "+ delay);
+        Log.w("custom", "delay is: " + delay);
         //delay = currentTime - timeStamp;
         delay = delay / 1000; //convert to seconds;
         this.rightBow.aimAndShoot(dist, delay);
@@ -416,28 +415,31 @@ public class GameState{
 
     public void setTime(long localTimeInMillisecond, long serverTimeInMillisecond) {
         this.timeDifference = serverTimeInMillisecond - localTimeInMillisecond;
-        Log.w("custom", "time deference is: "+ timeDifference);
+        Log.w("custom", "time deference is: " + timeDifference);
     }
 
     private long getSyncTime() {
         return System.currentTimeMillis() + this.timeDifference;
     }
 
-    public boolean isMultiplayer(){
+    public boolean isMultiplayer() {
         return this.isMultiplayer;
     }
 
-    private boolean isGameOver(){
+    private boolean isGameOver() {
         return isRightPlayerWin() || isLeftPlayerWin();
     }
-public static void setCanvasDimentions(int width, int height){
-    canvas_height=height;
-    canvas_width=width;
-}
-    public static int getCanvasHeight(){
+
+    public static void setCanvasDimentions(int width, int height) {
+        canvas_height = height;
+        canvas_width = width;
+    }
+
+    public static int getCanvasHeight() {
         return canvas_height;
     }
-    public static int getCanvasWidth(){
+
+    public static int getCanvasWidth() {
         return canvas_width;
     }
 }
