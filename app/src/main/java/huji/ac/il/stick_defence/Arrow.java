@@ -19,7 +19,7 @@ import java.io.Serializable;
 public class Arrow implements Serializable {
     //===========================Arrow's abilities==============================
 
-    private static final double SEC_TO_CROSS_SCREEN = 10;
+    private static final double SEC_TO_CROSS_SCREEN = 2;
 
 
     //============================Arrow's picture===============================
