@@ -38,11 +38,11 @@ public class LeagueManager {
         try {
             players.put("player1", peers.get(0).getName());
             players.put("player2", peers.get(1).getName());
-            pairs.put("pair0",players.toString());
+            pairs.put("pair0",players);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+        addStatistics(pairs);
         String info =pairs.toString() ;
         return info;
     }
@@ -62,12 +62,13 @@ public class LeagueManager {
             try {
                 players.put("player1", peers.get(first).getName());
                 players.put("player2", peers.get(second).getName());
-                pairs.put("pair"+pairCount ,players.toString());
+                pairs.put("pair"+pairCount ,players);
                 pairCount++;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+        addStatistics(pairs);
         String info =pairs.toString() ;
         return info;
     }
@@ -87,12 +88,13 @@ public class LeagueManager {
             try {
                 players.put("player1", peers.get(first).getName());
                 players.put("player2", peers.get(second).getName());
-                pairs.put("pair"+pairCount ,players.toString());
+                pairs.put("pair"+pairCount ,players);
                 pairCount++;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+        addStatistics(pairs);
         String info =pairs.toString() ;
         return info;
     }
@@ -120,7 +122,7 @@ public class LeagueManager {
                 try {
                     players.put("player1", temp.get(j).getName());
                     players.put("player2", temp.get(j + 1).getName());
-                    pairs.put("pair"+pairCount ,players.toString());
+                    pairs.put("pair"+pairCount ,players);
                     pairCount++;
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -128,6 +130,7 @@ public class LeagueManager {
             }
 
         }
+        addStatistics(pairs);
         String info =pairs.toString() ;
         return info;
     }
@@ -141,6 +144,17 @@ public class LeagueManager {
             default: return "";
         }
 
+    }
+    private void addStatistics(JSONObject info){
+            try {
+        JSONObject stat= new JSONObject();
+        for(Server.Peer peer: this.peers){
+                stat.put(peer.getName(), ""+peer.getWins());
+        }
+           info.put("statistics", stat);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
     }
 
     public void updateLeugeStage(){

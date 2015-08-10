@@ -33,7 +33,7 @@ import java.net.Socket;
 
 
 public class MainMenu extends Activity implements DoProtocolAction {
-    private String name = "test";
+    private String name = "test test test";
     private Client client;// = Client.createClient(name);
     private boolean isCreateLeagueOptionsVisible = false;
 

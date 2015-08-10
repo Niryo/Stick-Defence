@@ -111,8 +111,8 @@ public class Client implements DoProtocolAction, Serializable{
 
     }
 
-    public void reportArrow(int distance) {
-        send(Protocol.stringify(Protocol.Action.ARROW, Integer.toString
+    public void reportArrow(double distance) {
+        send(Protocol.stringify(Protocol.Action.ARROW, Double.toString
                 (distance)));
     }
 

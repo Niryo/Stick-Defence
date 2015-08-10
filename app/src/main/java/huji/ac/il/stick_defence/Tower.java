@@ -185,4 +185,11 @@ public class Tower {
         return this.hp > 0;
     }
 
+    public double getScaledWidth(){
+        return towerSprite.getScaledFrameWidth();
+    }
+    public double getScaledHeight(){
+        return towerSprite.getScaledFrameHeight();
+    }
+
 }

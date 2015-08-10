@@ -4,9 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.RectF;
@@ -22,8 +20,10 @@ public class Bow implements Serializable{
     //bow to span over a half of the screen height.
     private static final double SCREEN_HEIGHT_PORTION = 0.15;
     private static final int NUMBER_OF_FRAMES = 9;
-    private static final int ARC_PATH_HEIGHT = 30;
-    private static final int ARC_PATH_WIDTH= 40;
+    private static  int ARC_PATH_WIDTH_FACTOR=2;
+    private static  int ARC_PATH_HEIGHT_FACTOR=4;
+    private static  int actualArcPathHeight;
+    private static  int actualArcPathWidth;
     private static final int ARC_PATH_START_ANGLE= 280;
     private static final int ARC_PATH_LENGTH= 80;
 
@@ -58,6 +58,9 @@ public class Bow implements Serializable{
             leftBowPic = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.bow); // Read resource only once
         }
+        //set the arc path relative to the tower dimentions:
+        actualArcPathHeight = (int )tower.getScaledWidth()/ARC_PATH_HEIGHT_FACTOR;
+        actualArcPathWidth = (int )tower.getScaledWidth()/ARC_PATH_WIDTH_FACTOR;
 
         sprite = new Sprite();
         this.context= context;
@@ -94,12 +97,12 @@ public class Bow implements Serializable{
 
         RectF oval = new RectF();
         Sprite.Point towerPos = tower.getPosition();
-        float centerTowerX =(float) (towerPos.getX()+tower.getWidth()/2);;
-        if(player== Sprite.Player.LEFT){
-            oval.set(centerTowerX , towerPos.getY() - ARC_PATH_HEIGHT, centerTowerX +ARC_PATH_WIDTH, towerPos.getY() + ARC_PATH_HEIGHT);
+        float centerTowerX =(float) (towerPos.getX()+tower.getWidth()/2);
+        if(player == Sprite.Player.LEFT){
+            oval.set(centerTowerX , towerPos.getY() - actualArcPathHeight, centerTowerX + actualArcPathWidth, towerPos.getY() + actualArcPathHeight);
              path.addArc(oval, ARC_PATH_START_ANGLE, ARC_PATH_LENGTH );}
         else{
-            oval.set(centerTowerX- ARC_PATH_WIDTH, towerPos.getY() - ARC_PATH_HEIGHT, centerTowerX , towerPos.getY() + ARC_PATH_HEIGHT);
+            oval.set(centerTowerX- actualArcPathWidth, towerPos.getY() - actualArcPathHeight, centerTowerX , towerPos.getY() + actualArcPathHeight);
             path.addArc(oval, 540-ARC_PATH_START_ANGLE , -ARC_PATH_LENGTH);
         }
 
@@ -129,11 +132,11 @@ public class Bow implements Serializable{
     public void render(Canvas canvas) {
         canvas.drawBitmap(this.scaledBow[this.currentFrame], matrix, null);
 
-   /*     Paint paint =new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(3);
-        paint.setStyle(Paint.Style.STROKE);
-        canvas.drawPath(this.path, paint);*/
+//        Paint paint =new Paint();
+//        paint.setColor(Color.BLACK);
+//        paint.setStrokeWidth(3);
+//        paint.setStyle(Paint.Style.STROKE);
+//        canvas.drawPath(this.path, paint);
     }
 
 
@@ -218,14 +221,15 @@ public class Bow implements Serializable{
 
     }
 
-public void aimAndShoot(int distance,double delayInSec){ //todo: add animation for strech and unstrech
-    this.distance = distance;
+public void aimAndShoot(double relativeDistance,double delayInSec){ //todo: add animation for strech and unstrech
+
+    this.distance = (int)(pathLength*relativeDistance);
     resetMatrix();
     this.gameState.addArrow( new Arrow(this.context,this.pos[0], this.pos[1], this.tan,this.player, delayInSec));
 
 }
-public int getDistance(){
-    return this.distance;
+public double getRelativeDistance(){
+    return this.distance/pathLength;
 }
 
 }

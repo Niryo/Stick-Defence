@@ -1,17 +1,12 @@
 package huji.ac.il.stick_defence;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.io.File;
 import java.util.ArrayList;
 
 
@@ -355,8 +350,9 @@ public class GameState{
 
     public void addArrow(Arrow arrow) {
         this.arrows.add(arrow);
+        //todo:wait for server aproval
         if (isMultiplayer && arrow.getPlayer() == Sprite.Player.LEFT) {
-            client.reportArrow(this.leftBow.getDistance());
+            client.reportArrow(this.leftBow.getRelativeDistance());
         }
     }
 
@@ -402,7 +398,7 @@ public class GameState{
         return this.leftPlayerWin;
     }
 
-    public void addEnemyShot(int dist,double timeStamp) {
+    public void addEnemyShot(double dist,double timeStamp) {
         long currentTime = getSyncTime();
         double delay = currentTime - timeStamp;
         if(delay<0){

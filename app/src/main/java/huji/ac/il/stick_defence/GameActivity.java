@@ -241,7 +241,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
         Protocol.Action action = Protocol.getAction(rawInput);
         switch (action){
             case ARROW:
-                int arrowDistance =Integer.parseInt(Protocol.getData(rawInput));
+                double arrowDistance =Double.parseDouble(Protocol.getData(rawInput));
                 long timeStamp = Protocol.getTimeStamp(rawInput);
                 this.gameState.addEnemyShot(arrowDistance, timeStamp);
                 break;
