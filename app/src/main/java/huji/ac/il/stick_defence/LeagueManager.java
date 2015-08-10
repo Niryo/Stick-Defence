@@ -13,7 +13,7 @@ import java.util.Set;
  * Created by Nir on 29/05/2015.
  */
 public class LeagueManager {
-
+//TODO: MAKE OUTER JSONobject CALLED "INFO" SO THAT IT LOOKS LIKE {PAIR: {}, STATISTICS: {}}
     private ArrayList<Server.Peer> peers;
     private int stage = 0; //the stage of the league (every round we will do stage++)
     //an hardcoded pattern for the league: every array represents a round. for example, in the second
@@ -53,9 +53,9 @@ public class LeagueManager {
      */
     private String fourPersonLeague() {
         JSONObject pairs = new JSONObject();
-        JSONObject players = new JSONObject();
         int pairCount=0;
         for (int i = 0; i < 4; i += 2) {
+        JSONObject players = new JSONObject();
             int first = allCombinationWithFour[stage][i];
             int second = allCombinationWithFour[stage][i+1];
             Server.getServerInstance().makePair(peers.get(first), peers.get(second));
@@ -79,9 +79,9 @@ public class LeagueManager {
      */
     private String sixPersonLeague(){
         JSONObject pairs = new JSONObject();
-        JSONObject players = new JSONObject();
         int pairCount=0;
         for (int i = 0; i < 6; i += 2) {
+        JSONObject players = new JSONObject();
             int first = allCombinationWithFour[stage][i];
             int second = allCombinationWithFour[stage][i+1];
             Server.getServerInstance().makePair(peers.get(first), peers.get(second));
@@ -105,7 +105,6 @@ public class LeagueManager {
      */
     private String eightPersonLeague() {
         JSONObject pairs = new JSONObject();
-        JSONObject players = new JSONObject();
         int pairCount=0;
         //we run over the list of peers making a temp list, with all the peers that have the
         //same number of wins. then, we run over the temp list and pair the peers.
@@ -118,6 +117,7 @@ public class LeagueManager {
                 }
             }
             for (int j = 0; j < temp.size(); j += 2) {
+        JSONObject players = new JSONObject();
                 Server.getServerInstance().makePair(temp.get(j), temp.get(j + 1));
                 try {
                     players.put("player1", temp.get(j).getName());
@@ -136,6 +136,9 @@ public class LeagueManager {
     }
 
     public String getLeagueInfo(){
+        if(true){
+            return fakeInfoForTesting();
+        }
         switch(this.peers.size()){
             case 2: return twoPersonLeague();
             case 4: return fourPersonLeague();
@@ -148,6 +151,7 @@ public class LeagueManager {
     private void addStatistics(JSONObject info){
             try {
         JSONObject stat= new JSONObject();
+
         for(Server.Peer peer: this.peers){
                 stat.put(peer.getName(), ""+peer.getWins());
         }
@@ -157,6 +161,31 @@ public class LeagueManager {
             }
     }
 
+
+    public String fakeInfoForTesting() {
+        try {
+            JSONObject pair = new JSONObject();
+
+            for (int i = 0; i < 8; i++) {
+                JSONObject players = new JSONObject();
+                players.put("player1", "Nir" + i);
+                players.put("player2", "Yahav" +i);
+                pair.put("pair" + i, players);
+            }
+            JSONObject stat = new JSONObject();
+            for (int i = 0; i < 8; i++) {
+                stat.put("Nir" + i, "" + i);
+            }
+            pair.put("statistics", stat);
+            return pair.toString();
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
     public void updateLeugeStage(){
         this.stage++;
     }

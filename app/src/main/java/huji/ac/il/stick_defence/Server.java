@@ -30,6 +30,7 @@ public class Server {
     private boolean test=true;
     private LeagueManager leagueManager;
 
+
     /**
      * private constructor, for the singleton pattern.
      * @param participants
@@ -115,7 +116,7 @@ private void sendLeagueInfo(String info){
         Protocol.Action action = Protocol.getAction(rawInput);
         switch (action){
             case NAME:
-                peer.approved = true;
+                peer.approved = true; //TODO: check that name is available
                 peer.setName(Protocol.getData(rawInput));
                 peer.send(Protocol.stringify(Protocol.Action.NAME_CONFIRMED));
                 break;
@@ -212,7 +213,7 @@ private void sendLeagueInfo(String info){
                 //start an asyncTask that will remove this peer from the peers list if it isn't approved:
                 new AsyncTask<Peer, Void, Void>() {
                     @Override
-                    protected Void doInBackground(Peer... params) {
+                    protected Void doInBackground(Peer... params) { //TODO: remove this process and make that server to it instead
                         try {
                             Peer currentPeer=params[0];
                             Thread.sleep(WAIT_FOR_APPROVE);
@@ -274,6 +275,7 @@ private void sendLeagueInfo(String info){
             return this.score;
         }
         public int getWins(){return this.wins;}
+
     }
 
 }

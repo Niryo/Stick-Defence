@@ -11,7 +11,7 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="6"
+            android:layout_weight="7"
             android:gravity="center"
 
             >
@@ -20,55 +20,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/statistics_table"
-                android:padding="10dp"
                 android:stretchColumns="*"
                 android:layout_centerInParent="true"
 
 
                 >
 
-
-                <TableRow
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Place"
-                        android:gravity="center"
-                        android:padding="5dp"
-                        android:textSize="30dp"
-                        android:id="@+id/textView"
-                        android:background="@drawable/cell_shape"
-                        />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Player"
-                        android:gravity="center"
-                        android:padding="5dp"
-                        android:textSize="30dp"
-                        android:id="@+id/textView"
-                        android:background="@drawable/cell_shape"
-                        />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:padding="5dp"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Wins"
-                        android:textSize="30dp"
-                        android:id="@+id/textView3"
-                        android:background="@drawable/cell_shape"
-                        />
-
-                </TableRow>
             </TableLayout>
 
             <Button
@@ -84,18 +41,17 @@
         <ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="4"
+            android:layout_weight="3"
             >
 
 
             <LinearLayout
                 xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:id="@+id/league_info_layout"
-                android:padding="25dp"
+   
                 >
 
 

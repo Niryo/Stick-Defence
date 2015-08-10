@@ -61,11 +61,13 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
                 finish();
             }
         });
-
+        buildTableHead();
         if (getIntent().hasExtra("info")) {
             waitDialog.dismiss();
             printLeageInfo(getIntent().getStringExtra("info"));
         }
+
+
     }
 
 
@@ -104,7 +106,7 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                          layout.addView(vsView);
+                            layout.addView(vsView);
 
                         }
                     });
@@ -113,34 +115,32 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
                     ArrayList<PlayerWins> dataToSort= new ArrayList<>();
                     final  TableLayout  table= (TableLayout) findViewById(R.id.statistics_table);
                     JSONObject stats = (JSONObject) info.get(key);
-                    keys = stats.keys();
-                    while (keys.hasNext()) {
-                        String name = (String) keys.next();
+                    Iterator<?> statKeys = stats.keys();
+                    while (statKeys.hasNext()) {
+                        String name = (String) statKeys.next();
                         dataToSort.add(new PlayerWins(name, stats.getInt(name)));
                     }
                     Collections.sort(dataToSort, new Comparator<PlayerWins>() {
                         @Override
                         public int compare(PlayerWins first, PlayerWins second) {
-                            return first.wins-second.wins;
+                            return second.wins-first.wins;
                         }
                     });
                     int count=1;
+
                     for(PlayerWins pw : dataToSort){
                         final TableRow tr= new TableRow(this);
-                        TextView place = new TextView(this);
+                        AutoResizeTextView place = new AutoResizeTextView(this);
                         place.setBackground(getResources().getDrawable(R.drawable.cell_shape));
                         place.setText("" + count);
-                        place.setTextSize(25);
                         place.setGravity(Gravity.CENTER);
                         count++;
-                        TextView name  = new TextView(this);
+                        AutoResizeTextView name  = new AutoResizeTextView(this);
                         name.setText(pw.name);
-                        name.setTextSize(25);
                         name.setGravity(Gravity.CENTER);
                         name.setBackground(getResources().getDrawable(R.drawable.cell_shape));
-                        TextView wins = new TextView(this);
+                        AutoResizeTextView wins = new AutoResizeTextView(this);
                         wins.setText("" + pw.wins);
-                        wins.setTextSize(25);
                         wins.setGravity(Gravity.CENTER);
                         wins.setBackground(getResources().getDrawable(R.drawable.cell_shape));
 
@@ -159,6 +159,8 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
 
                     }
 
+
+
                 }
             }
 
@@ -176,4 +178,25 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private void buildTableHead(){
+        final  TableLayout  table= (TableLayout) findViewById(R.id.statistics_table);
+        final TableRow tr= new TableRow(this);
+        AutoResizeTextView place = new AutoResizeTextView(this);
+        place.setBackground(getResources().getDrawable(R.drawable.cell_shape));
+        place.setText("Place");
+        place.setGravity(Gravity.CENTER);
+        AutoResizeTextView name  = new AutoResizeTextView(this);
+        name.setText("Name");
+        name.setGravity(Gravity.CENTER);
+        name.setBackground(getResources().getDrawable(R.drawable.cell_shape));
+        AutoResizeTextView wins = new AutoResizeTextView(this);
+        wins.setText("Wins");
+        wins.setGravity(Gravity.CENTER);
+        wins.setBackground(getResources().getDrawable(R.drawable.cell_shape));
+        tr.addView(place);
+        tr.addView(name);
+        tr.addView(wins);
+        table.addView(tr);
+    }
 }
