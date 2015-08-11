@@ -1,6 +1,7 @@
 package huji.ac.il.stick_defence;
 
 import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -93,6 +95,7 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
                     String player2 = players.getString("player2");
                     final VSview vsView = new VSview(this);
                     vsView.setNames(player1, player2);
+                    vsView.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT));
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
