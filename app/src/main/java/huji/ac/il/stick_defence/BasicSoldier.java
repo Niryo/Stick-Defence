@@ -20,7 +20,7 @@ public class BasicSoldier extends Soldier {
     //Soldier height in relation to the screen height.
     //0-1 double. For instance, 0.5 will cause the
     //soldier to span over a half of the screen height.
-    private static final double SCREEN_HEIGHT_PORTION = 0.166;
+    private static final double SCREEN_HEIGHT_PORTION = 0.150;
     //==========================================================================
 
     //============================Sprite constants==============================

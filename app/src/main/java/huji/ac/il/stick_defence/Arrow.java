@@ -58,7 +58,6 @@ public class Arrow implements Serializable {
         this.degree = (float) (Math.atan2(tan[1], tan[0]) * 180.0 / Math.PI);
         updateMatrix();
         Log.w("custom", "delay:" + delayInSec);
-        Log.w("custom", "pixPerSec:" + pixPerSec);
         double arrowHeight = screenHeight - this.y;
         double pathLength = (arrowHeight / (Math.cos(Math.toRadians(90 - this.degree))));
         Log.w("custom", "arrowHeight:" + arrowHeight + "     pathLength: " + pathLength + "      degree: " + (91 - this.degree));
@@ -70,8 +69,11 @@ public class Arrow implements Serializable {
         double newSpeed = pathLength / timeLeft;
         if (pathLeft > 0) {
             pixPerSec = newSpeed;
+            Log.w("custom", "pixPerSec:" + pixPerSec);
         } else {
             //todo:
+            pixPerSec=oldSpeed;
+            Log.w("custom", "pixPerSec is old speed:" + pixPerSec);
         }
 
 
