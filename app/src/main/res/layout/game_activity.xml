@@ -2,23 +2,40 @@
 
 
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/game_surface"
-     android:layout_height="fill_parent"
-    android:layout_width="fill_parent"
+<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/background"
+    android:id="@+id/game_activity"
     >
-
 
 <FrameLayout
     android:id="@+id/canvas_frame"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:layout_gravity="center"
+
     >
 
-
 </FrameLayout>
 
 
+<LinearLayout
+android:id="@+id/game_components"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    >
+
+</LinearLayout>
+
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/center_of_screen">
+
 </FrameLayout>
+
+</RelativeLayout>
+

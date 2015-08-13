@@ -1,9 +1,11 @@
 package huji.ac.il.stick_defence;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -26,6 +28,7 @@ public class GameState {
     private static int canvas_height;
     private static int canvas_width;
 
+    private ArrayList<Button> buttonsComponent;
     private ArrayList<Soldier> soldiers = new ArrayList<>();
     private ArrayList<Tower> towers = new ArrayList<>();
     private ArrayList<Bow> bows = new ArrayList<>();
@@ -46,21 +49,22 @@ public class GameState {
     private boolean rightPlayerWin = false;
     private PlayerStorage playerStorage;
     private Button sendBazookaSoldierButton;
+    private Activity gameActivity;
 
     /**
      * Constructor. Adds 2 towers to the sprites list.
      *
      * @param context the context
      */
-    private GameState(Context context) {
+    private GameState(Context context,Activity activity) {
         this.context = context;
+        this.gameActivity=activity;
         playerStorage = PlayerStorage.load(context);
     }
 
-    public static GameState CreateGameState(Context context, int canvasWidth, int canvasHeight) {
-
+    public static GameState CreateGameState(Context context,Activity activity, int canvasWidth, int canvasHeight) {
         if (null == gameState) {
-            gameState = new GameState(context);
+            gameState = new GameState(context,activity);
             gameState.init(canvasWidth, canvasHeight);
         }
 
@@ -444,5 +448,32 @@ public class GameState {
 
     public static int getCanvasWidth() {
         return canvas_width;
+    }
+    public void setButtonsComponent(ArrayList<Button> buttons){
+        this.buttonsComponent= buttons;
+    }
+
+    public void disableButtons(){
+        this.gameActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for( Button btn : buttonsComponent){
+                    btn.setEnabled(false);
+                }
+            }
+        });
+
+
+
+    }
+    public void enableButtons(){
+        this.gameActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for( Button btn : buttonsComponent){
+                    btn.setEnabled(true);
+                }
+            }
+        });
     }
 }

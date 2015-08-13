@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.File;
+import java.util.ArrayList;
 
 
 public class GameActivity extends Activity implements DoProtocolAction {
@@ -30,7 +31,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
     private boolean isMultiplayer;
     private GameSurface gameSurface;
     private AlertDialog pauseDialog;
-    private FrameLayout gameSurfaceLayout;
+    private LinearLayout gameComponentsLayout;
+    private ArrayList<Button> buttons;
 
 
     @Override
@@ -55,15 +57,14 @@ public class GameActivity extends Activity implements DoProtocolAction {
         if (newGame) {
             Log.w("yahav", "New game");
             GameState.reset();
-            this.gameState = GameState.CreateGameState(getApplicationContext(), screenWidth, newScreenHeight);
+            this.gameState = GameState.CreateGameState(getApplicationContext(),this, screenWidth, newScreenHeight);
             isMultiplayer = getIntent().getBooleanExtra("Multiplayer", true);
         } else {
-            this.gameState = GameState.CreateGameState(getApplicationContext(), screenWidth, newScreenHeight);
+            this.gameState = GameState.CreateGameState(getApplicationContext(),this, screenWidth, newScreenHeight);
             isMultiplayer = gameState.isMultiplayer();
         }
 //        setContentView(R.layout.activity_main);
-        gameSurfaceLayout = (FrameLayout) findViewById(R.id.game_surface);
-        LinearLayout buttons = new LinearLayout(this);
+        gameComponentsLayout = (LinearLayout) findViewById(R.id.game_components);
 
         if (!isMultiplayer) {
             this.gameState.setSinglePlayer();
@@ -76,11 +77,12 @@ public class GameActivity extends Activity implements DoProtocolAction {
         params.height = newScreenHeight;
         surfaceFrame.setLayoutParams(params);
         surfaceFrame.addView(gameSurface);
-        LinearLayout gameComponents = new LinearLayout(this);
-        gameComponents.setOrientation(LinearLayout.VERTICAL);
 
-        //======================Send soldiers Buttons===========================
+
+        //======================Add Buttons===========================
+        LinearLayout buttonsLayout = new LinearLayout(this);
         Button sendBasicSoldier = new Button(this);
+        this.buttons= new ArrayList<>();
         sendBasicSoldier.
                 setCompoundDrawablesWithIntrinsicBounds(
                         R.drawable.basic_soldier_icon, 0, 0, 0);
@@ -93,7 +95,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
                         Protocol.Action.BASIC_SOLDIER);
             }
         });
-        buttons.addView(sendBasicSoldier);
+        buttonsLayout.addView(sendBasicSoldier);
+        buttons.add(sendBasicSoldier);
 
         Button sendBazookaSoldier = new Button(this);
         sendBazookaSoldier.
@@ -108,16 +111,16 @@ public class GameActivity extends Activity implements DoProtocolAction {
                         Protocol.Action.BAZOOKA_SOLDIER);
             }
         });
-        RelativeLayout.LayoutParams bazookaLayoutParams =
-                new RelativeLayout.
-                        LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT);
-        bazookaLayoutParams.addRule(RelativeLayout.RIGHT_OF, sendBasicSoldier.getId());
-        buttons.addView(sendBazookaSoldier, bazookaLayoutParams);
-        sendBazookaSoldier.setVisibility(View.INVISIBLE);
+
+
+        buttonsLayout.addView(sendBazookaSoldier);
+        buttons.add(sendBasicSoldier);
+        sendBazookaSoldier.setVisibility(View.INVISIBLE); //todo: add the button only if needed
         gameState.initBazookaSoldierButton(sendBazookaSoldier);
 
         Button sendMathBomb = new Button(this);
+        sendMathBomb.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.math_bomb, 0, 0, 0);
         sendMathBomb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,9 +128,10 @@ public class GameActivity extends Activity implements DoProtocolAction {
             }
         });
 
-        buttons.addView(sendMathBomb);
-        gameComponents.addView(buttons);
-
+        buttonsLayout.addView(sendMathBomb);
+        buttons.add(sendMathBomb);
+        gameComponentsLayout.addView(buttonsLayout);
+        gameState.setButtonsComponent(buttons);
 
 
 
@@ -148,7 +152,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
         progressBarComponent.addView(leftProgressBar);
         progressBarComponent.addView(rightProgressBar);
 
-        gameComponents.addView(progressBarComponent);
+        gameComponentsLayout.addView(progressBarComponent);
 
 
         //============================== Points ================================
@@ -163,20 +167,21 @@ public class GameActivity extends Activity implements DoProtocolAction {
         pointsLayoutParams.addRule(RelativeLayout.RIGHT_OF, sendBazookaSoldier.getId());
         gameState.initCredits(pointsTv);
 
-        buttons.addView(pointsTv, pointsLayoutParams);
+        //buttonsLayout.addView(pointsTv, pointsLayoutParams);//TODO
         //   buttons.addView(rightPointsTv);
 
 
         //======================================================================
         //game.addView(gameSurface);
         // game.addView(surfaceFrame);
-        gameSurfaceLayout.addView(gameComponents);
 
 
 
+
+        //========================
 
 //        setContentView(new GameSurface(this));
-        setContentView(gameSurfaceLayout);
+        //setContentView(gameComponentsLayout);
 
 
         if (isMultiplayer) {
@@ -271,11 +276,12 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
             case MATH_BOMB:
                 final MathBomb bomb= new MathBomb(this);
+                //disable other buttons
+                gameState.disableButtons();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
-                        gameSurfaceLayout.addView(bomb.getBomb());
+                        ((FrameLayout) findViewById(R.id.center_of_screen)).addView(bomb.getBomb());
                     }
                 });
                 break;

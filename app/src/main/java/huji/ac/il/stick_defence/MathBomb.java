@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -21,7 +22,7 @@ import java.util.Random;
  * Created by Nir on 12/08/2015.
  */
 public class MathBomb {
-
+    //TODO: DISABLE ARRAOWS
     private Random rand = new Random(System.currentTimeMillis());
     private LinearLayout layout;
     private LinearLayout answerButtonsLayout;
@@ -40,7 +41,7 @@ public class MathBomb {
     private int EQUAL_SIGN_POSITION = 11;
     private int PLUS_POSITION = 10;
     private int QUESTION_MARK_POSITION = 12;
-    private String BLUE_COLOR = "#B9DCFF";
+    private String BLUE_COLOR = "#66CCFF";
     private String GREEN_COLOR = "#85FF85";
     private Context context;
     private LinearLayout bomb;
@@ -55,7 +56,7 @@ public class MathBomb {
         this.context = context;
         this.width = bitmap.getWidth() / NUMBER_OF_FRAMES;
         this.height = bitmap.getHeight();
-
+        //lp.setMargins(2, 2, 2, 2);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService
                 (Context.LAYOUT_INFLATER_SERVICE);
         bomb = (LinearLayout) inflater.inflate(R.layout.math_bomb_layout, null);
@@ -149,8 +150,10 @@ public class MathBomb {
     }
 
     private void addStyleToButton(Button btn) {
-      //  btn.getBackground().setColorFilter(Color.parseColor(BLUE_COLOR), PorterDuff.Mode.SRC);
-        btn.setLayoutParams(this.lp);
+      btn.getBackground().setColorFilter(Color.parseColor(BLUE_COLOR), PorterDuff.Mode.SRC);
+        LinearLayout.LayoutParams margins =new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT,1);
+        margins.setMargins(2,2,2,2);
+        btn.setLayoutParams(margins);
 
 
 
@@ -164,16 +167,17 @@ public class MathBomb {
                 //check if the current button is really the button that should have been pressed:
                 if (correctAnswer.get(currentButtonToPress) == Integer.parseInt((String) btn.getText())) {
                     currentButtonToPress++;
-                   // btn.getBackground().setColorFilter(Color.parseColor(GREEN_COLOR), PorterDuff.Mode.SRC);
+                    btn.getBackground().setColorFilter(Color.parseColor(GREEN_COLOR), PorterDuff.Mode.SRC);
                     if (currentButtonToPress == correctAnswer.size()) {
-                        //todo: finish
+                        ((ViewGroup) bomb.getParent()).removeView(bomb);
+                        GameState.getInstance().enableButtons();
                         Log.w("custom", "guessed correct!");
                     }
 
                 } else { //we pressed on the wrong button:
                     currentButtonToPress = 0;
                     for (Button button : buttons) {
-                        button.getBackground().setColorFilter(Color.parseColor(BLUE_COLOR), PorterDuff.Mode.DARKEN);
+                        button.getBackground().setColorFilter(Color.parseColor(BLUE_COLOR), PorterDuff.Mode.SRC);
                     }
                 }
 
