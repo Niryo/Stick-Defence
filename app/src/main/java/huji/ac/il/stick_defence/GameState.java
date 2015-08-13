@@ -346,6 +346,9 @@ public class GameState {
         return this.leftTowerCentralX;
     }
 
+    public void sendMathBomb(){
+        client.reportMathBomb();
+    }
 
     public void addArrow(Arrow arrow) {
         this.arrows.add(arrow);

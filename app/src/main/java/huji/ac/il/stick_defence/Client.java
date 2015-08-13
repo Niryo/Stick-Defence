@@ -132,6 +132,10 @@ public class Client implements DoProtocolAction, Serializable{
         }
     }
 
+    public void reportMathBomb() {
+        send(Protocol.stringify(Protocol.Action.MATH_BOMB));
+    }
+
 
     /**
      * This class represents a socket listener on a server node.

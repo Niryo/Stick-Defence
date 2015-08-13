@@ -30,6 +30,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
     private boolean isMultiplayer;
     private GameSurface gameSurface;
     private AlertDialog pauseDialog;
+    private FrameLayout gameSurfaceLayout;
 
 
     @Override
@@ -61,7 +62,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
             isMultiplayer = gameState.isMultiplayer();
         }
 //        setContentView(R.layout.activity_main);
-        FrameLayout game = (FrameLayout) findViewById(R.id.game_surface);
+        gameSurfaceLayout = (FrameLayout) findViewById(R.id.game_surface);
         LinearLayout buttons = new LinearLayout(this);
 
         if (!isMultiplayer) {
@@ -115,9 +116,20 @@ public class GameActivity extends Activity implements DoProtocolAction {
         buttons.addView(sendBazookaSoldier, bazookaLayoutParams);
         sendBazookaSoldier.setVisibility(View.INVISIBLE);
         gameState.initBazookaSoldierButton(sendBazookaSoldier);
+
+        Button sendMathBomb = new Button(this);
+        sendMathBomb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gameState.sendMathBomb();
+            }
+        });
+
+        buttons.addView(sendMathBomb);
         gameComponents.addView(buttons);
 
-        //======================================================================
+
+
 
         //=====================ProgressBar(Tower's HP)==========================
 
@@ -138,7 +150,6 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         gameComponents.addView(progressBarComponent);
 
-        //======================================================================
 
         //============================== Points ================================
 
@@ -159,9 +170,13 @@ public class GameActivity extends Activity implements DoProtocolAction {
         //======================================================================
         //game.addView(gameSurface);
         // game.addView(surfaceFrame);
-        game.addView(gameComponents);
+        gameSurfaceLayout.addView(gameComponents);
+
+
+
+
 //        setContentView(new GameSurface(this));
-        setContentView(game);
+        setContentView(gameSurfaceLayout);
 
 
         if (isMultiplayer) {
@@ -253,6 +268,18 @@ public class GameActivity extends Activity implements DoProtocolAction {
                         Protocol.getTimeStamp(rawInput),
                         Protocol.Action.BAZOOKA_SOLDIER);
                 break;
+
+            case MATH_BOMB:
+                final MathBomb bomb= new MathBomb(this);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        gameSurfaceLayout.addView(bomb.getBomb());
+                    }
+                });
+                break;
+
             case START_GAME:
                 this.gameState.setTime(System.currentTimeMillis(),
                         Long.parseLong(Protocol.getData(rawInput)));
@@ -267,9 +294,6 @@ public class GameActivity extends Activity implements DoProtocolAction {
             case RESUME:
                 this.gameSurface.wakeUp();
                 break;
-
-
-
 
         }
 

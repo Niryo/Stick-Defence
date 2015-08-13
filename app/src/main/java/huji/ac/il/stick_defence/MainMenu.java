@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.File;
@@ -38,6 +40,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
         this.client.setCurrentActivity(this);
 
         deleteOldGameData();
+
         //   checkForOngoingGame();
 
         //========================Single player=================================
