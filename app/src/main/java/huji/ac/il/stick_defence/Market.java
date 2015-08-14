@@ -19,9 +19,14 @@ import java.io.File;
 
 public class Market extends Activity implements DoProtocolAction {
 //TODO: CREATE A BUTTON THAT MOVES YOU INTO LEAGUE_INFO ACTIVITY AND IF THERE IS INFO, SEND EXTRA IN THE INTENT
-    private static final int BAZOOKA_BUY_PRICE = 100; // TODO - change to 1000
+    private static final int    BAZOOKA_BUY_PRICE = 100; // TODO - change to 1000
+    private static final int    MATH_BOMB_PRICE = 100;
     private static final String CREDITS = "Credits: ";
-    private String savedLeagueInfo=null;
+
+    private String              savedLeagueInfo=null;
+    private GameState           gameState;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +69,9 @@ public class Market extends Activity implements DoProtocolAction {
             }
         });
 
-        final GameState gameState = GameState.getInstance();
+//        final GameState gameState = GameState.getInstance();
+        gameState = GameState.getInstance();
+
         int credits = gameState.getCredits(Sprite.Player.LEFT);
 
         final TextView creditsTv = (TextView) findViewById(R.id.market_credits_tv);
@@ -89,7 +96,39 @@ public class Market extends Activity implements DoProtocolAction {
             });
         }
 
+        addButton(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER,
+                  R.id.buy_bazooka_soldier,
+                  BAZOOKA_BUY_PRICE);
 
+        addButton(PlayerStorage.PurchasesEnum.MATH_BOMB,
+                R.id.buy_math_bomb,
+                MATH_BOMB_PRICE);
+
+
+    }
+
+    private void addButton(final PlayerStorage.PurchasesEnum item,
+                           int iconId,
+                           final int price){
+        Button buyButton = (Button) findViewById(iconId);
+        final TextView creditsTv = (TextView) findViewById(R.id.market_credits_tv);
+        if (gameState.isPurchased(item)) {
+            buyButton.setVisibility(View.INVISIBLE);
+        } else {
+            buyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    gameState.
+                            buySoldier(item,
+                                    price);
+                    int credits = gameState.getCredits(Sprite.Player.LEFT);
+                    credits -= price;
+                    creditsTv.setText(CREDITS + credits + "$");
+                    gameState.save();
+                    v.setVisibility(View.INVISIBLE);
+                }
+            });
+        }
     }
 
     @Override

@@ -48,6 +48,13 @@
             android:background="@drawable/bazooka_icon"
             />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buy_math_bomb"
+            android:background="@drawable/math_bomb"
+            />
+
     </LinearLayout>
 
     <LinearLayout
