@@ -308,7 +308,11 @@ public class GameState {
         } else {
             this.rightPlayerSoldiers--;
         }
+        if (isMultiplayer){
+            client.reportSoldierKill(soldier.getId(), soldier.getPlayer());
+        }
         soldiers.remove(soldier);
+
 
     }
 
@@ -358,6 +362,20 @@ public class GameState {
         //todo:wait for server aproval
         if (isMultiplayer && arrow.getPlayer() == Sprite.Player.LEFT) {
             client.reportArrow(this.leftBow.getRelativeDistance());
+        }
+    }
+
+    /**
+     * Kill a soldier received from server (if exists)
+     * @param id The soldier id
+     * @param player The player the soldier belong to
+     */
+    public void killSoldier(int id, Sprite.Player player){
+        for (int iSoldier = 0 ; iSoldier < soldiers.size() ; iSoldier ++){
+            Soldier soldier = soldiers.get(iSoldier);
+            if (soldier.getId() == id && soldier.getPlayer() == player){
+                soldiers.remove(soldier);
+            }
         }
     }
 

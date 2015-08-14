@@ -3,6 +3,9 @@ package huji.ac.il.stick_defence;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -122,6 +125,18 @@ public class Client implements DoProtocolAction, Serializable{
 
     public void reportBazookaSoldier(){
         send(Protocol.stringify(Protocol.Action.BAZOOKA_SOLDIER));
+    }
+
+    public void reportSoldierKill(int soldierId, Sprite.Player player){
+        JSONObject data = new JSONObject();
+        try{
+            data.put("id", soldierId);
+            data.put("player", player.toString());
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+        send(Protocol.stringify(Protocol.Action.SOLDIER_KILL,
+                data.toString()));
     }
 
     public void reportWin(Sprite.Player player) {

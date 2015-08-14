@@ -21,6 +21,9 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -280,6 +283,23 @@ firstLineLayout.addView(scoreLayout);
                 this.gameState.addSoldier(Sprite.Player.RIGHT,
                         Protocol.getTimeStamp(rawInput),
                         Protocol.Action.BAZOOKA_SOLDIER);
+                break;
+
+            case SOLDIER_KILL:
+                try {
+                    JSONObject data = new JSONObject(Protocol.getData(rawInput));
+                    int id = data.getInt("id");
+                    String playerString = data.getString("player");
+                    Sprite.Player player =
+                            playerString.equals(Sprite.Player.LEFT.toString()) ?
+                            Sprite.Player.LEFT : Sprite.Player.RIGHT;
+                    this.gameState.killSoldier(id, player);
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+
+
+
                 break;
 
             case MATH_BOMB:
