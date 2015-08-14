@@ -28,7 +28,7 @@ public class GameSurface extends SurfaceView implements
     private Context context;
     private Bitmap scaledBackground;
 
-    public GameSurface(Context context, boolean isMultiplayer) {
+    public GameSurface(Context context) {
 
         super(context);
 
@@ -36,7 +36,7 @@ public class GameSurface extends SurfaceView implements
         getHolder().addCallback(this);
 
         // Create the GameLoopThread
-        gameLoopThread = new GameLoopThread(getHolder(), this, isMultiplayer);
+        gameLoopThread = new GameLoopThread(getHolder(), this);
 
         // Make the GameSurface focusable so it can handle events
         setFocusable(true);

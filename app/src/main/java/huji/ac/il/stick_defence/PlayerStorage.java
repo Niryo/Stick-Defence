@@ -17,15 +17,16 @@ import java.io.Serializable;
 
 
 public class PlayerStorage implements Serializable {
-    public enum SoldiersEnum {
+    public enum PurchasesEnum {
         BASIC_SOLDIER,
-        BAZOOKA_SOLDIER
+        BAZOOKA_SOLDIER,
+        MATH_BOMB
     }
 
     public static final String FILE_NAME = "stick_defence.sav";
     //    private String name;
     private int credits;
-    private boolean soldiers[];
+    private boolean items[];
     private transient Context context;
     private transient boolean newGame;
 
@@ -33,8 +34,8 @@ public class PlayerStorage implements Serializable {
         this.context = context;
         //    this.name = name;
         this.credits = credits;
-        this.soldiers = new boolean[SoldiersEnum.values().length];
-        this.soldiers[SoldiersEnum.BASIC_SOLDIER.ordinal()] = true;
+        this.items = new boolean[PurchasesEnum.values().length];
+        this.items[PurchasesEnum.BASIC_SOLDIER.ordinal()] = true;
         newGame = true;
     }
 
@@ -50,12 +51,12 @@ public class PlayerStorage implements Serializable {
         this.credits = credits;
     }
 
-    public boolean isHaveSoldier(SoldiersEnum iSoldier) {
-        return this.soldiers[iSoldier.ordinal()];
+    public boolean isPurchased(PurchasesEnum iItem) {
+        return this.items[iItem.ordinal()];
     }
 
-    public void buySoldier(SoldiersEnum iSoldier) {
-        this.soldiers[iSoldier.ordinal()] = true;
+    public void buySoldier(PurchasesEnum item) {
+        this.items[item.ordinal()] = true;
     }
 
     public boolean isGameInProcess() {
@@ -88,7 +89,7 @@ public class PlayerStorage implements Serializable {
                 ois.close();
                 //    this.name = readPs.name;
                 ps.credits = readPs.credits;
-                ps.soldiers = readPs.soldiers;
+                ps.items = readPs.items;
                 ps.newGame = false;
             } catch (IOException e) {
                 e.printStackTrace();

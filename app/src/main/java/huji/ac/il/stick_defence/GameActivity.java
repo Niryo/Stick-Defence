@@ -43,26 +43,19 @@ public class GameActivity extends Activity implements DoProtocolAction {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity);
 
-
-        Log.w("yahav", "Starting GameActivity");
-        /*File file = new File(getFilesDir(), GameState.FILE_NAME);
-        boolean newGame = true;
-        if (file.exists()){
-            newGame = false;
-        }*/
-        boolean newGame = getIntent().getBooleanExtra("NewGame", true);
+   //     boolean newGame = getIntent().getBooleanExtra("NewGame", true);
         int screenWidth = getApplicationContext().getResources().getDisplayMetrics().widthPixels;
 
         int newScreenHeight = (int) Math.round(((double) 9 * screenWidth) / 16);//set the height to be proportional to the width
-        if (newGame) {
+    //    if (newGame) {
             Log.w("yahav", "New game");
-            GameState.reset();
+       //     GameState.reset();
             this.gameState = GameState.CreateGameState(getApplicationContext(),this, screenWidth, newScreenHeight);
             isMultiplayer = getIntent().getBooleanExtra("Multiplayer", true);
-        } else {
+   /*     } else {
             this.gameState = GameState.CreateGameState(getApplicationContext(),this, screenWidth, newScreenHeight);
             isMultiplayer = gameState.isMultiplayer();
-        }
+        }*/
 //        setContentView(R.layout.activity_main);
         gameComponentsLayout = (LinearLayout) findViewById(R.id.game_components);
 
@@ -71,7 +64,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
         }
 
         Client.getClientInstance().setCurrentActivity(this);
-        gameSurface = new GameSurface(this, isMultiplayer);
+        gameSurface = new GameSurface(this);
         FrameLayout surfaceFrame = (FrameLayout) findViewById(R.id.canvas_frame);
         ViewGroup.LayoutParams params = surfaceFrame.getLayoutParams();
         params.height = newScreenHeight;
@@ -81,13 +74,21 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         //======================Add Buttons===========================
         LinearLayout buttonsLayout = new LinearLayout(this);
+        buttonsLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+        LinearLayout firstLineLayout = new LinearLayout(this);
+        firstLineLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+
+
+
         Button sendBasicSoldier = new Button(this);
         this.buttons= new ArrayList<>();
         sendBasicSoldier.
                 setCompoundDrawablesWithIntrinsicBounds(
                         R.drawable.basic_soldier_icon, 0, 0, 0);
         sendBasicSoldier.
-                setId(PlayerStorage.SoldiersEnum.BASIC_SOLDIER.ordinal() + 1);
+                setId(PlayerStorage.PurchasesEnum.BASIC_SOLDIER.ordinal() + 1);
         sendBasicSoldier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,40 +99,43 @@ public class GameActivity extends Activity implements DoProtocolAction {
         buttonsLayout.addView(sendBasicSoldier);
         buttons.add(sendBasicSoldier);
 
-        Button sendBazookaSoldier = new Button(this);
-        sendBazookaSoldier.
-                setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.bazooka_icon, 0, 0, 0);
-        sendBazookaSoldier.
-                setId(PlayerStorage.SoldiersEnum.BAZOOKA_SOLDIER.ordinal() + 1);
-        sendBazookaSoldier.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gameState.addSoldier(Sprite.Player.LEFT, 0,
-                        Protocol.Action.BAZOOKA_SOLDIER);
-            }
-        });
+        if (gameState.isPurchased(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER)){
+            Button sendBazookaSoldier = new Button(this);
+            sendBazookaSoldier.
+                    setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.bazooka_icon, 0, 0, 0);
+            /*sendBazookaSoldier.
+                    setId(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER.ordinal() + 1);*/
+            sendBazookaSoldier.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    gameState.addSoldier(Sprite.Player.LEFT, 0,
+                            Protocol.Action.BAZOOKA_SOLDIER);
+                }
+            });
+            buttonsLayout.addView(sendBazookaSoldier);
+            buttons.add(sendBasicSoldier);
+            gameState.initBazookaSoldierButton(sendBazookaSoldier);
+        }
 
+        if (gameState.isPurchased(PlayerStorage.PurchasesEnum.MATH_BOMB)){
+            Button sendMathBomb = new Button(this);
+            sendMathBomb.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.math_bomb, 0, 0, 0);
+            sendMathBomb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    gameState.sendMathBomb();
+                }
+            });
 
-        buttonsLayout.addView(sendBazookaSoldier);
-        buttons.add(sendBasicSoldier);
-        sendBazookaSoldier.setVisibility(View.INVISIBLE); //todo: add the button only if needed
-        gameState.initBazookaSoldierButton(sendBazookaSoldier);
+            buttonsLayout.addView(sendMathBomb);
+            buttons.add(sendMathBomb);
+            firstLineLayout.addView(buttonsLayout);
+            gameComponentsLayout.addView(firstLineLayout);
+            gameState.setButtonsComponent(buttons);
+        }
 
-        Button sendMathBomb = new Button(this);
-        sendMathBomb.setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.math_bomb, 0, 0, 0);
-        sendMathBomb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gameState.sendMathBomb();
-            }
-        });
-
-        buttonsLayout.addView(sendMathBomb);
-        buttons.add(sendMathBomb);
-        gameComponentsLayout.addView(buttonsLayout);
-        gameState.setButtonsComponent(buttons);
 
 
 
@@ -157,6 +161,9 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         //============================== Points ================================
 
+        LinearLayout scoreLayout = new LinearLayout(this);
+        scoreLayout.setOrientation(LinearLayout.HORIZONTAL);
+
         TextView pointsTv = new TextView(this);
 
         pointsTv.setTextSize(50);
@@ -164,16 +171,16 @@ public class GameActivity extends Activity implements DoProtocolAction {
         RelativeLayout.LayoutParams pointsLayoutParams =
                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                         RelativeLayout.LayoutParams.WRAP_CONTENT);
-        pointsLayoutParams.addRule(RelativeLayout.RIGHT_OF, sendBazookaSoldier.getId());
+//        pointsLayoutParams.addRule(RelativeLayout.RIGHT_OF, sendBazookaSoldier.getId());
         gameState.initCredits(pointsTv);
 
-        //buttonsLayout.addView(pointsTv, pointsLayoutParams);//TODO
+        scoreLayout.addView(pointsTv, pointsLayoutParams);
         //   buttons.addView(rightPointsTv);
-
+firstLineLayout.addView(scoreLayout);
 
         //======================================================================
         //game.addView(gameSurface);
-        // game.addView(surfaceFrame);
+        //game.addView(surfaceFrame);
 
 
 

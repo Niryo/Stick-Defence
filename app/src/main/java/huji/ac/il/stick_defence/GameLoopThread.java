@@ -37,14 +37,14 @@ public class GameLoopThread extends Thread {
     }
 
     public GameLoopThread(SurfaceHolder surfaceHolder,
-                          GameSurface gameSurface, boolean multiplayer) {
+                          GameSurface gameSurface) {
         super();
         this.surfaceHolder = surfaceHolder;
         this.gameSurface = gameSurface;
         this.gameState = GameState.getInstance();
 
-        this.isMultiplayer = multiplayer;
-        if (!multiplayer) {
+        this.isMultiplayer = gameState.isMultiplayer();
+        if (!isMultiplayer) {
             this.ai = new ArtificialIntelligence(ArtificialIntelligence.Difficulty.EASY);
         }
         sleep = false;

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -118,18 +117,18 @@ public class GameState {
         playerStorage.save();
     }
 
-    public boolean isHaveSoldier(PlayerStorage.SoldiersEnum iSoldier) {
-        return this.playerStorage.isHaveSoldier(iSoldier);
+    public boolean isPurchased(PlayerStorage.PurchasesEnum iSoldier) {
+        return this.playerStorage.isPurchased(iSoldier);
     }
 
-    public void buySoldier(PlayerStorage.SoldiersEnum iSoldier, int price) {
+    public void buySoldier(PlayerStorage.PurchasesEnum iSoldier, int price) {
         this.playerStorage.buySoldier(iSoldier);
         this.playerStorage.setCredits(this.playerStorage.getCredits() - price);
     }
 
     public void initBazookaSoldierButton(Button button) {
-        if (playerStorage.isHaveSoldier(
-                PlayerStorage.SoldiersEnum.BAZOOKA_SOLDIER)) {
+        if (playerStorage.isPurchased(
+                PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER)) {
             button.setVisibility(View.VISIBLE);
         }
     }

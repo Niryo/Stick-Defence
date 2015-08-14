@@ -71,14 +71,14 @@ public class Market extends Activity implements DoProtocolAction {
         creditsTv.setText(CREDITS + credits + "$");
         Button buyBazookaSoldier = (Button) findViewById(R.id.buy_bazooka_soldier);
 
-        if (gameState.isHaveSoldier(PlayerStorage.SoldiersEnum.BAZOOKA_SOLDIER)) {
+        if (gameState.isPurchased(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER)) {
             buyBazookaSoldier.setVisibility(View.INVISIBLE);
         } else {
             buyBazookaSoldier.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     gameState.
-                            buySoldier(PlayerStorage.SoldiersEnum.BAZOOKA_SOLDIER,
+                            buySoldier(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER,
                                     BAZOOKA_BUY_PRICE);
                     int credits = gameState.getCredits(Sprite.Player.LEFT);
                     credits -= BAZOOKA_BUY_PRICE;
