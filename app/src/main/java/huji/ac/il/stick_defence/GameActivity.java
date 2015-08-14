@@ -74,7 +74,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         //======================Add Buttons===========================
         LinearLayout buttonsLayout = new LinearLayout(this);
-        buttonsLayout.setOrientation(LinearLayout.HORIZONTAL);
+        //buttonsLayout.setOrientation(LinearLayout.HORIZONTAL);
 
         LinearLayout firstLineLayout = new LinearLayout(this);
         firstLineLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -114,7 +114,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 }
             });
             buttonsLayout.addView(sendBazookaSoldier);
-            buttons.add(sendBasicSoldier);
+            buttons.add(sendBazookaSoldier);
             gameState.initBazookaSoldierButton(sendBazookaSoldier);
         }
 
@@ -131,13 +131,14 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
             buttonsLayout.addView(sendMathBomb);
             buttons.add(sendMathBomb);
-            firstLineLayout.addView(buttonsLayout);
-            gameComponentsLayout.addView(firstLineLayout);
-            gameState.setButtonsComponent(buttons);
         }
 
 
+            gameComponentsLayout.addView(firstLineLayout);
+            gameState.setButtonsComponent(buttons);
 
+
+        firstLineLayout.addView(buttonsLayout);
 
         //=====================ProgressBar(Tower's HP)==========================
 
