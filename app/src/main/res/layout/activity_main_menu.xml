@@ -39,29 +39,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <RadioGroup
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:id="@+id/network_choice"
-                android:layout_marginRight="20dp"
-                >
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="WiFi"
-                    android:id="@+id/wifi"/>
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Internet"
-                    android:id="@+id/internet"/>
-
-            </RadioGroup>
-
-
             <Button
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"

@@ -46,6 +46,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/buy_bazooka_soldier"
             android:background="@drawable/bazooka_icon"
+            android:layout_marginRight="10dp"
             />
 
         <Button
@@ -53,6 +54,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/buy_math_bomb"
             android:background="@drawable/math_bomb"
+            android:layout_marginRight="10dp"
             />
 
     </LinearLayout>
