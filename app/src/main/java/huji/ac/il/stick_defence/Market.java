@@ -41,7 +41,9 @@ public class Market extends Activity implements DoProtocolAction {
         final boolean isMultiplayer = getIntent().getBooleanExtra("Multiplayer", true);
         if (isMultiplayer) {
             Client.getClientInstance().
-                    send(Protocol.stringify(Protocol.Action.GAME_OVER, String.valueOf(GameState.getInstance().isLeftPlayerWin())));
+                    send(Protocol.stringify(Protocol.Action.GAME_OVER,
+                         String.
+                           valueOf(GameState.getInstance().isLeftPlayerWin())));
         }
         Button continueButton = (Button) findViewById(R.id.market_play_button);
 
@@ -69,37 +71,17 @@ public class Market extends Activity implements DoProtocolAction {
             }
         });
 
-//        final GameState gameState = GameState.getInstance();
         gameState = GameState.getInstance();
 
+        //Show credits
         int credits = gameState.getCredits(Sprite.Player.LEFT);
-
         final TextView creditsTv = (TextView) findViewById(R.id.market_credits_tv);
         creditsTv.setText(CREDITS + credits + "$");
-        Button buyBazookaSoldier = (Button) findViewById(R.id.buy_bazooka_soldier);
 
-        if (gameState.isPurchased(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER)) {
-            buyBazookaSoldier.setVisibility(View.INVISIBLE);
-        } else {
-            buyBazookaSoldier.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    gameState.
-                            buySoldier(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER,
-                                    BAZOOKA_BUY_PRICE);
-                    int credits = gameState.getCredits(Sprite.Player.LEFT);
-                    credits -= BAZOOKA_BUY_PRICE;
-                    creditsTv.setText(CREDITS + credits + "$");
-                    gameState.save();
-                    v.setVisibility(View.INVISIBLE);
-                }
-            });
-        }
-
+        //Add buy buttons
         addButton(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER,
                   R.id.buy_bazooka_soldier,
                   BAZOOKA_BUY_PRICE);
-
         addButton(PlayerStorage.PurchasesEnum.MATH_BOMB,
                 R.id.buy_math_bomb,
                 MATH_BOMB_PRICE);
@@ -118,14 +100,16 @@ public class Market extends Activity implements DoProtocolAction {
             buyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    gameState.
-                            buySoldier(item,
-                                    price);
                     int credits = gameState.getCredits(Sprite.Player.LEFT);
-                    credits -= price;
-                    creditsTv.setText(CREDITS + credits + "$");
-                    gameState.save();
-                    v.setVisibility(View.INVISIBLE);
+                    if (credits >= price){
+                        gameState.
+                                buySoldier(item,
+                                        price);
+                        credits -= price;
+                        creditsTv.setText(CREDITS + credits + "$");
+                        gameState.save();
+                        v.setVisibility(View.INVISIBLE);
+                    }
                 }
             });
         }

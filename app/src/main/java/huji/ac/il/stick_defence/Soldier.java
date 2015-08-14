@@ -34,6 +34,8 @@ public abstract class Soldier implements Serializable {
     private double runPixelsPerSec;
 
     //Positions
+    public static int leftId = 0, rightId = 0;
+    private int id;
     private int screenWidth;
     private int screenHeight;
     private double soldierX;
@@ -59,6 +61,12 @@ public abstract class Soldier implements Serializable {
         lastUpdateTime = System.currentTimeMillis();
         this.delayInSec = delayInSec;
         this.secToCrossScreen = secToCrossScreen;
+
+        if (Sprite.Player.LEFT == player){
+            this.id = leftId++;
+        } else {
+            this.id = rightId++;
+        }
     }
 
     protected void initSprite(Context context, Bitmap soldierPic, int
@@ -98,6 +106,10 @@ public abstract class Soldier implements Serializable {
         sprite.setPic(attackSoldierPic, nFrames);
         sprite.setAnimationSpeed(fps);
         this.soldierY = screenHeight - (int) sprite.getScaledFrameHeight();
+    }
+
+    public int getId(){
+        return this.id;
     }
 
     protected double getScaledDownFactor() {
