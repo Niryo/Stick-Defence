@@ -156,9 +156,9 @@ public class LeagueManager {
             default:
                 info= "";
         }
-        if (true) {
-            info= fakeInfoForTesting();
-        }
+//        if (true) {
+//            info= fakeInfoForTesting();
+//        }
         return info;
     }
 

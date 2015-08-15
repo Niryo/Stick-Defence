@@ -5,8 +5,10 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.format.Formatter;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +58,12 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
         buildTableHead();
         if (getIntent().hasExtra("info")) {
             waitDialog.dismiss();
-            printLeageInfo(getIntent().getStringExtra("info"));
+            printLeagueInfo(getIntent().getStringExtra("info"));
+        }
+        if(getIntent().hasExtra("internet")){
+            WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+            String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+            waitDialog.setMessage("Waiting for league information\n Your ip address is: "+ip);
         }
 
 
@@ -72,14 +79,14 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
         switch (action) {
             case LEAGUE_INFO:
                 waitDialog.dismiss();
-                printLeageInfo(rawInfo);
+                printLeagueInfo(rawInfo);
                 break; //todo: remove the waiting dialog
         }
     }
 
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void printLeageInfo(String rawInfo) {
+    private void printLeagueInfo(String rawInfo) {
         final LinearLayout layout = (LinearLayout) findViewById(R.id.league_info_layout);
 
         try {
