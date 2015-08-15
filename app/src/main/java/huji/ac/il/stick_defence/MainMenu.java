@@ -3,6 +3,7 @@ package huji.ac.il.stick_defence;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
@@ -36,6 +37,8 @@ public class MainMenu extends Activity implements DoProtocolAction {
     private boolean isCreateLeagueOptionsVisible = false;
     private boolean isEnterIpViewVisble= false;
     private boolean isInternet=false;
+    private String SAVED_IP = "SAVED_IP";
+    private String SHARED_PREFERENCES= "SHARED_PREFERENCES";
     private  final Pattern PARTIAl_IP_ADDRESS =
             Pattern.compile("^((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])\\.){0,3}"+
                     "((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])){0,1}$");
@@ -211,7 +214,9 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 dialog.setContentView(R.layout.enter_ip_dialog);
                 dialog.setTitle("Enter server ip:");
                 final EditText editText = (EditText) dialog.findViewById(R.id.enter_ip_editText);
-                editText.setText("10.0.0.8");//TODO: REMOVE!
+                final SharedPreferences settings = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
+                String saved_ip= settings.getString(SAVED_IP,"10.0.0.0");
+                editText.setText(saved_ip);
                 editText.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -238,6 +243,9 @@ public class MainMenu extends Activity implements DoProtocolAction {
                     public void onClick(View v) {
                         dialog.dismiss();
                         final String ip= editText.getText().toString();
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString(SAVED_IP, ip);
+                        editor.commit();
                         new AsyncTask<Void, Void, Void>() {
                             @Override
                             protected Void doInBackground(Void... params) {
@@ -254,9 +262,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
                     }
                 });
                 dialog.show();
-
-                Log.w("custom", "dialog show");
-
+                
             }
         });
 

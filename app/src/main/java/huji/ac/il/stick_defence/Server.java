@@ -34,6 +34,7 @@ public class Server {
     private ArrayList<String> peerNames = new ArrayList<>();
 
 
+
     /**
      * private constructor, for the singleton pattern.
      *
