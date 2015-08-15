@@ -18,5 +18,6 @@
     <string name="towers">Towers:</string>
     <string name="arrows">Arrows:</string>
     <string name="miscellaneous">Miscellaneous:</string>
+    <string name="continue_play">Continue</string>
     <string name="exit_to_main_menu">Exit to Main Menu</string>
 </resources>

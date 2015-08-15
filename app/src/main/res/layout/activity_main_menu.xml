@@ -15,14 +15,20 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/single_player"
+        android:textStyle="bold|italic"
+        android:typeface="serif"
         android:id="@+id/single_player"
+        android:background="@drawable/arrow_sign"
         android:layout_gravity="center" />
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/create_league"
+        android:textStyle="bold|italic"
+        android:typeface="serif"
         android:id="@+id/create_league"
+        android:background="@drawable/arrow_sign"
         android:layout_gravity="center" />
 
 
@@ -107,6 +113,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/join_league"
+        android:textStyle="bold|italic"
+        android:typeface="serif"
+        android:background="@drawable/arrow_sign"
         android:id="@+id/join_league"
         android:layout_gravity="center" />
 
@@ -114,6 +123,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Connect Over Lan"
+        android:textStyle="bold|italic"
+        android:typeface="serif"
+        android:background="@drawable/arrow_sign"
         android:id="@+id/enter_ip_button"
         android:layout_gravity="center"
         android:focusable="false" />
