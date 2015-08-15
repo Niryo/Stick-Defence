@@ -198,10 +198,8 @@ public class GameState {
             for (Soldier soldier : this.getSoldiers()) {
                 hit = soldier.isHitByArrow(arrow);
                 if (hit) {
-                    addCredits(10, arrow.getPlayer());
                     removeArrow(arrow);
-                    removeSoldier(soldier);
-
+                    removeSoldier(soldier, isMultiplayer);
                     break;
                 }
             }
@@ -302,18 +300,33 @@ public class GameState {
 
     }
 
-    public void removeSoldier(Soldier soldier) {
+    public void removeSoldier(Soldier soldier, boolean shouldReport) {
         if (soldier.getPlayer() == Sprite.Player.LEFT) {
             this.leftPlayerSoldiers--;
+            if (!isMultiplayer){
+                addCredits(10, Sprite.Player.RIGHT);
+            }
         } else {
             this.rightPlayerSoldiers--;
+            addCredits(10, Sprite.Player.LEFT);
         }
-        if (isMultiplayer){
+        if (shouldReport){
             client.reportSoldierKill(soldier.getId(), soldier.getPlayer());
         }
         soldiers.remove(soldier);
+    }
 
-
+    public void removeSoldier(int soldierId,
+                              Sprite.Player player) {
+        for (Soldier soldier : soldiers){
+            if (soldier.getId() == soldierId && soldier.getPlayer() == player){
+                removeSoldier(soldier, false);
+                Log.w("yahav", "Soldier" + soldier.getId() +
+                        soldier.getPlayer().toString() +
+                        " removed by requests from other peer");
+                return;
+            }
+        }
     }
 
     /**
@@ -370,10 +383,16 @@ public class GameState {
      * @param id The soldier id
      * @param player The player the soldier belong to
      */
-    public void killSoldier(int id, Sprite.Player player){
+    public void killSoldier(int id, Sprite.Player player, boolean shouldReport){
         for (int iSoldier = 0 ; iSoldier < soldiers.size() ; iSoldier ++){
             Soldier soldier = soldiers.get(iSoldier);
             if (soldier.getId() == id && soldier.getPlayer() == player){
+                if (Sprite.Player.LEFT == soldier.getPlayer()){
+                    this.leftPlayerSoldiers--;
+                } else {
+                    this.rightPlayerSoldiers--;
+                    addCredits(10, Sprite.Player.RIGHT);
+                }
                 soldiers.remove(soldier);
             }
         }
