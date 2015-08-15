@@ -6,7 +6,9 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,20 +50,14 @@ public class GameActivity extends Activity implements DoProtocolAction {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity);
 
-   //     boolean newGame = getIntent().getBooleanExtra("NewGame", true);
         int screenWidth = getApplicationContext().getResources().getDisplayMetrics().widthPixels;
 
         int newScreenHeight = (int) Math.round(((double) 9 * screenWidth) / 16);//set the height to be proportional to the width
-    //    if (newGame) {
-        Log.w("yahav", "New game");
-            GameState.reset();
-            this.gameState = GameState.CreateGameState(getApplicationContext(),this, screenWidth, newScreenHeight);
-            isMultiplayer = getIntent().getBooleanExtra("Multiplayer", true);
-   /*     } else {
-            this.gameState = GameState.CreateGameState(getApplicationContext(),this, screenWidth, newScreenHeight);
-            isMultiplayer = gameState.isMultiplayer();
-        }*/
-//        setContentView(R.layout.activity_main);
+
+        GameState.reset();
+        this.gameState = GameState.CreateGameState(getApplicationContext(),this, screenWidth, newScreenHeight);
+        isMultiplayer = getIntent().getBooleanExtra("Multiplayer", true);
+
         gameComponentsLayout = (LinearLayout) findViewById(R.id.game_components);
 
         if (!isMultiplayer) {
@@ -150,17 +146,23 @@ public class GameActivity extends Activity implements DoProtocolAction {
         ProgressBar leftProgressBar = new ProgressBar(this, null, android.R
                 .attr.progressBarStyleHorizontal);
 
-
+        Drawable blueStyle = ContextCompat.getDrawable(this, R.drawable.blue_progressbar);
+        leftProgressBar.setProgressDrawable(blueStyle);
+        leftProgressBar.setAlpha(0.7f);
         ProgressBar rightProgressBar = new ProgressBar(this, null, android.R
                 .attr.progressBarStyleHorizontal);
 
+        Drawable redStyle = ContextCompat.getDrawable(this, R.drawable.red_progressbar);
+        rightProgressBar.setProgressDrawable(redStyle);
+        rightProgressBar.setAlpha(0.7f);
         leftProgressBar.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                                                                     ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+                ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
         rightProgressBar.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                                                                      ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        leftProgressBar.setPadding(50, 10, 10, 10);
-        rightProgressBar.setPadding(50, 10, 10, 10);
+                ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        leftProgressBar.setPadding(10, 10, 10, 10);
+
+        rightProgressBar.setPadding(10, 10, 10, 10);
         leftProgressBar.setRotation(180);
         gameState.initProgressBar(leftProgressBar, Sprite.Player.LEFT);
         gameState.initProgressBar(rightProgressBar, Sprite.Player.RIGHT);
@@ -172,6 +174,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         progressBarComponent.setWeightSum(2);
         progressBarComponent.addView(leftProgressBar);
+        TextView leftName = new TextView(this);
+
         progressBarComponent.addView(rightProgressBar);
 
         gameComponentsLayout.addView(progressBarComponent);
@@ -237,12 +241,13 @@ firstLineLayout.addView(scoreLayout);
 
     @Override
     protected void onPause() {
+        super.onPause();
         if (isMultiplayer) {
             Client.getClientInstance().
                     send(Protocol.stringify(Protocol.Action.PAUSE));
         }
-        gameSurface.stopGameLoop();
-        super.onPause();
+       gameSurface.stopGameLoop();
+
     }
 
 
