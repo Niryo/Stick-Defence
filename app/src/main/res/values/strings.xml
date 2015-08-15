@@ -13,8 +13,10 @@
     <string name="peers">Peers:</string>
     <string name="title_activity_league">LeagueActivity</string>
     <string name="title_activity_market">Market</string>
-    <string name="welcome_to_the_market">Welcome to the market!</string>
+    <string name="welcome_to_the_market">The Market</string>
     <string name="soldiers">Soldiers:</string>
     <string name="towers">Towers:</string>
+    <string name="arrows">Arrows:</string>
+    <string name="miscellaneous">Miscellaneous:</string>
     <string name="exit_to_main_menu">Exit to Main Menu</string>
 </resources>
