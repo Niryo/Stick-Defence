@@ -121,7 +121,7 @@
         android:id="@+id/enter_ip_button"
         android:layout_gravity="center"
         android:layout_margin="10dp"
-        />
+        android:focusable="false" />
 
 
 

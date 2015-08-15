@@ -185,72 +185,6 @@ public class MainMenu extends Activity implements DoProtocolAction {
 
                     }
                 });
-
-                //============================connect over lan button=====================
-                Button connectOverLanButton = (Button) findViewById(R.id.enter_ip_button);
-                connectOverLanButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        final Dialog dialog = new Dialog(MainMenu.this);
-                        dialog.setContentView(R.layout.enter_ip_dialog);
-                        dialog.setTitle("Enter server ip:");
-                        final EditText editText = (EditText) dialog.findViewById(R.id.enter_ip_editText);
-                        editText.setText("10.0.0.8");//TODO: REMOVE!
-                        editText.addTextChangedListener(new TextWatcher() {
-                            @Override
-                            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                            }
-
-                            @Override
-                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                            }
-
-                            private String mPreviousText = "";
-
-                            @Override
-                            public void afterTextChanged(Editable s) {
-                                if (PARTIAl_IP_ADDRESS.matcher(s).matches()) {
-                                    mPreviousText = s.toString();
-                                } else {
-                                    s.replace(0, s.length(), mPreviousText);
-                                }
-                            }
-                        });
-                        Button connect= (Button) dialog.findViewById(R.id.dialog_connect_button);
-                        connect.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dialog.dismiss();
-                               final String ip= editText.getText().toString();
-                                new AsyncTask<Void, Void, Void>() {
-                                    @Override
-                                    protected Void doInBackground(Void... params) {
-                                        try {
-                                            Socket socket = new Socket(ip, Server.PORT);
-                                            client.setServer(socket);
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
-                                        return null;
-                                    }
-                                }.executeOnExecutor(AsyncTask
-                                        .THREAD_POOL_EXECUTOR, null);
-                            }
-                        });
-                        dialog.show();
-
-                        Log.w("custom", "dialog show");
-
-                    }
-                });
-
-
-//                        Intent gameIntent = new Intent(getApplicationContext(),
-//                                GameActivity.class);
-//                        gameIntent.putExtra("nPlayers", nPlayers[0]);
-//                        gameIntent.putExtra("isWifi", isWifi);
-//                        startActivity(gameIntent);
-//                        finish();
             }
 
         });
@@ -267,6 +201,66 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 finish();
             }
         });
+
+        //============================connect over lan button=====================
+        Button connectOverLanButton = (Button) findViewById(R.id.enter_ip_button);
+        connectOverLanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(MainMenu.this);
+                dialog.setContentView(R.layout.enter_ip_dialog);
+                dialog.setTitle("Enter server ip:");
+                final EditText editText = (EditText) dialog.findViewById(R.id.enter_ip_editText);
+                editText.setText("10.0.0.8");//TODO: REMOVE!
+                editText.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+
+                    private String mPreviousText = "";
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (PARTIAl_IP_ADDRESS.matcher(s).matches()) {
+                            mPreviousText = s.toString();
+                        } else {
+                            s.replace(0, s.length(), mPreviousText);
+                        }
+                    }
+                });
+                Button connect= (Button) dialog.findViewById(R.id.dialog_connect_button);
+                connect.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        final String ip= editText.getText().toString();
+                        new AsyncTask<Void, Void, Void>() {
+                            @Override
+                            protected Void doInBackground(Void... params) {
+                                try {
+                                    Socket socket = new Socket(ip, Server.PORT);
+                                    client.setServer(socket);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                return null;
+                            }
+                        }.executeOnExecutor(AsyncTask
+                                .THREAD_POOL_EXECUTOR, null);
+                    }
+                });
+                dialog.show();
+
+                Log.w("custom", "dialog show");
+
+            }
+        });
+
+
 
 
     }
