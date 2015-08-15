@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -43,6 +44,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity);
 
@@ -51,8 +53,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         int newScreenHeight = (int) Math.round(((double) 9 * screenWidth) / 16);//set the height to be proportional to the width
     //    if (newGame) {
-            Log.w("yahav", "New game");
-       //     GameState.reset();
+        Log.w("yahav", "New game");
+            GameState.reset();
             this.gameState = GameState.CreateGameState(getApplicationContext(),this, screenWidth, newScreenHeight);
             isMultiplayer = getIntent().getBooleanExtra("Multiplayer", true);
    /*     } else {
@@ -137,8 +139,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
         }
 
 
-            gameComponentsLayout.addView(firstLineLayout);
-            gameState.setButtonsComponent(buttons);
+        gameComponentsLayout.addView(firstLineLayout);
+        gameState.setButtonsComponent(buttons);
 
 
         firstLineLayout.addView(buttonsLayout);
@@ -147,8 +149,19 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         ProgressBar leftProgressBar = new ProgressBar(this, null, android.R
                 .attr.progressBarStyleHorizontal);
+
+
         ProgressBar rightProgressBar = new ProgressBar(this, null, android.R
                 .attr.progressBarStyleHorizontal);
+
+        leftProgressBar.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                                     ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+
+        rightProgressBar.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                                      ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        leftProgressBar.setPadding(50, 10, 10, 10);
+        rightProgressBar.setPadding(50, 10, 10, 10);
+        leftProgressBar.setRotation(180);
         gameState.initProgressBar(leftProgressBar, Sprite.Player.LEFT);
         gameState.initProgressBar(rightProgressBar, Sprite.Player.RIGHT);
         LinearLayout progressBarComponent = new LinearLayout(this);
@@ -157,6 +170,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
 
+        progressBarComponent.setWeightSum(2);
         progressBarComponent.addView(leftProgressBar);
         progressBarComponent.addView(rightProgressBar);
 
@@ -290,10 +304,12 @@ firstLineLayout.addView(scoreLayout);
                     JSONObject data = new JSONObject(Protocol.getData(rawInput));
                     int id = data.getInt("id");
                     String playerString = data.getString("player");
+                    //We know that the other player sent the message, thus
+                    //we need to flip the players
                     Sprite.Player player =
                             playerString.equals(Sprite.Player.LEFT.toString()) ?
-                            Sprite.Player.LEFT : Sprite.Player.RIGHT;
-                    this.gameState.killSoldier(id, player);
+                            Sprite.Player.RIGHT : Sprite.Player.LEFT;
+                    this.gameState.removeSoldier(id, player);
                 } catch (JSONException e){
                     e.printStackTrace();
                 }
