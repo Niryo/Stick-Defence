@@ -64,7 +64,8 @@ public class Protocol {
         GAME_OVER,
         PAUSE,
         RESUME,
-        END_LEAGUE
+        END_LEAGUE,
+        TEST
     }
 
     /**

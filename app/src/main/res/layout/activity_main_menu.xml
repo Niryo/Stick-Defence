@@ -27,6 +27,8 @@
         android:id="@+id/create_league"
         android:layout_gravity="center"
         android:layout_margin="10dp"/>
+
+
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,6 +40,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/network_choice"
+                android:layout_marginRight="20dp"
+                >
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="WiFi"
+                    android:checked="true"
+                    android:id="@+id/wifi"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Internet"
+                    android:id="@+id/internet"/>
+
+            </RadioGroup>
+
 
             <Button
                 style="?android:attr/buttonStyleSmall"
@@ -86,5 +113,18 @@
         android:id="@+id/join_league"
         android:layout_gravity="center"
         android:layout_margin="10dp"/>
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Connect Over Lan"
+        android:id="@+id/enter_ip_button"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        />
+
+
+
+
 
 </LinearLayout>

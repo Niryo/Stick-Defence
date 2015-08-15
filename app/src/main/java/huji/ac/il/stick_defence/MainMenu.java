@@ -1,17 +1,24 @@
 package huji.ac.il.stick_defence;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,12 +26,19 @@ import android.widget.TextView;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Random;
+import java.util.regex.Pattern;
 
 
 public class MainMenu extends Activity implements DoProtocolAction {
-    private String name = "test";
+    private String name = "";
     private Client client;// = Client.createClient(name);
     private boolean isCreateLeagueOptionsVisible = false;
+    private boolean isEnterIpViewVisble= false;
+    private boolean isInternet=false;
+    private  final Pattern PARTIAl_IP_ADDRESS =
+            Pattern.compile("^((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])\\.){0,3}"+
+                    "((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])){0,1}$");
 
 
     @Override
@@ -34,6 +48,10 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         super.onCreate(savedInstanceState);
+        //todo: delete! random name only for testing:
+        Random rand = new Random(System.currentTimeMillis());
+        this.name= ""+ rand.nextInt(1000);
+
         setContentView(R.layout.activity_main_menu);
 
         client = Client.createClient(name);
@@ -107,6 +125,10 @@ public class MainMenu extends Activity implements DoProtocolAction {
                     @Override
                     public void onClick(View v) {
                         Server.createServer(nPlayers[0]);
+                        int radioButtonId = ((RadioGroup) findViewById(R.id.network_choice)).getCheckedRadioButtonId();
+                        RadioButton chosenButton = (RadioButton) findViewById(radioButtonId);
+
+                        if(chosenButton.getText().equals("WiFi")){
                         WifiP2pManager mManager = (WifiP2pManager) getSystemService(getApplicationContext().WIFI_P2P_SERVICE);
                         WifiP2pManager.Channel mChannel = mManager.initialize(getApplicationContext(), getMainLooper(), null);
                         mManager.createGroup(mChannel, null);
@@ -139,6 +161,86 @@ public class MainMenu extends Activity implements DoProtocolAction {
 
                             }
                         });
+
+                        }
+
+                        else{ //internet:
+                            isInternet=true;
+                            new AsyncTask<Void, Void, Void>() {
+                                @Override
+                                protected Void doInBackground(Void... params) {
+                                    try {
+                                        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+                                        String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+                                        Socket socket = new Socket(ip, Server.PORT);
+                                        client.setServer(socket);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    return null;
+                                }
+                            }.executeOnExecutor(AsyncTask
+                                    .THREAD_POOL_EXECUTOR, null);
+                        }
+
+                    }
+                });
+
+                //============================connect over lan button=====================
+                Button connectOverLanButton = (Button) findViewById(R.id.enter_ip_button);
+                connectOverLanButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final Dialog dialog = new Dialog(MainMenu.this);
+                        dialog.setContentView(R.layout.enter_ip_dialog);
+                        dialog.setTitle("Enter server ip:");
+                        final EditText editText = (EditText) dialog.findViewById(R.id.enter_ip_editText);
+                        editText.setText("10.0.0.8");//TODO: REMOVE!
+                        editText.addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            }
+
+                            @Override
+                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                            }
+
+                            private String mPreviousText = "";
+
+                            @Override
+                            public void afterTextChanged(Editable s) {
+                                if (PARTIAl_IP_ADDRESS.matcher(s).matches()) {
+                                    mPreviousText = s.toString();
+                                } else {
+                                    s.replace(0, s.length(), mPreviousText);
+                                }
+                            }
+                        });
+                        Button connect= (Button) dialog.findViewById(R.id.dialog_connect_button);
+                        connect.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                               final String ip= editText.getText().toString();
+                                new AsyncTask<Void, Void, Void>() {
+                                    @Override
+                                    protected Void doInBackground(Void... params) {
+                                        try {
+                                            Socket socket = new Socket(ip, Server.PORT);
+                                            client.setServer(socket);
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        return null;
+                                    }
+                                }.executeOnExecutor(AsyncTask
+                                        .THREAD_POOL_EXECUTOR, null);
+                            }
+                        });
+                        dialog.show();
+
+                        Log.w("custom", "dialog show");
+
                     }
                 });
 
@@ -176,9 +278,21 @@ public class MainMenu extends Activity implements DoProtocolAction {
             case NAME_CONFIRMED:
                 Log.w("custom", "going to league");
                 Intent intent = new Intent(this, LeagueInfoActivity.class);
+                if(isInternet){
+                    intent.putExtra("internet", true);
+                }
                 startActivity(intent);
                 finish();
+                break;
 
+            case LEAGUE_INFO:
+                Log.w("custom", "going to league");
+                Intent intentWithInfo = new Intent(this, LeagueInfoActivity.class);
+                String info = Protocol.getData(rawInput);
+                intentWithInfo.putExtra("info", info);
+                startActivity(intentWithInfo);
+                finish();
+                break;
         }
     }
 

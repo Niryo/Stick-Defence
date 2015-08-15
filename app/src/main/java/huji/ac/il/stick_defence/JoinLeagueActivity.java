@@ -156,7 +156,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
 
                     @Override
                     public void onFailure(int reason) {
-                        Log.w("custom", "connections failed!");
+                        Log.w("custom", "connections failed!"+ " "+ reason);
                     }
                 });
             }
@@ -206,6 +206,10 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
                 intentWithInfo.putExtra("info", info);
                 startActivity(intentWithInfo);
                 finish();
+                break;
+
+            case TEST:
+              Client.getClientInstance().send(Protocol.stringify(Protocol.Action.TEST));
                 break;
 
 

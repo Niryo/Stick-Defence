@@ -65,7 +65,7 @@ public class Client implements DoProtocolAction, Serializable{
      * @param out the data to send
      */
     public void send(String out) {
-        Log.w("yahav", "Sending: " + out);
+        Log.w("custom", "Sending data to server: " + out);
         this.out.println(out);
     }
 
@@ -76,7 +76,7 @@ public class Client implements DoProtocolAction, Serializable{
      * @param server the current server
      */
     public void setServer(Socket server) {
-        Log.w("yahav", "Entering setServer");
+        Log.w("custom", "Entering setServer");
         try {
             this.out = new PrintWriter(server.getOutputStream(), true);
             //save the output stream of the server.
