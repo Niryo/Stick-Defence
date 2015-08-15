@@ -122,7 +122,7 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Connect Over Lan"
+        android:text="Connect using server IP"
         android:textStyle="bold|italic"
         android:typeface="serif"
         android:background="@drawable/arrow_sign"

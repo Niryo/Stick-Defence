@@ -171,6 +171,7 @@ public class MathBomb {
                     if (currentButtonToPress == correctAnswer.size()) {
                         ((ViewGroup) bomb.getParent()).removeView(bomb);
                         GameState.getInstance().enableButtons();
+                        Client.getClientInstance().send(Protocol.stringify(Protocol.Action.MATH_BOMB_SOLVED));
                         Log.w("custom", "guessed correct!");
                     }
 

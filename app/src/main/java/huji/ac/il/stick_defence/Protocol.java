@@ -58,6 +58,7 @@ public class Protocol {
         BAZOOKA_SOLDIER,
         SOLDIER_KILL,
         MATH_BOMB,
+        MATH_BOMB_SOLVED,
         ARROW,
         LEFT_WIN,
         RIGHT_WIN,

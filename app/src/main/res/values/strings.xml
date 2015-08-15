@@ -4,7 +4,7 @@
     <string name="title_activity_main_menu">MainMenu</string>
     <string name="single_player">Single Player</string>
     <string name="create_league">Create League</string>
-    <string name="join_league">Join League</string>
+    <string name="join_league">Search for WiFi peers</string>
     <string name="title_activity_master">MasterActivity</string>
 
     <string name="hello_world">Hello world!</string>

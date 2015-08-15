@@ -41,6 +41,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
     private ArrayList<Button> buttons;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -121,12 +122,16 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         if (gameState.isPurchased(PlayerStorage.PurchasesEnum.MATH_BOMB)){
             Button sendMathBomb = new Button(this);
+            sendMathBomb.setTag("MathBomb");
             sendMathBomb.setCompoundDrawablesWithIntrinsicBounds(
                     R.drawable.math_bomb, 0, 0, 0);
             sendMathBomb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     gameState.sendMathBomb();
+                    v.setEnabled(false);
+                    ((Button) v).setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.math_bomb_sent, 0, 0, 0);
                 }
             });
 
@@ -348,6 +353,21 @@ firstLineLayout.addView(scoreLayout);
 
             case RESUME:
                 this.gameSurface.wakeUp();
+                break;
+
+            case MATH_BOMB_SOLVED:
+                for(final Button button: this.buttons){
+                   Object tag= button.getTag();
+                    if(tag instanceof String && ((String) tag).equals("MathBomb")){
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.math_bomb_grayed, 0, 0, 0);
+
+                    }
+                });
+                    }
+                }
                 break;
 
         }
