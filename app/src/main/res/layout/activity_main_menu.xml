@@ -16,17 +16,14 @@
         android:layout_height="wrap_content"
         android:text="@string/single_player"
         android:id="@+id/single_player"
-        android:layout_gravity="center"
-        android:layout_margin="10dp"
-        />
+        android:layout_gravity="center" />
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/create_league"
         android:id="@+id/create_league"
-        android:layout_gravity="center"
-        android:layout_margin="10dp"/>
+        android:layout_gravity="center" />
 
 
     <FrameLayout
@@ -111,8 +108,7 @@
         android:layout_height="wrap_content"
         android:text="@string/join_league"
         android:id="@+id/join_league"
-        android:layout_gravity="center"
-        android:layout_margin="10dp"/>
+        android:layout_gravity="center" />
 
     <Button
         android:layout_width="fill_parent"
@@ -120,7 +116,6 @@
         android:text="Connect Over Lan"
         android:id="@+id/enter_ip_button"
         android:layout_gravity="center"
-        android:layout_margin="10dp"
         android:focusable="false" />
 
 
