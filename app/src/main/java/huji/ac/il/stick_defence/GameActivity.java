@@ -206,16 +206,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
 firstLineLayout.addView(scoreLayout);
 
         //======================================================================
-        //game.addView(gameSurface);
-        //game.addView(surfaceFrame);
 
-
-
-
-        //========================
-
-//        setContentView(new GameSurface(this));
-        //setContentView(gameComponentsLayout);
 
 
         if (isMultiplayer) {

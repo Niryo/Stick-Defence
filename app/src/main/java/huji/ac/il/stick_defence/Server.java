@@ -161,16 +161,16 @@ public class Server {
                 break;
 
             case GAME_OVER:
+                String isPeerWin = Protocol.getData(rawInput);
+                if (isPeerWin.equals("true")) {
+                    peer.wins++;
+                }
                 this.gameOverCounter++;
                 if (gameOverCounter == this.leagueParticipants) {
                     this.gameOverCounter = 0;
                     leagueManager.updateLeugeStage();
                     String leagueInfo = leagueManager.getLeagueInfo();
                     sendLeagueInfo(leagueInfo);
-                }
-                boolean isPeerWin = Boolean.getBoolean(Protocol.getData(rawInput));
-                if (isPeerWin) {
-                    peer.wins++;
                 }
                 break;
 

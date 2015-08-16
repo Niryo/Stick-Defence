@@ -24,17 +24,16 @@
             android:layout_height="match_parent"
             android:layout_weight="1" />
 
-        <LinearLayout
-            android:id="@+id/math_layout"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:weightSum="9">
+            android:id="@+id/numbers_frame"
+           >
 
 
-        </LinearLayout>
+        </FrameLayout>
+
 
         <Space
             android:layout_width="match_parent"
