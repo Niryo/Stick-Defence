@@ -13,7 +13,10 @@
     </style>
 
 
-    <style name="AppTheme" parent="android:Theme.Light" />
+    <style name="AppTheme" parent="android:Theme.Light" >
+        <item name="android:typeface">serif</item>
+        <item name="android:textSize">25dp</item>
+    </style>
 
 
 </resources>

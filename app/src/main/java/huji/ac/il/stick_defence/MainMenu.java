@@ -55,6 +55,8 @@ public class MainMenu extends Activity implements DoProtocolAction {
         Random rand = new Random(System.currentTimeMillis());
         this.name= ""+ rand.nextInt(1000);
 
+        FontsOverride.setDefaultFont(this, "SERIF", "Schoolbell.ttf");
+
         setContentView(R.layout.activity_main_menu);
 
         client = Client.createClient(name);
