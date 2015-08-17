@@ -1,6 +1,5 @@
 package huji.ac.il.stick_defence;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -72,27 +71,26 @@ public class Server {
     private void start() {
         this.acceptingNewClients = true;
         //we create a new socket and listen to it on a different thread:
-        new AsyncTask<Void, Void, Void>() {
+     new Thread(new Runnable() {
+         @Override
+         public void run() {
+             Log.w("custom", "starting server");
+             try {
+                 serverSocket = new ServerSocket(PORT);
+                 while (acceptingNewClients) {
+                     Socket socket = serverSocket.accept(); //the accept method is blocking.
+                     Log.w("custom", "client accepted!"); //if we reach this line only when a new client is connected.
+                     Peer peer = new Peer(socket);
+                     peers.add(peer); //save the new client in the peers list
 
-            @Override
-            protected Void doInBackground(Void... params) {
-                Log.w("custom", "starting server");
-                try {
-                    serverSocket = new ServerSocket(PORT);
-                    while (acceptingNewClients) {
-                        Socket socket = serverSocket.accept(); //the accept method is blocking.
-                        Log.w("custom", "client accepted!"); //if we reach this line only when a new client is connected.
-                        Peer peer = new Peer(socket);
-                        peers.add(peer); //save the new client in the peers list
+                 }
 
-                    }
+             } catch (IOException e) {
+                 e.printStackTrace();
+             }
+         }
+     }).start();
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
     private void sendLeagueInfo(String info) {
@@ -119,6 +117,7 @@ public class Server {
                 approvedPeersCounter++;
                 peer.setName(name);
                 peer.send(Protocol.stringify(Protocol.Action.NAME_CONFIRMED));
+
                     if (approvedPeersCounter == leagueParticipants) {
                         //todo: sleep some time to see that no one is disconnecting
 //                            try {
@@ -192,15 +191,17 @@ public class Server {
     /**
      * This class represents a socket listener on a client node.
      */
-    private class ServerSocketListener extends AsyncTask<Peer, Void, Void> {
 
+    private class ClientSocketListener implements Runnable {
+private Peer peer;
+        public ClientSocketListener(Peer peer){
+            this.peer=peer;
+        }
         @Override
-        protected Void doInBackground(Peer[] params) {
-            Peer peer = params[0];
+        public void run() {
             Socket socket = peer.socket;
             Log.w("custom", "start socket listener");
             String inputLine;
-
             try {
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 while ((inputLine = in.readLine()) != null) { //the readLine is a blocking method.
@@ -218,13 +219,44 @@ public class Server {
             }
 
             Log.w("custom", "finish socket listener");
-
-
-            return null;
         }
-
-        ;
     }
+
+//    private class ServerSocketListener extends AsyncTask<Peer, Void, Void> {
+//
+//        @Override
+//        protected Void doInBackground(Peer[] params) {
+//            Peer peer = params[0];
+//            Socket socket = peer.socket;
+//            Log.w("custom", "start socket listener");
+//            String inputLine;
+//
+//
+//
+//            try {
+//                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//                while ((inputLine = in.readLine()) != null) { //the readLine is a blocking method.
+//                    Log.w("custom", "client syas: "+ inputLine);
+//                    doAction(inputLine, peer);
+//                    if (peer.partner != null) {
+//                        inputLine = Protocol.addTimeStampToRawInput(inputLine);//add time stamp to the action;
+////                      Thread.sleep(4000);//add delay for testing reasons. TODO:REMOVE!
+//                        peer.partner.send(inputLine);
+//                    }
+//                }
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//            Log.w("custom", "finish socket listener");
+//
+//
+//            return null;
+//        }
+//
+//        ;
+//    }
 
     /**
      * A socket wrapper.
@@ -272,10 +304,9 @@ public class Server {
 
             this.id = counter++;
             this.socket = socket;
-            new ServerSocketListener().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this);
+            new Thread(new ClientSocketListener(this)).start();
             try {
                 this.out = new PrintWriter(socket.getOutputStream(), true);
-                this.out.println( Protocol.stringify(Protocol.Action.TEST));
 
             } catch (IOException e) {
                 e.printStackTrace();

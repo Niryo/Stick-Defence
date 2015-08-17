@@ -4,11 +4,13 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.format.Formatter;
+import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,6 +34,8 @@ import java.util.Iterator;
 public class LeagueInfoActivity extends Activity implements DoProtocolAction {
     private Client client = Client.getClientInstance();
     private ProgressDialog waitDialog;
+    private int text_size;
+    private int TEXT_SCALE_FACTOR=30;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +44,8 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_league);
+        int screenWidth = getApplicationContext().getResources().getDisplayMetrics().widthPixels;
+        this.text_size = screenWidth/TEXT_SCALE_FACTOR;
         waitDialog = new ProgressDialog(this);
         waitDialog.setMessage("Waiting for league information");
         waitDialog.setIndeterminate(true);
@@ -101,8 +108,10 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
                     String player1 = players.getString("player1");
                     String player2 = players.getString("player2");
                     final VSview vsView = new VSview(this);
+                    LinearLayout.LayoutParams lp=  new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,1);
+                    lp.setMargins(0,0,0,50);
                     vsView.setNames(player1, player2);
-                    vsView.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT));
+                    vsView.setLayoutParams(lp);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -130,19 +139,22 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
 
                     for (PlayerWins pw : dataToSort) {
                         final TableRow tr = new TableRow(this);
-                        AutoResizeTextView place = new AutoResizeTextView(this);
-                        place.setBackground(getResources().getDrawable(R.drawable.cell_shape));
+                        TextView place = new TextView(this);
+                        //place.setBackground(getResources().getDrawable(R.drawable.cell_shape));
                         place.setText("" + count);
+                        place.setTextSize(this.text_size);
                         place.setGravity(Gravity.CENTER);
                         count++;
-                        AutoResizeTextView name = new AutoResizeTextView(this);
+                        TextView name = new TextView(this);
                         name.setText(pw.name);
+                        name.setTextSize(this.text_size);
                         name.setGravity(Gravity.CENTER);
-                        name.setBackground(getResources().getDrawable(R.drawable.cell_shape));
-                        AutoResizeTextView wins = new AutoResizeTextView(this);
+                      //  name.setBackground(getResources().getDrawable(R.drawable.cell_shape));
+                        TextView wins = new TextView(this);
                         wins.setText("" + pw.wins);
+                        wins.setTextSize(this.text_size);
                         wins.setGravity(Gravity.CENTER);
-                        wins.setBackground(getResources().getDrawable(R.drawable.cell_shape));
+                     //   wins.setBackground(getResources().getDrawable(R.drawable.cell_shape));
 
                         tr.addView(place);
                         tr.addView(name);
@@ -182,21 +194,26 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
     private void buildTableHead() {
         final TableLayout table = (TableLayout) findViewById(R.id.statistics_table);
         final TableRow tr = new TableRow(this);
-        AutoResizeTextView place = new AutoResizeTextView(this);
-        place.setBackground(getResources().getDrawable(R.drawable.cell_shape));
+        TextView place = new TextView(this);
+        //place.setBackground(getResources().getDrawable(R.drawable.cell_shape));
         place.setText("Place");
+        place.setTextSize(this.text_size);
         place.setGravity(Gravity.CENTER);
-        AutoResizeTextView name = new AutoResizeTextView(this);
+        TextView name = new TextView(this);
         name.setText("Name");
+        name.setTextSize(this.text_size);
         name.setGravity(Gravity.CENTER);
-        name.setBackground(getResources().getDrawable(R.drawable.cell_shape));
-        AutoResizeTextView wins = new AutoResizeTextView(this);
+     //   name.setBackground(getResources().getDrawable(R.drawable.cell_shape));
+        TextView wins = new TextView(this);
         wins.setText("Wins");
+        wins.setTextSize(this.text_size);
         wins.setGravity(Gravity.CENTER);
-        wins.setBackground(getResources().getDrawable(R.drawable.cell_shape));
+     //   wins.setBackground(getResources().getDrawable(R.drawable.cell_shape));
         tr.addView(place);
         tr.addView(name);
         tr.addView(wins);
         table.addView(tr);
     }
+
+
 }

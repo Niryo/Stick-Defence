@@ -5,9 +5,14 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
+
+import java.lang.reflect.Type;
 
 /**
  * Created by Nir on 09/08/2015.
@@ -15,7 +20,7 @@ import android.view.View;
 public class VSview extends View {
     private double PADDING_TOP = 5;
     private double PADDING_BOTTOM = 1.1;
-    private int FONT_SCALE_FACTOR = 6;
+    private int FONT_SCALE_FACTOR = 8;
     private int DESIRED_WIDTH = 400;
     private int DESIRED_HEIGHT = 400;
     private static Bitmap scaledPic = null;
@@ -33,9 +38,19 @@ public class VSview extends View {
         super(context);
     }
 
+
+
     @Override
-    protected void onSizeChanged(int width, int height, int oldw, int oldh) {
-        super.onSizeChanged(width, height, oldw, oldh);
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        //Get the width measurement
+        int newWidth;
+        int newHeight;
+        int width = getMeasurement(widthMeasureSpec,
+                DESIRED_WIDTH);
+
+        //Get the height measurement
+        int height = getMeasurement(heightMeasureSpec,
+                DESIRED_HEIGHT);
         if (scaledPic == null) {
             if (width == 0) {
                 width = 1;
@@ -46,43 +61,36 @@ public class VSview extends View {
             Bitmap pic = BitmapFactory.decodeResource(getResources(),
                     R.drawable.vs);
             float scale = Math.max((float) pic.getHeight() / (float) height, (float) pic.getWidth() / width);
-            int newWidth = Math.round(pic.getWidth() / scale);
-            int newHeight = Math.round(pic.getHeight() / scale);
+            newWidth = Math.round(pic.getWidth() / scale);
+             newHeight = Math.round(pic.getHeight() / scale);
+            DESIRED_HEIGHT=Math.min(newHeight,DESIRED_HEIGHT);
+            DESIRED_WIDTH=Math.min(newWidth, DESIRED_WIDTH);
             scaledPic = Bitmap.createScaledBitmap(pic, newWidth, newHeight, true);
-        }
+
+        } else {
+            newHeight=Math.min(scaledPic.getHeight(),DESIRED_HEIGHT);
+            newWidth=Math.min(scaledPic.getWidth(), DESIRED_WIDTH);}
 
         if (paintRight == null) {
             paintRight = new Paint();
             paintRight.setTextSize(scaledPic.getWidth() / FONT_SCALE_FACTOR);
-            paintRight.setTextAlign(Paint.Align.LEFT);
+            paintRight.setTextAlign(Paint.Align.RIGHT);
+            paintRight.setTypeface(Typeface.SERIF);
 
             paintLeft = new Paint();
             paintLeft.setTextSize(scaledPic.getWidth() / FONT_SCALE_FACTOR);
-            paintRight.setTextAlign(Paint.Align.RIGHT);
-
+            paintLeft.setTextAlign(Paint.Align.LEFT);
+            paintLeft.setTypeface(Typeface.SERIF);
         }
-
-    }
-
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        //Get the width measurement
-        int widthSize = getMeasurement(widthMeasureSpec,
-                DESIRED_WIDTH);
-
-        //Get the height measurement
-        int heightSize = getMeasurement(heightMeasureSpec,
-                DESIRED_HEIGHT);
-
-        //MUST call this to store the measurements
-        setMeasuredDimension(widthSize, heightSize);
+        setMeasuredDimension(newWidth, newHeight);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawBitmap(scaledPic, 0, 0, null);
+
+
 
         String half1Name1 = name1.substring(0, name1.length() / 2);
         String half2Name1 = name1.substring(name1.length() / 2);
