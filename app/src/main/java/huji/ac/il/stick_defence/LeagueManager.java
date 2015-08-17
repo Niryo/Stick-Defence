@@ -15,8 +15,8 @@ public class LeagueManager {
     private int stage = 0; //the stage of the league (every round we will do stage++)
     //an hardcoded pattern for the league: every array represents a round. for example, in the second
     //round we can see that peer 1 will be the partner of peer 3, and peer 2 will be the partner of peer 4:
-    private int[][] allCombinationWithFour = {{1, 2, 3, 4}, {1, 3, 2, 4}, {1, 4, 2, 3}};
-    private int[][] allCombinationWithSix = {{1, 2, 3, 4, 5, 6}, {1, 3, 2, 5, 4, 6}, {1, 4, 2, 6, 3, 5}, {1, 5, 2, 3, 4, 6}, {1, 6, 2, 4, 3, 5}};
+    private int[][] allCombinationWithFour = {{0, 1, 2, 3}, {0, 2, 1, 3}, {0, 3, 1, 2}};
+    private int[][] allCombinationWithSix = {{0, 1, 2, 3, 4, 5}, {0, 2, 1, 4, 3, 5}, {0, 3, 1, 5, 2, 4}, {0, 4, 1, 2, 3, 5}, {0, 5, 1, 3, 2, 4}};
 
     public LeagueManager(ArrayList<Server.Peer> peers) {
         this.peers = peers;
@@ -113,7 +113,7 @@ public class LeagueManager {
             ArrayList<Server.Peer> temp = new ArrayList<>();
             for (Server.Peer peer : this.peers) {
 
-                if (peer.getWins() == stage) {
+                if (peer.getWins() == i) {
                     temp.add(peer);
                 }
             }
