@@ -83,8 +83,7 @@ public class Client implements DoProtocolAction, Serializable{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        new ClientSocketListener().executeOnExecutor(AsyncTask
-                .THREAD_POOL_EXECUTOR, server); //start listen to the server
+        new Thread(new ServerSocketListener(server)).start();
                 // on a different thread
         GameState gameState = GameState.getInstance();
         if (gameState != null && GameState.getInstance().isGameInProcces()){
@@ -155,18 +154,22 @@ public class Client implements DoProtocolAction, Serializable{
     /**
      * This class represents a socket listener on a server node.
      */
-    private class ClientSocketListener extends AsyncTask<Socket, Void, Void> {
+
+    private class ServerSocketListener implements Runnable{
+    private Socket serverSocket;
+        public ServerSocketListener(Socket serverSocket){
+            this.serverSocket= serverSocket;
+        }
 
         @Override
-        protected Void doInBackground(Socket... params) {
-            Socket server = params[0];
+        public void run() {
             Log.w("custom", "start listening to server");
             String inputLine;
             try {
                 BufferedReader in = new BufferedReader(new InputStreamReader
-                        (server.getInputStream()));
+                        (this.serverSocket.getInputStream()));
                 while ((inputLine = in.readLine()) != null) { //the readLine
-                // is a blocking method.
+                    // is a blocking method.
                     Log.w("custom", "server says: " + inputLine);
                     doAction(inputLine);
 
@@ -175,8 +178,9 @@ public class Client implements DoProtocolAction, Serializable{
                 e.printStackTrace();
             }
             Log.w("custom", "finish socket listener");
-            return null;
+
         }
     }
+
 
 }
