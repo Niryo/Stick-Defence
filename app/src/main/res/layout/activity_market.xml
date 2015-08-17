@@ -132,6 +132,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:textStyle="bold|italic"
-/>
+        android:layout_toRightOf="@+id/market_welcome_tv"
+        android:layout_toEndOf="@+id/market_welcome_tv"
+        android:layout_below="@+id/miscellaneous_list"/>
 
 </RelativeLayout>
