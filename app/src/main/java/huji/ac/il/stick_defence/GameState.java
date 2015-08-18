@@ -301,15 +301,18 @@ public class GameState {
                 }
                 break;
             case BAZOOKA_SOLDIER:
-                if (creditManager.decCredits(TANK_SEND_PRICE, player) || player== Sprite.Player.RIGHT) {
-                    soldiers.add(new Tank(context, player, delay));
-                }
-                break;
-            case TANK:
-                if (creditManager.decCredits(BAZOOKA_SEND_PRICE, player) || player== Sprite.Player.RIGHT) {
+                if (creditManager.decCredits(BAZOOKA_SEND_PRICE, player) ||
+                        player== Sprite.Player.RIGHT) {
                     soldiers.add(new BazookaSoldier(context, player, delay));
                 }
                 break;
+            case TANK:
+                if (creditManager.decCredits(TANK_SEND_PRICE, player) ||
+                        player== Sprite.Player.RIGHT) {
+                    soldiers.add(new Tank(context, player, delay));
+                }
+                break;
+
             default:
                 Log.e("yahav",
                         "Wrong soldier type " + soldierType.toString());

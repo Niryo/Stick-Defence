@@ -161,6 +161,10 @@ public abstract class Soldier implements Serializable {
         return (int) Math.round(this.soldierY);
     }
 
+    protected void setSoldierY(int soldierY) {
+        this.soldierY = soldierY;
+    }
+
     protected double getScaledFrameWidth() {
         return sprite.getScaledFrameWidth();
     }
@@ -184,6 +188,10 @@ public abstract class Soldier implements Serializable {
 
     public int getScreenWidth() {
         return this.screenWidth;
+    }
+
+    public int getScreenHeight() {
+        return this.screenHeight;
     }
 
     public int getCurrentFrame() {

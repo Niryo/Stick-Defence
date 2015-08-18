@@ -12,7 +12,7 @@ import android.graphics.Canvas;
 public class Swordman extends Soldier {
 
     //=======================BasicSoldier's abilities===========================
-    private static final double SEC_TO_CROSS_SCREEN = 10;
+    private static final double SEC_TO_CROSS_SCREEN = 20;
     private static final int DAMAGE_PER_SEC = 5; // [Damage/Sec]
     //==========================================================================
 
@@ -26,8 +26,10 @@ public class Swordman extends Soldier {
     //============================Sprite constants==============================
     private static final int NUMBER_OF_FRAMES = 7;
     private static final int ATTACK_N_FRAMES = 9;
-    private static final int MOVE_FPS = 40;
+    private static final int MOVE_FPS = 15;
     private static final int ATTACK_FPS = 20;
+    private static final float RANGE_FROM_TOWER_ATTACK = 1.5f;
+    private static final int SWORDMAN_Y = 10;
     //==========================================================================
 
     private static Bitmap leftSoldierPic = null;
@@ -67,7 +69,6 @@ public class Swordman extends Soldier {
                     SCREEN_HEIGHT_PORTION, MOVE_FPS);
         }
 
-
         this.player = player;
 
 
@@ -76,7 +77,7 @@ public class Swordman extends Soldier {
     public void update(long gameTime) {
         if (!super.isAttack()) {
             if (player == Sprite.Player.LEFT) {
-                if (getSoldierX() + getScaledFrameWidth() / 2 >=
+                if (getSoldierX() + getScaledFrameWidth() * RANGE_FROM_TOWER_ATTACK >=
                         gameState.getRightTowerLeftX()) {
                     super.attack(leftAttackSoldierPic, ATTACK_N_FRAMES,
                             ATTACK_FPS);
@@ -84,7 +85,7 @@ public class Swordman extends Soldier {
                             (int) getScaledFrameWidth());
                 }
             } else {
-                if (getSoldierX() + getScaledFrameWidth() / 2 <=
+                if (getSoldierX() + getScaledFrameWidth() * RANGE_FROM_TOWER_ATTACK <=
                         gameState.getLeftTowerRightX()) {
                     super.attack(rightAttackSoldierPic, ATTACK_N_FRAMES,
                             ATTACK_FPS);

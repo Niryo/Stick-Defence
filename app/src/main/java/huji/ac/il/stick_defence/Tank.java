@@ -38,6 +38,7 @@ public class Tank extends Soldier {
     private static float tankY = 0;
     private boolean canShoot = false;
     private Sprite.Player player;
+    private int attackFrame = 0;
 
     public Tank(Context context, Sprite.Player player, double delayInSec) {
         super(context, player, SEC_TO_SCREEN_WIDTH, DAMAGE_PER_SEC, delayInSec);
@@ -54,7 +55,7 @@ public class Tank extends Soldier {
         if (null == leftAttackSoldierPic) {
             leftAttackSoldierPic =
                     BitmapFactory.decodeResource(context.getResources(),
-                            R.drawable.bazooka_shoot);
+                            R.drawable.tank); //TODO
         }
 
         if (null == rightAttackSoldierPic) {
@@ -82,20 +83,22 @@ public class Tank extends Soldier {
             if (player == Sprite.Player.LEFT) {
                 if (getSoldierX() + getScaledFrameWidth() / 2 >=
                         getScreenWidth() * 0.25) {
-                    super.attack(leftAttackSoldierPic, SHOOT_NUMBER_OF_FRAMES,
+                    super.attack(leftSoldierPic, SHOOT_NUMBER_OF_FRAMES,
                             ATTACK_FPS);
                     tankY = super.getSoldierY();
+                    attackFrame = (getCurrentFrame() + 1) % NUMBER_OF_FRAMES;
                 }
             } else {
                 if (getSoldierX() + getScaledFrameWidth() / 2 <=
                         (float) getScreenWidth() * 0.75) {
-                    super.attack(rightAttackSoldierPic, SHOOT_NUMBER_OF_FRAMES,
+                    super.attack(rightSoldierPic, SHOOT_NUMBER_OF_FRAMES,
                             ATTACK_FPS);
                     tankY = super.getSoldierY();
+                    attackFrame = (getCurrentFrame() + 1) % NUMBER_OF_FRAMES;
                 }
             }
         } else { // Attack
-            if (super.getCurrentFrame() == ATTACK_PIC_INDEX) {
+            if (super.getCurrentFrame() == attackFrame) {
                 if (canShoot) {
                     float bulletX = getSoldierX();
                     if (Sprite.Player.LEFT == player) {
