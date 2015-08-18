@@ -55,6 +55,7 @@ public class Protocol {
         PREPARE_GAME,
         START_GAME,
         BASIC_SOLDIER,
+        SWORDMAN,
         BAZOOKA_SOLDIER,
         SOLDIER_KILL,
         MATH_BOMB,

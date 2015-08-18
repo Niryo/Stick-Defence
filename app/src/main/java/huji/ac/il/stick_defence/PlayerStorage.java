@@ -19,6 +19,7 @@ import java.io.Serializable;
 public class PlayerStorage implements Serializable {
     public enum PurchasesEnum {
         BASIC_SOLDIER,
+        SWORDMAN,
         BAZOOKA_SOLDIER,
         MATH_BOMB
     }
