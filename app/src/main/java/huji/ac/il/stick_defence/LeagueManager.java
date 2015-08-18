@@ -156,9 +156,7 @@ public class LeagueManager {
             default:
                 info= "";
         }
-//        if (true) {
-//            info= fakeInfoForTesting();
-//        }
+
         return info;
     }
 
@@ -176,32 +174,8 @@ public class LeagueManager {
     }
 
 
-    public String fakeInfoForTesting() {
-        try {
-            JSONObject pair = new JSONObject();
 
-            for (int i = 0; i < 8; i++) {
-                JSONObject players = new JSONObject();
-                players.put("player1", "Nir" + i);
-                players.put("player2", "Yahav" + i);
-                pair.put("pair" + i, players);
-            }
-            JSONObject stat = new JSONObject();
-            for (int i = 0; i < 8; i++) {
-                stat.put("Nir" + i, "" + i);
-            }
-            pair.put("statistics", stat);
-            return pair.toString();
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public void updateLeugeStage() {
+    public void updateLeagueStage() {
         this.stage++;
     }
 

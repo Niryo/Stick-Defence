@@ -167,7 +167,7 @@ public class Server {
                 this.gameOverCounter++;
                 if (gameOverCounter == this.leagueParticipants) {
                     this.gameOverCounter = 0;
-                    leagueManager.updateLeugeStage();
+                    leagueManager.updateLeagueStage();
                     String leagueInfo = leagueManager.getLeagueInfo();
                     sendLeagueInfo(leagueInfo);
                 }
