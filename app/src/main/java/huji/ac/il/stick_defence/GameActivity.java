@@ -115,7 +115,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
             });
             buttonsLayout.addView(sendSwordman);
             buttons.add(sendSwordman);
-            gameState.initSwordmanButton(sendSwordman);
+            gameState.activateSendSoldierButton(sendSwordman,
+                    PlayerStorage.PurchasesEnum.SWORDMAN);
         }
 
         if (gameState.isPurchased(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER)){
@@ -134,7 +135,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
             });
             buttonsLayout.addView(sendBazookaSoldier);
             buttons.add(sendBazookaSoldier);
-            gameState.initBazookaSoldierButton(sendBazookaSoldier);
+            gameState.activateSendSoldierButton(sendBazookaSoldier,
+                    PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER);
         }
 
         if (gameState.isPurchased(PlayerStorage.PurchasesEnum.TANK)){
@@ -153,7 +155,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
             });
             buttonsLayout.addView(buyTank);
             buttons.add(buyTank);
-            gameState.initTankButton(buyTank);
+            gameState.activateSendSoldierButton(buyTank,
+                                             PlayerStorage.PurchasesEnum.TANK);
         }
 
         if (gameState.isPurchased(PlayerStorage.PurchasesEnum.MATH_BOMB)){

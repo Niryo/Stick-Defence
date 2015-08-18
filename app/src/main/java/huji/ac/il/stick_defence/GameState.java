@@ -128,22 +128,9 @@ public class GameState {
         this.playerStorage.setCredits(this.playerStorage.getCredits() - price);
     }
 
-    public void initSwordmanButton(Button button) {
-        if (playerStorage.isPurchased(
-                PlayerStorage.PurchasesEnum.SWORDMAN)) {
-            button.setVisibility(View.VISIBLE);
-        }
-    }
-    public void initBazookaSoldierButton(Button button) {
-        if (playerStorage.isPurchased(
-                PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER)) {
-            button.setVisibility(View.VISIBLE);
-        }
-    }
-
-    public void initTankButton(Button button) {
-        if (playerStorage.isPurchased(
-                PlayerStorage.PurchasesEnum.TANK)) {
+    public void activateSendSoldierButton(Button button,
+                                          PlayerStorage.PurchasesEnum soldierType) {
+        if (playerStorage.isPurchased(soldierType)) {
             button.setVisibility(View.VISIBLE);
         }
     }
