@@ -115,7 +115,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
             });
             buttonsLayout.addView(sendSwordman);
             buttons.add(sendSwordman);
-            gameState.initBazookaSoldierButton(sendSwordman);
+            gameState.initSwordmanButton(sendSwordman);
         }
 
         if (gameState.isPurchased(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER)){
@@ -135,6 +135,25 @@ public class GameActivity extends Activity implements DoProtocolAction {
             buttonsLayout.addView(sendBazookaSoldier);
             buttons.add(sendBazookaSoldier);
             gameState.initBazookaSoldierButton(sendBazookaSoldier);
+        }
+
+        if (gameState.isPurchased(PlayerStorage.PurchasesEnum.TANK)){
+            Button buyTank = new Button(this);
+            buyTank.
+                    setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.tank_icon, 0, 0, 0);
+            /*sendBazookaSoldier.
+                    setId(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER.ordinal() + 1);*/
+            buyTank.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    gameState.addSoldier(Sprite.Player.LEFT, 0,
+                            Protocol.Action.TANK);
+                }
+            });
+            buttonsLayout.addView(buyTank);
+            buttons.add(buyTank);
+            gameState.initTankButton(buyTank);
         }
 
         if (gameState.isPurchased(PlayerStorage.PurchasesEnum.MATH_BOMB)){
@@ -320,6 +339,11 @@ firstLineLayout.addView(scoreLayout);
                 this.gameState.addSoldier(Sprite.Player.RIGHT,
                         Protocol.getTimeStamp(rawInput),
                         Protocol.Action.BAZOOKA_SOLDIER);
+                break;
+            case TANK:
+                this.gameState.addSoldier(Sprite.Player.RIGHT,
+                        Protocol.getTimeStamp(rawInput),
+                        Protocol.Action.TANK);
                 break;
 
             case SOLDIER_KILL:

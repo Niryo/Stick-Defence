@@ -57,6 +57,7 @@ public class Protocol {
         BASIC_SOLDIER,
         SWORDMAN,
         BAZOOKA_SOLDIER,
+        TANK,
         SOLDIER_KILL,
         MATH_BOMB,
         MATH_BOMB_SOLVED,

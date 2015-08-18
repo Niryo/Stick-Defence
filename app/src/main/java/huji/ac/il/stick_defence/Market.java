@@ -20,6 +20,7 @@ import java.io.File;
 public class Market extends Activity implements DoProtocolAction {
 //TODO: CREATE A BUTTON THAT MOVES YOU INTO LEAGUE_INFO ACTIVITY AND IF THERE IS INFO, SEND EXTRA IN THE INTENT
     private static final int    SWORDMAN_BUY_PRICE = 50;
+    private static final int    TANK_BUY_PRICE = 100;
     private static final int    BAZOOKA_BUY_PRICE = 100; // TODO - change to 1000
     private static final int    MATH_BOMB_PRICE = 100;
     private static final String CREDITS = "Credits: ";
@@ -83,9 +84,15 @@ public class Market extends Activity implements DoProtocolAction {
         addButton(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER,
                   R.id.buy_bazooka_soldier,
                   BAZOOKA_BUY_PRICE);
+        addButton(PlayerStorage.PurchasesEnum.SWORDMAN,
+                  R.id.buy_swordman,
+                  SWORDMAN_BUY_PRICE);
+        addButton(PlayerStorage.PurchasesEnum.TANK,
+                  R.id.buy_tank,
+                  TANK_BUY_PRICE);
         addButton(PlayerStorage.PurchasesEnum.MATH_BOMB,
-                R.id.buy_math_bomb,
-                MATH_BOMB_PRICE);
+                  R.id.buy_math_bomb,
+                  MATH_BOMB_PRICE);
 
 
     }

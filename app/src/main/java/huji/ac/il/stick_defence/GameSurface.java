@@ -6,13 +6,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
-import java.io.File;
 
 
 /**
@@ -127,7 +124,7 @@ public class GameSurface extends SurfaceView implements
             tower.render(canvas);
         }
 
-        for (BazookaBullet bullet : gameState.getBazookaBullets()) {
+        for (Bullet bullet : gameState.getBullets()) {
             bullet.render(canvas);
         }
 

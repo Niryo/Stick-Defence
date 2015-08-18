@@ -20,6 +20,7 @@ public class PlayerStorage implements Serializable {
     public enum PurchasesEnum {
         BASIC_SOLDIER,
         SWORDMAN,
+        TANK,
         BAZOOKA_SOLDIER,
         MATH_BOMB
     }

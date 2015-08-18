@@ -130,6 +130,10 @@ public class Client implements DoProtocolAction, Serializable{
         send(Protocol.stringify(Protocol.Action.BAZOOKA_SOLDIER));
     }
 
+    public void reportTank(){
+        send(Protocol.stringify(Protocol.Action.TANK));
+    }
+
     public void reportSoldierKill(int soldierId, Sprite.Player player){
         JSONObject data = new JSONObject();
         try{

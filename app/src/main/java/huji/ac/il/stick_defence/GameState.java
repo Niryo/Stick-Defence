@@ -25,6 +25,7 @@ public class GameState {
     private static final int CREDITS_ON_WIN = 100;
     private static final int SWORDMAN_SEND_PRICE = 5;
     private static final int BAZOOKA_SEND_PRICE = 10;
+    private static final int TANK_SEND_PRICE = 100;
     private static int canvas_height;
     private static int canvas_width;
 
@@ -33,7 +34,7 @@ public class GameState {
     private ArrayList<Tower> towers = new ArrayList<>();
     private ArrayList<Bow> bows = new ArrayList<>();
     private ArrayList<Arrow> arrows = new ArrayList<>();
-    private ArrayList<BazookaBullet> bazookaBullets = new ArrayList<>();
+    private ArrayList<Bullet> bullets = new ArrayList<>();
     private Context context;
     private int rightTowerLeftX, leftTowerBeginX;
     private int rightTowerCentralX, leftTowerCentralX;
@@ -127,9 +128,22 @@ public class GameState {
         this.playerStorage.setCredits(this.playerStorage.getCredits() - price);
     }
 
+    public void initSwordmanButton(Button button) {
+        if (playerStorage.isPurchased(
+                PlayerStorage.PurchasesEnum.SWORDMAN)) {
+            button.setVisibility(View.VISIBLE);
+        }
+    }
     public void initBazookaSoldierButton(Button button) {
         if (playerStorage.isPurchased(
                 PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER)) {
+            button.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void initTankButton(Button button) {
+        if (playerStorage.isPurchased(
+                PlayerStorage.PurchasesEnum.TANK)) {
             button.setVisibility(View.VISIBLE);
         }
     }
@@ -177,7 +191,7 @@ public class GameState {
         for (Soldier soldier : this.getSoldiers()) {
             soldier.update(currentTimeMillis);
         }
-        for (BazookaBullet bullet : this.getBazookaBullets()) {
+        for (Bullet bullet : this.getBullets()) {
             bullet.update(currentTimeMillis);
         }
         for (Bow bow : this.getBows()) {
@@ -262,6 +276,9 @@ public class GameState {
                     case BAZOOKA_SOLDIER:
                         client.reportBazookaSoldier();
                         break;
+                    case TANK:
+                        client.reportTank();
+                        break;
                     default:
                         Log.e("yahav",
                                 "Wrong soldier type " + soldierType.toString());
@@ -297,11 +314,15 @@ public class GameState {
                 }
                 break;
             case BAZOOKA_SOLDIER:
+                if (creditManager.decCredits(TANK_SEND_PRICE, player) || player== Sprite.Player.RIGHT) {
+                    soldiers.add(new Tank(context, player, delay));
+                }
+                break;
+            case TANK:
                 if (creditManager.decCredits(BAZOOKA_SEND_PRICE, player) || player== Sprite.Player.RIGHT) {
                     soldiers.add(new BazookaSoldier(context, player, delay));
                 }
                 break;
-
             default:
                 Log.e("yahav",
                         "Wrong soldier type " + soldierType.toString());
@@ -348,8 +369,8 @@ public class GameState {
         return (ArrayList<Soldier>) this.soldiers.clone();
     }
 
-    public ArrayList<BazookaBullet> getBazookaBullets() {
-        return (ArrayList<BazookaBullet>) this.bazookaBullets.clone();
+    public ArrayList<Bullet> getBullets() {
+        return (ArrayList<Bullet>) this.bullets.clone();
     }
 
     public ArrayList<Tower> getTowers() {
@@ -412,12 +433,12 @@ public class GameState {
         this.arrows.remove(arrow);
     }
 
-    public void addBazookaBullet(BazookaBullet bullet) {
-        this.bazookaBullets.add(bullet);
+    public void addBullet(Bullet bullet) {
+        this.bullets.add(bullet);
     }
 
-    public void removeBazookaBullet(BazookaBullet bullet) {
-        this.bazookaBullets.remove(bullet);
+    public void removeBullet(Bullet bullet) {
+        this.bullets.remove(bullet);
     }
 
     public ArrayList<Arrow> getArrows() {
