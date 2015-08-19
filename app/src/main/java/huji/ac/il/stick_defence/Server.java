@@ -2,6 +2,9 @@ package huji.ac.il.stick_defence;
 
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,7 +33,9 @@ public class Server {
     private LeagueManager leagueManager;
     private int gameOverCounter = 0;
     private int approvedPeersCounter =0;
-    private ArrayList<String> peerNames = new ArrayList<>();
+    private int duplicateNameCounter = 0;
+    private ArrayList<String> peersIds = new ArrayList<>();
+    private ArrayList<String> names = new ArrayList<>();
 
 
 
@@ -110,12 +115,28 @@ public class Server {
         Protocol.Action action = Protocol.getAction(rawInput);
         switch (action) {
             case NAME:
-                String name =   Protocol.getData(rawInput);
-                if(!peerNames.contains(name)){
-                    peerNames.add(name);
-                peer.approved = true; //TODO: check that name is available
-                approvedPeersCounter++;
+                JSONObject data = null;
+                String name = null;
+                String id = null;
+                try {
+                    data = new JSONObject(Protocol.getData(rawInput));
+                    name = data.getString("name");
+                    id= data.getString("id");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if(!peersIds.contains(id)) {
+                    peersIds.add(id);
+                    peer.approved = true;
+                    approvedPeersCounter++;
+
+                    if(names.contains(name)){
+                        name=name+duplicateNameCounter;
+                        duplicateNameCounter++;
+                    }
                 peer.setName(name);
+                    names.add(name);
+                    peer.setId(id);
                 peer.send(Protocol.stringify(Protocol.Action.NAME_CONFIRMED));
 
                     if (approvedPeersCounter == leagueParticipants) {
@@ -167,7 +188,7 @@ public class Server {
                 this.gameOverCounter++;
                 if (gameOverCounter == this.leagueParticipants) {
                     this.gameOverCounter = 0;
-                    leagueManager.updateLeugeStage();
+                    leagueManager.updateLeagueStage();
                     String leagueInfo = leagueManager.getLeagueInfo();
                     sendLeagueInfo(leagueInfo);
                 }
@@ -265,7 +286,7 @@ private Peer peer;
     public class Peer {
         private long WAIT_FOR_APPROVE = 10000;
         private boolean approved = false; //check if the peer is an approved
-        private int id; //unique id for each peer
+        private String id; //unique id for each peer
         private String name; //name of the client. don't have to be unique.
         private PrintWriter out;
         private Socket socket;
@@ -302,7 +323,6 @@ private Peer peer;
 //                }
 //            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this);
 
-            this.id = counter++;
             this.socket = socket;
             new Thread(new ClientSocketListener(this)).start();
             try {
@@ -356,6 +376,9 @@ private Peer peer;
 
         public int getWins() {
             return this.wins;
+        }
+        public void setId(String id){
+            this.id=id;
         }
 
     }

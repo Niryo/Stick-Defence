@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -18,6 +21,7 @@ import android.view.SurfaceView;
 public class GameSurface extends SurfaceView implements
         SurfaceHolder.Callback {
 
+    private int END_GAME_MSG_FACTOR=7;
     private GameLoopThread gameLoopThread;
     private GameState gameState = GameState.getInstance();
     private SimpleGestureDetector simpleGestureDetector =
@@ -41,6 +45,32 @@ public class GameSurface extends SurfaceView implements
         this.context = context;
 
     }
+
+    public void writeEndGameMessage(Canvas canvas) {
+        Paint paint = new Paint();
+        paint.setTextSize(canvas.getWidth() / END_GAME_MSG_FACTOR);
+        paint.setTypeface(Typeface.SERIF);
+        paint.setColor(Color.BLACK);
+        paint.setTextAlign(Paint.Align.RIGHT);
+        int y = canvas.getHeight() / 2;
+        int x = canvas.getWidth() / 2;
+        String message;
+        if(gameState.isLeftPlayerWin()){
+            message= "You won!";
+        }else{
+            message= "You lost!";
+        }
+
+        String half1 = message.substring(0, message.length() / 2);
+        String half2 = message.substring(message.length() / 2);
+
+        canvas.drawText(half1,x,y,paint);
+        paint.setTextAlign(Paint.Align.LEFT);
+        canvas.drawText(half2, x, y, paint);
+
+    }
+
+
 
     public void goToMarket() {
         gameState.saveAndFinish();

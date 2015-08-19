@@ -116,6 +116,14 @@ public class GameLoopThread extends Thread {
                             gameState.isRightPlayerWin()) {
                         Log.w("custom", "game over! bye bye!");
                         running = false;
+                        gameSurface.writeEndGameMessage(canvas);
+                        surfaceHolder.unlockCanvasAndPost(canvas);
+                        canvas=null;
+                        try {
+                            Thread.sleep(4000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         gameSurface.goToMarket();
 
                     }

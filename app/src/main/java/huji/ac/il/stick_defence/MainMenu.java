@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
@@ -38,6 +39,9 @@ public class MainMenu extends Activity implements DoProtocolAction {
     private boolean isEnterIpViewVisble= false;
     private boolean isInternet=false;
     private String SAVED_IP = "SAVED_IP";
+    private String NICKNAME= "NICKNAME";
+    private String UNIQUE_ID= "UNIQUE_ID";
+    private String id="";
     private String SHARED_PREFERENCES= "SHARED_PREFERENCES";
     private  final Pattern PARTIAl_IP_ADDRESS =
             Pattern.compile("^((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])\\.){0,3}"+
@@ -51,15 +55,20 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         super.onCreate(savedInstanceState);
-        //todo: delete! random name only for testing:
-        Random rand = new Random(System.currentTimeMillis());
-        this.name= ""+ rand.nextInt(1000);
+        final SharedPreferences settings = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
+        this.name = settings.getString(NICKNAME,"");
+        if(this.name.isEmpty()){
+            showNicknameDialog();
+        }
+//        showNicknameDialog();//todo:for testing only, should be removed!
+        this.name = settings.getString(NICKNAME,""); //at this point name can't be empty.
+        this.id= settings.getString(UNIQUE_ID,"");
 
         FontsOverride.setDefaultFont(this, "SERIF", "Schoolbell.ttf");
 
         setContentView(R.layout.activity_main_menu);
 
-        client = Client.createClient(name);
+        client = Client.createClient(name,id);
         this.client.setCurrentActivity(this);
 
         deleteOldGameData();
@@ -271,6 +280,58 @@ public class MainMenu extends Activity implements DoProtocolAction {
 
 
 
+    }
+
+    public void showNicknameDialog(){
+        final Dialog dialog = new Dialog(MainMenu.this);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.enter_nickname_dialog);
+        dialog.setTitle("Choose your nickname:");
+
+        final EditText editText = (EditText) dialog.findViewById(R.id.nickname_editText);
+        final Button okButton = (Button) dialog.findViewById(R.id.nickname_ok_button);
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String nickname= editText.getText().toString();
+                final SharedPreferences settings = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString(NICKNAME, nickname);
+                editor.commit();
+                dialog.dismiss();
+            }
+        });
+        okButton.setEnabled(false);
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (editText.getText().toString().length() > 0) {
+                    okButton.setEnabled(true);
+                } else {
+                    okButton.setEnabled(false);
+                }
+            }
+        });
+        dialog.show();
+        generateRandomId();
+
+
+    }
+    public void generateRandomId(){
+        Random rand = new Random(System.currentTimeMillis());
+        long id= rand.nextInt(100000000);
+        final SharedPreferences settings = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(UNIQUE_ID, String.valueOf(id));
+        editor.commit();
     }
 
     @Override

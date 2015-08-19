@@ -20,6 +20,7 @@ import java.net.Socket;
  */
 public class Client implements DoProtocolAction, Serializable{
     private static Client client;
+    private String id;
     private String name; //each client as a name, dosen't have to be unique.
     private PrintWriter out;
     private DoProtocolAction currentActivity;
@@ -32,8 +33,9 @@ public class Client implements DoProtocolAction, Serializable{
      *
      * @param name the name of the client
      */
-    private Client(String name) {
+    private Client(String name, String id) {
         this.name = name;
+        this.id= id;
     }
 
     /**
@@ -42,9 +44,9 @@ public class Client implements DoProtocolAction, Serializable{
      * @param name the name of the client
      * @return an instance of the client
      */
-    public static Client createClient(String name) {
+    public static Client createClient(String name, String id) {
         if (client == null) {
-            client = new Client(name);
+            client = new Client(name,id);
         }
         return client;
     }
@@ -89,7 +91,14 @@ public class Client implements DoProtocolAction, Serializable{
         if (gameState != null && GameState.getInstance().isGameInProcces()){
             send(Protocol.stringify(Protocol.Action.RESUME));
         } else {
-            send(Protocol.stringify(Protocol.Action.NAME, name)); //send the
+            JSONObject jsonName= new JSONObject();
+            try {
+                jsonName.put("name", name);
+                jsonName.put("id",id);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            send(Protocol.stringify(Protocol.Action.NAME, jsonName.toString())); //send the
             // client name to the server.
         }
 
