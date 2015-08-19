@@ -461,6 +461,10 @@ public class GameState {
         return this.leftPlayerWin;
     }
 
+    public void startFastCreditMode(){
+        creditManager.startFastCreditMode();
+    }
+
     public void addEnemyShot(double dist, double timeStamp) {
         long currentTime = getSyncTime();
         double delay = currentTime - timeStamp;

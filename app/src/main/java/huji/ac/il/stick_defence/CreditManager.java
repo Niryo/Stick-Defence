@@ -8,7 +8,7 @@ import android.os.Handler;
  */
 public class CreditManager extends Thread {
     //TODO: REMOVE OPPONENT'S CREDIT.
-    private static final int SLEEP_IN_MSEC = 60;
+    private int sleep_in_msec = 60;
     GameState gameState = GameState.getInstance();
     boolean running;
     private TextView leftCreditsTv;
@@ -58,6 +58,10 @@ public class CreditManager extends Thread {
         return (int) rightCredits;
     }
 
+    public void startFastCreditMode(){
+        this.sleep_in_msec /= 2;
+    }
+
     public void setRunning(boolean running) {
         this.running = running;
     }
@@ -80,7 +84,7 @@ public class CreditManager extends Thread {
             });
 
             try {
-                Thread.sleep(SLEEP_IN_MSEC);
+                Thread.sleep(sleep_in_msec);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

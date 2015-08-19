@@ -118,6 +118,7 @@ public class GameLoopThread extends Thread {
                         running = false;
                         gameSurface.writeEndGameMessage(canvas);
                         surfaceHolder.unlockCanvasAndPost(canvas);
+                        gameState.startFastCreditMode();
                         canvas=null;
                         try {
                             Thread.sleep(4000);
