@@ -39,7 +39,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
     private AlertDialog pauseDialog;
     private LinearLayout gameComponentsLayout;
     private ArrayList<Button> buttons;
-
+    private LinearLayout buttonsLayout;
 
 
     @Override
@@ -75,89 +75,22 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
 
         //======================Add Buttons===========================
-        LinearLayout buttonsLayout = new LinearLayout(this);
+        buttonsLayout = new LinearLayout(this);
         //buttonsLayout.setOrientation(LinearLayout.HORIZONTAL);
 
         LinearLayout firstLineLayout = new LinearLayout(this);
         firstLineLayout.setOrientation(LinearLayout.HORIZONTAL);
 
-
-        Button sendBasicSoldier = new Button(this);
         this.buttons= new ArrayList<>();
-        sendBasicSoldier.
-                setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.basic_soldier_icon, 0, 0, 0);
-        sendBasicSoldier.
-                setId(PlayerStorage.PurchasesEnum.BASIC_SOLDIER.ordinal() + 1);
-        sendBasicSoldier.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gameState.addSoldier(Sprite.Player.LEFT, 0,
-                        Protocol.Action.BASIC_SOLDIER);
-            }
-        });
-        buttonsLayout.addView(sendBasicSoldier);
-        buttons.add(sendBasicSoldier);
 
-        if (gameState.isPurchased(PlayerStorage.PurchasesEnum.SWORDMAN)){
-            Button sendSwordman = new Button(this);
-            sendSwordman.
-                    setCompoundDrawablesWithIntrinsicBounds(
-                            R.drawable.swordman_icon, 0, 0, 0);
-            /*sendBazookaSoldier.
-                    setId(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER.ordinal() + 1);*/
-            sendSwordman.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    gameState.addSoldier(Sprite.Player.LEFT, 0,
-                            Protocol.Action.SWORDMAN);
-                }
-            });
-            buttonsLayout.addView(sendSwordman);
-            buttons.add(sendSwordman);
-            gameState.activateSendSoldierButton(sendSwordman,
-                    PlayerStorage.PurchasesEnum.SWORDMAN);
-        }
-
-        if (gameState.isPurchased(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER)){
-            Button sendBazookaSoldier = new Button(this);
-            sendBazookaSoldier.
-                    setCompoundDrawablesWithIntrinsicBounds(
-                            R.drawable.bazooka_icon, 0, 0, 0);
-            /*sendBazookaSoldier.
-                    setId(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER.ordinal() + 1);*/
-            sendBazookaSoldier.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    gameState.addSoldier(Sprite.Player.LEFT, 0,
-                            Protocol.Action.BAZOOKA_SOLDIER);
-                }
-            });
-            buttonsLayout.addView(sendBazookaSoldier);
-            buttons.add(sendBazookaSoldier);
-            gameState.activateSendSoldierButton(sendBazookaSoldier,
-                    PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER);
-        }
-
-        if (gameState.isPurchased(PlayerStorage.PurchasesEnum.TANK)){
-            Button buyTank = new Button(this);
-            buyTank.
-                    setCompoundDrawablesWithIntrinsicBounds(
-                            R.drawable.tank_icon, 0, 0, 0);
-            /*sendBazookaSoldier.
-                    setId(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER.ordinal() + 1);*/
-            buyTank.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    gameState.addSoldier(Sprite.Player.LEFT, 0,
-                            Protocol.Action.TANK);
-                }
-            });
-            buttonsLayout.addView(buyTank);
-            buttons.add(buyTank);
-            gameState.activateSendSoldierButton(buyTank,
-                                             PlayerStorage.PurchasesEnum.TANK);
-        }
+        addButton(PlayerStorage.PurchasesEnum.BASIC_SOLDIER,
+                  R.drawable.basic_soldier_icon, Protocol.Action.BASIC_SOLDIER);
+        addButton(PlayerStorage.PurchasesEnum.SWORDMAN,
+                  R.drawable.swordman_icon, Protocol.Action.SWORDMAN);
+        addButton(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER,
+                  R.drawable.bazooka_icon, Protocol.Action.BAZOOKA_SOLDIER);
+        addButton(PlayerStorage.PurchasesEnum.TANK,
+                  R.drawable.tank_icon, Protocol.Action.TANK);
 
         if (gameState.isPurchased(PlayerStorage.PurchasesEnum.MATH_BOMB)){
             Button sendMathBomb = new Button(this);
@@ -265,6 +198,25 @@ firstLineLayout.addView(scoreLayout);
                     .setIcon(android.R.drawable.ic_dialog_alert);
 
             pauseDialog = pauseDialogBuilder.create();
+        }
+    }
+
+    private void addButton(PlayerStorage.PurchasesEnum item,
+                           int pic, final Protocol.Action action){
+        if (gameState.isPurchased(item)){
+            Button buyButton = new Button(this);
+            buyButton.
+                    setCompoundDrawablesWithIntrinsicBounds(pic, 0, 0, 0);
+
+            buyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    gameState.addSoldier(Sprite.Player.LEFT, 0, action);
+                }
+            });
+            buttonsLayout.addView(buyButton);
+            buttons.add(buyButton);
+            gameState.activateSendSoldierButton(buyButton, item);
         }
     }
 
