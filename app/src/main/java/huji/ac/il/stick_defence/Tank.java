@@ -6,13 +6,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 /**
- * Created by yahav on 18/06/15.
+ * Created by yahav on 18/08/15.
  */
-public class BazookaSoldier extends Soldier {
+public class Tank extends Soldier {
 
-    //======================BazookaSoldier's abilities==========================
-    private static final double SEC_TO_SCREEN_WIDTH = 20;
-    private static final int DAMAGE_PER_SEC = 5; // [Damage/Sec]
+    //======================Tank's abilities==========================
+    private static final double SEC_TO_SCREEN_WIDTH = 15;
+    private static final int DAMAGE_PER_SEC = 20; // [Damage/Sec]
     //==========================================================================
 
     //==========================================================================
@@ -23,28 +23,29 @@ public class BazookaSoldier extends Soldier {
     //==========================================================================
 
     //============================Sprite constants==============================
-    private static final int NUMBER_OF_FRAMES = 7;
-    private static final int SHOOT_NUMBER_OF_FRAMES = 2;
+    private static final int NUMBER_OF_FRAMES = 6;
+    private static final int SHOOT_NUMBER_OF_FRAMES = 6; //TODO
     private static final int WALK_FPS = 40;
     private static final int ATTACK_FPS = 2;
-    private static final float BAZOOKA_HEIGHT_RELATIVE = 0.99f;
-    private static final int ATTACK_PIC_INDEX = 1;
+    private static final float TANK_HEIGHT_RELATIVE = 0.99f;
+    private static final int ATTACK_PIC_INDEX = 1; //TODO
     //==========================================================================
 
     private static Bitmap leftSoldierPic = null;
     private static Bitmap rightSoldierPic = null;
     private static Bitmap leftAttackSoldierPic = null;
     private static Bitmap rightAttackSoldierPic = null;
-    private static float bazookaSoldierY = 0;
+    private static float tankY = 0;
     private boolean canShoot = false;
     private Sprite.Player player;
+    private int attackFrame = 0;
 
-    public BazookaSoldier(Context context, Sprite.Player player, double delayInSec) {
+    public Tank(Context context, Sprite.Player player, double delayInSec) {
         super(context, player, SEC_TO_SCREEN_WIDTH, DAMAGE_PER_SEC, delayInSec);
         if (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
                     context.getResources(),
-                    R.drawable.bazooka);
+                    R.drawable.tank);
         }
 
         if (null == rightSoldierPic) {
@@ -54,7 +55,7 @@ public class BazookaSoldier extends Soldier {
         if (null == leftAttackSoldierPic) {
             leftAttackSoldierPic =
                     BitmapFactory.decodeResource(context.getResources(),
-                            R.drawable.bazooka_shoot);
+                            R.drawable.tank); //TODO
         }
 
         if (null == rightAttackSoldierPic) {
@@ -71,7 +72,7 @@ public class BazookaSoldier extends Soldier {
 
         Bullet.init(context, getScaledDownFactor());
 
-        bazookaSoldierY = super.getSoldierY(); // TODO - verify
+        tankY = super.getSoldierY(); // TODO - verify
 
         this.player = player;
 
@@ -82,20 +83,22 @@ public class BazookaSoldier extends Soldier {
             if (player == Sprite.Player.LEFT) {
                 if (getSoldierX() + getScaledFrameWidth() / 2 >=
                         getScreenWidth() * 0.25) {
-                    super.attack(leftAttackSoldierPic, SHOOT_NUMBER_OF_FRAMES,
+                    super.attack(leftSoldierPic, SHOOT_NUMBER_OF_FRAMES,
                             ATTACK_FPS);
-                    bazookaSoldierY = super.getSoldierY();
+                    tankY = super.getSoldierY();
+                    attackFrame = (getCurrentFrame() + 1) % NUMBER_OF_FRAMES;
                 }
             } else {
                 if (getSoldierX() + getScaledFrameWidth() / 2 <=
                         (float) getScreenWidth() * 0.75) {
-                    super.attack(rightAttackSoldierPic, SHOOT_NUMBER_OF_FRAMES,
+                    super.attack(rightSoldierPic, SHOOT_NUMBER_OF_FRAMES,
                             ATTACK_FPS);
-                    bazookaSoldierY = super.getSoldierY();
+                    tankY = super.getSoldierY();
+                    attackFrame = (getCurrentFrame() + 1) % NUMBER_OF_FRAMES;
                 }
             }
         } else { // Attack
-            if (super.getCurrentFrame() == ATTACK_PIC_INDEX) {
+            if (super.getCurrentFrame() == attackFrame) {
                 if (canShoot) {
                     float bulletX = getSoldierX();
                     if (Sprite.Player.LEFT == player) {
@@ -103,7 +106,7 @@ public class BazookaSoldier extends Soldier {
                     }
                     Bullet bullet = new Bullet(getContext(),
                             bulletX,
-                            getSoldierY() / BAZOOKA_HEIGHT_RELATIVE,
+                            getSoldierY() / TANK_HEIGHT_RELATIVE,
                             getPlayer());
 
                     gameState.addBullet(bullet);
@@ -125,7 +128,7 @@ public class BazookaSoldier extends Soldier {
         return super.isHitByArrow(arrow);
     }
 
-    public static float getBazookaSoldierY() {
-        return bazookaSoldierY;
+    public static float getTankY() {
+        return tankY;
     }
 }

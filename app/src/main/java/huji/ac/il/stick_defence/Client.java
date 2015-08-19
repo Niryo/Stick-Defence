@@ -131,8 +131,16 @@ public class Client implements DoProtocolAction, Serializable{
         send(Protocol.stringify(Protocol.Action.BASIC_SOLDIER));
     }
 
+    public void reportSwordman(){
+        send(Protocol.stringify(Protocol.Action.SWORDMAN));
+    }
+
     public void reportBazookaSoldier(){
         send(Protocol.stringify(Protocol.Action.BAZOOKA_SOLDIER));
+    }
+
+    public void reportTank(){
+        send(Protocol.stringify(Protocol.Action.TANK));
     }
 
     public void reportSoldierKill(int soldierId, Sprite.Player player){

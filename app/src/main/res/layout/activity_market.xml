@@ -54,10 +54,27 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/buy_swordman"
+            android:background="@drawable/swordman_icon"
+            android:layout_marginRight="10dp"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/buy_bazooka_soldier"
             android:background="@drawable/bazooka_icon"
             android:layout_marginRight="10dp"
             />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buy_tank"
+            android:background="@drawable/tank_icon"
+            android:layout_marginRight="10dp"
+            />
+
 
     </LinearLayout>
 

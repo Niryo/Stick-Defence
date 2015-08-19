@@ -7,11 +7,11 @@ import android.graphics.Canvas;
 
 import java.io.Serializable;
 
-public class BazookaBullet implements Serializable {
-    //======================BazookaBullet's abilities===========================
+public class Bullet implements Serializable {
+    //==========================Bullet's abilities==============================
     private static final double SEC_TO_SCREEN_WIDTH = 0.021;
 
-    //========================BazookaBullet's picture===========================
+    //============================Bullet's picture==============================
     private static Sprite leftBulletSprite, rightBulletSprite;
 
     private GameState gameState = GameState.getInstance();
@@ -25,8 +25,8 @@ public class BazookaBullet implements Serializable {
     private Sprite sprite;
     private static double scaleDownFactor;
 
-    public BazookaBullet(Context context, float x, float y,
-                         Sprite.Player player) {
+    public Bullet(Context context, float x, float y,
+                  Sprite.Player player) {
         this.screenWidth =
                 gameState.getCanvasWidth();
         this.screenHeight =
@@ -54,7 +54,7 @@ public class BazookaBullet implements Serializable {
 
         if (this.x <= gameState.getLeftTowerCentralX() ||
                 this.x >= gameState.getRightTowerCentralX()) {
-            gameState.removeBazookaBullet(this);
+            gameState.removeBullet(this);
         }
     }
 
