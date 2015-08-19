@@ -1,156 +1,153 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+              android:paddingLeft="16dp"
+                android:paddingRight="16dp"
                 android:id="@+id/market_layout"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                android:paddingBottom="@dimen/activity_vertical_margin"
                 android:orientation="vertical"
-                tools:context="huji.ac.il.stick_defence.Market">
+                tools:context="huji.ac.il.stick_defence.Market"
+    android:weightSum="20">
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/welcome_to_the_market"
         android:id="@+id/market_welcome_tv"
         android:textStyle="bold"
         android:typeface="serif"
-        android:paddingBottom="20dp"
         android:layout_gravity="center"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"/>
+        android:layout_weight="2" />
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/market_credits_tv"
-        android:layout_below="@id/market_welcome_tv"
         android:typeface="serif"
         android:textColor="#ffd700"
-        android:layout_gravity="center"
-        android:paddingBottom="10dp"/>
+        android:layout_weight="2" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/market_credits_tv"
-        android:id="@+id/soldiers_list"
-        android:orientation="horizontal"
-        android:paddingBottom="10dp">
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="14">
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:paddingRight="50dp"
-            android:text="@string/soldiers"
-            android:typeface="serif"
-            />
+            android:id="@+id/soldiers_list"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp">
 
-        <Button
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:paddingRight="50dp"
+                android:text="@string/soldiers"
+                android:typeface="serif"
+                />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/buy_swordman"
+                android:background="@drawable/swordman_icon"
+                android:layout_marginRight="10dp"
+                />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/buy_bazooka_soldier"
+                android:background="@drawable/bazooka_icon"
+                android:layout_marginRight="10dp"
+                />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/buy_tank"
+                android:background="@drawable/tank_icon"
+                android:layout_marginRight="10dp"
+                />
+
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/buy_swordman"
-            android:background="@drawable/swordman_icon"
-            android:layout_marginRight="10dp"
-            />
+            android:id="@+id/towers_list"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp">
 
-        <Button
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:paddingRight="50dp"
+                android:text="@string/towers"
+                android:typeface="serif"
+                />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/buy_bazooka_soldier"
-            android:background="@drawable/bazooka_icon"
-            android:layout_marginRight="10dp"
-            />
+            android:id="@+id/arrows_list"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp">
 
-        <Button
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:paddingRight="50dp"
+                android:text="@string/arrows"
+                android:typeface="serif"
+                />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/buy_tank"
-            android:background="@drawable/tank_icon"
-            android:layout_marginRight="10dp"
-            />
+            android:id="@+id/miscellaneous_list"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:paddingRight="50dp"
+                android:text="@string/miscellaneous"
+                android:typeface="serif"
+                />
 
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/buy_math_bomb"
+                android:background="@drawable/math_bomb"
+                android:layout_marginRight="10dp"
+                />
+        </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/towers_list"
-        android:layout_below="@id/soldiers_list"
-        android:orientation="horizontal"
-        android:paddingBottom="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:paddingRight="50dp"
-            android:text="@string/towers"
-            android:typeface="serif"
-            />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/arrows_list"
-        android:layout_below="@id/towers_list"
-        android:orientation="horizontal"
-        android:paddingBottom="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:paddingRight="50dp"
-            android:text="@string/arrows"
-            android:typeface="serif"
-            />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/miscellaneous_list"
-        android:layout_below="@id/arrows_list"
-        android:orientation="horizontal"
-        android:paddingBottom="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:paddingRight="50dp"
-            android:text="@string/miscellaneous"
-            android:typeface="serif"
-            />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/buy_math_bomb"
-            android:background="@drawable/math_bomb"
-            android:layout_marginRight="10dp"
-            />
-    </LinearLayout>
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:background="@drawable/arrow_sign"
         android:text="@string/continue_play"
         android:typeface="serif"
         android:id="@+id/market_play_button"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
         android:textStyle="bold|italic"
-        android:layout_toRightOf="@+id/market_welcome_tv"
-        android:layout_toEndOf="@+id/market_welcome_tv"
-        android:layout_below="@+id/miscellaneous_list"/>
+        android:layout_weight="2" />
 
-</RelativeLayout>
+</LinearLayout>
