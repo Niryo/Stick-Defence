@@ -360,6 +360,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 startActivity(intentWithInfo);
                 finish();
                 break;
+
         }
     }
 

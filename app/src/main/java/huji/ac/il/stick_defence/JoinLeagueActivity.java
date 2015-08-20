@@ -208,6 +208,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
                 finish();
                 break;
 
+
             case TEST:
               Client.getClientInstance().send(Protocol.stringify(Protocol.Action.TEST));
                 break;
