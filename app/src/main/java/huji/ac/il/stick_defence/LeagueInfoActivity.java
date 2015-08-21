@@ -18,6 +18,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TabHost;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -43,7 +44,7 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_league);
+        setContentView(R.layout.activity_league_info);
         int screenWidth = getApplicationContext().getResources().getDisplayMetrics().widthPixels;
         this.text_size = screenWidth/TEXT_SCALE_FACTOR;
         waitDialog = new ProgressDialog(this);
@@ -74,6 +75,38 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
         }
 
 
+
+
+        final TabHost tabHost = (TabHost) findViewById(R.id.tabHost);
+        tabHost.setup();
+        TabHost.TabSpec ts1= tabHost.newTabSpec("Tab1");
+        ts1.setIndicator("Statistics");
+        ts1.setContent(R.id.tab1);
+        tabHost.addTab(ts1);
+
+        tabHost.setup();
+        TabHost.TabSpec ts2= tabHost.newTabSpec("Tab2");
+        ts2.setIndicator("Next round battles");
+        ts2.setContent(R.id.tab2);
+        tabHost.addTab(ts2);
+
+        Button buttonTab1= (Button) findViewById(R.id.buttonTab1);
+        buttonTab1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tabHost.setCurrentTab(0);
+
+            }
+        });
+
+        Button buttonTab2= (Button) findViewById(R.id.buttonTab2);
+        buttonTab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tabHost.setCurrentTab(1);
+            }
+        });
+
     }
 
 
@@ -101,7 +134,7 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void printLeagueInfo(String rawInfo) {
-        final LinearLayout layout = (LinearLayout) findViewById(R.id.league_info_layout);
+        final LinearLayout vsLayout = (LinearLayout) findViewById(R.id.vsLinearLayout);
 
         try {
             JSONObject info = null;
@@ -121,7 +154,7 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            layout.addView(vsView);
+                            vsLayout.addView(vsView);
 
                         }
                     });

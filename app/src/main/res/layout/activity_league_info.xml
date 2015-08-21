@@ -15,10 +15,43 @@
             android:orientation="vertical">
 
             <TabWidget
-                android:id="@+id/tabs"
+                android:id="@android:id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"></TabWidget>
+                android:orientation="horizontal"
+                android:visibility="gone"
+                >
+
+            </TabWidget>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Statistics table"
+                    android:id="@+id/buttonTab1"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Next Round battles"
+                    android:id="@+id/buttonTab2"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Ready to play"
+                    android:id="@+id/ready_to_play"
+                    android:layout_weight="1" />
+
+
+            </LinearLayout>
 
             <FrameLayout
                 android:id="@android:id/tabcontent"
@@ -26,7 +59,7 @@
                 android:layout_height="match_parent">
 
                 <LinearLayout
-                    android:id="@+id/tab1"
+                    android:id="@+id/tab2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
@@ -47,31 +80,21 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/tab2"
+                    android:id="@+id/tab1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
-
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Ready to play"
-                        android:id="@+id/ready_to_play"
-                        android:layout_weight="2"/>
-
 
                     <TableLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/statistics_table"
-                        android:layout_centerInParent="true"
                         android:stretchColumns="1"
                         >
 
                     </TableLayout>
 
                 </LinearLayout>
-
             </FrameLayout>
         </LinearLayout>
     </TabHost>
