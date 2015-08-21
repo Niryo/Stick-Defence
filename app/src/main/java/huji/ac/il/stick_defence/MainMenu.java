@@ -33,7 +33,6 @@ import java.util.regex.Pattern;
 
 
 public class MainMenu extends Activity implements DoProtocolAction {
-    private String name = "";
     private Client client;// = Client.createClient(name);
     private boolean isCreateLeagueOptionsVisible = false;
     private boolean isEnterIpViewVisble= false;
@@ -41,7 +40,6 @@ public class MainMenu extends Activity implements DoProtocolAction {
     private String SAVED_IP = "SAVED_IP";
     private String NICKNAME= "NICKNAME";
     private String UNIQUE_ID= "UNIQUE_ID";
-    private String id="";
     private String SHARED_PREFERENCES= "SHARED_PREFERENCES";
     private  final Pattern PARTIAl_IP_ADDRESS =
             Pattern.compile("^((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])\\.){0,3}"+
@@ -55,21 +53,19 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         super.onCreate(savedInstanceState);
+        //getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit().clear().commit();//todo: remove
         final SharedPreferences settings = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
-        this.name = settings.getString(NICKNAME,"");
-        if(this.name.isEmpty()){
+        String name = settings.getString(NICKNAME, "");
+        if(name.isEmpty()){
             showNicknameDialog();
+        }else{
+            initClient();
         }
-//        showNicknameDialog();//todo:for testing only, should be removed!
-        this.name = settings.getString(NICKNAME,""); //at this point name can't be empty.
-        this.id= settings.getString(UNIQUE_ID,"");
 
         FontsOverride.setDefaultFont(this, "SERIF", "Schoolbell.ttf");
 
         setContentView(R.layout.activity_main_menu);
 
-        client = Client.createClient(name,id);
-        this.client.setCurrentActivity(this);
 
         deleteOldGameData();
 
@@ -293,12 +289,14 @@ public class MainMenu extends Activity implements DoProtocolAction {
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String nickname= editText.getText().toString();
+                String name= editText.getText().toString();
                 final SharedPreferences settings = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
                 SharedPreferences.Editor editor = settings.edit();
-                editor.putString(NICKNAME, nickname);
+                editor.putString(NICKNAME, name);
                 editor.commit();
+                initClient();
                 dialog.dismiss();
+
             }
         });
         okButton.setEnabled(false);
@@ -321,11 +319,17 @@ public class MainMenu extends Activity implements DoProtocolAction {
             }
         });
         dialog.show();
-        generateRandomId();
-
+       generateRandomId();
 
     }
-    public void generateRandomId(){
+    private void initClient(){
+        final SharedPreferences settings = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
+        String name = settings.getString(NICKNAME,"");
+        String id =   settings.getString(UNIQUE_ID,"");
+        this.client = Client.createClient(name,id);
+        this.client.setCurrentActivity(this);
+    }
+    public  void generateRandomId(){
         Random rand = new Random(System.currentTimeMillis());
         long id= rand.nextInt(100000000);
         final SharedPreferences settings = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
@@ -356,6 +360,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 startActivity(intentWithInfo);
                 finish();
                 break;
+
         }
     }
 

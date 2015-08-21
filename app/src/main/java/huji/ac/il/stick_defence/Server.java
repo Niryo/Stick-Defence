@@ -164,19 +164,16 @@ public class Server {
                 break;
 
             case READY_TO_PLAY:
-                peer.readyToPlay = true;
-                if (peer.partner.readyToPlay) { //both peers are ready to play
-                    try {
-                        Thread.sleep(3000); //sleep for a few seconds, just to give the player some time to finish loading his game
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    String currentTime = Long.toString(System.currentTimeMillis());
-                    peer.send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
-                    peer.partner.send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
-                    //clear the readyToPlayFlag for the next time:
-                    peer.readyToPlay = false;
-                    peer.partner.readyToPlay = false;
+                peer.setReadyToPlay();
+                if (peer.canStartPlay && peer.partner.canStartPlay) { //both peers can ready to play
+                    sendStartGame(peer);
+                }
+                break;
+
+            case PARTNER_INFO:
+                peer.setReceivedPartnerInfo();
+                if (peer.canStartPlay && peer.partner.canStartPlay) { //both peers can ready to play
+                    sendStartGame(peer);
                 }
                 break;
 
@@ -207,7 +204,19 @@ public class Server {
         peer1.setPartner(null);
         peer2.setPartner(null);
     }
-
+    private void sendStartGame(Peer peer){
+        try {
+            Thread.sleep(3000); //sleep for a few seconds, just to give the player some time to finish loading his game
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        String currentTime = Long.toString(System.currentTimeMillis());
+        peer.send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
+        peer.partner.send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
+        //clear the readyToPlayFlag for the next time:
+        peer.clearReadyToPlayAndReceivedInfo();
+        peer.partner.clearReadyToPlayAndReceivedInfo();
+    }
 
     /**
      * This class represents a socket listener on a client node.
@@ -294,6 +303,8 @@ private Peer peer;
         private int score = 0;
         private int wins = 0;
         private Boolean readyToPlay = false;
+        private Boolean receivedPartnerInfo=true;//we start with true because in the first round we don't need to wait for partner info
+        private Boolean canStartPlay=false; //if both readyToPlay and receivedPartnerInfo are true;
 
         /**
          * Constructs a new peer.
@@ -379,6 +390,28 @@ private Peer peer;
         }
         public void setId(String id){
             this.id=id;
+        }
+        public void setReadyToPlay(){
+            this.readyToPlay=true;
+            if(this.receivedPartnerInfo){
+                this.canStartPlay=true;
+            }
+        }
+
+        public void setReceivedPartnerInfo(){
+            this.receivedPartnerInfo=true;
+            if(this.readyToPlay){
+                this.canStartPlay=true;
+            }
+        }
+
+        public boolean canStartPlay(){
+            return this.canStartPlay;
+        }
+        public void clearReadyToPlayAndReceivedInfo(){
+            this.readyToPlay=false;
+            this.canStartPlay=false;
+            this.receivedPartnerInfo=false;
         }
 
     }

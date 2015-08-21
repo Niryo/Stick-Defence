@@ -17,7 +17,7 @@ import java.io.Serializable;
  */
 public abstract class Soldier implements Serializable {
     //Epsilon to hit soldier from his center
-    private static final int HIT_EPSILON = 15;
+    private static final int HIT_EPSILON = 10;
 
     protected GameState gameState = GameState.getInstance();
 

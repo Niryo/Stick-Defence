@@ -87,7 +87,14 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
             case LEAGUE_INFO:
                 waitDialog.dismiss();
                 printLeagueInfo(rawInfo);
-                break; //todo: remove the waiting dialog
+             if( GameState.getInstance().getInstance()!=null){
+                 GameState.getInstance().getInstance().sendStateInfoToPartner();
+            }
+                break;
+            case PARTNER_INFO:
+                GameState.getInstance().newPartnerInfo(rawInfo);
+                break;
+
         }
     }
 

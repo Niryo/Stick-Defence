@@ -8,6 +8,9 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 
@@ -52,6 +55,8 @@ public class GameState {
     private PlayerStorage playerStorage;
     private Button sendBazookaSoldierButton;
     private Activity gameActivity;
+    private Tower rightTower;
+    private Tower leftTower;
 
     /**
      * Constructor. Adds 2 towers to the sprites list.
@@ -87,8 +92,8 @@ public class GameState {
 
     private void init(int canvasWidth, int canvasHeight) {
         setCanvasDimentions(canvasWidth, canvasHeight);
-        Tower leftTower = new Tower(context, Sprite.Player.LEFT);
-        Tower rightTower = new Tower(context, Sprite.Player.RIGHT);
+        this.leftTower = new Tower(context, Sprite.Player.LEFT);
+        this.rightTower = new Tower(context, Sprite.Player.RIGHT);
 
         towers.add(leftTower);
         towers.add(rightTower);
@@ -330,7 +335,32 @@ public class GameState {
         }
 
     }
+    public void newPartnerInfo(String rawInput){
+        try {
+            JSONObject info = new JSONObject(rawInput);
+            String towerName= info.getString("tower");
+            if(towerName.equals("BASIC_TOWER")){
+                //DO NOTHING
+            }
 
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+    public void sendStateInfoToPartner(){
+        JSONObject info = new JSONObject();
+        try {
+            info.put("tower", "BASIC_TOWER");//todo: add a string to represent the tower;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+       String data= info.toString();
+        client.send(Protocol.stringify(Protocol.Action.PARTNER_INFO, data));
+
+    }
     public void removeSoldier(Soldier soldier, boolean shouldReport) {
         if (soldier.getPlayer() == Sprite.Player.LEFT) {
             this.leftPlayerSoldiers--;
