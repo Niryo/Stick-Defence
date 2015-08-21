@@ -107,7 +107,6 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
             JSONObject info = null;
             info = new JSONObject(rawInfo);
             Iterator<?> keys = info.keys();
-
             while (keys.hasNext()) {
                 String key = (String) keys.next();
                 if (!key.equals("statistics")) {
@@ -179,6 +178,10 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
                     }
 
 
+                }
+
+                if(info.has("end_of_league")){
+                    //todo: print winner
                 }
             }
 

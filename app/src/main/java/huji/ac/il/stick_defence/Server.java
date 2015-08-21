@@ -154,8 +154,8 @@ public class Server {
                             }
                         }
                         leagueManager = new LeagueManager(peers);
-                        String info = leagueManager.getLeagueInfo();
-                        sendLeagueInfo(info);
+                        JSONObject info = leagueManager.getLeagueInfo();
+                        sendLeagueInfo(info.toString());
 
                         Log.w("custom", "league info sent!");
                     }
@@ -186,8 +186,8 @@ public class Server {
                 if (gameOverCounter == this.leagueParticipants) {
                     this.gameOverCounter = 0;
                     leagueManager.updateLeagueStage();
-                    String leagueInfo = leagueManager.getLeagueInfo();
-                    sendLeagueInfo(leagueInfo);
+                    JSONObject leagueInfo = leagueManager.getLeagueInfo();
+                    sendLeagueInfo(leagueInfo.toString());
                 }
                 break;
 
@@ -412,6 +412,9 @@ private Peer peer;
             this.readyToPlay=false;
             this.canStartPlay=false;
             this.receivedPartnerInfo=false;
+        }
+        public void resetWins(){
+            this.wins=0;
         }
 
     }

@@ -29,9 +29,18 @@ public class LeagueManager {
      *
      * @return information about the league
      */
-    private String twoPersonLeague() {
-        Server.getServerInstance().makePair(peers.get(0), peers.get(1));
+    private JSONObject twoPersonLeague() {
         JSONObject pairs = new JSONObject();
+        if(stage==4){
+            addStatistics(pairs);
+            try {
+                pairs.put("end_of_league", true);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            resetLeague();
+        }
+        Server.getServerInstance().makePair(peers.get(0), peers.get(1));
         JSONObject players = new JSONObject();
         try {
             players.put("player1", peers.get(0).getName());
@@ -41,8 +50,7 @@ public class LeagueManager {
             e.printStackTrace();
         }
         addStatistics(pairs);
-        String info = pairs.toString();
-        return info;
+        return pairs;
     }
 
     /**
@@ -50,8 +58,17 @@ public class LeagueManager {
      *
      * @return information about the league
      */
-    private String fourPersonLeague() {
+    private JSONObject fourPersonLeague() {
         JSONObject pairs = new JSONObject();
+        if(stage==2){
+            addStatistics(pairs);
+            try {
+                pairs.put("end_of_league", true);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            resetLeague();
+        }
         int pairCount = 0;
         for (int i = 0; i < 4; i += 2) {
             JSONObject players = new JSONObject();
@@ -68,8 +85,7 @@ public class LeagueManager {
             }
         }
         addStatistics(pairs);
-        String info = pairs.toString();
-        return info;
+        return pairs;
     }
 
     /**
@@ -77,8 +93,17 @@ public class LeagueManager {
      *
      * @return information about the league
      */
-    private String sixPersonLeague() {
+    private JSONObject sixPersonLeague() {
         JSONObject pairs = new JSONObject();
+        if(stage==4){
+            addStatistics(pairs);
+            try {
+                pairs.put("end_of_league", true);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            resetLeague();
+        }
         int pairCount = 0;
         for (int i = 0; i < 6; i += 2) {
             JSONObject players = new JSONObject();
@@ -95,8 +120,7 @@ public class LeagueManager {
             }
         }
         addStatistics(pairs);
-        String info = pairs.toString();
-        return info;
+        return pairs;
     }
 
     /**
@@ -104,8 +128,17 @@ public class LeagueManager {
      *
      * @return
      */
-    private String eightPersonLeague() {
+    private JSONObject eightPersonLeague() {
         JSONObject pairs = new JSONObject();
+        if(stage==4){
+            addStatistics(pairs);
+            try {
+                pairs.put("end_of_league", true);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            resetLeague();
+        }
         int pairCount = 0;
         //we run over the list of peers making a temp list, with all the peers that have the
         //same number of wins. then, we run over the temp list and pair the peers.
@@ -133,12 +166,11 @@ public class LeagueManager {
         }
         addStatistics(pairs);
         String info = pairs.toString();
-        return info;
+        return pairs;
     }
 
-    public String getLeagueInfo() {
-        //TODO: if stage == ? return finish league.
-        String info="";
+    public JSONObject getLeagueInfo() {
+        JSONObject info=null;
 
         switch (this.peers.size()) {
             case 2:
@@ -153,11 +185,17 @@ public class LeagueManager {
             case 8:
                 info= eightPersonLeague();
                 break;
-            default:
-                info= "";
+
         }
 
         return info;
+    }
+
+    private void resetLeague(){
+        this.stage=0;
+        for (Server.Peer peer : peers){
+            peer.resetWins();
+        }
     }
 
     private void addStatistics(JSONObject info) {
