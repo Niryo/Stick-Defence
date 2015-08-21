@@ -103,6 +103,27 @@
                 android:text="@string/towers"
                 android:typeface="serif"
                 />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/buy_big_wooden_tower"
+                android:background="@drawable/big_wooden_tower_blue_icon"
+                android:layout_marginRight="10dp"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/buy_stone_tower"
+                android:background="@drawable/stone_tower_blue_icon"
+                android:layout_marginRight="10dp"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/buy_fortified_tower"
+                android:background="@drawable/fortified_tower_icon"
+                android:layout_marginRight="10dp"
+                />
         </LinearLayout>
 
         <LinearLayout

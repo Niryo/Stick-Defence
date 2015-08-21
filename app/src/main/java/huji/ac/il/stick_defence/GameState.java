@@ -92,9 +92,12 @@ public class GameState {
 
     private void init(int canvasWidth, int canvasHeight) {
         setCanvasDimentions(canvasWidth, canvasHeight);
-        this.leftTower = new Tower(context, Sprite.Player.LEFT);
-        this.rightTower = new Tower(context, Sprite.Player.RIGHT);
+        this.leftTower = getMyTower();
+        if (null == this.rightTower){
+            this.rightTower = new WoodenTower(context, Sprite.Player.RIGHT);
+        }
 
+        Log.w("yahav", "Adding" + leftTower.getName());
         towers.add(leftTower);
         towers.add(rightTower);
 
@@ -111,6 +114,19 @@ public class GameState {
 
     }
 
+    private Tower getMyTower(){
+        if (playerStorage.isPurchased(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER)){
+            return new FortifiedTower(context, Sprite.Player.LEFT);
+        }
+        if (playerStorage.isPurchased(PlayerStorage.PurchasesEnum.STONE_TOWER)){
+            return new StoneTower(context, Sprite.Player.LEFT);
+        }
+        if (playerStorage.isPurchased(PlayerStorage.PurchasesEnum.BIG_WOODEN_TOWER)){
+            return new BigWoodenTower(context, Sprite.Player.LEFT);
+        }
+        return new WoodenTower(context, Sprite.Player.LEFT);
+
+    }
     public void setSinglePlayer() {
         this.isMultiplayer = false;
     }
@@ -129,8 +145,8 @@ public class GameState {
         return this.playerStorage.isPurchased(iSoldier);
     }
 
-    public void buySoldier(PlayerStorage.PurchasesEnum iSoldier, int price) {
-        this.playerStorage.buySoldier(iSoldier);
+    public void buyItem(PlayerStorage.PurchasesEnum iItem, int price) {
+        this.playerStorage.buy(iItem);
         this.playerStorage.setCredits(this.playerStorage.getCredits() - price);
     }
 
@@ -142,11 +158,14 @@ public class GameState {
     }
 
     public void initProgressBar(ProgressBar progressBar, Sprite.Player player) {
-        progressBar.setMax((int) Tower.MAX_HP);
-        progressBar.setProgress((int) Tower.MAX_HP);
+
         if (Sprite.Player.LEFT == player) {
+            progressBar.setMax((int) leftTower.getMaxHp());
+            progressBar.setProgress((int) leftTower.getMaxHp());
             leftProgressBar = progressBar;
         } else {
+            progressBar.setMax((int) rightTower.getMaxHp());
+            progressBar.setProgress((int) rightTower.getMaxHp());
             rightProgressBar = progressBar;
         }
     }
@@ -339,8 +358,19 @@ public class GameState {
         try {
             JSONObject info = new JSONObject(rawInput);
             String towerName= info.getString("tower");
-            if(towerName.equals("BASIC_TOWER")){
-                //DO NOTHING
+
+            //TODO - change to switch
+            if (towerName.equals(Tower.TowerTypes.WOODEN_TOWER.name())){
+                rightTower = new WoodenTower(context, Sprite.Player.RIGHT);
+            }
+            if (towerName.equals(Tower.TowerTypes.BIG_WOODEN_TOWER.name())){
+                rightTower = new BigWoodenTower(context, Sprite.Player.RIGHT);
+            }
+            if (towerName.equals(Tower.TowerTypes.STONE_TOWER.name())){
+                rightTower = new StoneTower(context, Sprite.Player.RIGHT);
+            }
+            if (towerName.equals(Tower.TowerTypes.FORTIFIED_TOWER.name())){
+                rightTower = new FortifiedTower(context, Sprite.Player.RIGHT);
             }
 
         } catch (JSONException e) {
@@ -351,13 +381,13 @@ public class GameState {
     public void sendStateInfoToPartner(){
         JSONObject info = new JSONObject();
         try {
-            info.put("tower", "BASIC_TOWER");//todo: add a string to represent the tower;
+            info.put("tower", leftTower.getName());
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-       String data= info.toString();
+        String data= info.toString();
         client.send(Protocol.stringify(Protocol.Action.PARTNER_INFO, data));
 
     }

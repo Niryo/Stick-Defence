@@ -24,6 +24,9 @@ public class Market extends Activity implements DoProtocolAction {
     private static final int    TANK_BUY_PRICE = 100;
     private static final int    BAZOOKA_BUY_PRICE = 100;
     private static final int    MATH_BOMB_PRICE = 100;
+    private static final int    BIG_WOODEN_TOWER_PRICE = 100;
+    private static final int    STONE_TOWER_PRICE = 100;
+    private static final int    FORTIFIED_TOWER_PRICE = 100;
 
     private static final String CREDITS = "Credits: ";
 
@@ -96,7 +99,15 @@ public class Market extends Activity implements DoProtocolAction {
         addButton(PlayerStorage.PurchasesEnum.MATH_BOMB,
                 R.id.buy_math_bomb,
                 MATH_BOMB_PRICE);
-
+        addButton(PlayerStorage.PurchasesEnum.BIG_WOODEN_TOWER,
+                R.id.buy_big_wooden_tower,
+                BIG_WOODEN_TOWER_PRICE);
+        addButton(PlayerStorage.PurchasesEnum.STONE_TOWER,
+                R.id.buy_stone_tower,
+                STONE_TOWER_PRICE);
+        addButton(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER,
+                R.id.buy_fortified_tower,
+                FORTIFIED_TOWER_PRICE);
 
     }
 
@@ -113,9 +124,7 @@ public class Market extends Activity implements DoProtocolAction {
                 public void onClick(View v) {
                     int credits = gameState.getCredits(Sprite.Player.LEFT);
                     if (credits >= price) {
-                        gameState.
-                                buySoldier(item,
-                                        price);
+                        gameState.buyItem(item, price);
                         credits -= price;
                         creditsTv.setText(CREDITS + credits + "$");
                         gameState.save();
