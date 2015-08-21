@@ -24,7 +24,7 @@ public class Market extends Activity implements DoProtocolAction {
     private static final int    TANK_BUY_PRICE = 100;
     private static final int    BAZOOKA_BUY_PRICE = 100;
     private static final int    MATH_BOMB_PRICE = 100;
-    
+
     private static final String CREDITS = "Credits: ";
 
     private String savedLeagueInfo = null;
