@@ -85,6 +85,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         addButton(PlayerStorage.PurchasesEnum.BASIC_SOLDIER,
                   R.drawable.basic_soldier_icon, Protocol.Action.BASIC_SOLDIER);
+        addButton(PlayerStorage.PurchasesEnum.ZOMBIE,
+                R.drawable.zombie_icon, Protocol.Action.ZOMBIE);
         addButton(PlayerStorage.PurchasesEnum.SWORDMAN,
                   R.drawable.swordman_icon, Protocol.Action.SWORDMAN);
         addButton(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER,
@@ -92,6 +94,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
         addButton(PlayerStorage.PurchasesEnum.TANK,
                   R.drawable.tank_icon, Protocol.Action.TANK);
 
+        //Different because of the second setCompoundDrawablesWithIntrinsicBounds
         if (gameState.isPurchased(PlayerStorage.PurchasesEnum.MATH_BOMB)){
             Button sendMathBomb = new Button(this);
             sendMathBomb.setTag("MathBomb");
@@ -284,6 +287,11 @@ firstLineLayout.addView(scoreLayout);
                 this.gameState.addSoldier(Sprite.Player.RIGHT,
                         Protocol.getTimeStamp(rawInput),
                         Protocol.Action.BASIC_SOLDIER);
+                break;
+            case ZOMBIE:
+                this.gameState.addSoldier(Sprite.Player.RIGHT,
+                        Protocol.getTimeStamp(rawInput),
+                        Protocol.Action.ZOMBIE);
                 break;
             case SWORDMAN:
                 this.gameState.addSoldier(Sprite.Player.RIGHT,

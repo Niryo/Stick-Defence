@@ -23,6 +23,7 @@ public class GameState {
 
     private static final int MAX_SOLDIERS_PER_PLAYER = 20;
     private static final int CREDITS_ON_WIN = 100;
+    private static final int ZOMBIE_SEND_PRICE = 50;
     private static final int SWORDMAN_SEND_PRICE = 5;
     private static final int BAZOOKA_SEND_PRICE = 10;
     private static final int TANK_SEND_PRICE = 100;
@@ -257,6 +258,9 @@ public class GameState {
                     case BASIC_SOLDIER:
                         client.reportBasicSoldier();
                         break;
+                    case ZOMBIE:
+                        client.reportZombie();
+                        break;
                     case SWORDMAN:
                         client.reportSwordman();
                         break;
@@ -294,21 +298,27 @@ public class GameState {
             case BASIC_SOLDIER:
                 soldiers.add(new BasicSoldier(context, player, delay));
                 break;
+            case ZOMBIE:
+                if (creditManager.decCredits(ZOMBIE_SEND_PRICE, player) ||
+                        player == Sprite.Player.RIGHT) {
+                    soldiers.add(new Zombie(context, player, delay));
+                }
+                break;
             case SWORDMAN:
                 if (creditManager.decCredits(SWORDMAN_SEND_PRICE, player) ||
-                        player== Sprite.Player.RIGHT) {
+                        player == Sprite.Player.RIGHT) {
                     soldiers.add(new Swordman(context, player, delay));
                 }
                 break;
             case BAZOOKA_SOLDIER:
                 if (creditManager.decCredits(BAZOOKA_SEND_PRICE, player) ||
-                        player== Sprite.Player.RIGHT) {
+                        player == Sprite.Player.RIGHT) {
                     soldiers.add(new BazookaSoldier(context, player, delay));
                 }
                 break;
             case TANK:
                 if (creditManager.decCredits(TANK_SEND_PRICE, player) ||
-                        player== Sprite.Player.RIGHT) {
+                        player == Sprite.Player.RIGHT) {
                     soldiers.add(new Tank(context, player, delay));
                 }
                 break;

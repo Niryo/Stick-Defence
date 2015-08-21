@@ -56,6 +56,14 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/buy_zombie"
+                android:background="@drawable/zombie_icon"
+                android:layout_marginRight="10dp"
+                />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/buy_swordman"
                 android:background="@drawable/swordman_icon"
                 android:layout_marginRight="10dp"

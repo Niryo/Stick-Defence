@@ -55,6 +55,7 @@ public class Protocol {
         PREPARE_GAME,
         START_GAME,
         BASIC_SOLDIER,
+        ZOMBIE,
         SWORDMAN,
         BAZOOKA_SOLDIER,
         TANK,
