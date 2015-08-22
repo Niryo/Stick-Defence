@@ -73,7 +73,7 @@ public class GameSurface extends SurfaceView implements
 
 
     public void goToMarket() {
-        gameState.saveAndFinish();
+        gameState.finishGame();
         stopGameLoop();
         Intent gameIntent = new Intent(context, Market.class);
 // TODO - Save an object with points[player], nPlayers, isMultiplayer, etc.

@@ -1,16 +1,13 @@
 package huji.ac.il.stick_defence;
 
 import android.annotation.TargetApi;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.format.Formatter;
-import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,12 +49,16 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
         waitDialog.setCancelable(false);
         waitDialog.show();
         client.setCurrentActivity(this);
+
+        final boolean newGame = getIntent().getBooleanExtra("NewGame", true);
+
         Button readyButton = (Button) findViewById(R.id.ready_to_play);
         readyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { //todo: switch to game and only then send ready to play.
                 Intent gameIntent = new Intent(getApplicationContext(),
                         GameActivity.class);
+                gameIntent.putExtra("NewGame", newGame);
                 startActivity(gameIntent);
                 finish();
             }
@@ -74,6 +75,7 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
         }
 
 
+
     }
 
 
@@ -87,12 +89,12 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
             case LEAGUE_INFO:
                 waitDialog.dismiss();
                 printLeagueInfo(rawInfo);
-             if( GameState.getInstance().getInstance()!=null){
-                 GameState.getInstance().getInstance().sendStateInfoToPartner();
-            }
+            /* if( GameState.getInstance().getInstance()!=null){
+                 GameState.getInstance().getInstance().sendTowerTypeToPartner();
+            }*/
                 break;
             case PARTNER_INFO:
-                GameState.getInstance().newPartnerInfo(rawInfo);
+                GameState.getInstance().newTowerType(rawInfo);
                 break;
 
         }

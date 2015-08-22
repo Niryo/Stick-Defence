@@ -24,7 +24,7 @@ public class Bow implements Serializable {
     private static int ARC_PATH_HEIGHT_FACTOR = 4;
     private static int actualArcPathHeight;
     private static int actualArcPathWidth;
-    private static final int ARC_PATH_START_ANGLE = 280;
+    private static final int ARC_PATH_START_ANGLE = 290;
     private static final int ARC_PATH_LENGTH = 80;
 
     private GameState gameState = GameState.getInstance();

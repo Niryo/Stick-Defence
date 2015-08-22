@@ -12,4 +12,14 @@ public class FortifiedTower extends Tower {
         super(context, player, R.drawable.fortified_tower,
               R.drawable.fortified_tower, MAX_HP, TowerTypes.FORTIFIED_TOWER);
     }
+
+    @Override
+    public int getLeftX() {
+        return (int) (super.getLeftX() * 1.15);
+    }
+
+    @Override
+    public int getRightX() {
+        return (int) (super.getRightX() * 0.85);
+    }
 }

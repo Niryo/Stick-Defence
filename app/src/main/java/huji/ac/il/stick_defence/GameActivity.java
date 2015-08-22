@@ -55,8 +55,21 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         int newScreenHeight = (int) Math.round(((double) 9 * screenWidth) / 16);//set the height to be proportional to the width
 
-        GameState.reset();
-        this.gameState = GameState.CreateGameState(getApplicationContext(),this, screenWidth, newScreenHeight);
+        boolean newGame = true;
+        Bundle bundle = getIntent().getExtras();
+        newGame = bundle.getBoolean("NewGame", true);
+
+        gameState = GameState.getInstance();
+        if (null == gameState){
+            this.gameState =
+                    GameState.CreateGameState(getApplicationContext(),
+                                              this, screenWidth,
+                                              newScreenHeight);
+        } else {
+            GameState.getInstance().reset(newGame);
+        }
+
+
         isMultiplayer = getIntent().getBooleanExtra("Multiplayer", true);
 
         gameComponentsLayout = (LinearLayout) findViewById(R.id.game_components);
@@ -174,34 +187,37 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                         RelativeLayout.LayoutParams.WRAP_CONTENT);
 //        pointsLayoutParams.addRule(RelativeLayout.RIGHT_OF, sendBazookaSoldier.getId());
-        gameState.initCredits(pointsTv);
+        gameState.initCredits(pointsTv, newGame);
 
         scoreLayout.addView(pointsTv, pointsLayoutParams);
         //   buttons.addView(rightPointsTv);
-firstLineLayout.addView(scoreLayout);
+        firstLineLayout.addView(scoreLayout);
 
         //======================================================================
 
-
-
         if (isMultiplayer) {
-            waitDialog = new ProgressDialog(this);
-            waitDialog.setMessage("Waiting for opponent..");
-            waitDialog.setIndeterminate(true);
-            waitDialog.setCancelable(false);
-            waitDialog.show();
-
-            Client.getClientInstance().send(Protocol.stringify(Protocol.Action.READY_TO_PLAY));
-
-
-            AlertDialog.Builder pauseDialogBuilder;
-            pauseDialogBuilder = new AlertDialog.Builder(this)
-                    .setTitle("Pause")
-                    .setMessage("Wait! Other player in a break")
-                    .setIcon(android.R.drawable.ic_dialog_alert);
-
-            pauseDialog = pauseDialogBuilder.create();
+            readyToPlay();
         }
+    }
+
+    private void readyToPlay(){
+        waitDialog = new ProgressDialog(this);
+        waitDialog.setMessage("Waiting for opponent..");
+        waitDialog.setIndeterminate(true);
+        waitDialog.setCancelable(false);
+        waitDialog.show();
+
+        Client.getClientInstance().send(Protocol.stringify(Protocol.Action.READY_TO_PLAY));
+
+
+        AlertDialog.Builder pauseDialogBuilder;
+        pauseDialogBuilder = new AlertDialog.Builder(this)
+                .setTitle("Pause")
+                .setMessage("Wait! Other player in a break")
+                .setIcon(android.R.drawable.ic_dialog_alert);
+
+        pauseDialog = pauseDialogBuilder.create();
+
     }
 
     private void addButton(PlayerStorage.PurchasesEnum item,
@@ -368,6 +384,9 @@ firstLineLayout.addView(scoreLayout);
                 });
                     }
                 }
+                break;
+            case PARTNER_INFO:
+                gameState.newTowerType(Protocol.getData(rawInput));
                 break;
 
         }

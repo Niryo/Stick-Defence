@@ -210,4 +210,10 @@ public abstract class Tower {
     public double getMaxHp(){ return this.max_hp; }
 
     public String getName(){ return this.type.name(); }
+
+    public TowerTypes getType(){ return this.type; }
+    public void reset(){
+        this.hp = this.max_hp;
+        this.fires = new ArrayList<>();
+    }
 }

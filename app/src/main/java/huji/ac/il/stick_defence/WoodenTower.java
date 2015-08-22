@@ -12,5 +12,13 @@ public class WoodenTower extends Tower {
         super(context, player, R.drawable.wooden_tower_blue,
               R.drawable.wooden_tower_red, MAX_HP, TowerTypes.WOODEN_TOWER);
     }
+    @Override
+    public int getLeftX() {
+        return (int) (super.getLeftX() * 1.07);
+    }
 
+    @Override
+    public int getRightX() {
+        return (int) (super.getRightX() * 0.93);
+    }
 }
