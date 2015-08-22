@@ -11,8 +11,13 @@ import java.util.Random;
 /**
  * Created by yahav on 28/04/15.
  */
-public class Tower {
-
+public abstract class Tower {
+    public enum TowerTypes{
+        WOODEN_TOWER,
+        BIG_WOODEN_TOWER,
+        STONE_TOWER,
+        FORTIFIED_TOWER
+    }
     private class Fire {
         private static final int NUMBER_OF_FRAMES = 4;
         private static final double FIRE_SCREEN_HEIGHT_PORTION = 0.1;
@@ -54,16 +59,18 @@ public class Tower {
     //tower to span over a half of the screen height.
     private static final double SCREEN_HEIGHT_PORTION = 0.6;
 
-    public static final double MAX_HP = 100.0;
+    private double     max_hp;
+    private double     hp;
+    private TowerTypes type;
 
-    private static Bitmap leftTowerPic = null;
-    private static Bitmap rightTowerPic = null;
+    private Bitmap leftTowerPic = null;
+    private Bitmap rightTowerPic = null;
     private static Bitmap firePic = null;
     private Sprite towerSprite;
     private ArrayList<Fire> fires;
     private Context context;
 
-    private double hp;
+
     private int screenWidth;
     private int screenHeight;
     private Sprite.Player player;
@@ -78,16 +85,15 @@ public class Tower {
      * @param context the context
      * @param player  the PLAYER - right or left
      */
-    public Tower(Context context, Sprite.Player player) {
-        if (null == leftTowerPic) {
-            leftTowerPic = BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.blue_tower); // Read resource only once
-        }
-        if (null == rightTowerPic) {
-            rightTowerPic = BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.red_tower); // Read resource only once
-            rightTowerPic = Sprite.mirrorBitmap(rightTowerPic);
-        }
+    public Tower(Context context, Sprite.Player player, int leftPic,
+                 int rightPic, double maxHp, TowerTypes type) {
+        leftTowerPic = BitmapFactory.decodeResource(context.getResources(),
+                leftPic);
+
+        rightTowerPic = BitmapFactory.decodeResource(context.getResources(),
+                rightPic); // Read resource only once
+        rightTowerPic = Sprite.mirrorBitmap(rightTowerPic);
+
 
         if (null == firePic) {
             firePic = BitmapFactory.decodeResource(context.getResources(),
@@ -110,10 +116,11 @@ public class Tower {
 
         this.player = player;
 
-        this.hp = MAX_HP; // TODO
+        this.hp = this.max_hp = maxHp;
 
         this.context = context;
         fires = new ArrayList<>();
+        this.type = type;
     }
 
     /**
@@ -175,16 +182,16 @@ public class Tower {
     public boolean reduceHP(double hp) {
         this.hp -= hp;
 
-        if (this.hp < 0.75 * MAX_HP && this.fires.size() < 1) {
+        if (this.hp < 0.75 * max_hp && this.fires.size() < 1) {
             this.fires.add(new Fire(context));
         }
-        if (this.hp < 0.5 * MAX_HP && this.fires.size() < 2) {
+        if (this.hp < 0.5 * max_hp && this.fires.size() < 2) {
             this.fires.add(new Fire(context));
         }
-        if (this.hp < 0.25 * MAX_HP && this.fires.size() < 3) {
+        if (this.hp < 0.25 * max_hp && this.fires.size() < 3) {
             this.fires.add(new Fire(context));
         }
-        if (this.hp < 0.1 * MAX_HP && this.fires.size() < 4) {
+        if (this.hp < 0.1 * max_hp && this.fires.size() < 4) {
             this.fires.add(new Fire(context));
         }
         gameState.setTowerProgressHP(this.hp, player);
@@ -200,4 +207,13 @@ public class Tower {
         return towerSprite.getScaledFrameHeight();
     }
 
+    public double getMaxHp(){ return this.max_hp; }
+
+    public String getName(){ return this.type.name(); }
+
+    public TowerTypes getType(){ return this.type; }
+    public void reset(){
+        this.hp = this.max_hp;
+        this.fires = new ArrayList<>();
+    }
 }

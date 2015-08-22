@@ -55,8 +55,21 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         int newScreenHeight = (int) Math.round(((double) 9 * screenWidth) / 16);//set the height to be proportional to the width
 
-        GameState.reset();
-        this.gameState = GameState.CreateGameState(getApplicationContext(),this, screenWidth, newScreenHeight);
+        boolean newGame = true;
+        Bundle bundle = getIntent().getExtras();
+        newGame = bundle.getBoolean("NewGame", true);
+
+        gameState = GameState.getInstance();
+        if (null == gameState){
+            this.gameState =
+                    GameState.CreateGameState(getApplicationContext(),
+                                              this, screenWidth,
+                                              newScreenHeight);
+        } else {
+            GameState.getInstance().reset(newGame);
+        }
+
+
         isMultiplayer = getIntent().getBooleanExtra("Multiplayer", true);
 
         gameComponentsLayout = (LinearLayout) findViewById(R.id.game_components);
@@ -85,6 +98,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         addButton(PlayerStorage.PurchasesEnum.BASIC_SOLDIER,
                   R.drawable.basic_soldier_icon, Protocol.Action.BASIC_SOLDIER);
+        addButton(PlayerStorage.PurchasesEnum.ZOMBIE,
+                R.drawable.zombie_icon, Protocol.Action.ZOMBIE);
         addButton(PlayerStorage.PurchasesEnum.SWORDMAN,
                   R.drawable.swordman_icon, Protocol.Action.SWORDMAN);
         addButton(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER,
@@ -92,6 +107,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
         addButton(PlayerStorage.PurchasesEnum.TANK,
                   R.drawable.tank_icon, Protocol.Action.TANK);
 
+        //Different because of the second setCompoundDrawablesWithIntrinsicBounds
         if (gameState.isPurchased(PlayerStorage.PurchasesEnum.MATH_BOMB)){
             Button sendMathBomb = new Button(this);
             sendMathBomb.setTag("MathBomb");
@@ -171,34 +187,37 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                         RelativeLayout.LayoutParams.WRAP_CONTENT);
 //        pointsLayoutParams.addRule(RelativeLayout.RIGHT_OF, sendBazookaSoldier.getId());
-        gameState.initCredits(pointsTv);
+        gameState.initCredits(pointsTv, newGame);
 
         scoreLayout.addView(pointsTv, pointsLayoutParams);
         //   buttons.addView(rightPointsTv);
-firstLineLayout.addView(scoreLayout);
+        firstLineLayout.addView(scoreLayout);
 
         //======================================================================
 
-
-
         if (isMultiplayer) {
-            waitDialog = new ProgressDialog(this);
-            waitDialog.setMessage("Waiting for opponent..");
-            waitDialog.setIndeterminate(true);
-            waitDialog.setCancelable(false);
-            waitDialog.show();
-
-            Client.getClientInstance().send(Protocol.stringify(Protocol.Action.READY_TO_PLAY));
-
-
-            AlertDialog.Builder pauseDialogBuilder;
-            pauseDialogBuilder = new AlertDialog.Builder(this)
-                    .setTitle("Pause")
-                    .setMessage("Wait! Other player in a break")
-                    .setIcon(android.R.drawable.ic_dialog_alert);
-
-            pauseDialog = pauseDialogBuilder.create();
+            readyToPlay();
         }
+    }
+
+    private void readyToPlay(){
+        waitDialog = new ProgressDialog(this);
+        waitDialog.setMessage("Waiting for opponent..");
+        waitDialog.setIndeterminate(true);
+        waitDialog.setCancelable(false);
+        waitDialog.show();
+
+        Client.getClientInstance().send(Protocol.stringify(Protocol.Action.READY_TO_PLAY));
+
+
+        AlertDialog.Builder pauseDialogBuilder;
+        pauseDialogBuilder = new AlertDialog.Builder(this)
+                .setTitle("Pause")
+                .setMessage("Wait! Other player in a break")
+                .setIcon(android.R.drawable.ic_dialog_alert);
+
+        pauseDialog = pauseDialogBuilder.create();
+
     }
 
     private void addButton(PlayerStorage.PurchasesEnum item,
@@ -285,6 +304,11 @@ firstLineLayout.addView(scoreLayout);
                         Protocol.getTimeStamp(rawInput),
                         Protocol.Action.BASIC_SOLDIER);
                 break;
+            case ZOMBIE:
+                this.gameState.addSoldier(Sprite.Player.RIGHT,
+                        Protocol.getTimeStamp(rawInput),
+                        Protocol.Action.ZOMBIE);
+                break;
             case SWORDMAN:
                 this.gameState.addSoldier(Sprite.Player.RIGHT,
                         Protocol.getTimeStamp(rawInput),
@@ -360,6 +384,9 @@ firstLineLayout.addView(scoreLayout);
                 });
                     }
                 }
+                break;
+            case PARTNER_INFO:
+                gameState.newTowerType(Protocol.getData(rawInput));
                 break;
 
         }

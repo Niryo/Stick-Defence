@@ -102,9 +102,13 @@ public abstract class Soldier implements Serializable {
     }
 
     protected void attack(Bitmap attackSoldierPic, int nFrames, int fps) {
-        this.attack = true;
         sprite.setPic(attackSoldierPic, nFrames);
         sprite.setAnimationSpeed(fps);
+        attack();
+    }
+
+    protected void attack() {
+        this.attack = true;
         this.soldierY = screenHeight - (int) sprite.getScaledFrameHeight();
     }
 

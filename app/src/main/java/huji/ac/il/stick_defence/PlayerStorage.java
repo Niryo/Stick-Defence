@@ -19,10 +19,15 @@ import java.io.Serializable;
 public class PlayerStorage implements Serializable {
     public enum PurchasesEnum {
         BASIC_SOLDIER,
+        ZOMBIE,
         SWORDMAN,
         TANK,
         BAZOOKA_SOLDIER,
-        MATH_BOMB
+        MATH_BOMB,
+        WOODEN_TOWER,
+        BIG_WOODEN_TOWER,
+        STONE_TOWER,
+        FORTIFIED_TOWER
     }
 
     public static final String FILE_NAME = "stick_defence.sav";
@@ -57,7 +62,7 @@ public class PlayerStorage implements Serializable {
         return this.items[iItem.ordinal()];
     }
 
-    public void buySoldier(PurchasesEnum item) {
+    public void buy(PurchasesEnum item) {
         this.items[item.ordinal()] = true;
     }
 

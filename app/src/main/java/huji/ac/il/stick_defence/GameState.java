@@ -26,6 +26,7 @@ public class GameState {
 
     private static final int MAX_SOLDIERS_PER_PLAYER = 20;
     private static final int CREDITS_ON_WIN = 100;
+    private static final int ZOMBIE_SEND_PRICE = 50;
     private static final int SWORDMAN_SEND_PRICE = 5;
     private static final int BAZOOKA_SEND_PRICE = 10;
     private static final int TANK_SEND_PRICE = 100;
@@ -65,7 +66,7 @@ public class GameState {
     private GameState(Context context,Activity activity) {
         this.context = context;
         this.gameActivity=activity;
-        playerStorage = PlayerStorage.load(context);
+ //       playerStorage = PlayerStorage.load(context);
     }
 
     public static GameState CreateGameState(Context context,Activity activity, int canvasWidth, int canvasHeight) {
@@ -85,15 +86,50 @@ public class GameState {
         return this.playerStorage.isGameInProcess();
     }
 
-    public static void reset() {
-        gameState = null;
+    public void reset(boolean newGame) {
+        buttonsComponent = null;
+        soldiers = new ArrayList<>();
+        towers = new ArrayList<>();
+        arrows = new ArrayList<>();
+        bullets = new ArrayList<>();
+        rightPlayerSoldiers = leftPlayerSoldiers = 0;
+        leftProgressBar.setProgress(0);
+        rightProgressBar.setProgress(0);
+        leftPlayerWin = rightPlayerWin = false;
+
+        if (newGame || null == playerStorage){
+            playerStorage = new PlayerStorage(context, 0);
+            rightTower = new WoodenTower(context, Sprite.Player.RIGHT);
+        }
+        leftTower = getMyTower();
+        this.leftBow = new Bow(context, Sprite.Player.LEFT, leftTower);
+        bows.set(0, leftBow);
+
+        rightTower.reset();
+
+        towers.add(leftTower);
+        towers.add(rightTower);
+
+        rightTowerLeftX = rightTower.getLeftX();
+        leftTowerBeginX = leftTower.getRightX();
+        rightTowerCentralX = rightTower.getCentralX();
+        leftTowerCentralX = leftTower.getCentralX();
+
+        this.rightBow = new Bow(context, Sprite.Player.RIGHT, rightTower);
+        bows.set(1, rightBow);
     }
 
     private void init(int canvasWidth, int canvasHeight) {
         setCanvasDimentions(canvasWidth, canvasHeight);
-        this.leftTower = new Tower(context, Sprite.Player.LEFT);
-        this.rightTower = new Tower(context, Sprite.Player.RIGHT);
+        playerStorage = new PlayerStorage(context, 0);
+        this.leftTower = getMyTower();
+        if (null == this.rightTower){
+            this.rightTower = new WoodenTower(context, Sprite.Player.RIGHT);
+        } else {
+            this.rightTower.reset();
+        }
 
+        Log.w("yahav", "Adding" + leftTower.getName());
         towers.add(leftTower);
         towers.add(rightTower);
 
@@ -110,13 +146,26 @@ public class GameState {
 
     }
 
+    private Tower getMyTower(){
+        if (playerStorage.isPurchased(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER)){
+            return new FortifiedTower(context, Sprite.Player.LEFT);
+        }
+        if (playerStorage.isPurchased(PlayerStorage.PurchasesEnum.STONE_TOWER)){
+            return new StoneTower(context, Sprite.Player.LEFT);
+        }
+        if (playerStorage.isPurchased(PlayerStorage.PurchasesEnum.BIG_WOODEN_TOWER)){
+            return new BigWoodenTower(context, Sprite.Player.LEFT);
+        }
+        return new WoodenTower(context, Sprite.Player.LEFT);
+
+    }
     public void setSinglePlayer() {
         this.isMultiplayer = false;
     }
 
-    public void saveAndFinish() {
+    public void finishGame() {
         playerStorage.setCredits(creditManager.getCredits(Sprite.Player.LEFT));
-        save();
+    //    save();
         creditManager.setRunning(false);
     }
 
@@ -128,8 +177,8 @@ public class GameState {
         return this.playerStorage.isPurchased(iSoldier);
     }
 
-    public void buySoldier(PlayerStorage.PurchasesEnum iSoldier, int price) {
-        this.playerStorage.buySoldier(iSoldier);
+    public void buyItem(PlayerStorage.PurchasesEnum iItem, int price) {
+        this.playerStorage.buy(iItem);
         this.playerStorage.setCredits(this.playerStorage.getCredits() - price);
     }
 
@@ -141,19 +190,21 @@ public class GameState {
     }
 
     public void initProgressBar(ProgressBar progressBar, Sprite.Player player) {
-        progressBar.setMax((int) Tower.MAX_HP);
-        progressBar.setProgress((int) Tower.MAX_HP);
+
         if (Sprite.Player.LEFT == player) {
+            progressBar.setMax((int) leftTower.getMaxHp());
+            progressBar.setProgress((int) leftTower.getMaxHp());
             leftProgressBar = progressBar;
         } else {
+            progressBar.setMax((int) rightTower.getMaxHp());
+            progressBar.setProgress((int) rightTower.getMaxHp());
             rightProgressBar = progressBar;
         }
     }
 
-    public void initCredits(TextView leftCreditsTv) {
-        this.creditManager =
-                new CreditManager(leftCreditsTv,
-                        this.playerStorage.getCredits(), 0); //TODO - support right player
+    public void initCredits(TextView leftCreditsTv, boolean newGame) {
+        int leftPoints = newGame ? 0 : playerStorage.getCredits();
+        this.creditManager = new CreditManager(leftCreditsTv, leftPoints, 0); //TODO - support right player
 
         creditManager.setRunning(true);
         creditManager.start();
@@ -262,6 +313,9 @@ public class GameState {
                     case BASIC_SOLDIER:
                         client.reportBasicSoldier();
                         break;
+                    case ZOMBIE:
+                        client.reportZombie();
+                        break;
                     case SWORDMAN:
                         client.reportSwordman();
                         break;
@@ -299,21 +353,27 @@ public class GameState {
             case BASIC_SOLDIER:
                 soldiers.add(new BasicSoldier(context, player, delay));
                 break;
+            case ZOMBIE:
+                if (creditManager.decCredits(ZOMBIE_SEND_PRICE, player) ||
+                        player == Sprite.Player.RIGHT) {
+                    soldiers.add(new Zombie(context, player, delay));
+                }
+                break;
             case SWORDMAN:
                 if (creditManager.decCredits(SWORDMAN_SEND_PRICE, player) ||
-                        player== Sprite.Player.RIGHT) {
+                        player == Sprite.Player.RIGHT) {
                     soldiers.add(new Swordman(context, player, delay));
                 }
                 break;
             case BAZOOKA_SOLDIER:
                 if (creditManager.decCredits(BAZOOKA_SEND_PRICE, player) ||
-                        player== Sprite.Player.RIGHT) {
+                        player == Sprite.Player.RIGHT) {
                     soldiers.add(new BazookaSoldier(context, player, delay));
                 }
                 break;
             case TANK:
                 if (creditManager.decCredits(TANK_SEND_PRICE, player) ||
-                        player== Sprite.Player.RIGHT) {
+                        player == Sprite.Player.RIGHT) {
                     soldiers.add(new Tank(context, player, delay));
                 }
                 break;
@@ -325,29 +385,52 @@ public class GameState {
         }
 
     }
-    public void newPartnerInfo(String rawInput){
+    public void newTowerType(String rawInput){
         try {
             JSONObject info = new JSONObject(rawInput);
             String towerName= info.getString("tower");
-            if(towerName.equals("BASIC_TOWER")){
-                //DO NOTHING
+
+            Tower.TowerTypes towerType =
+                    Tower.TowerTypes.valueOf(towerName);
+            switch (towerType){
+                case WOODEN_TOWER:
+                    rightTower = new WoodenTower(context, Sprite.Player.RIGHT);
+                    break;
+                case BIG_WOODEN_TOWER:
+                    rightTower = new BigWoodenTower(context, Sprite.Player.RIGHT);
+                    break;
+                case STONE_TOWER:
+                    rightTower = new StoneTower(context, Sprite.Player.RIGHT);
+                    break;
+                case FORTIFIED_TOWER:
+                    rightTower = new FortifiedTower(context, Sprite.Player.RIGHT);
+                    break;
+
             }
+            towers.set(1, rightTower);
+            rightProgressBar.setMax((int) rightTower.getMaxHp());
+            rightProgressBar.setProgress((int) rightTower.getMaxHp());
+            rightTowerLeftX = rightTower.getLeftX();
+            rightTowerCentralX = rightTower.getCentralX();
+
+            this.rightBow = new Bow(context, Sprite.Player.RIGHT, rightTower);
+            bows.set(1, rightBow);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
     }
-    public void sendStateInfoToPartner(){
+    public void sendTowerTypeToPartner(Tower.TowerTypes type){
         JSONObject info = new JSONObject();
         try {
-            info.put("tower", "BASIC_TOWER");//todo: add a string to represent the tower;
+            info.put("tower", type.name());
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-       String data= info.toString();
+        String data= info.toString();
         client.send(Protocol.stringify(Protocol.Action.PARTNER_INFO, data));
 
     }
@@ -566,5 +649,9 @@ public class GameState {
                 }
             }
         });
+    }
+
+    public Tower.TowerTypes getLeftTowerType(){
+        return this.leftTower.getType();
     }
 }

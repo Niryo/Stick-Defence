@@ -18,12 +18,18 @@ import java.io.File;
 
 
 public class Market extends Activity implements DoProtocolAction {
-    //TODO: CREATE A BUTTON THAT MOVES YOU INTO LEAGUE_INFO ACTIVITY AND IF THERE IS INFO, SEND EXTRA IN THE INTENT
-    private static final int SWORDMAN_BUY_PRICE = 50;
-    private static final int TANK_BUY_PRICE = 100;
-    private static final int BAZOOKA_BUY_PRICE = 100; // TODO - change to 1000
-    private static final int MATH_BOMB_PRICE = 100;
+//TODO: CREATE A BUTTON THAT MOVES YOU INTO LEAGUE_INFO ACTIVITY AND IF THERE IS INFO, SEND EXTRA IN THE INTENT
+    private static final int    ZOMBIE_BUY_PRICE = 100;
+    private static final int    SWORDMAN_BUY_PRICE = 50;
+    private static final int    TANK_BUY_PRICE = 100;
+    private static final int    BAZOOKA_BUY_PRICE = 100;
+    private static final int    MATH_BOMB_PRICE = 100;
+    private static final int    BIG_WOODEN_TOWER_PRICE = 100;
+    private static final int    STONE_TOWER_PRICE = 100;
+    private static final int    FORTIFIED_TOWER_PRICE = 100;
+
     private static final String CREDITS = "Credits: ";
+    private Tower.TowerTypes myTowerType;
 
     private String savedLeagueInfo = null;
     private GameState gameState;
@@ -38,7 +44,9 @@ public class Market extends Activity implements DoProtocolAction {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_market);
+        gameState = GameState.getInstance();
 
+        myTowerType = gameState.getLeftTowerType();
         final boolean isMultiplayer = getIntent().getBooleanExtra("Multiplayer", true);
         if (isMultiplayer) {
             Client.getClientInstance().
@@ -55,12 +63,14 @@ public class Market extends Activity implements DoProtocolAction {
                     Intent intent = new Intent(getApplicationContext(),
                             GameActivity.class);
                     intent.putExtra("Multiplayer", isMultiplayer);
-                    intent.putExtra("NewGame", true);
+                    intent.putExtra("NewGame", false);
                     startActivity(intent);
                     finish();
                 } else { //go to league info
+                    gameState.sendTowerTypeToPartner(myTowerType);
                     Intent intent = new Intent(getApplicationContext(),
                             LeagueInfoActivity.class);
+                    intent.putExtra("NewGame", false);
                     if (savedLeagueInfo != null) {
                         intent.putExtra("info", savedLeagueInfo);
                     }
@@ -71,7 +81,7 @@ public class Market extends Activity implements DoProtocolAction {
             }
         });
 
-        gameState = GameState.getInstance();
+
 
         //Show credits
         int credits = gameState.getCredits(Sprite.Player.LEFT);
@@ -79,19 +89,99 @@ public class Market extends Activity implements DoProtocolAction {
         creditsTv.setText(CREDITS + credits + "$");
 
         //Add buy buttons
+        addButton(PlayerStorage.PurchasesEnum.ZOMBIE,
+                  R.id.buy_zombie,
+                  ZOMBIE_BUY_PRICE);
         addButton(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER,
-                R.id.buy_bazooka_soldier,
-                BAZOOKA_BUY_PRICE);
+                  R.id.buy_bazooka_soldier,
+                  BAZOOKA_BUY_PRICE);
         addButton(PlayerStorage.PurchasesEnum.SWORDMAN,
-                R.id.buy_swordman,
-                SWORDMAN_BUY_PRICE);
+                  R.id.buy_swordman,
+                  SWORDMAN_BUY_PRICE);
         addButton(PlayerStorage.PurchasesEnum.TANK,
-                R.id.buy_tank,
-                TANK_BUY_PRICE);
+                  R.id.buy_tank,
+                  TANK_BUY_PRICE);
         addButton(PlayerStorage.PurchasesEnum.MATH_BOMB,
-                R.id.buy_math_bomb,
-                MATH_BOMB_PRICE);
+                  R.id.buy_math_bomb,
+                  MATH_BOMB_PRICE);
 
+        //BigWoodenTower
+        final Button bigWoodenTowerButton = (Button) findViewById(R.id.buy_big_wooden_tower);
+        if (gameState.isPurchased(PlayerStorage.PurchasesEnum.BIG_WOODEN_TOWER) ||
+            gameState.isPurchased(PlayerStorage.PurchasesEnum.STONE_TOWER) ||
+            gameState.isPurchased(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER)) {
+            bigWoodenTowerButton.setVisibility(View.INVISIBLE);
+        } else {
+            bigWoodenTowerButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int credits = gameState.getCredits(Sprite.Player.LEFT);
+                    if (credits >= BIG_WOODEN_TOWER_PRICE) {
+                        gameState.buyItem(PlayerStorage.PurchasesEnum.BIG_WOODEN_TOWER,
+                                BIG_WOODEN_TOWER_PRICE);
+                        credits -= BIG_WOODEN_TOWER_PRICE;
+                        creditsTv.setText(CREDITS + credits + "$");
+                        v.setVisibility(View.INVISIBLE);
+                        myTowerType = Tower.TowerTypes.BIG_WOODEN_TOWER;
+                    }
+                }
+            });
+        }
+
+        //StoneTower
+        final Button stoneTowerButton = (Button) findViewById(R.id.buy_stone_tower);
+        if (gameState.isPurchased(PlayerStorage.PurchasesEnum.STONE_TOWER) ||
+            gameState.isPurchased(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER)) {
+            stoneTowerButton.setVisibility(View.INVISIBLE);
+        } else {
+            stoneTowerButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int credits = gameState.getCredits(Sprite.Player.LEFT);
+                    if (credits >= STONE_TOWER_PRICE) {
+                        gameState.buyItem(PlayerStorage.PurchasesEnum.STONE_TOWER,
+                                          STONE_TOWER_PRICE);
+                        credits -= STONE_TOWER_PRICE;
+                        creditsTv.setText(CREDITS + credits + "$");
+                        v.setVisibility(View.INVISIBLE);
+                        bigWoodenTowerButton.setVisibility(View.INVISIBLE);
+                        myTowerType = Tower.TowerTypes.STONE_TOWER;
+                    }
+                }
+            });
+        }
+
+        //StoneTower
+        Button fortifiedTowerButton = (Button) findViewById(R.id.buy_fortified_tower);
+        if (gameState.isPurchased(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER)) {
+            fortifiedTowerButton.setVisibility(View.INVISIBLE);
+        } else {
+            fortifiedTowerButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int credits = gameState.getCredits(Sprite.Player.LEFT);
+                    if (credits >= FORTIFIED_TOWER_PRICE) {
+                        gameState.buyItem(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER,
+                                          FORTIFIED_TOWER_PRICE);
+                        credits -= FORTIFIED_TOWER_PRICE;
+                        creditsTv.setText(CREDITS + credits + "$");
+                        v.setVisibility(View.INVISIBLE);
+                        bigWoodenTowerButton.setVisibility(View.INVISIBLE);
+                        stoneTowerButton.setVisibility(View.INVISIBLE);
+                        myTowerType = Tower.TowerTypes.FORTIFIED_TOWER;
+                    }
+                }
+            });
+        }
+//        addButton(PlayerStorage.PurchasesEnum.BIG_WOODEN_TOWER,
+//                R.id.buy_big_wooden_tower,
+//                BIG_WOODEN_TOWER_PRICE);
+//        addButton(PlayerStorage.PurchasesEnum.STONE_TOWER,
+//                R.id.buy_stone_tower,
+//                STONE_TOWER_PRICE);
+//        addButton(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER,
+//                R.id.buy_fortified_tower,
+//                FORTIFIED_TOWER_PRICE);
 
     }
 
@@ -108,12 +198,9 @@ public class Market extends Activity implements DoProtocolAction {
                 public void onClick(View v) {
                     int credits = gameState.getCredits(Sprite.Player.LEFT);
                     if (credits >= price) {
-                        gameState.
-                                buySoldier(item,
-                                        price);
+                        gameState.buyItem(item, price);
                         credits -= price;
                         creditsTv.setText(CREDITS + credits + "$");
-                        gameState.save();
                         v.setVisibility(View.INVISIBLE);
                     }
                 }
@@ -188,12 +275,12 @@ public class Market extends Activity implements DoProtocolAction {
         switch (action) {
             case LEAGUE_INFO:
                 savedLeagueInfo = Protocol.getData(rawInput);
-                gameState.sendStateInfoToPartner(); //we got the leauge info so we know now that we have
+                gameState.sendTowerTypeToPartner(myTowerType); //we got the leauge info so we know now that we have
                 //parnter and we need to send him information
                 break;
 
             case PARTNER_INFO:
-                GameState.getInstance().newPartnerInfo(rawInfo);
+                GameState.getInstance().newTowerType(rawInfo);
                 break;
         }
     }
