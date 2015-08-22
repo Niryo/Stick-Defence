@@ -6,12 +6,15 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.format.Formatter;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -53,7 +56,7 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
         waitDialog.setCancelable(false);
         waitDialog.show();
         client.setCurrentActivity(this);
-        Button readyButton = (Button) findViewById(R.id.ready_to_play);
+        final Button readyButton = (Button) findViewById(R.id.ready_to_play);
         readyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { //todo: switch to game and only then send ready to play.
@@ -61,6 +64,23 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
                         GameActivity.class);
                 startActivity(gameIntent);
                 finish();
+            }
+        });
+
+        readyButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    readyButton.setTextColor(Color.parseColor("#FFCC00"));
+                    readyButton.setShadowLayer(4, 0, 0, Color.parseColor("#FF9900"));
+                    readyButton.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    readyButton.setTextColor(Color.BLACK);
+                    readyButton.setTypeface(Typeface.DEFAULT);
+                    readyButton.setShadowLayer(0, 0, 0, 0);;
+                }
+            return false;
             }
         });
         buildTableHead();
@@ -90,22 +110,35 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
         ts2.setContent(R.id.tab2);
         tabHost.addTab(ts2);
 
-        Button buttonTab1= (Button) findViewById(R.id.buttonTab1);
+        final Button buttonTab1= (Button) findViewById(R.id.buttonTab1);
+        final Button buttonTab2= (Button) findViewById(R.id.buttonTab2);
+
         buttonTab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tabHost.setCurrentTab(0);
-
+                buttonTab1.setTextColor(Color.parseColor("#FFCC00"));
+                buttonTab1.setShadowLayer(4, 0, 0, Color.parseColor("#FF9900"));
+                buttonTab1.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                buttonTab2.setTextColor(Color.BLACK);
+                buttonTab2.setTypeface(Typeface.DEFAULT);
+                buttonTab2.setShadowLayer(0,0,0,0);
             }
         });
 
-        Button buttonTab2= (Button) findViewById(R.id.buttonTab2);
         buttonTab2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tabHost.setCurrentTab(1);
+                buttonTab2.setTextColor(Color.parseColor("#FFCC00"));
+                buttonTab2.setShadowLayer(4, 0, 0, Color.parseColor("#FF9900"));
+                        buttonTab2.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                buttonTab1.setTextColor(Color.BLACK);
+                buttonTab1.setTypeface(Typeface.DEFAULT);
+                buttonTab1.setShadowLayer(0,0,0,0);
             }
         });
+        buttonTab1.callOnClick();
 
     }
 
