@@ -1,5 +1,6 @@
 package huji.ac.il.stick_defence;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -8,8 +9,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.content.ContextCompat;
+import android.text.Layout;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -97,15 +102,20 @@ public class GameActivity extends Activity implements DoProtocolAction {
         this.buttons= new ArrayList<>();
 
         addButton(PlayerStorage.PurchasesEnum.BASIC_SOLDIER,
-                  R.drawable.basic_soldier_icon, Protocol.Action.BASIC_SOLDIER);
+                  R.drawable.basic_soldier_icon, Protocol.Action.BASIC_SOLDIER,
+                GameState.MILLISEC_TO_BASIC_SOLDIER);
         addButton(PlayerStorage.PurchasesEnum.ZOMBIE,
-                R.drawable.zombie_icon, Protocol.Action.ZOMBIE);
+                R.drawable.zombie_icon, Protocol.Action.ZOMBIE,
+                GameState.MILLISEC_TO_ZOMBIE);
         addButton(PlayerStorage.PurchasesEnum.SWORDMAN,
-                  R.drawable.swordman_icon, Protocol.Action.SWORDMAN);
+                  R.drawable.swordman_icon, Protocol.Action.SWORDMAN,
+                GameState.MILLISEC_TO_SWORDMAN);
         addButton(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER,
-                  R.drawable.bazooka_icon, Protocol.Action.BAZOOKA_SOLDIER);
+                  R.drawable.bazooka_icon, Protocol.Action.BAZOOKA_SOLDIER,
+                GameState.MILLISEC_TO_BAZOOKA);
         addButton(PlayerStorage.PurchasesEnum.TANK,
-                  R.drawable.tank_icon, Protocol.Action.TANK);
+                  R.drawable.tank_icon, Protocol.Action.TANK,
+                GameState.MILLISEC_TO_TANK);
 
         //Different because of the second setCompoundDrawablesWithIntrinsicBounds
         if (gameState.isPurchased(PlayerStorage.PurchasesEnum.MATH_BOMB)){
@@ -221,21 +231,70 @@ public class GameActivity extends Activity implements DoProtocolAction {
     }
 
     private void addButton(PlayerStorage.PurchasesEnum item,
-                           int pic, final Protocol.Action action){
+                           int pic, final Protocol.Action action, final int intervalInMillisec){
         if (gameState.isPurchased(item)){
-            Button buyButton = new Button(this);
+            final Button buyButton = new Button(this);
+            RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            buttonParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+            buyButton.setLayoutParams(buttonParams);
             buyButton.
                     setCompoundDrawablesWithIntrinsicBounds(pic, 0, 0, 0);
+
+
+            RelativeLayout buttonLayout = new RelativeLayout(this);
+            buyButton.setId(R.id.basic_soldier_id);
+            buttonLayout.addView(buyButton);
+
+            gameState.activateSendSoldierButton(buyButton, item);
+
+            final ProgressBar progressButton = new ProgressBar(this, null, android.R
+                    .attr.progressBarStyleHorizontal);
+          //  Drawable d = ContextCompat.getDrawable(this, R.drawable.progress_button);
+          //  progressButton.setProgressDrawable(d);
+            RelativeLayout.LayoutParams progressButtonParams = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            progressButtonParams.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.basic_soldier_id);
+            progressButtonParams.addRule(RelativeLayout.ALIGN_LEFT, R.id.basic_soldier_id);
+            progressButtonParams.addRule(RelativeLayout.ALIGN_RIGHT, R.id.basic_soldier_id);
+            progressButton.setLayoutParams(progressButtonParams);
+            progressButton.setAlpha(0.8f);
+            progressButton.setMax(intervalInMillisec);
+            progressButton.setProgress(intervalInMillisec);
+            buttonLayout.addView(progressButton);
+            progressButton.bringToFront();
+            buttonsLayout.addView(buttonLayout);
+
+
+            buttons.add(buyButton);
 
             buyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    gameState.addSoldier(Sprite.Player.LEFT, 0, action);
+                    if (gameState.addSoldier(Sprite.Player.LEFT, 0, action)){
+                        v.setEnabled(false);
+                        progressButton.setProgress(0);
+
+                        CountDownTimer mCountDownTimer = new CountDownTimer(intervalInMillisec, 100) {
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+                                progressButton.setProgress(intervalInMillisec -
+                                        (int)millisUntilFinished);
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                progressButton.setProgress(intervalInMillisec);
+                                buyButton.setEnabled(true);
+                            }
+                        };
+                        mCountDownTimer.start();
+                    }
+
                 }
             });
-            buttonsLayout.addView(buyButton);
-            buttons.add(buyButton);
-            gameState.activateSendSoldierButton(buyButton, item);
         }
     }
 
@@ -386,7 +445,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 }
                 break;
             case PARTNER_INFO:
-                gameState.newTowerType(Protocol.getData(rawInput));
+                gameState.newPartnerInfo(Protocol.getData(rawInput));
                 break;
 
         }

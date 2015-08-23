@@ -67,7 +67,7 @@ public class Market extends Activity implements DoProtocolAction {
                     startActivity(intent);
                     finish();
                 } else { //go to league info
-                    gameState.sendTowerTypeToPartner(myTowerType);
+                    gameState.sendInfoToPartner(myTowerType);
                     Intent intent = new Intent(getApplicationContext(),
                             LeagueInfoActivity.class);
                     intent.putExtra("NewGame", false);
@@ -275,12 +275,12 @@ public class Market extends Activity implements DoProtocolAction {
         switch (action) {
             case LEAGUE_INFO:
                 savedLeagueInfo = Protocol.getData(rawInput);
-                gameState.sendTowerTypeToPartner(myTowerType); //we got the leauge info so we know now that we have
+                gameState.sendInfoToPartner(myTowerType); //we got the leauge info so we know now that we have
                 //parnter and we need to send him information
                 break;
 
             case PARTNER_INFO:
-                GameState.getInstance().newTowerType(rawInfo);
+                GameState.getInstance().newPartnerInfo(rawInfo);
                 break;
         }
     }

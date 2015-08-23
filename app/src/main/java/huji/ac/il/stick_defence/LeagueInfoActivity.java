@@ -90,11 +90,11 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
                 waitDialog.dismiss();
                 printLeagueInfo(rawInfo);
             /* if( GameState.getInstance().getInstance()!=null){
-                 GameState.getInstance().getInstance().sendTowerTypeToPartner();
+                 GameState.getInstance().getInstance().sendInfoToPartner();
             }*/
                 break;
             case PARTNER_INFO:
-                GameState.getInstance().newTowerType(rawInfo);
+                GameState.getInstance().newPartnerInfo(rawInfo);
                 break;
 
         }

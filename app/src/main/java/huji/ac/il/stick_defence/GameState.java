@@ -30,6 +30,13 @@ public class GameState {
     private static final int SWORDMAN_SEND_PRICE = 5;
     private static final int BAZOOKA_SEND_PRICE = 10;
     private static final int TANK_SEND_PRICE = 100;
+    public static final int MILLISEC_TO_BASIC_SOLDIER = 1000;
+    public static final int MILLISEC_TO_ZOMBIE = 2000;
+    public static final int MILLISEC_TO_SWORDMAN = 3000;
+    public static final int MILLISEC_TO_BAZOOKA = 4000;
+    public static final int MILLISEC_TO_TANK = 5000;
+
+
     private static int canvas_height;
     private static int canvas_width;
 
@@ -57,6 +64,7 @@ public class GameState {
     private Activity gameActivity;
     private Tower rightTower;
     private Tower leftTower;
+
 
     /**
      * Constructor. Adds 2 towers to the sprites list.
@@ -302,79 +310,79 @@ public class GameState {
      *
      * @param player the requested PLAYER
      */
-    public void addSoldier(Sprite.Player player, long timeStamp,
+    public boolean addSoldier(Sprite.Player player, long timeStamp,
                            final Protocol.Action soldierType) {
         double delay;
-        long currentTime = getSyncTime();
         if (player == Sprite.Player.LEFT) { // Us
-            delay = 0;
-            if (isMultiplayer) {
-                switch (soldierType) {
-                    case BASIC_SOLDIER:
-                        client.reportBasicSoldier();
-                        break;
-                    case ZOMBIE:
-                        client.reportZombie();
-                        break;
-                    case SWORDMAN:
-                        client.reportSwordman();
-                        break;
-                    case BAZOOKA_SOLDIER:
-                        client.reportBazookaSoldier();
-                        break;
-                    case TANK:
-                        client.reportTank();
-                        break;
-                    default:
-                        Log.e("yahav",
-                                "Wrong soldier type " + soldierType.toString());
-                        return;
-                }
-
-            }
-
             if (this.leftPlayerSoldiers >= MAX_SOLDIERS_PER_PLAYER) {
-                return;
+                return false;
             }
-            this.leftPlayerSoldiers++;
-        } else { // Opponent
+            delay = 0;
+
+        } else {
+            if (this.rightPlayerSoldiers >= MAX_SOLDIERS_PER_PLAYER) {
+                return false;
+            }
+            long currentTime = getSyncTime();
             delay = currentTime - timeStamp;
             if (delay < 0) {
                 delay = 0;
             }
             delay = delay / 1000; //convert to seconds;
+
             Log.w("custom", "the delay is: " + delay);
-            if (this.rightPlayerSoldiers >= MAX_SOLDIERS_PER_PLAYER) {
-                return;
-            }
             this.rightPlayerSoldiers++;
         }
+
+
         switch (soldierType) {
             case BASIC_SOLDIER:
                 soldiers.add(new BasicSoldier(context, player, delay));
+                if (isMultiplayer){
+                    client.reportBazookaSoldier();
+                }
                 break;
             case ZOMBIE:
-                if (creditManager.decCredits(ZOMBIE_SEND_PRICE, player) ||
-                        player == Sprite.Player.RIGHT) {
+                if (creditManager.decCredits(ZOMBIE_SEND_PRICE, player)) {
                     soldiers.add(new Zombie(context, player, delay));
+                } else {
+                    return false;
+                }
+                if (isMultiplayer){
+                    client.reportZombie();
                 }
                 break;
             case SWORDMAN:
                 if (creditManager.decCredits(SWORDMAN_SEND_PRICE, player) ||
                         player == Sprite.Player.RIGHT) {
                     soldiers.add(new Swordman(context, player, delay));
+                } else {
+                    return false;
+                }
+                if (isMultiplayer){
+                    client.reportSwordman();
                 }
                 break;
             case BAZOOKA_SOLDIER:
                 if (creditManager.decCredits(BAZOOKA_SEND_PRICE, player) ||
                         player == Sprite.Player.RIGHT) {
                     soldiers.add(new BazookaSoldier(context, player, delay));
+                } else {
+                    return false;
+                }
+                if (isMultiplayer){
+                    client.reportBazookaSoldier();
                 }
                 break;
             case TANK:
                 if (creditManager.decCredits(TANK_SEND_PRICE, player) ||
                         player == Sprite.Player.RIGHT) {
                     soldiers.add(new Tank(context, player, delay));
+                } else {
+                    return false;
+                }
+                if (isMultiplayer){
+                    client.reportTank();
                 }
                 break;
 
@@ -384,8 +392,15 @@ public class GameState {
                 break;
         }
 
+        if (Sprite.Player.LEFT == player){
+            this.leftPlayerSoldiers++;
+        } else {
+            this.rightPlayerSoldiers++;
+        }
+
+        return true;
     }
-    public void newTowerType(String rawInput){
+    public void newPartnerInfo(String rawInput){
         try {
             JSONObject info = new JSONObject(rawInput);
             String towerName= info.getString("tower");
@@ -421,7 +436,7 @@ public class GameState {
         }
 
     }
-    public void sendTowerTypeToPartner(Tower.TowerTypes type){
+    public void sendInfoToPartner(Tower.TowerTypes type){
         JSONObject info = new JSONObject();
         try {
             info.put("tower", type.name());
@@ -625,6 +640,10 @@ public class GameState {
     }
     public void setButtonsComponent(ArrayList<Button> buttons){
         this.buttonsComponent= buttons;
+    }
+
+    public void addProgressButtons(ArrayList<ProgressBar> progressButtons){
+
     }
 
     public void disableButtons(){
