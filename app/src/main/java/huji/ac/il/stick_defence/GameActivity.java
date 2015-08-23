@@ -273,25 +273,25 @@ public class GameActivity extends Activity implements DoProtocolAction {
             buyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (gameState.addSoldier(Sprite.Player.LEFT, 0, action)){
-                        v.setEnabled(false);
-                        progressButton.setProgress(0);
+                if (gameState.addSoldier(Sprite.Player.LEFT, 0, action)){
+                    buyButton.setEnabled(false);
+                    progressButton.setProgress(0);
 
-                        CountDownTimer mCountDownTimer = new CountDownTimer(intervalInMillisec, 100) {
-                            @Override
-                            public void onTick(long millisUntilFinished) {
-                                progressButton.setProgress(intervalInMillisec -
-                                        (int)millisUntilFinished);
-                            }
+                    CountDownTimer mCountDownTimer = new CountDownTimer(intervalInMillisec, 100) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            progressButton.setProgress(intervalInMillisec -
+                                    (int)millisUntilFinished);
+                        }
 
-                            @Override
-                            public void onFinish() {
-                                progressButton.setProgress(intervalInMillisec);
-                                buyButton.setEnabled(true);
-                            }
-                        };
-                        mCountDownTimer.start();
-                    }
+                        @Override
+                        public void onFinish() {
+                            progressButton.setProgress(intervalInMillisec);
+                            buyButton.setEnabled(true);
+                        }
+                    };
+                    mCountDownTimer.start();
+                }
 
                 }
             });

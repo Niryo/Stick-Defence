@@ -318,7 +318,7 @@ public class GameState {
                 return false;
             }
             delay = 0;
-
+            this.leftPlayerSoldiers++;
         } else {
             if (this.rightPlayerSoldiers >= MAX_SOLDIERS_PER_PLAYER) {
                 return false;
@@ -338,8 +338,9 @@ public class GameState {
         switch (soldierType) {
             case BASIC_SOLDIER:
                 soldiers.add(new BasicSoldier(context, player, delay));
-                if (isMultiplayer){
-                    client.reportBazookaSoldier();
+                if (isMultiplayer && Sprite.Player.LEFT == player){
+                    Log.w("yahav", "Basic soldier");
+                    client.reportBasicSoldier();
                 }
                 break;
             case ZOMBIE:
@@ -348,7 +349,7 @@ public class GameState {
                 } else {
                     return false;
                 }
-                if (isMultiplayer){
+                if (isMultiplayer && Sprite.Player.LEFT == player){
                     client.reportZombie();
                 }
                 break;
@@ -359,7 +360,7 @@ public class GameState {
                 } else {
                     return false;
                 }
-                if (isMultiplayer){
+                if (isMultiplayer && Sprite.Player.LEFT == player){
                     client.reportSwordman();
                 }
                 break;
@@ -370,7 +371,7 @@ public class GameState {
                 } else {
                     return false;
                 }
-                if (isMultiplayer){
+                if (isMultiplayer && Sprite.Player.LEFT == player){
                     client.reportBazookaSoldier();
                 }
                 break;
@@ -381,7 +382,7 @@ public class GameState {
                 } else {
                     return false;
                 }
-                if (isMultiplayer){
+                if (isMultiplayer && Sprite.Player.LEFT == player){
                     client.reportTank();
                 }
                 break;
