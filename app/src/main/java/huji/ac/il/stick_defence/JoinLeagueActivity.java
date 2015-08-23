@@ -21,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TabHost;
 import android.widget.TextView;
 
 import java.io.File;
@@ -50,6 +51,8 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_join_league);
         client.setCurrentActivity(this);
 
