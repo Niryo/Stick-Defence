@@ -30,27 +30,26 @@ public class LeagueManager {
      * @return information about the league
      */
     private JSONObject twoPersonLeague() {
+        JSONObject info = new JSONObject();
         JSONObject pairs = new JSONObject();
-        if(stage==4){
-            addStatistics(pairs);
-            try {
-                pairs.put("end_of_league", true);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            resetLeague();
+        try {
+        if(stage==3){
+            addStatistics(info);
+                info.put("end_of_league", true);
+                resetLeague();
+            return info;
         }
         Server.getServerInstance().makePair(peers.get(0), peers.get(1));
         JSONObject players = new JSONObject();
-        try {
             players.put("player1", peers.get(0).getName());
             players.put("player2", peers.get(1).getName());
             pairs.put("pair0", players);
+        info.put("pairs", pairs);
+        addStatistics(info);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        addStatistics(pairs);
-        return pairs;
+        return info;
     }
 
     /**
@@ -59,15 +58,14 @@ public class LeagueManager {
      * @return information about the league
      */
     private JSONObject fourPersonLeague() {
+        JSONObject info = new JSONObject();
         JSONObject pairs = new JSONObject();
-        if(stage==2){
-            addStatistics(pairs);
             try {
-                pairs.put("end_of_league", true);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        if(stage==3){
+            addStatistics(info);
+            info.put("end_of_league", true);
             resetLeague();
+            return info;
         }
         int pairCount = 0;
         for (int i = 0; i < 4; i += 2) {
@@ -75,17 +73,18 @@ public class LeagueManager {
             int first = allCombinationWithFour[stage][i];
             int second = allCombinationWithFour[stage][i + 1];
             Server.getServerInstance().makePair(peers.get(first), peers.get(second));
-            try {
                 players.put("player1", peers.get(first).getName());
                 players.put("player2", peers.get(second).getName());
                 pairs.put("pair" + pairCount, players);
                 pairCount++;
+
+        }
+        info.put("pairs",pairs);
+        addStatistics(info);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
-        addStatistics(pairs);
-        return pairs;
+        return info;
     }
 
     /**
@@ -94,15 +93,14 @@ public class LeagueManager {
      * @return information about the league
      */
     private JSONObject sixPersonLeague() {
+        JSONObject info = new JSONObject();
         JSONObject pairs = new JSONObject();
-        if(stage==4){
-            addStatistics(pairs);
             try {
-                pairs.put("end_of_league", true);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        if(stage==5){
+            addStatistics(pairs);
+            info.put("end_of_league", true);
             resetLeague();
+            return info;
         }
         int pairCount = 0;
         for (int i = 0; i < 6; i += 2) {
@@ -110,17 +108,18 @@ public class LeagueManager {
             int first = allCombinationWithFour[stage][i];
             int second = allCombinationWithFour[stage][i + 1];
             Server.getServerInstance().makePair(peers.get(first), peers.get(second));
-            try {
                 players.put("player1", peers.get(first).getName());
                 players.put("player2", peers.get(second).getName());
                 pairs.put("pair" + pairCount, players);
                 pairCount++;
+        }
+
+                info.put("pairs", pairs);
+        addStatistics(info);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
-        addStatistics(pairs);
-        return pairs;
+        return info;
     }
 
     /**
@@ -129,15 +128,14 @@ public class LeagueManager {
      * @return
      */
     private JSONObject eightPersonLeague() {
+        JSONObject info = new JSONObject();
         JSONObject pairs = new JSONObject();
-        if(stage==4){
+                try {
+        if(stage==3){
             addStatistics(pairs);
-            try {
-                pairs.put("end_of_league", true);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+                info.put("end_of_league", true);
             resetLeague();
+            return info;
         }
         int pairCount = 0;
         //we run over the list of peers making a temp list, with all the peers that have the
@@ -153,20 +151,19 @@ public class LeagueManager {
             for (int j = 0; j < temp.size(); j += 2) {
                 JSONObject players = new JSONObject();
                 Server.getServerInstance().makePair(temp.get(j), temp.get(j + 1));
-                try {
                     players.put("player1", temp.get(j).getName());
                     players.put("player2", temp.get(j + 1).getName());
                     pairs.put("pair" + pairCount, players);
                     pairCount++;
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
             }
 
         }
-        addStatistics(pairs);
-        String info = pairs.toString();
-        return pairs;
+                    info.put("pairs",pairs);
+        addStatistics(info);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+        return info;
     }
 
     public JSONObject getLeagueInfo() {
@@ -192,7 +189,7 @@ public class LeagueManager {
     }
 
     private void resetLeague(){
-        this.stage=0;
+        this.stage=-1;
         for (Server.Peer peer : peers){
             peer.resetWins();
         }

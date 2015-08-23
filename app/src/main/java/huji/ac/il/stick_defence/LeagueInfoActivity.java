@@ -80,7 +80,7 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
 
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     readyButton.setTextColor(Color.BLACK);
-                    readyButton.setTypeface(Typeface.DEFAULT);
+                    readyButton.setTypeface(Typeface.SERIF);
                     readyButton.setShadowLayer(0, 0, 0, 0);;
                 }
             return false;
@@ -125,7 +125,7 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
                 buttonTab1.setShadowLayer(4, 0, 0, Color.parseColor("#FF9900"));
                 buttonTab1.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
                 buttonTab2.setTextColor(Color.BLACK);
-                buttonTab2.setTypeface(Typeface.DEFAULT);
+                buttonTab2.setTypeface(Typeface.SERIF);
                 buttonTab2.setShadowLayer(0,0,0,0);
             }
         });
@@ -138,7 +138,7 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
                 buttonTab2.setShadowLayer(4, 0, 0, Color.parseColor("#FF9900"));
                         buttonTab2.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
                 buttonTab1.setTextColor(Color.BLACK);
-                buttonTab1.setTypeface(Typeface.DEFAULT);
+                buttonTab1.setTypeface(Typeface.SERIF);
                 buttonTab1.setShadowLayer(0,0,0,0);
             }
         });
@@ -180,8 +180,12 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
             Iterator<?> keys = info.keys();
             while (keys.hasNext()) {
                 String key = (String) keys.next();
-                if (!key.equals("statistics")) {
-                    JSONObject players = (JSONObject) info.get(key);
+                if (key.equals("pairs")) {
+                    JSONObject pairs= (JSONObject)info.get(key);
+                    Iterator<?> pairKeys = pairs.keys();
+                    while (pairKeys.hasNext()) {
+                        String playerKey = (String) pairKeys.next();
+                    JSONObject players = (JSONObject) pairs.get(playerKey);
                     String player1 = players.getString("player1");
                     String player2 = players.getString("player2");
                     final VSview vsView = new VSview(this);
@@ -195,9 +199,10 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
                             vsLayout.addView(vsView);
 
                         }
-                    });
+                    });}
 
-                } else {
+                }
+                if(key.equals("statistics")) {
                     ArrayList<PlayerWins> dataToSort = new ArrayList<>();
                     final TableLayout table = (TableLayout) findViewById(R.id.statistics_table);
                     JSONObject stats = (JSONObject) info.get(key);
@@ -251,7 +256,8 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
 
                 }
 
-                if(info.has("end_of_league")){
+
+                if(key.equals("end_of_league")){
                     //todo: print winner
                 }
             }
