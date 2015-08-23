@@ -189,7 +189,8 @@ public class LeagueManager {
     }
 
     private void resetLeague(){
-        this.stage=-1;
+        this.stage=-1
+        ;
         for (Server.Peer peer : peers){
             peer.resetWins();
         }
