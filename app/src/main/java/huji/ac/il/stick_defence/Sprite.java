@@ -12,6 +12,8 @@ import android.util.DisplayMetrics;
  * This class represents a sprite animation object
  */
 public class Sprite {
+
+
     /**
      * Represents left or right PLAYER
      */
@@ -38,6 +40,8 @@ public class Sprite {
     private long frameTicker = 01;    // the time of the last frame update
     private double scaleDownFactor;
     private Player player;
+    private boolean isLooping=true;
+    private boolean runLoopFlag =true;
 
 
     /**
@@ -107,7 +111,7 @@ public class Sprite {
      * @param gameTime the current time in milliseconds
      */
     public void update(long gameTime) {
-        if (gameTime > frameTicker + framePeriod) {
+        if (gameTime > frameTicker + framePeriod && this.runLoopFlag) {
             frameTicker = gameTime;
 
             if (nFrames > 1) {
@@ -115,12 +119,22 @@ public class Sprite {
                 if (player == Player.LEFT) {
                     currentFrame++;
                     if (currentFrame >= nFrames) {
-                        currentFrame = 0;
+                        if(isLooping) {
+                            currentFrame = 0;
+                        }
+                        else{
+                            currentFrame=nFrames - 1;
+                            runLoopFlag =false;
+                        }
                     }
                 } else {
                     currentFrame--;
                     if (currentFrame < 0) {
+                        if(isLooping){
                         currentFrame = nFrames - 1;
+                        }else{
+                            currentFrame=0;
+                        }
                     }
                 }
 
@@ -243,4 +257,18 @@ public class Sprite {
         this.frameWidth = (bitmap.getWidth() / nFrames);
     }
 
+    public void setLooping(boolean looping){
+        this.isLooping= looping;
+    }
+    public void reverse(){
+        if (this.player==Player.RIGHT){
+            this.player=Player.LEFT;
+        }else{
+            this.player=Player.RIGHT;
+        }
+    }
+    public void runAnimation(){
+        this.runLoopFlag =true;
+
+    }
 }

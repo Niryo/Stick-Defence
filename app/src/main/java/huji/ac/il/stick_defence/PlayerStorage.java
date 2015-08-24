@@ -27,7 +27,8 @@ public class PlayerStorage implements Serializable {
         WOODEN_TOWER,
         BIG_WOODEN_TOWER,
         STONE_TOWER,
-        FORTIFIED_TOWER
+        FORTIFIED_TOWER,
+        FOG
     }
 
     public static final String FILE_NAME = "stick_defence.sav";

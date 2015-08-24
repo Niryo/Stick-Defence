@@ -170,6 +170,9 @@ public class Client implements DoProtocolAction, Serializable{
     public void reportMathBomb() {
         send(Protocol.stringify(Protocol.Action.MATH_BOMB));
     }
+    public void reportFog(){
+        send(Protocol.stringify(Protocol.Action.FOG));
+    }
 
 
     /**

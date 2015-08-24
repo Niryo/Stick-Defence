@@ -70,7 +70,8 @@ public class Protocol {
         RESUME,
         END_LEAGUE,
         TEST,
-        PARTNER_INFO
+        PARTNER_INFO,
+        FOG
     }
 
     /**

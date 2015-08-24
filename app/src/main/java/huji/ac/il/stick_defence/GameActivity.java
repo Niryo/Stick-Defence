@@ -138,6 +138,24 @@ public class GameActivity extends Activity implements DoProtocolAction {
         }
 
 
+        if(gameState.isPurchased(PlayerStorage.PurchasesEnum.FOG)){
+            Button sendFog = new Button(this);
+            sendFog.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.fog_icon, 0, 0, 0);
+            sendFog.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    gameState.sendFog();
+                    v.setEnabled(false);
+//                    ((Button) v).setCompoundDrawablesWithIntrinsicBounds(
+//                            R.drawable.math_bomb_sent, 0, 0, 0);
+                }
+            });
+
+            buttonsLayout.addView(sendFog);
+            buttons.add(sendFog);
+        }
+
         gameComponentsLayout.addView(firstLineLayout);
         gameState.setButtonsComponent(buttons);
 
@@ -208,6 +226,9 @@ public class GameActivity extends Activity implements DoProtocolAction {
         if (isMultiplayer) {
             readyToPlay();
         }
+        else{
+            Sounds.getInstance().stopTheme(Sounds.MAIN_THEME);
+        }
     }
 
     private void readyToPlay(){
@@ -251,6 +272,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
             final ProgressBar progressButton = new ProgressBar(this, null, android.R
                     .attr.progressBarStyleHorizontal);
+
           //  Drawable d = ContextCompat.getDrawable(this, R.drawable.progress_button);
           //  progressButton.setProgressDrawable(d);
             RelativeLayout.LayoutParams progressButtonParams = new RelativeLayout.LayoutParams(
@@ -415,7 +437,14 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 });
                 break;
 
+
+            case FOG:
+                gameState.addFog();
+                break;
+
+
             case START_GAME:
+                Sounds.getInstance().stopTheme(Sounds.MAIN_THEME);
                 this.gameState.setTime(System.currentTimeMillis(),
                         Long.parseLong(Protocol.getData(rawInput)));
                 this.waitDialog.dismiss();

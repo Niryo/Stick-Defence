@@ -46,6 +46,7 @@ public class GameState {
     private ArrayList<Bow> bows = new ArrayList<>();
     private ArrayList<Arrow> arrows = new ArrayList<>();
     private ArrayList<Bullet> bullets = new ArrayList<>();
+    private ArrayList<DrawableObject> miscellaneous = new ArrayList<>();
     private Context context;
     private int rightTowerLeftX, leftTowerBeginX;
     private int rightTowerCentralX, leftTowerCentralX;
@@ -171,6 +172,12 @@ public class GameState {
         this.isMultiplayer = false;
     }
 
+    public void sendFog(){
+        client.reportFog();
+    }
+    public void addFog(){
+        this.miscellaneous.add(new Fog(context));
+    }
     public void finishGame() {
         playerStorage.setCredits(creditManager.getCredits(Sprite.Player.LEFT));
     //    save();
@@ -239,6 +246,8 @@ public class GameState {
      */
     public void update() {
         long currentTimeMillis = System.currentTimeMillis();
+
+
         for (Soldier soldier : this.getSoldiers()) {
             soldier.update(currentTimeMillis);
         }
@@ -254,7 +263,11 @@ public class GameState {
         for (Tower tower : this.getTowers()) {
             tower.update(currentTimeMillis);
         }
+        for(DrawableObject drawableObject: this.miscellaneous){
+            drawableObject.update(currentTimeMillis);
+        }
         this.checkHits();
+
     }
 
 
@@ -615,6 +628,9 @@ public class GameState {
         Log.w("custom", "time deference is: " + timeDifference);
     }
 
+    public ArrayList<DrawableObject> getMiscellaneous(){
+        return this.miscellaneous;
+    }
     private long getSyncTime() {
         return System.currentTimeMillis() + this.timeDifference;
     }

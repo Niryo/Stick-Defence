@@ -27,6 +27,7 @@ public class Market extends Activity implements DoProtocolAction {
     private static final int    BIG_WOODEN_TOWER_PRICE = 100;
     private static final int    STONE_TOWER_PRICE = 100;
     private static final int    FORTIFIED_TOWER_PRICE = 100;
+    private static final int    FOG_PRICE=100;
 
     private static final String CREDITS = "Credits: ";
     private Tower.TowerTypes myTowerType;
@@ -37,7 +38,7 @@ public class Market extends Activity implements DoProtocolAction {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+       // Sounds.getInstance().playTheme(Sounds.MAIN_THEME);
         Client.getClientInstance().setCurrentActivity(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -104,6 +105,7 @@ public class Market extends Activity implements DoProtocolAction {
         addButton(PlayerStorage.PurchasesEnum.MATH_BOMB,
                   R.id.buy_math_bomb,
                   MATH_BOMB_PRICE);
+        addButton(PlayerStorage.PurchasesEnum.FOG, R.id.buy_fog,FOG_PRICE);
 
         //BigWoodenTower
         final Button bigWoodenTowerButton = (Button) findViewById(R.id.buy_big_wooden_tower);

@@ -168,6 +168,9 @@ public class GameSurface extends SurfaceView implements
         for (Arrow arrow : gameState.getArrows()) {
             arrow.render(canvas);
         }
+        for (DrawableObject drawableObject :gameState.getMiscellaneous()){
+            drawableObject.render(canvas);
+        }
     }
 
 }
