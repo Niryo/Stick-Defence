@@ -40,7 +40,7 @@ public class BazookaSoldier extends Soldier {
     private Sprite.Player player;
 
     public BazookaSoldier(Context context, Sprite.Player player, double delayInSec) {
-        super(context, player, SEC_TO_SCREEN_WIDTH, DAMAGE_PER_SEC, delayInSec);
+        super(context, player, SEC_TO_SCREEN_WIDTH, DAMAGE_PER_SEC,Sounds.WALKING_SOUND, delayInSec);
         if (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
                     context.getResources(),

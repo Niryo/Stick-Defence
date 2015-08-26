@@ -46,6 +46,7 @@ public class GameState {
     private static int canvas_height;
     private static int canvas_width;
 
+    private Sounds sounds= Sounds.getInstance();
     private ArrayList<Button> buttonsComponent;
     private ArrayList<Soldier> soldiers = new ArrayList<>();
     private ArrayList<Tower> towers = new ArrayList<>();
@@ -351,12 +352,15 @@ public class GameState {
 
             Log.w("custom", "the delay is: " + delay);
             this.rightPlayerSoldiers++;
+
         }
 
-
+        Soldier soldier;
         switch (soldierType) {
             case BASIC_SOLDIER:
-                soldiers.add(new BasicSoldier(context, player, delay));
+                 soldier =new BasicSoldier(context, player, delay);
+                soldier.playSound();
+                soldiers.add(soldier);
                 if (isMultiplayer && Sprite.Player.LEFT == player){
                     Log.w("yahav", "Basic soldier");
                     client.reportBasicSoldier();
@@ -395,10 +399,13 @@ public class GameState {
                 }
                 break;
             case BAZOOKA_SOLDIER:
+                soldier =new BazookaSoldier(context, player, delay);
+                soldier.playSound();
                 if (creditManager.decCredits(BAZOOKA_SEND_PRICE, player) ||
                         player == Sprite.Player.RIGHT) {
-                    soldiers.add(new BazookaSoldier(context, player, delay));
+                    soldiers.add(soldier);
                 } else {
+
                     return false;
                 }
                 if (isMultiplayer && Sprite.Player.LEFT == player){
@@ -493,13 +500,16 @@ public class GameState {
         if (shouldReport && isMultiplayer){
             client.reportSoldierKill(soldier.getId(), soldier.getPlayer());
         }
+        soldier.stopSound();
         soldiers.remove(soldier);
+
     }
 
     public void removeSoldier(int soldierId,
                               Sprite.Player player) {
         for (Soldier soldier : soldiers){
             if (soldier.getId() == soldierId && soldier.getPlayer() == player){
+                soldier.stopSound();
                 removeSoldier(soldier, false);
                 Log.w("yahav", "Soldier" + soldier.getId() +
                         soldier.getPlayer().toString() +

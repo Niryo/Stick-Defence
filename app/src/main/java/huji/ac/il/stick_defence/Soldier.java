@@ -26,6 +26,7 @@ public abstract class Soldier implements Serializable {
     private static Bitmap rightSoldierPic = null;
     private static Bitmap leftAttackSoldierPic = null;
     private static Bitmap rightAttackSoldierPic = null;
+
     private Sprite sprite;
 
     //Characteristics
@@ -45,12 +46,14 @@ public abstract class Soldier implements Serializable {
     private double secToCrossScreen;
     private double delayInSec;
     private Context context;
+    private int soundStream;
+    private  int soundId;
 
 
     protected Soldier(Context context, Sprite.Player player, double
-            secToCrossScreen, int damagePerSec, double delayInSec) {
+            secToCrossScreen, int damagePerSec, int soundId, double delayInSec) {
         this.PLAYER = player;
-
+    this.soundId=soundId;
         this.screenWidth = gameState.getCanvasWidth();
 
         this.screenHeight = gameState.getCanvasHeight();
@@ -200,5 +203,11 @@ public abstract class Soldier implements Serializable {
 
     public int getCurrentFrame() {
         return sprite.getCurrentFrame();
+    }
+    public void playSound(){
+       this.soundStream = Sounds.getInstance().playSound(this.soundId);
+    }
+    public void stopSound(){
+        Sounds.stopSound(this.soundStream);
     }
 }
