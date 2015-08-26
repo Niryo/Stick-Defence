@@ -47,6 +47,7 @@ public class GameSurface extends SurfaceView implements
     }
 
     public void writeEndGameMessage(Canvas canvas) {
+        Sounds.getInstance().stopAllSound();
         Paint paint = new Paint();
         paint.setTextSize(canvas.getWidth() / END_GAME_MSG_FACTOR);
         paint.setTypeface(Typeface.SERIF);
