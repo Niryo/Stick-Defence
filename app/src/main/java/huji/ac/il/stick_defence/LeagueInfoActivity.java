@@ -37,6 +37,9 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
     private ProgressDialog waitDialog;
     private int text_size;
     private int TEXT_SCALE_FACTOR=30;
+    private final String BUTTON_PUSHED_COLOR= "#FFFFCC";
+    private final String BUTTON_RELEASED_COLOR="#FF9900";
+    private String winner=" testWiner";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,19 +77,23 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    readyButton.setTextColor(Color.parseColor("#FFCC00"));
-                    readyButton.setShadowLayer(4, 0, 0, Color.parseColor("#FF9900"));
+                    readyButton.setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
+                    readyButton.setShadowLayer(4, 0, 0, Color.parseColor(BUTTON_RELEASED_COLOR));
                     readyButton.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     readyButton.setTextColor(Color.BLACK);
                     readyButton.setTypeface(Typeface.SERIF);
-                    readyButton.setShadowLayer(0, 0, 0, 0);;
+                    readyButton.setShadowLayer(0, 0, 0, 0);
+                    ;
                 }
-            return false;
+                return false;
             }
         });
+
         buildTableHead();
+        initTabs();
+
         if (getIntent().hasExtra("info")) {
             waitDialog.dismiss();
             printLeagueInfo(getIntent().getStringExtra("info"));
@@ -99,71 +106,77 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
 
 
 
-
-
-        final TabHost tabHost = (TabHost) findViewById(R.id.tabHost);
-        tabHost.setup();
-        TabHost.TabSpec ts1= tabHost.newTabSpec("Tab1");
-        ts1.setIndicator("Statistics");
-        ts1.setContent(R.id.tab1);
-        tabHost.addTab(ts1);
-
-        tabHost.setup();
-        TabHost.TabSpec ts2= tabHost.newTabSpec("Tab2");
-        ts2.setIndicator("Next round battles");
-        ts2.setContent(R.id.tab2);
-        tabHost.addTab(ts2);
-
-        final Button buttonTab1= (Button) findViewById(R.id.buttonTab1);
-        final Button buttonTab2= (Button) findViewById(R.id.buttonTab2);
-
-        buttonTab1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tabHost.setCurrentTab(0);
-                buttonTab1.setTextColor(Color.parseColor("#FFCC00"));
-                buttonTab1.setShadowLayer(4, 0, 0, Color.parseColor("#FF9900"));
-                buttonTab1.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-                buttonTab2.setTextColor(Color.BLACK);
-                buttonTab2.setTypeface(Typeface.SERIF);
-                buttonTab2.setShadowLayer(0,0,0,0);
-            }
-        });
-
-        buttonTab2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tabHost.setCurrentTab(1);
-                buttonTab2.setTextColor(Color.parseColor("#FFCC00"));
-                buttonTab2.setShadowLayer(4, 0, 0, Color.parseColor("#FF9900"));
-                        buttonTab2.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-                buttonTab1.setTextColor(Color.BLACK);
-                buttonTab1.setTypeface(Typeface.SERIF);
-                buttonTab1.setShadowLayer(0,0,0,0);
-            }
-        });
-        buttonTab1.callOnClick();
-
-
     }
 
+private void initTabs(){
+    final TabHost tabHost = (TabHost) findViewById(R.id.tabHost);
+    tabHost.setup();
+    TabHost.TabSpec ts1= tabHost.newTabSpec("Tab1");
+    ts1.setIndicator("Statistics");
+    ts1.setContent(R.id.tab1);
+    tabHost.addTab(ts1);
 
+    tabHost.setup();
+    TabHost.TabSpec ts2= tabHost.newTabSpec("Tab2");
+    ts2.setIndicator("Next round battles");
+    ts2.setContent(R.id.tab2);
+    tabHost.addTab(ts2);
+
+    tabHost.setup();
+    TabHost.TabSpec ts3= tabHost.newTabSpec("Tab3");
+    ts3.setIndicator("Winner");
+    ts3.setContent(R.id.tab3);
+    tabHost.addTab(ts3);
+
+
+    final Button buttonTab1= (Button) findViewById(R.id.buttonTab1);
+    final Button buttonTab2= (Button) findViewById(R.id.buttonTab2);
+
+    buttonTab1.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            tabHost.setCurrentTab(0);
+            buttonTab1.setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
+            buttonTab1.setShadowLayer(4, 0, 0, Color.parseColor(BUTTON_RELEASED_COLOR));
+            buttonTab1.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+            buttonTab1.setTypeface(Typeface.SERIF);
+            buttonTab2.setTextColor(Color.BLACK);
+            buttonTab2.setTypeface(Typeface.SERIF);
+            buttonTab2.setShadowLayer(0,0,0,0);
+        }
+    });
+
+    buttonTab2.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            tabHost.setCurrentTab(1);
+            buttonTab2.setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
+            buttonTab2.setShadowLayer(4, 0, 0, Color.parseColor(BUTTON_RELEASED_COLOR));
+            buttonTab2.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+            buttonTab2.setTypeface(Typeface.SERIF);
+            buttonTab1.setTextColor(Color.BLACK);
+            buttonTab1.setTypeface(Typeface.SERIF);
+            buttonTab1.setShadowLayer(0,0,0,0);
+        }
+    });
+    buttonTab1.callOnClick();
+}
     @Override
     public void doAction(String rawInput) {
         Protocol.Action action = Protocol.getAction(rawInput);
-        String rawInfo = Protocol.getData(rawInput);
+
 
 
         switch (action) {
             case LEAGUE_INFO:
                 waitDialog.dismiss();
-                printLeagueInfo(rawInfo);
+                printLeagueInfo( Protocol.getData(rawInput));
             /* if( GameState.getInstance().getInstance()!=null){
                  GameState.getInstance().getInstance().sendInfoToPartner();
             }*/
                 break;
             case PARTNER_INFO:
-                GameState.getInstance().newPartnerInfo(rawInfo);
+                GameState.getInstance().newPartnerInfo( Protocol.getData(rawInput));
                 break;
 
         }
@@ -177,11 +190,8 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
         try {
             JSONObject info = null;
             info = new JSONObject(rawInfo);
-            Iterator<?> keys = info.keys();
-            while (keys.hasNext()) {
-                String key = (String) keys.next();
-                if (key.equals("pairs")) {
-                    JSONObject pairs= (JSONObject)info.get(key);
+                if (info.has("pairs")) {
+                    JSONObject pairs= (JSONObject)info.get("pairs");
                     Iterator<?> pairKeys = pairs.keys();
                     while (pairKeys.hasNext()) {
                         String playerKey = (String) pairKeys.next();
@@ -202,10 +212,10 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
                     });}
 
                 }
-                if(key.equals("statistics")) {
+                if(info.has("statistics")) {
                     ArrayList<PlayerWins> dataToSort = new ArrayList<>();
                     final TableLayout table = (TableLayout) findViewById(R.id.statistics_table);
-                    JSONObject stats = (JSONObject) info.get(key);
+                    JSONObject stats = (JSONObject) info.get("statistics");
                     Iterator<?> statKeys = stats.keys();
                     while (statKeys.hasNext()) {
                         String name = (String) statKeys.next();
@@ -218,7 +228,7 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
                         }
                     });
                     int count = 1;
-
+                    this.winner=dataToSort.get(0).name;
                     for (PlayerWins pw : dataToSort) {
                         final TableRow tr = new TableRow(this);
                         TextView place = new TextView(this);
@@ -250,17 +260,62 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
                             }
                         });
 
-
                     }
 
-
                 }
 
 
-                if(key.equals("end_of_league")){
-                    //todo: print winner
+                if(info.has("end_of_league")){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TextView winText = (TextView) findViewById(R.id.tab3);
+                            winText.setText("All glory to " + winner + "!\n The big winner of the league!");
+                            winText.setTextSize((float) (text_size * 2));
+                            winText.setTextColor(Color.parseColor("#FF9900"));
+                            winText.setShadowLayer(10, 0, 0, Color.parseColor("#FFFF66"));
+                            final TabHost tabHost= (TabHost) findViewById(R.id.tabHost);
+
+
+                            final Button buttonTab1= (Button) findViewById(R.id.buttonTab1);
+                            buttonTab1.setText("Winner");
+                            final Button buttonTab2= (Button) findViewById(R.id.buttonTab2);
+                            buttonTab2.setText("Statistics table");
+
+                            buttonTab1.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    tabHost.setCurrentTab(2);
+                                    buttonTab1.setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
+                                    buttonTab1.setShadowLayer(8, 0, 0, Color.parseColor(BUTTON_RELEASED_COLOR));
+                                    buttonTab1.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                                    buttonTab1.setTypeface(Typeface.SERIF);
+                                    buttonTab2.setTextColor(Color.BLACK);
+                                    buttonTab2.setTypeface(Typeface.SERIF);
+                                    buttonTab2.setShadowLayer(0, 0, 0, 0);
+                                }
+                            });
+
+                            buttonTab2.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    tabHost.setCurrentTab(0);
+                                    buttonTab2.setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
+                                    buttonTab2.setShadowLayer(4, 0, 0, Color.parseColor(BUTTON_RELEASED_COLOR));
+                                    buttonTab2.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                                    buttonTab2.setTypeface(Typeface.SERIF);
+                                    buttonTab1.setTextColor(Color.BLACK);
+                                    buttonTab1.setTypeface(Typeface.SERIF);
+                                    buttonTab1.setShadowLayer(0, 0, 0, 0);
+                                }
+                            });
+                            buttonTab1.callOnClick();
+                            ((Button) findViewById(R.id.ready_to_play)).setText("New league round");
+
+                        }
+                    });
                 }
-            }
+
 
         } catch (JSONException e) {
             e.printStackTrace();
