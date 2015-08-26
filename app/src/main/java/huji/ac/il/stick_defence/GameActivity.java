@@ -110,6 +110,9 @@ public class GameActivity extends Activity implements DoProtocolAction {
         addButton(PlayerStorage.PurchasesEnum.SWORDMAN,
                   R.drawable.swordman_icon, Protocol.Action.SWORDMAN,
                 GameState.MILLISEC_TO_SWORDMAN);
+        addButton(PlayerStorage.PurchasesEnum.BOMB_GRANDPA,
+                R.drawable.bomb_grandpa_icon, Protocol.Action.BOMB_GRANDPA,
+                GameState.MILLISEC_TO_BOMB_GRANDPA);
         addButton(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER,
                   R.drawable.bazooka_icon, Protocol.Action.BAZOOKA_SOLDIER,
                 GameState.MILLISEC_TO_BAZOOKA);
@@ -265,7 +268,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
 
             RelativeLayout buttonLayout = new RelativeLayout(this);
-            buyButton.setId(R.id.basic_soldier_id);
+
+            buyButton.setId(R.id.generic_soldier_id);
             buttonLayout.addView(buyButton);
 
             gameState.activateSendSoldierButton(buyButton, item);
@@ -273,14 +277,15 @@ public class GameActivity extends Activity implements DoProtocolAction {
             final ProgressBar progressButton = new ProgressBar(this, null, android.R
                     .attr.progressBarStyleHorizontal);
 
-          //  Drawable d = ContextCompat.getDrawable(this, R.drawable.progress_button);
-          //  progressButton.setProgressDrawable(d);
             RelativeLayout.LayoutParams progressButtonParams = new RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.WRAP_CONTENT,
                     RelativeLayout.LayoutParams.WRAP_CONTENT);
-            progressButtonParams.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.basic_soldier_id);
-            progressButtonParams.addRule(RelativeLayout.ALIGN_LEFT, R.id.basic_soldier_id);
-            progressButtonParams.addRule(RelativeLayout.ALIGN_RIGHT, R.id.basic_soldier_id);
+            progressButtonParams.addRule(RelativeLayout.ALIGN_BOTTOM,
+                                         R.id.generic_soldier_id);
+            progressButtonParams.addRule(RelativeLayout.ALIGN_LEFT,
+                                         R.id.generic_soldier_id);
+            progressButtonParams.addRule(RelativeLayout.ALIGN_RIGHT,
+                                         R.id.generic_soldier_id);
             progressButton.setLayoutParams(progressButtonParams);
             progressButton.setAlpha(0.8f);
             progressButton.setMax(intervalInMillisec);

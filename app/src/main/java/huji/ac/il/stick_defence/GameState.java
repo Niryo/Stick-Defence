@@ -26,13 +26,19 @@ public class GameState {
 
     private static final int MAX_SOLDIERS_PER_PLAYER = 20;
     private static final int CREDITS_ON_WIN = 100;
+
+    //Soldiers prices
     private static final int ZOMBIE_SEND_PRICE = 50;
     private static final int SWORDMAN_SEND_PRICE = 5;
+    private static final int BOMB_GRANDPA_SEND_PRICE = 5;
     private static final int BAZOOKA_SEND_PRICE = 10;
     private static final int TANK_SEND_PRICE = 100;
+
+    //Progress buttons
     public static final int MILLISEC_TO_BASIC_SOLDIER = 1000;
     public static final int MILLISEC_TO_ZOMBIE = 2000;
     public static final int MILLISEC_TO_SWORDMAN = 3000;
+    public static final int MILLISEC_TO_BOMB_GRANDPA = 1500;
     public static final int MILLISEC_TO_BAZOOKA = 4000;
     public static final int MILLISEC_TO_TANK = 5000;
 
@@ -377,6 +383,17 @@ public class GameState {
                     client.reportSwordman();
                 }
                 break;
+            case BOMB_GRANDPA:
+                if (creditManager.decCredits(BOMB_GRANDPA_SEND_PRICE, player) ||
+                        player == Sprite.Player.RIGHT) {
+                    soldiers.add(new BombGrandpa(context, player, delay));
+                } else {
+                    return false;
+                }
+                if (isMultiplayer && Sprite.Player.LEFT == player){
+                    client.reportBombGrandpa();
+                }
+                break;
             case BAZOOKA_SOLDIER:
                 if (creditManager.decCredits(BAZOOKA_SEND_PRICE, player) ||
                         player == Sprite.Player.RIGHT) {
@@ -473,7 +490,7 @@ public class GameState {
             this.rightPlayerSoldiers--;
             addCredits(10, Sprite.Player.LEFT);
         }
-        if (shouldReport){
+        if (shouldReport && isMultiplayer){
             client.reportSoldierKill(soldier.getId(), soldier.getPlayer());
         }
         soldiers.remove(soldier);

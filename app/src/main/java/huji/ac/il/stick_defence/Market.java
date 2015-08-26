@@ -21,13 +21,14 @@ public class Market extends Activity implements DoProtocolAction {
 //TODO: CREATE A BUTTON THAT MOVES YOU INTO LEAGUE_INFO ACTIVITY AND IF THERE IS INFO, SEND EXTRA IN THE INTENT
     private static final int    ZOMBIE_BUY_PRICE = 100;
     private static final int    SWORDMAN_BUY_PRICE = 50;
+    private static final int    BOMB_GRANDPA_BUY_PRICE = 100;
     private static final int    TANK_BUY_PRICE = 100;
     private static final int    BAZOOKA_BUY_PRICE = 100;
     private static final int    MATH_BOMB_PRICE = 100;
     private static final int    BIG_WOODEN_TOWER_PRICE = 100;
     private static final int    STONE_TOWER_PRICE = 100;
     private static final int    FORTIFIED_TOWER_PRICE = 100;
-    private static final int    FOG_PRICE=100;
+    private static final int    FOG_PRICE = 100;
 
     private static final String CREDITS = "Credits: ";
     private Tower.TowerTypes myTowerType;
@@ -99,16 +100,20 @@ public class Market extends Activity implements DoProtocolAction {
         addButton(PlayerStorage.PurchasesEnum.SWORDMAN,
                   R.id.buy_swordman,
                   SWORDMAN_BUY_PRICE);
+        addButton(PlayerStorage.PurchasesEnum.BOMB_GRANDPA,
+                  R.id.buy_bomb_grandpa,
+                  BOMB_GRANDPA_BUY_PRICE);
         addButton(PlayerStorage.PurchasesEnum.TANK,
                   R.id.buy_tank,
                   TANK_BUY_PRICE);
         addButton(PlayerStorage.PurchasesEnum.MATH_BOMB,
                   R.id.buy_math_bomb,
                   MATH_BOMB_PRICE);
-        addButton(PlayerStorage.PurchasesEnum.FOG, R.id.buy_fog,FOG_PRICE);
+        addButton(PlayerStorage.PurchasesEnum.FOG, R.id.buy_fog, FOG_PRICE);
 
         //BigWoodenTower
-        final Button bigWoodenTowerButton = (Button) findViewById(R.id.buy_big_wooden_tower);
+        final Button bigWoodenTowerButton =
+                (Button) findViewById(R.id.buy_big_wooden_tower);
         if (gameState.isPurchased(PlayerStorage.PurchasesEnum.BIG_WOODEN_TOWER) ||
             gameState.isPurchased(PlayerStorage.PurchasesEnum.STONE_TOWER) ||
             gameState.isPurchased(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER)) {

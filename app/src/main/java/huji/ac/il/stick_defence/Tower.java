@@ -65,7 +65,7 @@ public abstract class Tower {
 
     private Bitmap leftTowerPic = null;
     private Bitmap rightTowerPic = null;
-    private static Bitmap firePic = null;
+    public static Bitmap firePic = null;
     private Sprite towerSprite;
     private ArrayList<Fire> fires;
     private Context context;
