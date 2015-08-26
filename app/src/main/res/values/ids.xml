@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="basic_soldier_id" type="id"/>
-    <item name="my_button_1" type="id"/>
-    <item name="my_time_picker_1" type="id"/>
+    <item name="generic_soldier_id" type="id"/>
 </resources>

@@ -139,6 +139,10 @@ public class Client implements DoProtocolAction, Serializable{
         send(Protocol.stringify(Protocol.Action.SWORDMAN));
     }
 
+    public void reportBombGrandpa(){
+        send(Protocol.stringify(Protocol.Action.BOMB_GRANDPA));
+    }
+
     public void reportBazookaSoldier(){
         send(Protocol.stringify(Protocol.Action.BAZOOKA_SOLDIER));
     }

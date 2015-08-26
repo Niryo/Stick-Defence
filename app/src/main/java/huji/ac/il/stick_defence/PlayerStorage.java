@@ -21,6 +21,7 @@ public class PlayerStorage implements Serializable {
         BASIC_SOLDIER,
         ZOMBIE,
         SWORDMAN,
+        BOMB_GRANDPA,
         TANK,
         BAZOOKA_SOLDIER,
         MATH_BOMB,
