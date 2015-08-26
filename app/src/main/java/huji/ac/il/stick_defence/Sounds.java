@@ -36,10 +36,10 @@ public class Sounds {
                     .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                     .build();
             SoundPool sounds = new SoundPool.Builder()
-                    .setAudioAttributes(attributes).setMaxStreams(4)
+                    .setAudioAttributes(attributes).setMaxStreams(3)
                     .build();
         }else{
-            soundPool = new SoundPool(4,AudioManager.STREAM_MUSIC,0);
+            soundPool = new SoundPool(3,AudioManager.STREAM_MUSIC,0);
         }
         soundPoolMap= new HashMap<>();
         soundPoolMap.put( RUN_SOUND, soundPool.load(context,R.raw.running_sound, 1) );
