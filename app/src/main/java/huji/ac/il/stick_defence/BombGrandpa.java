@@ -40,7 +40,7 @@ public class BombGrandpa extends Soldier {
 
     public BombGrandpa(Context context, Sprite.Player player, double delayInSec) {
         super(context, player, SEC_TO_CROSS_SCREEN, DAMAGE_PER_SEC,
-                Sounds.RUN_SOUND, delayInSec);
+                Sounds.WALKING_SOUND, delayInSec);
         if (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
                     context.getResources(),

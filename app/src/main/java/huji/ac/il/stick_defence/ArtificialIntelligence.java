@@ -1,7 +1,5 @@
 package huji.ac.il.stick_defence;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -9,29 +7,13 @@ import java.util.Random;
  * Created by yahav on 09/05/15.
  */
 public class ArtificialIntelligence {
-    public enum Difficulty {
-        EASY,
-        MEDIUM,
-        HARD
-    }
 
-    //================================Easy======================================
-    private static final float EASY_SECONDS_TO_SEND_SOLDIER = 4.0f;
-    private static final float EASY_SECONDS_TO_SHOOT = 3.0f;
-    private static final float EASY_SCREEN_PORTION_TO_AIM = 0.3f;
-
-    //===============================Medium=====================================
-    private static final float MEDUIM_SECONDS_TO_SEND_SOLDIER = 3.0f;
-    private static final float MEDIUM_SECONDS_TO_SHOOT = 3.0f;
-    private static final float MEDIUM_SCREEN_PORTION_TO_AIM = 0.2f;
-
-    //================================Hard======================================
-    private static final float HARD_SECONDS_TO_SEND_SOLDIER = 2.0f;
-    private static final float HARD_SECONDS_TO_SHOOT = 3.0f;
-    private static final float HARD_SCREEN_PORTION_TO_AIM = 0.1f;
+    private static final float START_SECONDS_TO_SEND_SOLDIER = 4.0f;
+    private static final float START_SECONDS_TO_SHOOT = 3.0f;
+    private static final float START_SCREEN_PORTION_TO_AIM = 0.3f;
+    private static final float LEVEL_UP_FACTOR = 0.9f;
 
     GameState gameState = GameState.getInstance();
-    private Difficulty difficulty;
 
     private long lastSoldierInMillisec;
     private long lastShootInMillisec;
@@ -39,32 +21,14 @@ public class ArtificialIntelligence {
     private float secondsToShoot;
     private int pixelsShootRange;
 
-    ArtificialIntelligence(Difficulty difficulty) {
-        this.difficulty = difficulty;
+    ArtificialIntelligence() {
         int screenWidth = gameState.getContext().getResources().
                 getDisplayMetrics().widthPixels;
 
-        switch (difficulty) {
-            case EASY:
-                secondsToSendSoldier = EASY_SECONDS_TO_SEND_SOLDIER;
-                secondsToShoot = EASY_SECONDS_TO_SHOOT;
-                pixelsShootRange =
-                        (int) (screenWidth * EASY_SCREEN_PORTION_TO_AIM);
-                break;
-            case MEDIUM:
-                secondsToSendSoldier = MEDUIM_SECONDS_TO_SEND_SOLDIER;
-                secondsToShoot = MEDIUM_SECONDS_TO_SHOOT;
-                pixelsShootRange =
-                        (int) (screenWidth * MEDIUM_SCREEN_PORTION_TO_AIM);
-                break;
-            case HARD:
-                secondsToSendSoldier = HARD_SECONDS_TO_SEND_SOLDIER;
-                secondsToShoot = HARD_SECONDS_TO_SHOOT;
-                pixelsShootRange =
-                        (int) (screenWidth * HARD_SCREEN_PORTION_TO_AIM);
-                break;
-        }
-
+        secondsToSendSoldier = START_SECONDS_TO_SEND_SOLDIER;
+        secondsToShoot = START_SECONDS_TO_SHOOT;
+        pixelsShootRange =
+                (int) (screenWidth * START_SCREEN_PORTION_TO_AIM);
         lastSoldierInMillisec = lastShootInMillisec = System.currentTimeMillis();
     }
 
@@ -119,6 +83,12 @@ public class ArtificialIntelligence {
 
     }
 
+    public void levelUp(){
+        this.pixelsShootRange*=LEVEL_UP_FACTOR;
+        this.secondsToSendSoldier*=LEVEL_UP_FACTOR;
+        this.secondsToShoot*=LEVEL_UP_FACTOR;
+    }
+
     public static int randInt(int min, int max) {
 
         // NOTE: Usually this should be a field rather than a method
@@ -131,4 +101,5 @@ public class ArtificialIntelligence {
 
         return randomNum;
     }
+
 }

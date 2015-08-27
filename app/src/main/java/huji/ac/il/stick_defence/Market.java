@@ -106,10 +106,13 @@ public class Market extends Activity implements DoProtocolAction {
         addButton(PlayerStorage.PurchasesEnum.TANK,
                   R.id.buy_tank,
                   TANK_BUY_PRICE);
-        addButton(PlayerStorage.PurchasesEnum.MATH_BOMB,
-                  R.id.buy_math_bomb,
-                  MATH_BOMB_PRICE);
-        addButton(PlayerStorage.PurchasesEnum.FOG, R.id.buy_fog, FOG_PRICE);
+        if (isMultiplayer){
+            addButton(PlayerStorage.PurchasesEnum.MATH_BOMB,
+                    R.id.buy_math_bomb,
+                    MATH_BOMB_PRICE);
+            addButton(PlayerStorage.PurchasesEnum.FOG, R.id.buy_fog, FOG_PRICE);
+        }
+
 
         //BigWoodenTower
         final Button bigWoodenTowerButton =

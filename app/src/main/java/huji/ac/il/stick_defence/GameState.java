@@ -45,7 +45,7 @@ public class GameState {
 
     private static int canvas_height;
     private static int canvas_width;
-
+    private ArtificialIntelligence ai;
     private Sounds sounds= Sounds.getInstance();
     private ArrayList<Button> buttonsComponent;
     private ArrayList<Soldier> soldiers = new ArrayList<>();
@@ -85,10 +85,12 @@ public class GameState {
  //       playerStorage = PlayerStorage.load(context);
     }
 
-    public static GameState CreateGameState(Context context,Activity activity, int canvasWidth, int canvasHeight) {
+    public static GameState CreateGameState(Context context, Activity activity,
+                                            int canvasWidth, int canvasHeight,
+                                            boolean isMultiplayer) {
         if (null == gameState) {
             gameState = new GameState(context,activity);
-            gameState.init(canvasWidth, canvasHeight);
+            gameState.init(canvasWidth, canvasHeight, isMultiplayer);
         }
 
         return gameState;
@@ -135,7 +137,7 @@ public class GameState {
         bows.set(1, rightBow);
     }
 
-    private void init(int canvasWidth, int canvasHeight) {
+    private void init(int canvasWidth, int canvasHeight, boolean isMultiplayer) {
         setCanvasDimentions(canvasWidth, canvasHeight);
         playerStorage = new PlayerStorage(context, 0);
         this.leftTower = getMyTower();
@@ -159,6 +161,11 @@ public class GameState {
         leftTowerBeginX = leftTower.getRightX();
         rightTowerCentralX = rightTower.getCentralX();
         leftTowerCentralX = leftTower.getCentralX();
+
+        if (isMultiplayer){
+            this.isMultiplayer = true;
+            ai = new ArtificialIntelligence();
+        }
 
     }
 
@@ -686,10 +693,6 @@ public class GameState {
         this.buttonsComponent= buttons;
     }
 
-    public void addProgressButtons(ArrayList<ProgressBar> progressButtons){
-
-    }
-
     public void disableButtons(){
         this.gameActivity.runOnUiThread(new Runnable() {
             @Override
@@ -716,5 +719,9 @@ public class GameState {
 
     public Tower.TowerTypes getLeftTowerType(){
         return this.leftTower.getType();
+    }
+
+    public ArtificialIntelligence getAi(){
+        return ai;
     }
 }
