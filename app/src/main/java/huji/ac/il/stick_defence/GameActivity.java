@@ -69,7 +69,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
             this.gameState =
                     GameState.CreateGameState(getApplicationContext(),
                                               this, screenWidth,
-                                              newScreenHeight);
+                                              newScreenHeight, isMultiplayer);
         } else {
             GameState.getInstance().reset(newGame);
         }

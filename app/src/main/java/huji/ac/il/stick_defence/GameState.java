@@ -67,7 +67,7 @@ public class GameState {
     private boolean isMultiplayer = true;
     private boolean leftPlayerWin = false;
     private boolean rightPlayerWin = false;
-    private PlayerStorage playerStorage;
+    private PlayerStorage playerStorage, aiStorage;
     private Button sendBazookaSoldierButton;
     private Activity gameActivity;
     private Tower rightTower;
@@ -119,11 +119,15 @@ public class GameState {
             playerStorage = new PlayerStorage(context, 0);
             rightTower = new WoodenTower(context, Sprite.Player.RIGHT);
         }
-        leftTower = getMyTower();
+        leftTower = towerFactory(playerStorage, Sprite.Player.LEFT);
         this.leftBow = new Bow(context, Sprite.Player.LEFT, leftTower);
         bows.set(0, leftBow);
 
-        rightTower.reset();
+        if (!isMultiplayer){
+            rightTower = towerFactory(this.aiStorage, Sprite.Player.RIGHT);
+        } else {
+            rightTower.reset();
+        }
 
         towers.add(leftTower);
         towers.add(rightTower);
@@ -140,7 +144,7 @@ public class GameState {
     private void init(int canvasWidth, int canvasHeight, boolean isMultiplayer) {
         setCanvasDimentions(canvasWidth, canvasHeight);
         playerStorage = new PlayerStorage(context, 0);
-        this.leftTower = getMyTower();
+        this.leftTower = towerFactory(playerStorage, Sprite.Player.LEFT);
         if (null == this.rightTower){
             this.rightTower = new WoodenTower(context, Sprite.Player.RIGHT);
         } else {
@@ -162,24 +166,25 @@ public class GameState {
         rightTowerCentralX = rightTower.getCentralX();
         leftTowerCentralX = leftTower.getCentralX();
 
-        if (isMultiplayer){
-            this.isMultiplayer = true;
+        this.isMultiplayer = isMultiplayer;
+        if (!isMultiplayer){
             ai = new ArtificialIntelligence();
+
         }
 
     }
 
-    private Tower getMyTower(){
-        if (playerStorage.isPurchased(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER)){
-            return new FortifiedTower(context, Sprite.Player.LEFT);
+    private Tower towerFactory(PlayerStorage ps, Sprite.Player player){
+        if (ps.isPurchased(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER)){
+            return new FortifiedTower(context, player);
         }
-        if (playerStorage.isPurchased(PlayerStorage.PurchasesEnum.STONE_TOWER)){
-            return new StoneTower(context, Sprite.Player.LEFT);
+        if (ps.isPurchased(PlayerStorage.PurchasesEnum.STONE_TOWER)){
+            return new StoneTower(context, player);
         }
-        if (playerStorage.isPurchased(PlayerStorage.PurchasesEnum.BIG_WOODEN_TOWER)){
-            return new BigWoodenTower(context, Sprite.Player.LEFT);
+        if (ps.isPurchased(PlayerStorage.PurchasesEnum.BIG_WOODEN_TOWER)){
+            return new BigWoodenTower(context, player);
         }
-        return new WoodenTower(context, Sprite.Player.LEFT);
+        return new WoodenTower(context, player);
 
     }
     public void setSinglePlayer() {
@@ -339,33 +344,34 @@ public class GameState {
      */
     public boolean addSoldier(Sprite.Player player, long timeStamp,
                            final Protocol.Action soldierType) {
-        double delay;
+        double delay = 0;
         if (player == Sprite.Player.LEFT) { // Us
             if (this.leftPlayerSoldiers >= MAX_SOLDIERS_PER_PLAYER) {
                 return false;
             }
-            delay = 0;
-            this.leftPlayerSoldiers++;
         } else {
             if (this.rightPlayerSoldiers >= MAX_SOLDIERS_PER_PLAYER) {
                 return false;
             }
-            long currentTime = getSyncTime();
-            delay = currentTime - timeStamp;
-            if (delay < 0) {
-                delay = 0;
-            }
-            delay = delay / 1000; //convert to seconds;
+            if (isMultiplayer){
+                long currentTime = getSyncTime();
+                delay = currentTime - timeStamp;
+                if (delay < 0) {
+                    delay = 0;
+                }
+                delay = delay / 1000; //convert to seconds;
 
-            Log.w("custom", "the delay is: " + delay);
-            this.rightPlayerSoldiers++;
+                Log.w("custom", "the delay is: " + delay);
+            }
+
+
 
         }
 
         Soldier soldier;
         switch (soldierType) {
             case BASIC_SOLDIER:
-                 soldier =new BasicSoldier(context, player, delay);
+                soldier = new BasicSoldier(context, player, delay);
                 soldier.playSound();
                 soldiers.add(soldier);
                 if (isMultiplayer && Sprite.Player.LEFT == player){
@@ -374,7 +380,8 @@ public class GameState {
                 }
                 break;
             case ZOMBIE:
-                if (creditManager.decCredits(ZOMBIE_SEND_PRICE, player)) {
+                if (player == Sprite.Player.RIGHT ||
+                        creditManager.decCredits(ZOMBIE_SEND_PRICE, player)) {
                     soldiers.add(new Zombie(context, player, delay));
                 } else {
                     return false;
@@ -384,8 +391,8 @@ public class GameState {
                 }
                 break;
             case SWORDMAN:
-                if (creditManager.decCredits(SWORDMAN_SEND_PRICE, player) ||
-                        player == Sprite.Player.RIGHT) {
+                if (player == Sprite.Player.RIGHT ||
+                        creditManager.decCredits(SWORDMAN_SEND_PRICE, player)) {
                     soldiers.add(new Swordman(context, player, delay));
                 } else {
                     return false;
@@ -395,8 +402,8 @@ public class GameState {
                 }
                 break;
             case BOMB_GRANDPA:
-                if (creditManager.decCredits(BOMB_GRANDPA_SEND_PRICE, player) ||
-                        player == Sprite.Player.RIGHT) {
+                if (player == Sprite.Player.RIGHT ||
+                        creditManager.decCredits(BOMB_GRANDPA_SEND_PRICE, player)) {
                     soldiers.add(new BombGrandpa(context, player, delay));
                 } else {
                     return false;
@@ -408,11 +415,10 @@ public class GameState {
             case BAZOOKA_SOLDIER:
                 soldier =new BazookaSoldier(context, player, delay);
                 soldier.playSound();
-                if (creditManager.decCredits(BAZOOKA_SEND_PRICE, player) ||
-                        player == Sprite.Player.RIGHT) {
+                if (player == Sprite.Player.RIGHT ||
+                        creditManager.decCredits(BAZOOKA_SEND_PRICE, player)) {
                     soldiers.add(soldier);
                 } else {
-
                     return false;
                 }
                 if (isMultiplayer && Sprite.Player.LEFT == player){
@@ -420,8 +426,8 @@ public class GameState {
                 }
                 break;
             case TANK:
-                if (creditManager.decCredits(TANK_SEND_PRICE, player) ||
-                        player == Sprite.Player.RIGHT) {
+                if (player == Sprite.Player.RIGHT ||
+                        creditManager.decCredits(TANK_SEND_PRICE, player)) {
                     soldiers.add(new Tank(context, player, delay));
                 } else {
                     return false;
@@ -494,12 +500,10 @@ public class GameState {
         client.send(Protocol.stringify(Protocol.Action.PARTNER_INFO, data));
 
     }
+
     public void removeSoldier(Soldier soldier, boolean shouldReport) {
         if (soldier.getPlayer() == Sprite.Player.LEFT) {
             this.leftPlayerSoldiers--;
-            if (!isMultiplayer){
-                addCredits(10, Sprite.Player.RIGHT);
-            }
         } else {
             this.rightPlayerSoldiers--;
             addCredits(10, Sprite.Player.LEFT);
@@ -723,5 +727,12 @@ public class GameState {
 
     public ArtificialIntelligence getAi(){
         return ai;
+    }
+
+    public PlayerStorage getAiStorage(){
+        if (this.aiStorage == null){
+            this.aiStorage = new PlayerStorage(context, 0);
+        }
+        return this.aiStorage;
     }
 }
