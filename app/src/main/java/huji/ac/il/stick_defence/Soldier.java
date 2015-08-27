@@ -46,8 +46,8 @@ public abstract class Soldier implements Serializable {
     private double secToCrossScreen;
     private double delayInSec;
     private Context context;
-    private int soundStream;
-    private  int soundId;
+    protected int soundStream;
+    protected  int soundId;
 
 
     protected Soldier(Context context, Sprite.Player player, double

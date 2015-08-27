@@ -41,7 +41,7 @@ public class Tank extends Soldier {
     private int attackFrame = 0;
 
     public Tank(Context context, Sprite.Player player, double delayInSec) {
-        super(context, player, SEC_TO_SCREEN_WIDTH, DAMAGE_PER_SEC,Sounds.RUN_SOUND, delayInSec);
+        super(context, player, SEC_TO_SCREEN_WIDTH, DAMAGE_PER_SEC,Sounds.TANK_SOUND, delayInSec);
         if (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
                     context.getResources(),
