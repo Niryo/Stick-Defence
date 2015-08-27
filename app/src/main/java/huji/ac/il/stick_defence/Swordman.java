@@ -105,4 +105,10 @@ public class Swordman extends Soldier {
         return super.isHitByArrow(arrow);
     }
 
+    public static String info(){
+        return "Damage: " + DAMAGE_PER_SEC + "\n" +
+                "Price: " + Market.SWORDMAN_BUY_PRICE + "\n\n" +
+                "An honorable and fearless warrior.";
+    }
+
 }

@@ -85,4 +85,10 @@ public class Zombie extends Soldier {
         return super.isHitByArrow(arrow);
     }
 
+    public static String info(){
+        return "Damage: " + DAMAGE_PER_SEC + "\n" +
+                "Price: " + Market.ZOMBIE_BUY_PRICE + "\n\n" +
+                "Cheap and reliable undead." +
+                " Delightfully join your army.";
+    }
 }

@@ -13,4 +13,9 @@ public class BigWoodenTower extends Tower{
               R.drawable.big_wooden_tower_red, MAX_HP,
               TowerTypes.BIG_WOODEN_TOWER);
     }
+
+    public static String info(){
+        return "HP: " + MAX_HP + "\n" +
+                "Price: " + Market.BIG_WOODEN_TOWER_PRICE;
+    }
 }
