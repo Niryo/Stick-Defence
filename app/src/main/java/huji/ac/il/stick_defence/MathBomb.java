@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -40,13 +41,13 @@ public class MathBomb {
     private String GREEN_COLOR = "#85FF85";
     private Context context;
     private LinearLayout bomb;
-    private int streamId;
+    private MediaPlayer mp;
 
 
     public MathBomb(Context context) {
 
         this.context = context;
-       this.streamId= Sounds.getInstance().playSound(Sounds.MATH_BOMB);
+        mp= Sounds.getInstance().streamSound(Sounds.MATH_BOMB);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService
                 (Context.LAYOUT_INFLATER_SERVICE);
         bomb = (LinearLayout) inflater.inflate(R.layout.math_bomb_layout, null);
@@ -135,7 +136,7 @@ public class MathBomb {
                         ((ViewGroup) bomb.getParent()).removeView(bomb);
                         GameState.getInstance().enableButtons();
                         Client.getClientInstance().send(Protocol.stringify(Protocol.Action.MATH_BOMB_SOLVED));
-                        Sounds.stopSound(streamId);
+                        mp.stop();
                         Log.w("custom", "guessed correct!");
                     }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.media.MediaPlayer;
 
 /**
  * Created by Nir on 24/08/2015.
@@ -17,7 +18,7 @@ public class Fog implements DrawableObject{
     private boolean active=true;
     private static int ACTIVE_TIME= 15000;
     private static int DESTROY_TIME= 18000;
-    private int streamId;
+    private MediaPlayer mp;
 
     public Fog(Context context){
         Bitmap bitmap =   BitmapFactory.decodeResource(context.getResources(),
@@ -27,7 +28,7 @@ public class Fog implements DrawableObject{
         this.sprite.setAnimationSpeed(4);
         this.sprite.setLooping(false);
         this.screenHeight=GameState.getInstance().getCanvasHeight();
-        this.streamId=Sounds.getInstance().playSound(Sounds.FOG_SOUND);
+        this.mp=Sounds.getInstance().streamSound(Sounds.FOG_SOUND);
     }
 
     public void update(long gameTime){
@@ -47,7 +48,7 @@ public class Fog implements DrawableObject{
 
     }
     private void destroy(){
-        Sounds.getInstance().stopSound(this.streamId);
+        mp.stop();
     GameState.getInstance().getMiscellaneous().remove(this);
     }
     public void render(Canvas canvas) {

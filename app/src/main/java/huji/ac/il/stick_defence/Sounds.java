@@ -52,8 +52,7 @@ public class Sounds {
         soundPoolMap.put( TANK_SOUND, soundPool.load(context,R.raw.tank_sound, 1) );
         soundPoolMap.put( ZOMBIE_SOUND, soundPool.load(context,R.raw.zombie_sound, 1) );
         soundPoolMap.put( OLD_MAN_SOUND, soundPool.load(context,R.raw.old_man_sound, 1) );
-        soundPoolMap.put( FOG_SOUND, soundPool.load(context,R.raw.wind_sound, 1) );
-        soundPoolMap.put( MATH_BOMB, soundPool.load(context,R.raw.shame, 1) );
+
     }
 
     public static Sounds create(Context context){
@@ -95,6 +94,13 @@ public class Sounds {
             mainThemePlayer=mp;
         }
 
+    }
+
+    public  MediaPlayer streamSound(int soundId){
+        MediaPlayer mp = MediaPlayer.create(context, soundId);
+        mp.setLooping(true);
+        mp.start();
+        return mp;
     }
 
     public void stopAllSound(){
