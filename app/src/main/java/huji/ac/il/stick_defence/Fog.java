@@ -17,6 +17,7 @@ public class Fog implements DrawableObject{
     private boolean active=true;
     private static int ACTIVE_TIME= 15000;
     private static int DESTROY_TIME= 18000;
+    private int streamId;
 
     public Fog(Context context){
         Bitmap bitmap =   BitmapFactory.decodeResource(context.getResources(),
@@ -26,9 +27,7 @@ public class Fog implements DrawableObject{
         this.sprite.setAnimationSpeed(4);
         this.sprite.setLooping(false);
         this.screenHeight=GameState.getInstance().getCanvasHeight();
-
-
-
+        this.streamId=Sounds.getInstance().playSound(Sounds.FOG_SOUND);
     }
 
     public void update(long gameTime){
@@ -42,12 +41,13 @@ public class Fog implements DrawableObject{
             active=false;
         }
         if(timePassed>DESTROY_TIME ){
-            destory();
+            destroy();
         }
 
 
     }
-    private void destory(){
+    private void destroy(){
+        Sounds.getInstance().stopSound(this.streamId);
     GameState.getInstance().getMiscellaneous().remove(this);
     }
     public void render(Canvas canvas) {

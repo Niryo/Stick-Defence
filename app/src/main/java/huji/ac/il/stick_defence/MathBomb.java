@@ -40,11 +40,13 @@ public class MathBomb {
     private String GREEN_COLOR = "#85FF85";
     private Context context;
     private LinearLayout bomb;
+    private int streamId;
 
 
     public MathBomb(Context context) {
 
         this.context = context;
+       this.streamId= Sounds.getInstance().playSound(Sounds.MATH_BOMB);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService
                 (Context.LAYOUT_INFLATER_SERVICE);
         bomb = (LinearLayout) inflater.inflate(R.layout.math_bomb_layout, null);
@@ -133,6 +135,7 @@ public class MathBomb {
                         ((ViewGroup) bomb.getParent()).removeView(bomb);
                         GameState.getInstance().enableButtons();
                         Client.getClientInstance().send(Protocol.stringify(Protocol.Action.MATH_BOMB_SOLVED));
+                        Sounds.stopSound(streamId);
                         Log.w("custom", "guessed correct!");
                     }
 
