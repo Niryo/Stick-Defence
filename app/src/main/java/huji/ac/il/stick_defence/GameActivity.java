@@ -406,7 +406,9 @@ public class GameActivity extends Activity implements DoProtocolAction {
                         Protocol.Action.TANK);
                 break;
             case BOMB_GRANDPA:
-                this.gameState.addSoldier(Sprite.Player.RIGHT,Protocol.getTimeStamp(rawInput), Protocol.Action.BOMB_GRANDPA);
+                this.gameState.addSoldier(Sprite.Player.RIGHT,
+                                          Protocol.getTimeStamp(rawInput),
+                                          Protocol.Action.BOMB_GRANDPA);
                 break;
 
             case SOLDIER_KILL:
