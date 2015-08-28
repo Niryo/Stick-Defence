@@ -105,8 +105,8 @@ public class LeagueManager {
         int pairCount = 0;
         for (int i = 0; i < 6; i += 2) {
             JSONObject players = new JSONObject();
-            int first = allCombinationWithFour[stage][i];
-            int second = allCombinationWithFour[stage][i + 1];
+            int first = allCombinationWithSix[stage][i];
+            int second = allCombinationWithSix[stage][i + 1];
             Server.getServerInstance().makePair(peers.get(first), peers.get(second));
                 players.put("player1", peers.get(first).getName());
                 players.put("player2", peers.get(second).getName());

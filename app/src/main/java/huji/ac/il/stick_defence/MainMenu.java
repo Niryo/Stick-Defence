@@ -51,6 +51,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         Sounds sounds = Sounds.create(this);
         //sounds.playTheme(Sounds.MAIN_THEME);
         super.onCreate(savedInstanceState);

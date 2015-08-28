@@ -46,7 +46,8 @@ public class Market extends Activity implements DoProtocolAction {
         Client.getClientInstance().setCurrentActivity(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                             WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_market);
         gameState = GameState.getInstance();
@@ -344,11 +345,6 @@ public class Market extends Activity implements DoProtocolAction {
                 .setPositiveButton(android.R.string.yes,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                File file = new File(getFilesDir(),
-                                        PlayerStorage.FILE_NAME);
-                                if (!file.delete()) {
-                                    Log.w("yahav", "Failed to delete file");
-                                }
                                 Intent intent = new Intent(getApplicationContext(),
                                         MainMenu.class);
                                 startActivity(intent);

@@ -40,7 +40,7 @@ public class Sounds {
                     .setUsage(AudioAttributes.USAGE_GAME)
                     .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                     .build();
-            SoundPool sounds = new SoundPool.Builder()
+            soundPool = new SoundPool.Builder()
                     .setAudioAttributes(attributes).setMaxStreams(3)
                     .build();
         }else{

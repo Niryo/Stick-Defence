@@ -2,7 +2,9 @@ package huji.ac.il.stick_defence;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -10,7 +12,9 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +51,7 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_league_info);
         int screenWidth = getApplicationContext().getResources().getDisplayMetrics().widthPixels;
         this.text_size = screenWidth/TEXT_SCALE_FACTOR;
@@ -365,6 +370,4 @@ private void initTabs(){
         tr.addView(wins);
         table.addView(tr);
     }
-
-
 }

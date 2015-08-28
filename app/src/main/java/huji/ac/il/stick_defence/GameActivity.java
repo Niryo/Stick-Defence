@@ -495,11 +495,6 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 .setPositiveButton(android.R.string.yes,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                File file = new File(getFilesDir(),
-                                        PlayerStorage.FILE_NAME);
-                                if (!file.delete()) {
-                                    Log.w("yahav", "Failed to delete file");
-                                }
                                 Intent intent = new Intent(getApplicationContext(),
                                         MainMenu.class);
                                 startActivity(intent);
