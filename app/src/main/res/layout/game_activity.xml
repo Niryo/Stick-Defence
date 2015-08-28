@@ -1,41 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-
-<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/background"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/game_activity"
-    >
-
-<FrameLayout
-    android:id="@+id/canvas_frame"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-
-    >
-
-</FrameLayout>
-
-
-<LinearLayout
-android:id="@+id/game_components"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="match_parent">
 
-    >
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-</LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:id="@+id/textView"
+            android:layout_weight="1"
+            android:background="#7dfff7" />
 
-<FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/center_of_screen">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#00ee00" />
 
-</FrameLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/canvas_frame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+
+        >
+
+    </FrameLayout>
+
+
+    <LinearLayout
+        android:id="@+id/game_components"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+
+        >
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/center_of_screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
 
 </RelativeLayout>
 

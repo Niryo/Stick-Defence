@@ -18,6 +18,11 @@ public class Sounds {
    public static final int MAIN_THEME=0;
     public  static final int RUN_SOUND= R.raw.running_sound;
     public  static final int WALKING_SOUND = R.raw.walking_sound;
+    public static final int ZOMBIE_SOUND= R.raw.zombie_sound;
+    public static final int TANK_SOUND = R.raw.tank_sound;
+    public static final int OLD_MAN_SOUND= R.raw.old_man_sound;
+    public static final int FOG_SOUND =R.raw.wind_sound;
+    public static final int MATH_BOMB =R.raw.shame;
 
     private static MediaPlayer mainThemePlayer;
     private static MediaPlayer winThemePlayer;
@@ -44,6 +49,9 @@ public class Sounds {
         soundPoolMap= new HashMap<>();
         soundPoolMap.put( RUN_SOUND, soundPool.load(context,R.raw.running_sound, 1) );
         soundPoolMap.put( WALKING_SOUND, soundPool.load(context,R.raw.walking_sound, 1) );
+        soundPoolMap.put( TANK_SOUND, soundPool.load(context,R.raw.tank_sound, 1) );
+        soundPoolMap.put( ZOMBIE_SOUND, soundPool.load(context,R.raw.zombie_sound, 1) );
+        soundPoolMap.put( OLD_MAN_SOUND, soundPool.load(context,R.raw.old_man_sound, 1) );
 
     }
 
@@ -58,10 +66,20 @@ public class Sounds {
     }
 
 
+    public static int playSound(int soundId, boolean loop){
+        float volume =  1;
+        int repeat=-1;
+        if(!loop){
+            repeat=0;
+        }
+        return  soundPool.play(soundPoolMap.get(soundId), volume, volume, 1, repeat, 1f);
+    }
+
     public static int playSound(int soundId){
         float volume =  1;
         return  soundPool.play(soundPoolMap.get(soundId), volume, volume, 1, -1, 1f);
     }
+
     public static void stopSound(int streamId){
         soundPool.pause(streamId);
     }
@@ -76,6 +94,13 @@ public class Sounds {
             mainThemePlayer=mp;
         }
 
+    }
+
+    public  MediaPlayer streamSound(int soundId){
+        MediaPlayer mp = MediaPlayer.create(context, soundId);
+        mp.setLooping(true);
+        mp.start();
+        return mp;
     }
 
     public void stopAllSound(){

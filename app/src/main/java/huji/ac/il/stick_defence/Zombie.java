@@ -34,7 +34,7 @@ public class Zombie extends Soldier {
     private Sprite.Player player;
 
     public Zombie(Context context, Sprite.Player player, double delayInSec) {
-        super(context, player, SEC_TO_CROSS_SCREEN, DAMAGE_PER_SEC, Sounds.RUN_SOUND,delayInSec);
+        super(context, player, SEC_TO_CROSS_SCREEN, DAMAGE_PER_SEC, Sounds.ZOMBIE_SOUND,delayInSec);
         if (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
                     context.getResources(),
@@ -83,6 +83,12 @@ public class Zombie extends Soldier {
 
     public boolean isHitByArrow(Arrow arrow) {
         return super.isHitByArrow(arrow);
+    }
+
+
+    @Override
+    public void playSound(){
+        soundStream = Sounds.getInstance().playSound(soundId,false);
     }
 
     public static String info(){

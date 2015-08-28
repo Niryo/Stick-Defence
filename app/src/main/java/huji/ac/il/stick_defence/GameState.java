@@ -385,9 +385,12 @@ public class GameState {
                 }
                 break;
             case ZOMBIE:
+                soldier =new Zombie(context, player, delay);
+
                 if (player == Sprite.Player.RIGHT ||
                         creditManager.decCredits(ZOMBIE_SEND_PRICE, player)) {
-                    soldiers.add(new Zombie(context, player, delay));
+                    soldiers.add(soldier);
+                    soldier.playSound();
                 } else {
                     return false;
                 }
@@ -396,9 +399,12 @@ public class GameState {
                 }
                 break;
             case SWORDMAN:
+                soldier =new Swordman(context, player, delay);
+
                 if (player == Sprite.Player.RIGHT ||
                         creditManager.decCredits(SWORDMAN_SEND_PRICE, player)) {
-                    soldiers.add(new Swordman(context, player, delay));
+                    soldiers.add(soldier);
+                    soldier.playSound();
                 } else {
                     return false;
                 }
@@ -407,9 +413,12 @@ public class GameState {
                 }
                 break;
             case BOMB_GRANDPA:
+               soldier =new BombGrandpa(context, player, delay);
+
                 if (player == Sprite.Player.RIGHT ||
                         creditManager.decCredits(BOMB_GRANDPA_SEND_PRICE, player)) {
-                    soldiers.add(new BombGrandpa(context, player, delay));
+                    soldiers.add(soldier);
+                    soldier.playSound();
                 } else {
                     return false;
                 }
@@ -419,10 +428,12 @@ public class GameState {
                 break;
             case BAZOOKA_SOLDIER:
                 soldier =new BazookaSoldier(context, player, delay);
+
                 soldier.playSound();
                 if (player == Sprite.Player.RIGHT ||
                         creditManager.decCredits(BAZOOKA_SEND_PRICE, player)) {
                     soldiers.add(soldier);
+                    soldier.playSound();
                 } else {
                     return false;
                 }
@@ -431,9 +442,12 @@ public class GameState {
                 }
                 break;
             case TANK:
+                soldier =new Tank(context, player, delay);
+
                 if (player == Sprite.Player.RIGHT ||
                         creditManager.decCredits(TANK_SEND_PRICE, player)) {
-                    soldiers.add(new Tank(context, player, delay));
+                    soldiers.add(soldier);
+                    soldier.playSound();
                 } else {
                     return false;
                 }

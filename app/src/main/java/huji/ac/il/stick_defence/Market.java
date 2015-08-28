@@ -368,7 +368,6 @@ public class Market extends Activity implements DoProtocolAction {
     @Override
     public void doAction(String rawInput) {
         Protocol.Action action = Protocol.getAction(rawInput);
-        String rawInfo = Protocol.getData(rawInput);
 
 
         switch (action) {
@@ -379,7 +378,7 @@ public class Market extends Activity implements DoProtocolAction {
                 break;
 
             case PARTNER_INFO:
-                GameState.getInstance().newPartnerInfo(rawInfo);
+                GameState.getInstance().newPartnerInfo( Protocol.getData(rawInput));
                 break;
         }
     }
