@@ -193,6 +193,7 @@ public class Market extends Activity implements DoProtocolAction {
                                                 STONE_TOWER_PRICE);
                                         creditsTv.setText(CREDITS + gameState.getCredits() + "$");
                                         bigWoodenTowerButton.setVisibility(View.INVISIBLE);
+                                        stoneTowerButton.setVisibility(View.INVISIBLE);
                                         myTowerType = Tower.TowerTypes.STONE_TOWER;
                                     }
                                 }
@@ -213,7 +214,7 @@ public class Market extends Activity implements DoProtocolAction {
         }
 
         //StoneTower
-        Button fortifiedTowerButton = (Button) findViewById(R.id.buy_fortified_tower);
+        final Button fortifiedTowerButton = (Button) findViewById(R.id.buy_fortified_tower);
         if (gameState.isPurchased(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER)) {
             fortifiedTowerButton.setVisibility(View.INVISIBLE);
         } else {
@@ -232,6 +233,7 @@ public class Market extends Activity implements DoProtocolAction {
                                         creditsTv.setText(CREDITS + gameState.getCredits() + "$");
                                         bigWoodenTowerButton.setVisibility(View.INVISIBLE);
                                         stoneTowerButton.setVisibility(View.INVISIBLE);
+                                        fortifiedTowerButton.setVisibility(View.INVISIBLE);
                                         myTowerType = Tower.TowerTypes.FORTIFIED_TOWER;
                                     }
                                 }

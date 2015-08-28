@@ -525,7 +525,6 @@ public class GameState {
                               Sprite.Player player) {
         for (Soldier soldier : soldiers){
             if (soldier.getId() == soldierId && soldier.getPlayer() == player){
-                soldier.stopSound();
                 removeSoldier(soldier, false);
                 Log.w("yahav", "Soldier" + soldier.getId() +
                         soldier.getPlayer().toString() +

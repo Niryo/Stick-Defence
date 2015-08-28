@@ -26,14 +26,11 @@ public class BombGrandpa extends Soldier {
 
     //============================Sprite constants==============================
     private static final int NUMBER_OF_FRAMES = 9;
-    private static final int FIRE_FRAMES = 4;
     private static final int MOVE_FPS = 40;
-    private static final int FIRE_FPS = 10;
     //==========================================================================
 
     private static Bitmap leftSoldierPic = null;
     private static Bitmap rightSoldierPic = null;
-    private static Bitmap explosionPic = null;
 
 
     private Sprite.Player player;
@@ -49,10 +46,6 @@ public class BombGrandpa extends Soldier {
 
         if (null == rightSoldierPic) {
             rightSoldierPic = Sprite.mirrorBitmap(leftSoldierPic);
-        }
-
-        if (null == explosionPic) {
-            explosionPic = Tower.firePic;
         }
         
         if (Sprite.Player.LEFT == player) {
@@ -74,20 +67,14 @@ public class BombGrandpa extends Soldier {
             if (player == Sprite.Player.LEFT) {
                 if (getSoldierX() + getScaledFrameWidth() / 2 >=
                         gameState.getRightTowerLeftX()) {
-                    super.attack(explosionPic, FIRE_FRAMES, FIRE_FPS);
-                    super.setSoldierX(getSoldierX() +
-                            (int) getScaledFrameWidth());
                     gameState.hitTower(Sprite.Player.LEFT, BOMB_DAMAGE);
-               //     gameState.removeSoldier(this, true);
+                    gameState.removeSoldier(this, true);
                 }
             } else {
                 if (getSoldierX() + getScaledFrameWidth() / 2 <=
                         gameState.getLeftTowerRightX()) {
-                    super.attack(explosionPic, FIRE_FRAMES, FIRE_FPS);
-                    super.setSoldierX(getSoldierX() +
-                            (int) getScaledFrameWidth());
                     gameState.hitTower(Sprite.Player.RIGHT, BOMB_DAMAGE);
-              //      gameState.removeSoldier(this, true);
+                    gameState.removeSoldier(this, true);
                 }
             }
         }
