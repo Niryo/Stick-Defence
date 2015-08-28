@@ -370,4 +370,5 @@ private void initTabs(){
         tr.addView(wins);
         table.addView(tr);
     }
+
 }

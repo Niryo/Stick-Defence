@@ -61,7 +61,7 @@ public abstract class Tower {
 
     private double     max_hp;
     private double     hp;
-    private TowerTypes type;
+    private TowerTypes towerType;
 
     private Bitmap leftTowerPic = null;
     private Bitmap rightTowerPic = null;
@@ -120,7 +120,7 @@ public abstract class Tower {
 
         this.context = context;
         fires = new ArrayList<>();
-        this.type = type;
+        this.towerType = type;
     }
 
     /**
@@ -209,9 +209,9 @@ public abstract class Tower {
 
     public double getMaxHp(){ return this.max_hp; }
 
-    public String getName(){ return this.type.name(); }
+    public String getName(){ return this.towerType.name(); }
 
-    public TowerTypes getType(){ return this.type; }
+    public TowerTypes getTowerType(){ return this.towerType; }
     public void reset(){
         this.hp = this.max_hp;
         this.fires = new ArrayList<>();

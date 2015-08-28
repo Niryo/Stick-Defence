@@ -60,19 +60,15 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         int newScreenHeight = (int) Math.round(((double) 9 * screenWidth) / 16);//set the height to be proportional to the width
 
-        boolean newGame = true;
-        Bundle bundle = getIntent().getExtras();
-        newGame = bundle.getBoolean("NewGame", true);
-        isMultiplayer = getIntent().getBooleanExtra("Multiplayer", true);
+
 
         gameState = GameState.getInstance();
-        if (null == gameState){
-            this.gameState =
-                    GameState.CreateGameState(getApplicationContext(),
-                                              this, screenWidth,
-                                              newScreenHeight, isMultiplayer);
+        isMultiplayer = gameState.isMultiplayer();
+
+        if(!gameState.isInitialized()){
+            gameState.init(screenWidth, newScreenHeight, this);
         } else {
-            GameState.getInstance().reset(newGame, isMultiplayer);
+            GameState.getInstance().reset();
         }
 
         gameComponentsLayout = (LinearLayout) findViewById(R.id.game_components);
@@ -213,7 +209,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                         RelativeLayout.LayoutParams.WRAP_CONTENT);
 //        pointsLayoutParams.addRule(RelativeLayout.RIGHT_OF, sendBazookaSoldier.getId());
-        gameState.initCredits(pointsTv, newGame);
+        gameState.initCredits(pointsTv);
 
         scoreLayout.addView(pointsTv, pointsLayoutParams);
         //   buttons.addView(rightPointsTv);

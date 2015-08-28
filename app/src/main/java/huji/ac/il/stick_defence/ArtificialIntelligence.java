@@ -1,7 +1,5 @@
 package huji.ac.il.stick_defence;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -37,7 +35,7 @@ public class ArtificialIntelligence {
         lastBasicSoldier = lastZombie = lastSwordman = lastBazooka = lastTank =
                 lastShootInMillisec = System.currentTimeMillis();
         factor_send_soldiers = START_FACTOR_TO_SEND_SOLDIERS;
-        aiStorage = gameState.getAiStorage();
+        aiStorage = gameState.getRightPlayerStorage();
 
         level = 0;
     }

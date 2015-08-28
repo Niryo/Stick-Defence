@@ -46,14 +46,17 @@ public class Market extends Activity implements DoProtocolAction {
         Client.getClientInstance().setCurrentActivity(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                             WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_market);
-        gameState = GameState.getInstance();
+        final boolean isMultiplayer =
+                getIntent().getBooleanExtra("isMultiplayer", true);
+        gameState = GameState.CreateGameState(getApplicationContext(),
+                                              isMultiplayer);
         alertDialogBuilder = new AlertDialog.Builder(this);
         myTowerType = gameState.getLeftTowerType();
-        final boolean isMultiplayer = getIntent().getBooleanExtra("Multiplayer", true);
+
         if (isMultiplayer) {
             Client.getClientInstance().
                     send(Protocol.stringify(Protocol.Action.GAME_OVER,
@@ -369,7 +372,7 @@ public class Market extends Activity implements DoProtocolAction {
         switch (action) {
             case LEAGUE_INFO:
                 savedLeagueInfo = Protocol.getData(rawInput);
-                gameState.sendInfoToPartner(myTowerType); //we got the leauge info so we know now that we have
+                //gameState.sendInfoToPartner(myTowerType); //we got the leauge info so we know now that we have
                 //parnter and we need to send him information
                 break;
 

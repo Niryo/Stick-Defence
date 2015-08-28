@@ -79,9 +79,8 @@ public class MainMenu extends Activity implements DoProtocolAction {
             @Override
             public void onClick(View v) {
                 Intent gameIntent = new Intent(getApplicationContext(),
-                        GameActivity.class);
+                        Market.class);
                 gameIntent.putExtra("Multiplayer", false);
-                gameIntent.putExtra("NewGame", true);
                 startActivity(gameIntent);
                 finish();
             }
@@ -346,7 +345,8 @@ public class MainMenu extends Activity implements DoProtocolAction {
         switch (action) {
             case NAME_CONFIRMED:
                 Log.w("custom", "going to league");
-                Intent intent = new Intent(this, LeagueInfoActivity.class);
+                Intent intent = new Intent(this, Market.class);
+                intent.putExtra("isMultiplayer", true);
                 if(isInternet){
                     intent.putExtra("internet", true);
                 }
@@ -356,7 +356,8 @@ public class MainMenu extends Activity implements DoProtocolAction {
 
             case LEAGUE_INFO:
                 Log.w("custom", "going to league");
-                Intent intentWithInfo = new Intent(this, LeagueInfoActivity.class);
+                Intent intentWithInfo = new Intent(this, Market.class);
+                intentWithInfo.putExtra("isMultiplayer", true);
                 String info = Protocol.getData(rawInput);
                 intentWithInfo.putExtra("info", info);
                 startActivity(intentWithInfo);

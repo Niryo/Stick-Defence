@@ -42,6 +42,7 @@ public class GameState {
     public static final int MILLISEC_TO_BAZOOKA = 4000;
     public static final int MILLISEC_TO_TANK = 5000;
 
+    private static final int START_CREDITS = 200;
 
     private static int canvas_height;
     private static int canvas_width;
@@ -49,7 +50,7 @@ public class GameState {
     private Sounds sounds= Sounds.getInstance();
     private ArrayList<Button> buttonsComponent;
     private ArrayList<Soldier> soldiers = new ArrayList<>();
-    private ArrayList<Tower> towers = new ArrayList<>();
+    private ArrayList<Tower> towers = new ArrayList<>(2);
     private ArrayList<Bow> bows = new ArrayList<>();
     private ArrayList<Arrow> arrows = new ArrayList<>();
     private ArrayList<Bullet> bullets = new ArrayList<>();
@@ -67,11 +68,12 @@ public class GameState {
     private boolean isMultiplayer = true;
     private boolean leftPlayerWin = false;
     private boolean rightPlayerWin = false;
-    private PlayerStorage playerStorage, aiStorage;
+    private PlayerStorage playerStorage, rightPlayerStorage;
     private Button sendBazookaSoldierButton;
     private Activity gameActivity;
     private Tower rightTower;
     private Tower leftTower;
+    private boolean isInitialized=false;
 
 
     /**
@@ -79,20 +81,20 @@ public class GameState {
      *
      * @param context the context
      */
-    private GameState(Context context,Activity activity) {
+    private GameState(Context context, boolean isMultiplayer) {
         this.context = context;
-        this.gameActivity=activity;
+        playerStorage = new PlayerStorage(context, 0);
+        rightPlayerStorage = new PlayerStorage(context, 0);
+        this.creditManager = new CreditManager(START_CREDITS);
+        this.isMultiplayer = isMultiplayer;
  //       playerStorage = PlayerStorage.load(context);
     }
 
-    public static GameState CreateGameState(Context context, Activity activity,
-                                            int canvasWidth, int canvasHeight,
+    public static GameState CreateGameState(Context context,
                                             boolean isMultiplayer) {
         if (null == gameState) {
-            gameState = new GameState(context,activity);
-            gameState.init(canvasWidth, canvasHeight, isMultiplayer);
+            gameState = new GameState(context, isMultiplayer);
         }
-
         return gameState;
     }
 
@@ -104,7 +106,7 @@ public class GameState {
         return this.playerStorage.isGameInProcess();
     }
 
-    public void reset(boolean newGame, boolean isMultiplayer) {
+    public void reset() {
         buttonsComponent = null;
         soldiers = new ArrayList<>();
         towers = new ArrayList<>();
@@ -115,20 +117,10 @@ public class GameState {
         rightProgressBar.setProgress(0);
         leftPlayerWin = rightPlayerWin = false;
 
-        if (newGame || null == playerStorage){
-            playerStorage = new PlayerStorage(context, 0);
-            rightTower = new WoodenTower(context, Sprite.Player.RIGHT);
-            this.isMultiplayer = isMultiplayer;
-        }
         leftTower = towerFactory(playerStorage, Sprite.Player.LEFT);
+        rightTower = towerFactory(rightPlayerStorage, Sprite.Player.RIGHT);
         this.leftBow = new Bow(context, Sprite.Player.LEFT, leftTower);
         bows.set(0, leftBow);
-
-        if (!this.isMultiplayer){
-            rightTower = towerFactory(this.aiStorage, Sprite.Player.RIGHT);
-        } else {
-            rightTower.reset();
-        }
 
         towers.add(leftTower);
         towers.add(rightTower);
@@ -142,15 +134,12 @@ public class GameState {
         bows.set(1, rightBow);
     }
 
-    private void init(int canvasWidth, int canvasHeight, boolean isMultiplayer) {
+    public void init(int canvasWidth, int canvasHeight, Activity activity) {
         setCanvasDimentions(canvasWidth, canvasHeight);
-        playerStorage = new PlayerStorage(context, 0);
+
         this.leftTower = towerFactory(playerStorage, Sprite.Player.LEFT);
-        if (null == this.rightTower){
-            this.rightTower = new WoodenTower(context, Sprite.Player.RIGHT);
-        } else {
-            this.rightTower.reset();
-        }
+        this.rightTower = towerFactory(rightPlayerStorage, Sprite.Player.RIGHT);
+        this.gameActivity = activity;
 
         Log.w("yahav", "Adding" + leftTower.getName());
         towers.add(leftTower);
@@ -167,12 +156,10 @@ public class GameState {
         rightTowerCentralX = rightTower.getCentralX();
         leftTowerCentralX = leftTower.getCentralX();
 
-        this.isMultiplayer = isMultiplayer;
         if (!isMultiplayer){
             ai = new ArtificialIntelligence();
-
         }
-
+        this.isInitialized = true;
     }
 
     private Tower towerFactory(PlayerStorage ps, Sprite.Player player){
@@ -186,8 +173,9 @@ public class GameState {
             return new BigWoodenTower(context, player);
         }
         return new WoodenTower(context, player);
-
     }
+
+
     public void setSinglePlayer() {
         this.isMultiplayer = false;
     }
@@ -237,10 +225,8 @@ public class GameState {
         }
     }
 
-    public void initCredits(TextView leftCreditsTv, boolean newGame) {
-        int leftPoints = newGame ? 0 : playerStorage.getCredits();
-        this.creditManager = new CreditManager(leftCreditsTv, leftPoints);
-
+    public void initCredits(TextView leftCreditsTv) {
+        creditManager.initCreditTv(leftCreditsTv);
         creditManager.setRunning(true);
         creditManager.start();
     }
@@ -478,28 +464,23 @@ public class GameState {
             Tower.TowerTypes towerType =
                     Tower.TowerTypes.valueOf(towerName);
             switch (towerType){
-                case WOODEN_TOWER:
-                    rightTower = new WoodenTower(context, Sprite.Player.RIGHT);
-                    break;
                 case BIG_WOODEN_TOWER:
-                    rightTower = new BigWoodenTower(context, Sprite.Player.RIGHT);
+                    rightPlayerStorage.buy(PlayerStorage.
+                            PurchasesEnum.BIG_WOODEN_TOWER);
                     break;
                 case STONE_TOWER:
-                    rightTower = new StoneTower(context, Sprite.Player.RIGHT);
+                    rightPlayerStorage.buy(PlayerStorage.
+                            PurchasesEnum.STONE_TOWER);
                     break;
                 case FORTIFIED_TOWER:
-                    rightTower = new FortifiedTower(context, Sprite.Player.RIGHT);
+                    rightPlayerStorage.buy(PlayerStorage.
+                            PurchasesEnum.FORTIFIED_TOWER);
                     break;
-
+                default:
+                    rightPlayerStorage.buy(PlayerStorage.
+                            PurchasesEnum.WOODEN_TOWER);
             }
-            towers.set(1, rightTower);
-            rightProgressBar.setMax((int) rightTower.getMaxHp());
-            rightProgressBar.setProgress((int) rightTower.getMaxHp());
-            rightTowerLeftX = rightTower.getLeftX();
-            rightTowerCentralX = rightTower.getCentralX();
 
-            this.rightBow = new Bow(context, Sprite.Player.RIGHT, rightTower);
-            bows.set(1, rightBow);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -589,6 +570,9 @@ public class GameState {
         client.reportMathBomb();
     }
 
+    public boolean isInitialized(){
+        return this.isInitialized;
+    }
     public void addArrow(Arrow arrow) {
         this.arrows.add(arrow);
         //todo:wait for server aproval
@@ -720,17 +704,17 @@ public class GameState {
     }
 
     public Tower.TowerTypes getLeftTowerType(){
-        return this.leftTower.getType();
+        if (null == this.leftTower){
+            return Tower.TowerTypes.WOODEN_TOWER;
+        }
+        return this.leftTower.getTowerType();
     }
 
     public ArtificialIntelligence getAi(){
         return ai;
     }
 
-    public PlayerStorage getAiStorage(){
-        if (this.aiStorage == null){
-            this.aiStorage = new PlayerStorage(context, 0);
-        }
-        return this.aiStorage;
+    public PlayerStorage getRightPlayerStorage(){
+        return this.rightPlayerStorage;
     }
 }

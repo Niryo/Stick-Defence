@@ -16,13 +16,16 @@ public class CreditManager extends Thread {
     private int tmpCredits;
     Handler handler;
 
-    public CreditManager(TextView creditTv,
-                         int credits) {
-        this.creditTv = creditTv;
+    public CreditManager(int credits) {
+
         this.credits = credits;
         this.tmpCredits = credits;
-        creditTv.setText(credits + "$");
         handler = new Handler();
+    }
+
+    public void initCreditTv(TextView creditTv){
+        this.creditTv = creditTv;
+        creditTv.setText(credits + "$");
     }
 
     synchronized public void addCredits(double creditsToAdd) {
