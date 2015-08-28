@@ -85,9 +85,16 @@ public class Zombie extends Soldier {
         return super.isHitByArrow(arrow);
     }
 
+
     @Override
     public void playSound(){
         soundStream = Sounds.getInstance().playSound(soundId,false);
     }
 
+    public static String info(){
+        return "Damage: " + DAMAGE_PER_SEC + "\n" +
+                "Cheap and reliable undead. " +
+                "Delightfully join your army.\n\n" +
+                "Price: " + Market.ZOMBIE_BUY_PRICE;
+    }
 }

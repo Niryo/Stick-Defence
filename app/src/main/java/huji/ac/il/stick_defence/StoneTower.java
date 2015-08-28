@@ -12,4 +12,11 @@ public class StoneTower extends Tower{
         super(context, player, R.drawable.stone_tower_blue,
                 R.drawable.stone_tower_red, MAX_HP, TowerTypes.STONE_TOWER);
     }
+
+    public static String info(){
+        return "HP: " + MAX_HP + "\n" +
+               "Strong and steady tower.\n" +
+               "Replaces the 'Wooden tower' and the 'Big Wooden Tower'.\n\n" +
+               "Price: " + Market.STONE_TOWER_PRICE;
+    }
 }

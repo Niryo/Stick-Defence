@@ -63,25 +63,20 @@ public class GameActivity extends Activity implements DoProtocolAction {
         boolean newGame = true;
         Bundle bundle = getIntent().getExtras();
         newGame = bundle.getBoolean("NewGame", true);
+        isMultiplayer = getIntent().getBooleanExtra("Multiplayer", true);
 
         gameState = GameState.getInstance();
         if (null == gameState){
             this.gameState =
                     GameState.CreateGameState(getApplicationContext(),
                                               this, screenWidth,
-                                              newScreenHeight);
+                                              newScreenHeight, isMultiplayer);
         } else {
-            GameState.getInstance().reset(newGame);
+            GameState.getInstance().reset(newGame, isMultiplayer);
         }
-
-
-        isMultiplayer = getIntent().getBooleanExtra("Multiplayer", true);
 
         gameComponentsLayout = (LinearLayout) findViewById(R.id.game_components);
 
-        if (!isMultiplayer) {
-            this.gameState.setSinglePlayer();
-        }
 
         Client.getClientInstance().setCurrentActivity(this);
         gameSurface = new GameSurface(this);

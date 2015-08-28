@@ -9,72 +9,77 @@ import java.util.Random;
  * Created by yahav on 09/05/15.
  */
 public class ArtificialIntelligence {
-    public enum Difficulty {
-        EASY,
-        MEDIUM,
-        HARD
-    }
 
-    //================================Easy======================================
-    private static final float EASY_SECONDS_TO_SEND_SOLDIER = 4.0f;
-    private static final float EASY_SECONDS_TO_SHOOT = 3.0f;
-    private static final float EASY_SCREEN_PORTION_TO_AIM = 0.3f;
+    private static final float START_FACTOR_TO_SEND_SOLDIERS = 3.0f;
+    private static final float START_SECONDS_TO_SHOOT = 3.0f;
+    private static final float START_SCREEN_PORTION_TO_AIM = 0.3f;
+    private static final float LEVEL_UP_FACTOR = 0.9f;
 
-    //===============================Medium=====================================
-    private static final float MEDUIM_SECONDS_TO_SEND_SOLDIER = 3.0f;
-    private static final float MEDIUM_SECONDS_TO_SHOOT = 3.0f;
-    private static final float MEDIUM_SCREEN_PORTION_TO_AIM = 0.2f;
+    GameState gameState;
 
-    //================================Hard======================================
-    private static final float HARD_SECONDS_TO_SEND_SOLDIER = 2.0f;
-    private static final float HARD_SECONDS_TO_SHOOT = 3.0f;
-    private static final float HARD_SCREEN_PORTION_TO_AIM = 0.1f;
-
-    GameState gameState = GameState.getInstance();
-    private Difficulty difficulty;
-
-    private long lastSoldierInMillisec;
+    private long lastBasicSoldier, lastZombie, lastSwordman,
+                 lastBombGrandpa, lastBazooka, lastTank;
     private long lastShootInMillisec;
-    private float secondsToSendSoldier;
     private float secondsToShoot;
     private int pixelsShootRange;
+    private float factor_send_soldiers;
+    private int level;
+    private PlayerStorage aiStorage;
 
-    ArtificialIntelligence(Difficulty difficulty) {
-        this.difficulty = difficulty;
+    ArtificialIntelligence() {
+        gameState = GameState.getInstance();
         int screenWidth = gameState.getContext().getResources().
                 getDisplayMetrics().widthPixels;
 
-        switch (difficulty) {
-            case EASY:
-                secondsToSendSoldier = EASY_SECONDS_TO_SEND_SOLDIER;
-                secondsToShoot = EASY_SECONDS_TO_SHOOT;
-                pixelsShootRange =
-                        (int) (screenWidth * EASY_SCREEN_PORTION_TO_AIM);
-                break;
-            case MEDIUM:
-                secondsToSendSoldier = MEDUIM_SECONDS_TO_SEND_SOLDIER;
-                secondsToShoot = MEDIUM_SECONDS_TO_SHOOT;
-                pixelsShootRange =
-                        (int) (screenWidth * MEDIUM_SCREEN_PORTION_TO_AIM);
-                break;
-            case HARD:
-                secondsToSendSoldier = HARD_SECONDS_TO_SEND_SOLDIER;
-                secondsToShoot = HARD_SECONDS_TO_SHOOT;
-                pixelsShootRange =
-                        (int) (screenWidth * HARD_SCREEN_PORTION_TO_AIM);
-                break;
-        }
+        secondsToShoot = START_SECONDS_TO_SHOOT;
+        pixelsShootRange =
+                (int) (screenWidth * START_SCREEN_PORTION_TO_AIM);
+        lastBasicSoldier = lastZombie = lastSwordman = lastBazooka = lastTank =
+                lastShootInMillisec = System.currentTimeMillis();
+        factor_send_soldiers = START_FACTOR_TO_SEND_SOLDIERS;
+        aiStorage = gameState.getAiStorage();
 
-        lastSoldierInMillisec = lastShootInMillisec = System.currentTimeMillis();
+        level = 0;
     }
 
     public void sendSoldier() {
         long currentTime = System.currentTimeMillis();
-        if ((currentTime - lastSoldierInMillisec) / 1000 >= secondsToSendSoldier) {
-            gameState.addSoldier(Sprite.Player.RIGHT, System.currentTimeMillis(),
+        if ((currentTime - lastTank) >=
+                (GameState.MILLISEC_TO_TANK * factor_send_soldiers) &&
+                aiStorage.isPurchased(PlayerStorage.PurchasesEnum.TANK)) {
+            gameState.addSoldier(Sprite.Player.RIGHT, currentTime,
+                    Protocol.Action.TANK);
+            lastTank = currentTime;
+        } else if ((currentTime - lastBazooka) >=
+                (GameState.MILLISEC_TO_BAZOOKA * factor_send_soldiers) &&
+                aiStorage.isPurchased(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER)) {
+            gameState.addSoldier(Sprite.Player.RIGHT, currentTime,
+                    Protocol.Action.BAZOOKA_SOLDIER);
+            lastBazooka = currentTime;
+        } else if ((currentTime - lastBombGrandpa) >=
+                (GameState.MILLISEC_TO_BOMB_GRANDPA * factor_send_soldiers) &&
+                aiStorage.isPurchased(PlayerStorage.PurchasesEnum.BOMB_GRANDPA)) {
+            gameState.addSoldier(Sprite.Player.RIGHT, currentTime,
+                    Protocol.Action.BOMB_GRANDPA);
+            lastBombGrandpa = currentTime;
+        } else if ((currentTime - lastSwordman) >=
+                (GameState.MILLISEC_TO_SWORDMAN * factor_send_soldiers) &&
+                aiStorage.isPurchased(PlayerStorage.PurchasesEnum.SWORDMAN)) {
+            gameState.addSoldier(Sprite.Player.RIGHT, currentTime,
+                    Protocol.Action.SWORDMAN);
+            lastSwordman = currentTime;
+        } else if ((currentTime - lastZombie) >=
+                (GameState.MILLISEC_TO_ZOMBIE *factor_send_soldiers) &&
+                aiStorage.isPurchased(PlayerStorage.PurchasesEnum.ZOMBIE)) {
+            gameState.addSoldier(Sprite.Player.RIGHT, currentTime,
+                    Protocol.Action.ZOMBIE);
+            lastZombie = currentTime;
+        } else if ((currentTime - lastBasicSoldier) >=
+                (GameState.MILLISEC_TO_BASIC_SOLDIER * factor_send_soldiers) &&
+                aiStorage.isPurchased(PlayerStorage.PurchasesEnum.BASIC_SOLDIER)) {
+            gameState.addSoldier(Sprite.Player.RIGHT, currentTime,
                     Protocol.Action.BASIC_SOLDIER);
-            //TODO - change to required soldier
-            this.lastSoldierInMillisec = currentTime;
+            lastBasicSoldier = currentTime;
         }
     }
 
@@ -92,7 +97,7 @@ public class ArtificialIntelligence {
                     int soldierX = soldier.getSoldierX();
                     int soldierY = soldier.getSoldierY();
                     int inaccuracy = randInt(-pixelsShootRange,
-                            pixelsShootRange);
+                                              pixelsShootRange);
                     Sprite.Point point =
                             new Sprite.Point(soldierX + inaccuracy, soldierY);
                     aiBow.setBowDirection(point);
@@ -114,9 +119,41 @@ public class ArtificialIntelligence {
                     return;
                 }
             }
+        }
+    }
 
+    public void levelUp(){
+        this.level++;
+
+        switch (this.level){
+            case 1:
+                aiStorage.buy(PlayerStorage.PurchasesEnum.ZOMBIE);
+                return;
+            case 2:
+                aiStorage.buy(PlayerStorage.PurchasesEnum.BIG_WOODEN_TOWER);
+                return;
+            case 4:
+                aiStorage.buy(PlayerStorage.PurchasesEnum.SWORDMAN);
+                return;
+            case 6:
+                aiStorage.buy(PlayerStorage.PurchasesEnum.STONE_TOWER);
+                return;
+            case 8:
+                aiStorage.buy(PlayerStorage.PurchasesEnum.BOMB_GRANDPA);
+                return;
+            case 10:
+                aiStorage.buy(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER);
+                return;
+            case 12:
+                aiStorage.buy(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER);
+                return;
+            case 14:
+                aiStorage.buy(PlayerStorage.PurchasesEnum.TANK);
+                return;
         }
 
+        this.secondsToShoot *= LEVEL_UP_FACTOR;
+        this.factor_send_soldiers *= LEVEL_UP_FACTOR;
     }
 
     public static int randInt(int min, int max) {
@@ -131,4 +168,5 @@ public class ArtificialIntelligence {
 
         return randomNum;
     }
+
 }

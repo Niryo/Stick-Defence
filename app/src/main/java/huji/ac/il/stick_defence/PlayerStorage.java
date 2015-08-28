@@ -15,7 +15,9 @@ import java.io.Serializable;
  * Created by yahav on 25/07/15.
  */
 
-
+/**
+ * Stores all player's data.
+ */
 public class PlayerStorage implements Serializable {
     public enum PurchasesEnum {
         BASIC_SOLDIER,

@@ -22,4 +22,12 @@ public class FortifiedTower extends Tower {
     public int getRightX() {
         return (int) (super.getRightX() * 0.85);
     }
+
+    public static String info(){
+        return "HP: " + MAX_HP + "\n" +
+                "A small stronghold. Defend you against the strongest opponents.\n" +
+                "Replaces the 'Wooden tower', the 'Big Wooden Tower' " +
+                "and the 'Stone Tower'.\n\n" +
+                "Price: " + Market.FORTIFIED_TOWER_PRICE;
+    }
 }

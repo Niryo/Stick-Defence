@@ -6,12 +6,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.File;
@@ -19,22 +21,23 @@ import java.io.File;
 
 public class Market extends Activity implements DoProtocolAction {
 //TODO: CREATE A BUTTON THAT MOVES YOU INTO LEAGUE_INFO ACTIVITY AND IF THERE IS INFO, SEND EXTRA IN THE INTENT
-    private static final int    ZOMBIE_BUY_PRICE = 100;
-    private static final int    SWORDMAN_BUY_PRICE = 50;
-    private static final int    BOMB_GRANDPA_BUY_PRICE = 100;
-    private static final int    TANK_BUY_PRICE = 100;
-    private static final int    BAZOOKA_BUY_PRICE = 100;
-    private static final int    MATH_BOMB_PRICE = 100;
-    private static final int    BIG_WOODEN_TOWER_PRICE = 100;
-    private static final int    STONE_TOWER_PRICE = 100;
-    private static final int    FORTIFIED_TOWER_PRICE = 100;
-    private static final int    FOG_PRICE = 100;
+    public static final int    ZOMBIE_BUY_PRICE = 100;
+    public static final int    SWORDMAN_BUY_PRICE = 50;
+    public static final int    BOMB_GRANDPA_BUY_PRICE = 100;
+    public static final int    TANK_BUY_PRICE = 100;
+    public static final int    BAZOOKA_BUY_PRICE = 100;
+    public static final int    MATH_BOMB_PRICE = 100;
+    public static final int    BIG_WOODEN_TOWER_PRICE = 100;
+    public static final int    STONE_TOWER_PRICE = 100;
+    public static final int    FORTIFIED_TOWER_PRICE = 100;
+    public static final int    FOG_PRICE = 100;
 
     private static final String CREDITS = "Credits: ";
     private Tower.TowerTypes myTowerType;
 
     private String savedLeagueInfo = null;
     private GameState gameState;
+    AlertDialog.Builder alertDialogBuilder;
 
 
     @Override
@@ -47,7 +50,7 @@ public class Market extends Activity implements DoProtocolAction {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_market);
         gameState = GameState.getInstance();
-
+        alertDialogBuilder = new AlertDialog.Builder(this);
         myTowerType = gameState.getLeftTowerType();
         final boolean isMultiplayer = getIntent().getBooleanExtra("Multiplayer", true);
         if (isMultiplayer) {
@@ -83,33 +86,50 @@ public class Market extends Activity implements DoProtocolAction {
             }
         });
 
-
-
         //Show credits
-        int credits = gameState.getCredits(Sprite.Player.LEFT);
+        int credits = gameState.getCredits();
         final TextView creditsTv = (TextView) findViewById(R.id.market_credits_tv);
         creditsTv.setText(CREDITS + credits + "$");
 
         //Add buy buttons
         addButton(PlayerStorage.PurchasesEnum.ZOMBIE,
                   R.id.buy_zombie,
-                  ZOMBIE_BUY_PRICE);
+                  ZOMBIE_BUY_PRICE,
+                  "Zombie",
+                  Zombie.info());
         addButton(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER,
                   R.id.buy_bazooka_soldier,
-                  BAZOOKA_BUY_PRICE);
+                  BAZOOKA_BUY_PRICE,
+                  "Bazooka Soldier",
+                  BazookaSoldier.info());
         addButton(PlayerStorage.PurchasesEnum.SWORDMAN,
                   R.id.buy_swordman,
-                  SWORDMAN_BUY_PRICE);
+                  SWORDMAN_BUY_PRICE,
+                  "Swordman",
+                  Swordman.info());
         addButton(PlayerStorage.PurchasesEnum.BOMB_GRANDPA,
                   R.id.buy_bomb_grandpa,
-                  BOMB_GRANDPA_BUY_PRICE);
+                  BOMB_GRANDPA_BUY_PRICE,
+                  "Bomb Grandpa",
+                  BombGrandpa.info());
         addButton(PlayerStorage.PurchasesEnum.TANK,
                   R.id.buy_tank,
-                  TANK_BUY_PRICE);
-        addButton(PlayerStorage.PurchasesEnum.MATH_BOMB,
-                  R.id.buy_math_bomb,
-                  MATH_BOMB_PRICE);
-        addButton(PlayerStorage.PurchasesEnum.FOG, R.id.buy_fog, FOG_PRICE);
+                  TANK_BUY_PRICE,
+                  "Tank",
+                  Tank.info());
+        if (isMultiplayer){
+            addButton(PlayerStorage.PurchasesEnum.MATH_BOMB,
+                    R.id.buy_math_bomb,
+                    MATH_BOMB_PRICE,
+                    "Math Bomb",
+                    MathBomb.info());
+            addButton(PlayerStorage.PurchasesEnum.FOG, R.id.buy_fog, FOG_PRICE,
+                      "Fog", Fog.info());
+        } else {
+            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.miscellaneous_list);
+            linearLayout.setVisibility(View.INVISIBLE);
+        }
+
 
         //BigWoodenTower
         final Button bigWoodenTowerButton =
@@ -122,15 +142,33 @@ public class Market extends Activity implements DoProtocolAction {
             bigWoodenTowerButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int credits = gameState.getCredits(Sprite.Player.LEFT);
-                    if (credits >= BIG_WOODEN_TOWER_PRICE) {
-                        gameState.buyItem(PlayerStorage.PurchasesEnum.BIG_WOODEN_TOWER,
-                                BIG_WOODEN_TOWER_PRICE);
-                        credits -= BIG_WOODEN_TOWER_PRICE;
-                        creditsTv.setText(CREDITS + credits + "$");
-                        v.setVisibility(View.INVISIBLE);
-                        myTowerType = Tower.TowerTypes.BIG_WOODEN_TOWER;
-                    }
+                    alertDialogBuilder.setTitle("Big Wooden Tower");
+                    alertDialogBuilder
+                            .setMessage(BigWoodenTower.info())
+                            .setCancelable(false)
+                            .setPositiveButton("Buy",new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    int credits = gameState.getCredits();
+                                    if (gameState.decCredits(BIG_WOODEN_TOWER_PRICE)) {
+                                        gameState.buyItem(PlayerStorage.PurchasesEnum.BIG_WOODEN_TOWER,
+                                                BIG_WOODEN_TOWER_PRICE);
+                                        creditsTv.setText(CREDITS + gameState.getCredits() + "$");
+                                        bigWoodenTowerButton.setVisibility(View.INVISIBLE);
+                                        myTowerType = Tower.TowerTypes.BIG_WOODEN_TOWER;
+                                    }
+                                }
+                            })
+                            .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+
+                    // show it
+                    alertDialog.show();
                 }
             });
         }
@@ -144,16 +182,32 @@ public class Market extends Activity implements DoProtocolAction {
             stoneTowerButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int credits = gameState.getCredits(Sprite.Player.LEFT);
-                    if (credits >= STONE_TOWER_PRICE) {
-                        gameState.buyItem(PlayerStorage.PurchasesEnum.STONE_TOWER,
-                                          STONE_TOWER_PRICE);
-                        credits -= STONE_TOWER_PRICE;
-                        creditsTv.setText(CREDITS + credits + "$");
-                        v.setVisibility(View.INVISIBLE);
-                        bigWoodenTowerButton.setVisibility(View.INVISIBLE);
-                        myTowerType = Tower.TowerTypes.STONE_TOWER;
-                    }
+                    alertDialogBuilder.setTitle("Stone Tower");
+                    alertDialogBuilder
+                            .setMessage(StoneTower.info())
+                            .setCancelable(false)
+                            .setPositiveButton("Buy",new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    if (gameState.decCredits(STONE_TOWER_PRICE)) {
+                                        gameState.buyItem(PlayerStorage.PurchasesEnum.STONE_TOWER,
+                                                STONE_TOWER_PRICE);
+                                        creditsTv.setText(CREDITS + gameState.getCredits() + "$");
+                                        bigWoodenTowerButton.setVisibility(View.INVISIBLE);
+                                        myTowerType = Tower.TowerTypes.STONE_TOWER;
+                                    }
+                                }
+                            })
+                            .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+
+                    // show it
+                    alertDialog.show();
                 }
             });
         }
@@ -166,17 +220,33 @@ public class Market extends Activity implements DoProtocolAction {
             fortifiedTowerButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int credits = gameState.getCredits(Sprite.Player.LEFT);
-                    if (credits >= FORTIFIED_TOWER_PRICE) {
-                        gameState.buyItem(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER,
-                                          FORTIFIED_TOWER_PRICE);
-                        credits -= FORTIFIED_TOWER_PRICE;
-                        creditsTv.setText(CREDITS + credits + "$");
-                        v.setVisibility(View.INVISIBLE);
-                        bigWoodenTowerButton.setVisibility(View.INVISIBLE);
-                        stoneTowerButton.setVisibility(View.INVISIBLE);
-                        myTowerType = Tower.TowerTypes.FORTIFIED_TOWER;
-                    }
+                    alertDialogBuilder.setTitle("Fortified Tower");
+                    alertDialogBuilder
+                            .setMessage(FortifiedTower.info())
+                            .setCancelable(false)
+                            .setPositiveButton("Buy",new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    if (gameState.decCredits(FORTIFIED_TOWER_PRICE)) {
+                                        gameState.buyItem(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER,
+                                                FORTIFIED_TOWER_PRICE);
+                                        creditsTv.setText(CREDITS + gameState.getCredits() + "$");
+                                        bigWoodenTowerButton.setVisibility(View.INVISIBLE);
+                                        stoneTowerButton.setVisibility(View.INVISIBLE);
+                                        myTowerType = Tower.TowerTypes.FORTIFIED_TOWER;
+                                    }
+                                }
+                            })
+                            .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+
+                    // show it
+                    alertDialog.show();
                 }
             });
         }
@@ -194,8 +264,10 @@ public class Market extends Activity implements DoProtocolAction {
 
     private void addButton(final PlayerStorage.PurchasesEnum item,
                            int iconId,
-                           final int price) {
-        Button buyButton = (Button) findViewById(iconId);
+                           final int price,
+                           final String title,
+                           final String info) {
+        final Button buyButton = (Button) findViewById(iconId);
         final TextView creditsTv = (TextView) findViewById(R.id.market_credits_tv);
         if (gameState.isPurchased(item)) {
             buyButton.setVisibility(View.INVISIBLE);
@@ -203,13 +275,31 @@ public class Market extends Activity implements DoProtocolAction {
             buyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int credits = gameState.getCredits(Sprite.Player.LEFT);
-                    if (credits >= price) {
-                        gameState.buyItem(item, price);
-                        credits -= price;
-                        creditsTv.setText(CREDITS + credits + "$");
-                        v.setVisibility(View.INVISIBLE);
-                    }
+                    alertDialogBuilder.setTitle(title);
+                    alertDialogBuilder
+                            .setMessage(info)
+                            .setCancelable(false)
+                            .setPositiveButton("Buy",new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    if (gameState.decCredits(price)) {
+                                        gameState.buyItem(item, price);
+                                        creditsTv.setText(CREDITS +
+                                                gameState.getCredits() + "$");
+                                        buyButton.setVisibility(View.INVISIBLE);
+                                    }
+                                }
+                            })
+                            .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+
+                    // show it
+                    alertDialog.show();
                 }
             });
         }

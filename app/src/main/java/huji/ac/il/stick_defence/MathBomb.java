@@ -175,6 +175,11 @@ public class MathBomb {
             super.setTextSize(w/SCALE_FACTOR);
         }
     }
+
+    public static String info(){
+        return "Blocks enemy's operations until he/she solves a math exercise.\n\n" +
+               "Price: " + Market.MATH_BOMB_PRICE;
+    }
 }
 
 

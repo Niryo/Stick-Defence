@@ -55,4 +55,10 @@ public class Fog implements DrawableObject{
         sprite.render(canvas, 0, (int) (screenHeight - sprite.getScaledFrameHeight()));
 
     }
+
+    public static String info(){
+        return "Blurs your enemy sight.\n" +
+                "Multiplayer only.\n\n" +
+                "Price: " + Market.FOG_PRICE;
+    }
 }

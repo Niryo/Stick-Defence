@@ -128,4 +128,11 @@ public class BazookaSoldier extends Soldier {
     public static float getBazookaSoldierY() {
         return bazookaSoldierY;
     }
+
+    public static String info(){
+        return "Damage: " + DAMAGE_PER_SEC + "\n" +
+                "Deadly and destructive soldier." +
+                " Shoot bazooka missiles from a long range.\n\n" +
+                "Price: " + Market.BAZOOKA_BUY_PRICE;
+    }
 }

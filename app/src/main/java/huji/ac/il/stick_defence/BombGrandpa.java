@@ -41,6 +41,7 @@ public class BombGrandpa extends Soldier {
     public BombGrandpa(Context context, Sprite.Player player, double delayInSec) {
         super(context, player, SEC_TO_CROSS_SCREEN, DAMAGE_PER_SEC,
                 Sounds.OLD_MAN_SOUND, delayInSec);
+
         if (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
                     context.getResources(),
@@ -102,9 +103,19 @@ public class BombGrandpa extends Soldier {
         return super.isHitByArrow(arrow);
     }
 
+
     @Override
     public void playSound(){
         soundStream = Sounds.getInstance().playSound(soundId,false);
+    }
+
+
+    public static String info(){
+        return "Damage: " + DAMAGE_PER_SEC + "\n" +
+                "Bomb Damage: " + BOMB_DAMAGE + "\n" +
+                "Nice and friendly grandpa. explodes once he reaches to the " +
+                "opponent's tower.\n\n" +
+                "Price: " + Market.BOMB_GRANDPA_BUY_PRICE;
     }
 
 }

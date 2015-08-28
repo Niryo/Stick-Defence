@@ -45,7 +45,7 @@ public class GameLoopThread extends Thread {
 
         this.isMultiplayer = gameState.isMultiplayer();
         if (!isMultiplayer) {
-            this.ai = new ArtificialIntelligence(ArtificialIntelligence.Difficulty.EASY);
+            this.ai = gameState.getAi();
         }
         sleep = false;
     }
@@ -119,7 +119,10 @@ public class GameLoopThread extends Thread {
                         gameSurface.writeEndGameMessage(canvas);
                         surfaceHolder.unlockCanvasAndPost(canvas);
                         gameState.startFastCreditMode();
-                        canvas=null;
+                        canvas = null;
+                        if (!isMultiplayer){
+                            ai.levelUp();
+                        }
                         try {
                             Thread.sleep(4000);
                         } catch (InterruptedException e) {
