@@ -25,8 +25,9 @@ public class FortifiedTower extends Tower {
 
     public static String info(){
         return "HP: " + MAX_HP + "\n" +
-                "Price: " + Market.FORTIFIED_TOWER_PRICE + "\n\n" +
+                "A small stronghold. Defend you against the strongest opponents.\n" +
                 "Replaces the 'Wooden tower', the 'Big Wooden Tower' " +
-                "and the 'Stone Tower'.";
+                "and the 'Stone Tower'.\n\n" +
+                "Price: " + Market.FORTIFIED_TOWER_PRICE;
     }
 }

@@ -104,7 +104,7 @@ public class GameState {
         return this.playerStorage.isGameInProcess();
     }
 
-    public void reset(boolean newGame) {
+    public void reset(boolean newGame, boolean isMultiplayer) {
         buttonsComponent = null;
         soldiers = new ArrayList<>();
         towers = new ArrayList<>();
@@ -118,12 +118,13 @@ public class GameState {
         if (newGame || null == playerStorage){
             playerStorage = new PlayerStorage(context, 0);
             rightTower = new WoodenTower(context, Sprite.Player.RIGHT);
+            this.isMultiplayer = isMultiplayer;
         }
         leftTower = towerFactory(playerStorage, Sprite.Player.LEFT);
         this.leftBow = new Bow(context, Sprite.Player.LEFT, leftTower);
         bows.set(0, leftBow);
 
-        if (!isMultiplayer){
+        if (!this.isMultiplayer){
             rightTower = towerFactory(this.aiStorage, Sprite.Player.RIGHT);
         } else {
             rightTower.reset();
@@ -198,7 +199,7 @@ public class GameState {
         this.miscellaneous.add(new Fog(context));
     }
     public void finishGame() {
-        playerStorage.setCredits(creditManager.getCredits(Sprite.Player.LEFT));
+        playerStorage.setCredits(creditManager.getCredits());
     //    save();
         creditManager.setRunning(false);
     }
@@ -238,18 +239,22 @@ public class GameState {
 
     public void initCredits(TextView leftCreditsTv, boolean newGame) {
         int leftPoints = newGame ? 0 : playerStorage.getCredits();
-        this.creditManager = new CreditManager(leftCreditsTv, leftPoints, 0); //TODO - support right player
+        this.creditManager = new CreditManager(leftCreditsTv, leftPoints);
 
         creditManager.setRunning(true);
         creditManager.start();
     }
 
-    public void addCredits(double creditsToAdd, Sprite.Player player) {
-        creditManager.addCredits(creditsToAdd, player);
+    public void addCredits(double creditsToAdd) {
+        creditManager.addCredits(creditsToAdd);
     }
 
-    public int getCredits(Sprite.Player player) {
-        return creditManager.getCredits(player);
+    public boolean decCredits(double creditsToDec){
+        return creditManager.decCredits(creditsToDec, Sprite.Player.LEFT);
+    }
+
+    public int getCredits() {
+        return creditManager.getCredits();
     }
 
     public void setTowerProgressHP(double hp, Sprite.Player player) {
@@ -506,7 +511,7 @@ public class GameState {
             this.leftPlayerSoldiers--;
         } else {
             this.rightPlayerSoldiers--;
-            addCredits(10, Sprite.Player.LEFT);
+            addCredits(10);
         }
         if (shouldReport && isMultiplayer){
             client.reportSoldierKill(soldier.getId(), soldier.getPlayer());
@@ -579,26 +584,6 @@ public class GameState {
         }
     }
 
-    /**
-     * Kill a soldier received from server (if exists)
-     * @param id The soldier id
-     * @param player The player the soldier belong to
-     */
-    public void killSoldier(int id, Sprite.Player player, boolean shouldReport){
-        for (int iSoldier = 0 ; iSoldier < soldiers.size() ; iSoldier ++){
-            Soldier soldier = soldiers.get(iSoldier);
-            if (soldier.getId() == id && soldier.getPlayer() == player){
-                if (Sprite.Player.LEFT == soldier.getPlayer()){
-                    this.leftPlayerSoldiers--;
-                } else {
-                    this.rightPlayerSoldiers--;
-                    addCredits(10, Sprite.Player.RIGHT);
-                }
-                soldiers.remove(soldier);
-            }
-        }
-    }
-
     public void removeArrow(Arrow arrow) {
         this.arrows.remove(arrow);
     }
@@ -619,16 +604,16 @@ public class GameState {
         if (this.rightPlayerWin || this.leftPlayerWin) {
             return;
         }
-        addCredits(hp, player);
+
         if (player == Sprite.Player.RIGHT) {
             if (!towers.get(0).reduceHP(hp)) {
                 this.rightPlayerWin = true;
-                addCredits(CREDITS_ON_WIN, player);
             }
         } else {
+            addCredits(hp);
             if (!towers.get(1).reduceHP(hp)) {
                 this.leftPlayerWin = true;
-                addCredits(CREDITS_ON_WIN, player);
+                addCredits(CREDITS_ON_WIN);
             }
         }
     }

@@ -173,8 +173,8 @@ public class MathBomb {
     }
 
     public static String info(){
-        return "Price: " + Market.MATH_BOMB_PRICE + "\n\n" +
-                "Blocks your enemy's operations until he solves a math exercise.";
+        return "Blocks enemy's operations until he/she solves a math exercise.\n\n" +
+               "Price: " + Market.MATH_BOMB_PRICE;
     }
 }
 

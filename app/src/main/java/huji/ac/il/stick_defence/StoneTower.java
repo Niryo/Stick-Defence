@@ -15,7 +15,8 @@ public class StoneTower extends Tower{
 
     public static String info(){
         return "HP: " + MAX_HP + "\n" +
-                "Price: " + Market.STONE_TOWER_PRICE + "\n\n" +
-                "Replaces the 'Wooden tower' and the 'Big Wooden Tower'.";
+               "Strong and steady tower.\n" +
+               "Replaces the 'Wooden tower' and the 'Big Wooden Tower'.\n\n" +
+               "Price: " + Market.STONE_TOWER_PRICE;
     }
 }

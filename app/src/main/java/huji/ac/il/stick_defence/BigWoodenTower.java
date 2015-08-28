@@ -15,7 +15,7 @@ public class BigWoodenTower extends Tower{
     }
 
     public static String info(){
-        return "HP: " + MAX_HP + "\n" +
+        return "HP: " + MAX_HP + "\n\n" +
                 "Price: " + Market.BIG_WOODEN_TOWER_PRICE;
     }
 }

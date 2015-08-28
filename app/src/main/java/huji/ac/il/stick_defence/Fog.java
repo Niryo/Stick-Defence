@@ -56,7 +56,8 @@ public class Fog implements DrawableObject{
     }
 
     public static String info(){
-        return "Price: " + Market.FOG_PRICE + "\n\nBlurs your enemy sight.\n" +
-                "Multiplayer only.";
+        return "Blurs your enemy sight.\n" +
+                "Multiplayer only.\n\n" +
+                "Price: " + Market.FOG_PRICE;
     }
 }

@@ -11,51 +11,38 @@ public class CreditManager extends Thread {
     private int sleep_in_msec = 60;
     GameState gameState = GameState.getInstance();
     boolean running;
-    private TextView leftCreditsTv;
-    private double leftCredits, rightCredits;
+    private TextView creditTv;
+    private double credits;
     private int tmpCredits;
     Handler handler;
 
-    public CreditManager(TextView leftCreditsTv,
-                         int leftCredits, int rightCredits) {
-        this.leftCreditsTv = leftCreditsTv;
-        this.leftCredits = leftCredits;
-        this.tmpCredits = leftCredits;
-
-        this.rightCredits = rightCredits;
-
-        leftCreditsTv.setText(leftCredits + "$");
+    public CreditManager(TextView creditTv,
+                         int credits) {
+        this.creditTv = creditTv;
+        this.credits = credits;
+        this.tmpCredits = credits;
+        creditTv.setText(credits + "$");
         handler = new Handler();
     }
 
-    synchronized public void addCredits(double creditsToAdd, Sprite.Player player) {
-        if (Sprite.Player.LEFT == player) {
-            leftCredits += creditsToAdd;
-        } else {
-            rightCredits += creditsToAdd;
-        }
+    synchronized public void addCredits(double creditsToAdd) {
+        credits += creditsToAdd;
     }
 
     synchronized public boolean decCredits(double creditsToDec, Sprite.Player player) {
-        if (Sprite.Player.LEFT == player) {
-            if (leftCredits < creditsToDec) {
-                return false;
-            }
-            leftCredits -= creditsToDec;
-        } else {
-            if (rightCredits < creditsToDec) {
-                return false;
-            }
-            rightCredits -= creditsToDec;
+        if (Sprite.Player.RIGHT == player){
+            return true;
         }
+        if (credits < creditsToDec) {
+            return false;
+        }
+        credits -= creditsToDec;
+
         return true;
     }
 
-    public int getCredits(Sprite.Player player) {
-        if (Sprite.Player.LEFT == player) {
-            return (int) this.leftCredits;
-        }
-        return (int) rightCredits;
+    public int getCredits() {
+        return (int) this.credits;
     }
 
     public void startFastCreditMode(){
@@ -70,16 +57,16 @@ public class CreditManager extends Thread {
     public void run() {
         super.run();
         while (running) {
-            if (tmpCredits < (int) leftCredits) {
+            if (tmpCredits < (int) credits) {
                 tmpCredits++;
-            } else if (tmpCredits > (int) leftCredits) {
+            } else if (tmpCredits > (int) credits) {
                 tmpCredits--;
             }
 
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    leftCreditsTv.setText(String.valueOf(tmpCredits) + "$");
+                    creditTv.setText(String.valueOf(tmpCredits) + "$");
                 }
             });
 

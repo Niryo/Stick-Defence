@@ -87,7 +87,7 @@ public class Market extends Activity implements DoProtocolAction {
         });
 
         //Show credits
-        int credits = gameState.getCredits(Sprite.Player.LEFT);
+        int credits = gameState.getCredits();
         final TextView creditsTv = (TextView) findViewById(R.id.market_credits_tv);
         creditsTv.setText(CREDITS + credits + "$");
 
@@ -148,12 +148,11 @@ public class Market extends Activity implements DoProtocolAction {
                             .setCancelable(false)
                             .setPositiveButton("Buy",new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,int id) {
-                                    int credits = gameState.getCredits(Sprite.Player.LEFT);
-                                    if (credits >= BIG_WOODEN_TOWER_PRICE) {
+                                    int credits = gameState.getCredits();
+                                    if (gameState.decCredits(BIG_WOODEN_TOWER_PRICE)) {
                                         gameState.buyItem(PlayerStorage.PurchasesEnum.BIG_WOODEN_TOWER,
                                                 BIG_WOODEN_TOWER_PRICE);
-                                        credits -= BIG_WOODEN_TOWER_PRICE;
-                                        creditsTv.setText(CREDITS + credits + "$");
+                                        creditsTv.setText(CREDITS + gameState.getCredits() + "$");
                                         bigWoodenTowerButton.setVisibility(View.INVISIBLE);
                                         myTowerType = Tower.TowerTypes.BIG_WOODEN_TOWER;
                                     }
@@ -189,12 +188,10 @@ public class Market extends Activity implements DoProtocolAction {
                             .setCancelable(false)
                             .setPositiveButton("Buy",new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,int id) {
-                                    int credits = gameState.getCredits(Sprite.Player.LEFT);
-                                    if (credits >= STONE_TOWER_PRICE) {
+                                    if (gameState.decCredits(STONE_TOWER_PRICE)) {
                                         gameState.buyItem(PlayerStorage.PurchasesEnum.STONE_TOWER,
                                                 STONE_TOWER_PRICE);
-                                        credits -= STONE_TOWER_PRICE;
-                                        creditsTv.setText(CREDITS + credits + "$");
+                                        creditsTv.setText(CREDITS + gameState.getCredits() + "$");
                                         bigWoodenTowerButton.setVisibility(View.INVISIBLE);
                                         myTowerType = Tower.TowerTypes.STONE_TOWER;
                                     }
@@ -229,12 +226,10 @@ public class Market extends Activity implements DoProtocolAction {
                             .setCancelable(false)
                             .setPositiveButton("Buy",new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,int id) {
-                                    int credits = gameState.getCredits(Sprite.Player.LEFT);
-                                    if (credits >= FORTIFIED_TOWER_PRICE) {
+                                    if (gameState.decCredits(FORTIFIED_TOWER_PRICE)) {
                                         gameState.buyItem(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER,
                                                 FORTIFIED_TOWER_PRICE);
-                                        credits -= FORTIFIED_TOWER_PRICE;
-                                        creditsTv.setText(CREDITS + credits + "$");
+                                        creditsTv.setText(CREDITS + gameState.getCredits() + "$");
                                         bigWoodenTowerButton.setVisibility(View.INVISIBLE);
                                         stoneTowerButton.setVisibility(View.INVISIBLE);
                                         myTowerType = Tower.TowerTypes.FORTIFIED_TOWER;
@@ -280,25 +275,16 @@ public class Market extends Activity implements DoProtocolAction {
             buyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int credits = gameState.getCredits(Sprite.Player.LEFT);
-                    if (credits >= price) {
-                        gameState.buyItem(item, price);
-                        credits -= price;
-                        creditsTv.setText(CREDITS + credits + "$");
-                        v.setVisibility(View.INVISIBLE);
-                    }
-
                     alertDialogBuilder.setTitle(title);
                     alertDialogBuilder
                             .setMessage(info)
                             .setCancelable(false)
                             .setPositiveButton("Buy",new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,int id) {
-                                    int credits = gameState.getCredits(Sprite.Player.LEFT);
-                                    if (credits >= price) {
+                                    if (gameState.decCredits(price)) {
                                         gameState.buyItem(item, price);
-                                        credits -= price;
-                                        creditsTv.setText(CREDITS + credits + "$");
+                                        creditsTv.setText(CREDITS +
+                                                gameState.getCredits() + "$");
                                         buyButton.setVisibility(View.INVISIBLE);
                                     }
                                 }

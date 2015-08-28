@@ -105,8 +105,8 @@ public class BombGrandpa extends Soldier {
     public static String info(){
         return "Damage: " + DAMAGE_PER_SEC + "\n" +
                 "Bomb Damage: " + BOMB_DAMAGE + "\n" +
-                "Price: " + Market.BOMB_GRANDPA_BUY_PRICE + "\n\n" +
                 "Nice and friendly grandpa. explodes once he reaches to the " +
-                "opponent's tower.";
+                "opponent's tower.\n\n" +
+                "Price: " + Market.BOMB_GRANDPA_BUY_PRICE;
     }
 }
