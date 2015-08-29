@@ -326,6 +326,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
     @Override
     protected void onPause() {
+        Sounds.getInstance().stopAllSound();
         super.onPause();
         if (isMultiplayer) {
             Client.getClientInstance().

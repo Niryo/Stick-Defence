@@ -64,6 +64,7 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
         client.setCurrentActivity(this);
 
         final Button readyButton = (Button) findViewById(R.id.ready_to_play);
+        readyButton.setTypeface(Typeface.SERIF, Typeface.BOLD);
         final boolean newGame = getIntent().getBooleanExtra("NewGame", true);
 
 

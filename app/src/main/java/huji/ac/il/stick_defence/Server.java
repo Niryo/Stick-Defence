@@ -54,8 +54,15 @@ public class Server {
      * @return an instance of the server
      */
     public static Server createServer(int participants) {
+        if (server == null) {
             server = new Server(participants);
             server.start();
+        }
+        else{
+            server.stopServer();
+            server = new Server(participants);
+            server.start();
+        }
         return server;
     }
 
@@ -96,6 +103,13 @@ public class Server {
 
     }
 
+    public void stopServer(){
+        try {
+            this.serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private void sendLeagueInfo(String info) {
         for (Peer peer : this.peers) {
             peer.send(Protocol.stringify(Protocol.Action.LEAGUE_INFO, info));
