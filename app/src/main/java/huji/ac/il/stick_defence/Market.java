@@ -82,14 +82,14 @@ public class Market extends Activity implements DoProtocolAction {
 
         }
 
-
-
-
         gameState= GameState.getInstance();
         if(gameState==null) {
             gameState = GameState.CreateGameState(getApplicationContext(),
                     isMultiplayer);
-            continueButton.setEnabled(false);
+            if (isMultiplayer){
+                continueButton.setEnabled(false);
+            }
+
         }
         myTowerType = gameState.getLeftTowerType();
 

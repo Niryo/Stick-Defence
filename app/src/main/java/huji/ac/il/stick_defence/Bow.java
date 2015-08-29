@@ -27,6 +27,7 @@ public class Bow implements Serializable {
     private static final int ARC_PATH_START_ANGLE = 290;
     private static final int ARC_PATH_LENGTH = 80;
 
+    private int bowStrechSound, bowReleaseSound;
     private GameState gameState = GameState.getInstance();
     private static Bitmap leftBowPic = null;
     //    private static        Bitmap rightBowPic = null;
@@ -199,6 +200,9 @@ public class Bow implements Serializable {
     }
 
     public void stretch() {
+        if (this.currentFrame == 1){
+            playStrechSound();
+        }
         if (this.currentFrame == NUMBER_OF_FRAMES - 1) {
             this.currentFrame = 0;
         }
@@ -216,6 +220,8 @@ public class Bow implements Serializable {
 
     public void release() {
         if (this.currentFrame == NUMBER_OF_FRAMES - 4) {
+            stopStrechSound();
+            playReleaseSound();
             this.gameState.addArrow(new Arrow(this.context, this.pos[0], this.pos[1], this.tan, this.player, 0));
 
 
@@ -234,6 +240,20 @@ public class Bow implements Serializable {
 
     public double getRelativeDistance() {
         return this.distance / pathLength;
+    }
+
+    public void playStrechSound(){
+        this.bowStrechSound = Sounds.getInstance().playSound(Sounds.BOW_STRECH,
+                                                             false);
+    }
+
+    public void stopStrechSound(){
+        Sounds.stopSound(this.bowStrechSound);
+    }
+
+    public void playReleaseSound(){
+        this.bowStrechSound = Sounds.getInstance().playSound(Sounds.BOW_RELEASE,
+                                                             false);
     }
 
 }

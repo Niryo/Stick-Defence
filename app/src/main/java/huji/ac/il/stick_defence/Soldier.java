@@ -42,7 +42,7 @@ public abstract class Soldier implements Serializable {
     private double delayInSec;
     private Context context;
     protected int soundStream;
-    protected  int soundId;
+    protected int soundId;
 
 
     protected Soldier(Context context, Sprite.Player player,
