@@ -84,8 +84,7 @@ public class Market extends Activity implements DoProtocolAction {
 
         gameState= GameState.getInstance();
         if(gameState==null) {
-            gameState = GameState.CreateGameState(getApplicationContext(),
-                    isMultiplayer);
+            gameState = GameState.CreateGameState(this, isMultiplayer);
             if (isMultiplayer){
                 continueButton.setEnabled(false);
             }

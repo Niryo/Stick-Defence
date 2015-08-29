@@ -2,6 +2,7 @@ package huji.ac.il.stick_defence;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -724,5 +725,12 @@ public class GameState {
 
     public PlayerStorage getRightPlayerStorage(){
         return this.rightPlayerStorage;
+    }
+
+    public void exitToMainMenu(){
+        Intent intent = new Intent(context, MainMenu.class);
+      //  intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+        ((Activity) context).finish();
     }
 }
