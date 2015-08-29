@@ -54,7 +54,8 @@ public class Market extends Activity implements DoProtocolAction {
                 getIntent().getBooleanExtra("isMultiplayer", true);
         Button continueButton = (Button) findViewById(R.id.market_play_button);
 
-        if(GameState.getInstance()==null) {
+        gameState= GameState.getInstance();
+        if(gameState==null) {
             gameState = GameState.CreateGameState(getApplicationContext(),
                     isMultiplayer);
             continueButton.setEnabled(false);
