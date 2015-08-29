@@ -68,6 +68,7 @@ public class GameSurface extends SurfaceView implements
         canvas.drawText(half1,x,y,paint);
         paint.setTextAlign(Paint.Align.LEFT);
         canvas.drawText(half2, x, y, paint);
+        Sounds.getInstance().streamSound(Sounds.END_TRUMPET,false);
 
     }
 

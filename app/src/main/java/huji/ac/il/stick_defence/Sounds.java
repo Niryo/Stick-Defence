@@ -26,7 +26,8 @@ public class Sounds {
     public static final int MATH_BOMB =R.raw.shame;
     public static final int BOW_STRECH = R.raw.bow_strech;
     public static final int BOW_RELEASE = R.raw.bow_release;
-    public static final int TRUMPET_SOUND= R.raw.trumpet;
+    public static final int START_TRUMPET = R.raw.start_trumpet;
+    public  static final int END_TRUMPET= R.raw.end_trumpet;
 
     private static MediaPlayer mainThemePlayer;
     private static MediaPlayer winThemePlayer;

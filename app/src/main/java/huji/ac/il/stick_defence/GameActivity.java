@@ -1,6 +1,5 @@
 package huji.ac.il.stick_defence;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -11,10 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.content.ContextCompat;
-import android.text.Layout;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -458,7 +454,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 this.gameState.setTime(System.currentTimeMillis(),
                         Long.parseLong(Protocol.getData(rawInput)));
                 this.waitDialog.dismiss();
-                Sounds.getInstance().streamSound(Sounds.TRUMPET_SOUND, false);
+                Sounds.getInstance().streamSound(Sounds.START_TRUMPET, false);
                 break;
 
 //            case PAUSE:
