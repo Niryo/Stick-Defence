@@ -63,7 +63,7 @@ public class AutoResizeTextView extends TextView
     {
         super(context,attrs,defStyle);
         // using the minimal recommended font size
-        _minTextSize=TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,12,getResources().getDisplayMetrics());
+        _minTextSize=TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX,12,getResources().getDisplayMetrics());
         _maxTextSize=getTextSize();
         if(_maxLines==0)
             // no value was assigned during construction

@@ -52,8 +52,14 @@ public class Market extends Activity implements DoProtocolAction {
         setContentView(R.layout.activity_market);
         final boolean isMultiplayer =
                 getIntent().getBooleanExtra("isMultiplayer", true);
-        gameState = GameState.CreateGameState(getApplicationContext(),
-                                              isMultiplayer);
+        Button continueButton = (Button) findViewById(R.id.market_play_button);
+
+        gameState= GameState.getInstance();
+        if(gameState==null) {
+            gameState = GameState.CreateGameState(getApplicationContext(),
+                    isMultiplayer);
+            continueButton.setEnabled(false);
+        }
         alertDialogBuilder = new AlertDialog.Builder(this);
         myTowerType = gameState.getLeftTowerType();
 
@@ -63,7 +69,6 @@ public class Market extends Activity implements DoProtocolAction {
                             String.
                                     valueOf(GameState.getInstance().isLeftPlayerWin())));
         }
-        Button continueButton = (Button) findViewById(R.id.market_play_button);
 
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -372,6 +377,12 @@ public class Market extends Activity implements DoProtocolAction {
         switch (action) {
             case LEAGUE_INFO:
                 savedLeagueInfo = Protocol.getData(rawInput);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                ((Button) findViewById(R.id.market_play_button)).setEnabled(true);
+                    }
+                });
                 //gameState.sendInfoToPartner(myTowerType); //we got the leauge info so we know now that we have
                 //parnter and we need to send him information
                 break;
