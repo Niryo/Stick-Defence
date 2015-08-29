@@ -24,6 +24,8 @@ public class Sounds {
     public static final int OLD_MAN_SOUND= R.raw.old_man_sound;
     public static final int FOG_SOUND =R.raw.wind_sound;
     public static final int MATH_BOMB =R.raw.shame;
+    public static final int BOW_STRECH = R.raw.bow_strech;
+    public static final int BOW_RELEASE = R.raw.bow_release;
 
     private static MediaPlayer mainThemePlayer;
     private static MediaPlayer winThemePlayer;
@@ -54,6 +56,8 @@ public class Sounds {
         soundPoolMap.put( TANK_SOUND, soundPool.load(context,R.raw.tank_sound, 1) );
         soundPoolMap.put( ZOMBIE_SOUND, soundPool.load(context,R.raw.zombie_sound, 1) );
         soundPoolMap.put( OLD_MAN_SOUND, soundPool.load(context,R.raw.old_man_sound, 1) );
+        soundPoolMap.put( BOW_STRECH, soundPool.load(context,R.raw.bow_strech, 1) );
+        soundPoolMap.put( BOW_RELEASE, soundPool.load(context,R.raw.bow_release, 1) );
 
     }
 

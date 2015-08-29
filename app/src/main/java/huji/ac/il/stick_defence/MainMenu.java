@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pInfo;
@@ -14,6 +15,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.Formatter;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -44,6 +46,8 @@ public class MainMenu extends Activity implements DoProtocolAction {
     private  final Pattern PARTIAl_IP_ADDRESS =
             Pattern.compile("^((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])\\.){0,3}"+
                     "((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])){0,1}$");
+    private final String BUTTON_PUSHED_COLOR= "#FFFFCC";
+    private final String BUTTON_RELEASED_COLOR="#000000";
 
 
     @Override
@@ -73,6 +77,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
 
         //========================Single player=================================
         Button singlePlayer = (Button) findViewById(R.id.single_player);
+        designButton(singlePlayer);
         singlePlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,6 +92,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
         //========================Create League=================================
 
         Button createLeague = (Button) findViewById(R.id.create_league);
+        designButton(createLeague);
         createLeague.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -201,6 +207,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
 
         //========================Join league=================================
         Button joinLeague = (Button) findViewById(R.id.join_league);
+        designButton(joinLeague);
         joinLeague.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -213,6 +220,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
 
         //============================connect over lan button=====================
         Button connectOverLanButton = (Button) findViewById(R.id.enter_ip_button);
+        designButton(connectOverLanButton);
         connectOverLanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -360,4 +368,24 @@ public class MainMenu extends Activity implements DoProtocolAction {
 
         }
     }
+
+    public void designButton(final Button button){
+        button.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    button.setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
+                    button.setShadowLayer(4, 0, 0, Color.parseColor(BUTTON_RELEASED_COLOR));
+                    button.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    button.setTextColor(Color.parseColor(BUTTON_RELEASED_COLOR));
+                    button.setTypeface(Typeface.SERIF);
+                    button.setShadowLayer(0, 0, 0, 0);
+                }
+                return false;
+            }
+        });
+    }
+
 }

@@ -136,7 +136,8 @@ public class Tank extends Soldier {
 
     public static String info(){
         return "Damage: " + DAMAGE_PER_SEC + "\n" +
-                "Use for a quick smash of you opponent's tower.\n\n" +
+                "HP: " + HP + "\n" +
+                "Use for a quick smash of your opponent's tower.\n\n" +
                 "Price: " + Market.TANK_BUY_PRICE;
     }
 }

@@ -1,5 +1,6 @@
 package huji.ac.il.stick_defence;
 
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -128,7 +129,14 @@ public class GameLoopThread extends Thread {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        gameSurface.goToMarket();
+
+                        //End of game for single player
+                        if (!isMultiplayer && gameState.isRightPlayerWin()){
+                            gameState.exitToMainMenu();
+                        } else {
+                            gameSurface.goToMarket();
+                        }
+
 
                     }
 
