@@ -13,6 +13,7 @@ public class BazookaSoldier extends Soldier {
     //======================BazookaSoldier's abilities==========================
     private static final double SEC_TO_SCREEN_WIDTH = 20;
     private static final int DAMAGE_PER_SEC = 5; // [Damage/Sec]
+    private static final int HP = 10;
     //==========================================================================
 
     //==========================================================================
@@ -40,7 +41,8 @@ public class BazookaSoldier extends Soldier {
     private Sprite.Player player;
 
     public BazookaSoldier(Context context, Sprite.Player player, double delayInSec) {
-        super(context, player, SEC_TO_SCREEN_WIDTH, DAMAGE_PER_SEC,Sounds.WALKING_SOUND, delayInSec);
+        super(context, player, SEC_TO_SCREEN_WIDTH,
+              DAMAGE_PER_SEC,Sounds.WALKING_SOUND, delayInSec, HP);
         if (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
                     context.getResources(),

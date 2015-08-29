@@ -15,6 +15,7 @@ public class BombGrandpa extends Soldier {
     private static final double SEC_TO_CROSS_SCREEN = 30;
     private static final int DAMAGE_PER_SEC = 0; // [Damage/Sec]
     private static final int BOMB_DAMAGE = 100;
+    private static final int HP = 10;
     //==========================================================================
 
     //==========================================================================
@@ -37,7 +38,7 @@ public class BombGrandpa extends Soldier {
 
     public BombGrandpa(Context context, Sprite.Player player, double delayInSec) {
         super(context, player, SEC_TO_CROSS_SCREEN, DAMAGE_PER_SEC,
-                Sounds.OLD_MAN_SOUND, delayInSec);
+                Sounds.OLD_MAN_SOUND, delayInSec, HP);
 
         if (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(

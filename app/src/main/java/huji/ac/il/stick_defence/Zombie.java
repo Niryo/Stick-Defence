@@ -14,6 +14,7 @@ public class Zombie extends Soldier {
     //=======================BasicSoldier's abilities===========================
     private static final double SEC_TO_CROSS_SCREEN = 20;
     private static final int DAMAGE_PER_SEC = 1; // [Damage/Sec]
+    private static final int HP = 20;
     //==========================================================================
 
     //==========================================================================
@@ -34,7 +35,8 @@ public class Zombie extends Soldier {
     private Sprite.Player player;
 
     public Zombie(Context context, Sprite.Player player, double delayInSec) {
-        super(context, player, SEC_TO_CROSS_SCREEN, DAMAGE_PER_SEC, Sounds.ZOMBIE_SOUND,delayInSec);
+        super(context, player, SEC_TO_CROSS_SCREEN,
+              DAMAGE_PER_SEC, Sounds.ZOMBIE_SOUND, delayInSec, HP);
         if (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
                     context.getResources(),

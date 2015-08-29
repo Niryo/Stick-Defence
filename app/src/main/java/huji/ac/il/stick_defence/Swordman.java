@@ -14,6 +14,7 @@ public class Swordman extends Soldier {
     //=======================BasicSoldier's abilities===========================
     private static final double SEC_TO_CROSS_SCREEN = 20;
     private static final int DAMAGE_PER_SEC = 5; // [Damage/Sec]
+    private static final int HP = 30;
     //==========================================================================
 
     //==========================================================================
@@ -40,7 +41,8 @@ public class Swordman extends Soldier {
     private Sprite.Player player;
 
     public Swordman(Context context, Sprite.Player player, double delayInSec) {
-        super(context, player, SEC_TO_CROSS_SCREEN, DAMAGE_PER_SEC,Sounds.WALKING_SOUND, delayInSec);
+        super(context, player, SEC_TO_CROSS_SCREEN,
+              DAMAGE_PER_SEC,Sounds.WALKING_SOUND, delayInSec, HP);
         if (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
                     context.getResources(),

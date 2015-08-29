@@ -411,6 +411,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
             case SOLDIER_KILL:
                 try {
+                    Log.w("yahav", "Received soldier kill report");
                     JSONObject data = new JSONObject(Protocol.getData(rawInput));
                     int id = data.getInt("id");
                     String playerString = data.getString("player");

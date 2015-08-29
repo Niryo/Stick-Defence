@@ -21,18 +21,13 @@ public abstract class Soldier implements Serializable {
 
     protected GameState gameState = GameState.getInstance();
 
-    //Soldier pictures
-    private static Bitmap leftSoldierPic = null;
-    private static Bitmap rightSoldierPic = null;
-    private static Bitmap leftAttackSoldierPic = null;
-    private static Bitmap rightAttackSoldierPic = null;
-
     private Sprite sprite;
 
     //Characteristics
     private final Sprite.Player PLAYER;
     private final int DAMAGE_PER_SEC;
     private double runPixelsPerSec;
+    private int hp, startHp;
 
     //Positions
     public static int leftId = 0, rightId = 0;
@@ -50,15 +45,16 @@ public abstract class Soldier implements Serializable {
     protected  int soundId;
 
 
-    protected Soldier(Context context, Sprite.Player player, double
-            secToCrossScreen, int damagePerSec, int soundId, double delayInSec) {
+    protected Soldier(Context context, Sprite.Player player,
+                      double secToCrossScreen, int damagePerSec, int soundId,
+                      double delayInSec, int hp) {
         this.PLAYER = player;
-    this.soundId=soundId;
+        this.soundId = soundId;
         this.screenWidth = gameState.getCanvasWidth();
 
         this.screenHeight = gameState.getCanvasHeight();
         this.context = context;
-
+        this.hp = this.startHp = hp;
         this.DAMAGE_PER_SEC = damagePerSec;
         this.attack = false;
         lastUpdateTime = System.currentTimeMillis();
@@ -98,6 +94,10 @@ public abstract class Soldier implements Serializable {
         }
         Log.w("custom", "Soldier pix per sec: " + runPixelsPerSec);
 
+    }
+
+    public static void resetIds(){
+        leftId = rightId = 0;
     }
 
     protected Context getContext() {
@@ -147,12 +147,16 @@ public abstract class Soldier implements Serializable {
         sprite.render(canvas, getSoldierX(), getSoldierY());
 
         Paint paint = new Paint();
+
         paint.setColor(PLAYER == Sprite.Player.RIGHT ? Color.RED : Color.BLUE);
         paint.setStrokeWidth(10);
-        canvas.drawLine((float) (getSoldierX() + (sprite.getScaledFrameWidth
-                        () / 2) - HIT_EPSILON), getSoldierY(), (float) (this.soldierX
-                        + (sprite.getScaledFrameWidth() / 2) + HIT_EPSILON),
-                getSoldierY(), paint);
+        float lifeStartX = (float) (getSoldierX() + (sprite.getScaledFrameWidth()
+                / 2) - HIT_EPSILON);
+        float lifeEndX = lifeStartX +
+                (((float)hp/(float)startHp) * 2 * HIT_EPSILON);
+
+        canvas.drawLine(lifeStartX, getSoldierY(),
+                        lifeEndX, getSoldierY(), paint);
 
     }
 
@@ -187,6 +191,16 @@ public abstract class Soldier implements Serializable {
         }
 
         return false;
+    }
+
+    /**
+     * This method should be called only after a soldier hit by an arrow.
+     * @param damage the damaged to do
+     * @return true iff the soldier died
+     */
+    public boolean reduceHp(int damage){
+        this.hp -= damage;
+        return this.hp <= 0;
     }
 
     public Sprite.Player getPlayer() {
