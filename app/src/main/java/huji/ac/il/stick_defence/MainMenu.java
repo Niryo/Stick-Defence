@@ -349,7 +349,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 break;
 
             case LEAGUE_INFO:
-                Log.w("custom", "going to league");
+                Log.w("custom", "going to marekt");
                 Intent intentWithInfo = new Intent(this, Market.class);
                 intentWithInfo.putExtra("isMultiplayer", true);
                 String info = Protocol.getData(rawInput);

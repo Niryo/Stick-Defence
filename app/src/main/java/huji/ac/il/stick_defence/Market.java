@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -54,13 +56,41 @@ public class Market extends Activity implements DoProtocolAction {
                 getIntent().getBooleanExtra("isMultiplayer", true);
         Button continueButton = (Button) findViewById(R.id.market_play_button);
 
+        alertDialogBuilder = new AlertDialog.Builder(this);
+        if (getIntent().hasExtra("info")) {
+
+            this.savedLeagueInfo=getIntent().getStringExtra("info");
+        }
+
+        if(getIntent().hasExtra("internet")){
+            WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+            String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+            alertDialogBuilder.setTitle("New server created");
+            alertDialogBuilder
+                    .setMessage("Your ip is: "+ ip+"\nGive your ip address to your friends and ask them to join over lan.")
+                    .setCancelable(false)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alertDialog= alertDialogBuilder.create();
+            alertDialog.show();
+            TextView title= (TextView) findViewById(R.id.market_welcome_tv);
+            title.setText(title.getText()+"   (your ip: "+ip+")");
+
+        }
+
+
+
+
         gameState= GameState.getInstance();
         if(gameState==null) {
             gameState = GameState.CreateGameState(getApplicationContext(),
                     isMultiplayer);
             continueButton.setEnabled(false);
         }
-        alertDialogBuilder = new AlertDialog.Builder(this);
         myTowerType = gameState.getLeftTowerType();
 
         if (isMultiplayer) {

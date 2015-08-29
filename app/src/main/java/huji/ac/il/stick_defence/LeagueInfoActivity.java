@@ -104,11 +104,7 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
             waitDialog.dismiss();
             printLeagueInfo(getIntent().getStringExtra("info"));
         }
-        if(getIntent().hasExtra("internet")){
-            WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
-            String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-            waitDialog.setMessage("Waiting for league information\n Your ip address is: "+ip);
-        }
+
 
 
 

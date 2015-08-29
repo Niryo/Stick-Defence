@@ -156,7 +156,6 @@ public class Server {
                         leagueManager = new LeagueManager(peers);
                         JSONObject info = leagueManager.getLeagueInfo();
                         sendLeagueInfo(info.toString());
-
                         Log.w("custom", "league info sent!");
                     }
 
