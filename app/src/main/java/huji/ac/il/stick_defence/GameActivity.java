@@ -209,11 +209,16 @@ public class GameActivity extends Activity implements DoProtocolAction {
         pointsTv.setTextColor(Color.rgb(255, 215, 0));
         RelativeLayout.LayoutParams pointsLayoutParams =
                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT);
-//        pointsLayoutParams.addRule(RelativeLayout.RIGHT_OF, sendBazookaSoldier.getId());
-        gameState.initCredits(pointsTv);
+                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        TextView smallTv = new TextView(this);
+        smallTv.setTextSize(20);
+        smallTv.setTextColor(Color.rgb(100, 100, 0));
+
+        gameState.initCredits(pointsTv, smallTv);
 
         scoreLayout.addView(pointsTv, pointsLayoutParams);
+        scoreLayout.addView(smallTv, pointsLayoutParams);
         //   buttons.addView(rightPointsTv);
         firstLineLayout.addView(scoreLayout);
 

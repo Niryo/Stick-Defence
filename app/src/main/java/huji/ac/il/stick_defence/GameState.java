@@ -235,9 +235,9 @@ public class GameState {
         }
     }
 
-    public void initCredits(TextView leftCreditsTv) {
+    public void initCredits(TextView leftCreditsTv, TextView smallTv) {
         creditManager = new CreditManager(playerStorage.getCredits());
-        creditManager.initCreditTv(leftCreditsTv);
+        creditManager.initCreditTv(leftCreditsTv, smallTv);
         creditManager.setRunning(true);
         creditManager.start();
     }

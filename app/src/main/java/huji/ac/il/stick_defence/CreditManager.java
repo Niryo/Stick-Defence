@@ -1,20 +1,25 @@
 package huji.ac.il.stick_defence;
 
-import android.util.Log;
 import android.widget.TextView;
 import android.os.Handler;
+
+import java.text.DecimalFormat;
 
 /**
  * Created by yahav on 24/07/15.
  */
 public class CreditManager extends Thread {
     //TODO: REMOVE OPPONENT'S CREDIT.
+    private static final DecimalFormat DECIMAL_FORMAT =
+            new DecimalFormat("####0.00");
+
     private int sleep_in_msec = 60;
     GameState gameState = GameState.getInstance();
     boolean running;
-    private TextView creditTv;
+    private TextView creditTv, smallPointsTv;
     private double credits;
     private int tmpCredits;
+    private double pointsToAddOrDec;
     Handler handler;
 
     public CreditManager(int credits) {
@@ -24,13 +29,15 @@ public class CreditManager extends Thread {
         handler = new Handler();
     }
 
-    public void initCreditTv(TextView creditTv){
+    public void initCreditTv(TextView creditTv, TextView smallTv){
         this.creditTv = creditTv;
-        creditTv.setText(credits + "$");
+        this.smallPointsTv = smallTv;
+        creditTv.setText((int)credits + "$");
     }
 
     synchronized public void addCredits(double creditsToAdd) {
         credits += creditsToAdd;
+        pointsToAddOrDec = creditsToAdd;
     }
 
     synchronized public boolean decCredits(double creditsToDec, Sprite.Player player) {
@@ -41,7 +48,7 @@ public class CreditManager extends Thread {
             return false;
         }
         credits -= creditsToDec;
-
+        pointsToAddOrDec = -creditsToDec;
         return true;
     }
 
@@ -60,19 +67,34 @@ public class CreditManager extends Thread {
     @Override
     public void run() {
       //  super.run();
+        boolean doNothing;
         while (running) {
+            doNothing = true;
             if (tmpCredits < (int) credits) {
                 tmpCredits++;
+                doNothing = false;
             } else if (tmpCredits > (int) credits) {
                 tmpCredits--;
+                doNothing = false;
             }
 
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    creditTv.setText(String.valueOf(tmpCredits) + "$");
-                }
-            });
+            if (!doNothing){
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        String text = String.valueOf(tmpCredits) + "$";
+                        creditTv.setText(text);
+                        text = "";
+                        if (pointsToAddOrDec > 0) {
+                            text =
+                                  "+" + DECIMAL_FORMAT.format(pointsToAddOrDec);
+                        } else if (pointsToAddOrDec < 0) {
+                            text = DECIMAL_FORMAT.format(pointsToAddOrDec);
+                        }
+                        smallPointsTv.setText(text + "$");
+                    }
+                });
+            }
 
             try {
                 Thread.sleep(sleep_in_msec);
