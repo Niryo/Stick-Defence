@@ -20,7 +20,7 @@ public class Arrow implements Serializable {
     //===========================Arrow's abilities==============================
 
     private static final double SEC_TO_CROSS_SCREEN = 2;
-
+    private static final int    ARROW_DAMAGE = 10;
 
     //============================Arrow's picture===============================
     private static Bitmap scaledArrowPic;
@@ -147,4 +147,5 @@ public class Arrow implements Serializable {
         return this.player;
     }
 
+    public int getArrowDamage(){ return this.ARROW_DAMAGE; }
 }

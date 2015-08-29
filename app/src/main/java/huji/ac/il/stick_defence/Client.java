@@ -152,6 +152,7 @@ public class Client implements DoProtocolAction, Serializable{
     }
 
     public void reportSoldierKill(int soldierId, Sprite.Player player){
+        Log.w("yahav", "Report soldier kill, sId " + soldierId);
         JSONObject data = new JSONObject();
         try{
             data.put("id", soldierId);

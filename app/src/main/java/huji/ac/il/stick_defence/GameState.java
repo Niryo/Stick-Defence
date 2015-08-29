@@ -117,6 +117,7 @@ public class GameState {
         rightProgressBar.setProgress(0);
         leftPlayerWin = rightPlayerWin = false;
 
+        Soldier.resetIds();
         leftTower = towerFactory(playerStorage, Sprite.Player.LEFT);
         rightTower = towerFactory(rightPlayerStorage, Sprite.Player.RIGHT);
         this.leftBow = new Bow(context, Sprite.Player.LEFT, leftTower);
@@ -293,17 +294,14 @@ public class GameState {
 
     private void checkHits() {
         for (Arrow arrow : this.getArrows()) {
-            boolean hit = false;
             for (Soldier soldier : this.getSoldiers()) {
-                hit = soldier.isHitByArrow(arrow);
-                if (hit) {
+                if (soldier.isHitByArrow(arrow)) {
                     removeArrow(arrow);
-                    removeSoldier(soldier, isMultiplayer);
+                    if (soldier.reduceHp(arrow.getArrowDamage())){
+                        removeSoldier(soldier, isMultiplayer);
+                    }
                     break;
                 }
-            }
-            if (hit) {
-                continue;
             }
         }
     }

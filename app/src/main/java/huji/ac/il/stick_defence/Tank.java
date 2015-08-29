@@ -13,6 +13,7 @@ public class Tank extends Soldier {
     //======================Tank's abilities==========================
     private static final double SEC_TO_SCREEN_WIDTH = 15;
     private static final int DAMAGE_PER_SEC = 20; // [Damage/Sec]
+    private static final int HP = 50;
     //==========================================================================
 
     //==========================================================================
@@ -41,7 +42,8 @@ public class Tank extends Soldier {
     private int attackFrame = 0;
 
     public Tank(Context context, Sprite.Player player, double delayInSec) {
-        super(context, player, SEC_TO_SCREEN_WIDTH, DAMAGE_PER_SEC,Sounds.TANK_SOUND, delayInSec);
+        super(context, player, SEC_TO_SCREEN_WIDTH,
+              DAMAGE_PER_SEC,Sounds.TANK_SOUND, delayInSec, HP);
         if (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
                     context.getResources(),

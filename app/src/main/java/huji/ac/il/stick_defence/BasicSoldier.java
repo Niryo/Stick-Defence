@@ -14,6 +14,7 @@ public class BasicSoldier extends Soldier {
     //=======================BasicSoldier's abilities===========================
     private static final double SEC_TO_CROSS_SCREEN = 10;
     private static final int DAMAGE_PER_SEC = 1; // [Damage/Sec]
+    private static final int HP = 10;
     //==========================================================================
 
     //==========================================================================
@@ -38,7 +39,8 @@ public class BasicSoldier extends Soldier {
     private Sprite.Player player;
 
     public BasicSoldier(Context context, Sprite.Player player, double delayInSec) {
-        super(context, player, SEC_TO_CROSS_SCREEN, DAMAGE_PER_SEC, Sounds.RUN_SOUND, delayInSec);
+        super(context, player, SEC_TO_CROSS_SCREEN, DAMAGE_PER_SEC,
+              Sounds.RUN_SOUND, delayInSec, HP);
         if (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
                     context.getResources(),
