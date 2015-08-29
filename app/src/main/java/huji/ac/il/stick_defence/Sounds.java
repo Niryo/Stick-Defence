@@ -15,8 +15,8 @@ import java.util.HashMap;
  * Created by Nir on 24/08/2015.
  */
 public class Sounds {
-    public static final int WIN_THEME=0;
-   public static final int MAIN_THEME=0;
+    public static final int WIN_THEME=R.raw.winning_theme;
+   public static final int MAIN_THEME=R.raw.main_theme;
     public  static final int RUN_SOUND= R.raw.running_sound;
     public  static final int WALKING_SOUND = R.raw.walking_sound;
     public static final int ZOMBIE_SOUND= R.raw.zombie_sound;
@@ -57,7 +57,7 @@ public class Sounds {
         soundPoolMap.put( ZOMBIE_SOUND, soundPool.load(context,R.raw.zombie_sound, 1) );
         soundPoolMap.put( OLD_MAN_SOUND, soundPool.load(context,R.raw.old_man_sound, 1) );
         soundPoolMap.put( BOW_STRECH, soundPool.load(context,R.raw.bow_strech, 1) );
-        soundPoolMap.put( BOW_RELEASE, soundPool.load(context,R.raw.bow_release, 1) );
+        soundPoolMap.put(BOW_RELEASE, soundPool.load(context, R.raw.bow_release, 1));
 
     }
 
@@ -94,10 +94,11 @@ public class Sounds {
     }
 
     public void playTheme(int soundID){
+
         MediaPlayer mp = MediaPlayer.create(context, MAIN_THEME);
         mp.setLooping(true);
         mp.start();
-        if(soundID== WIN_THEME){
+        if(soundID== WIN_THEME && !(this.winThemePlayer!=null && this.winThemePlayer.isPlaying())){
             winThemePlayer=mp;
         }else{
             mainThemePlayer=mp;

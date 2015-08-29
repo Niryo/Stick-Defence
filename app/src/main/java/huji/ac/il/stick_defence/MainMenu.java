@@ -57,7 +57,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         Sounds sounds = Sounds.create(this);
-        //sounds.playTheme(Sounds.MAIN_THEME);
+        sounds.playTheme(Sounds.MAIN_THEME);
         super.onCreate(savedInstanceState);
         //getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit().clear().commit();//todo: remove
         final SharedPreferences settings = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);

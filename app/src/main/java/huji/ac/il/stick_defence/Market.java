@@ -41,7 +41,6 @@ public class Market extends Activity implements DoProtocolAction {
 
     private static final String CREDITS = "Credits: ";
     private Tower.TowerTypes myTowerType;
-
     private String savedLeagueInfo = null;
     private GameState gameState;
     AlertDialog.Builder alertDialogBuilder;
@@ -50,7 +49,7 @@ public class Market extends Activity implements DoProtocolAction {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Sounds.getInstance().stopAllSound();
-       // Sounds.getInstance().playTheme(Sounds.MAIN_THEME);
+        Sounds.getInstance().playTheme(Sounds.MAIN_THEME);
         Client.getClientInstance().setCurrentActivity(this);
         final boolean isMultiplayer =
                 getIntent().getBooleanExtra("isMultiplayer", true);
@@ -62,7 +61,7 @@ public class Market extends Activity implements DoProtocolAction {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_market);
-        
+
         final Button continueButton = (Button) findViewById(R.id.market_play_button);
 
 
@@ -104,6 +103,8 @@ public class Market extends Activity implements DoProtocolAction {
             gameState = GameState.CreateGameState(this, isMultiplayer);
             if (isMultiplayer){
                 continueButton.setEnabled(false);
+                continueButton.setAlpha(0.7f);
+                continueButton.setText("Please wait for other players to join the league before continuing");
             }
 
         }
@@ -449,7 +450,10 @@ public class Market extends Activity implements DoProtocolAction {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                ((Button) findViewById(R.id.market_play_button)).setEnabled(true);
+                    Button    continueButton =    (Button) findViewById(R.id.market_play_button);
+                        continueButton.setEnabled(true);
+                        continueButton.setAlpha(1f);
+                        continueButton.setText("continue");
                     }
                 });
                 //gameState.sendInfoToPartner(myTowerType); //we got the leauge info so we know now that we have
