@@ -26,6 +26,7 @@ public class Sounds {
     public static final int MATH_BOMB =R.raw.shame;
     public static final int BOW_STRECH = R.raw.bow_strech;
     public static final int BOW_RELEASE = R.raw.bow_release;
+    public static final int TRUMPET_SOUND= R.raw.trumpet;
 
     private static MediaPlayer mainThemePlayer;
     private static MediaPlayer winThemePlayer;
@@ -95,13 +96,15 @@ public class Sounds {
 
     public void playTheme(int soundID){
 
-        MediaPlayer mp = MediaPlayer.create(context, MAIN_THEME);
+        MediaPlayer mp = MediaPlayer.create(context, soundID);
         mp.setLooping(true);
+        if(soundID== MAIN_THEME && this.mainThemePlayer==null){
         mp.start();
-        if(soundID== WIN_THEME && !(this.winThemePlayer!=null && this.winThemePlayer.isPlaying())){
-            winThemePlayer=mp;
-        }else{
             mainThemePlayer=mp;
+        }
+        if(soundID== WIN_THEME){
+            mp.start();
+            winThemePlayer=mp;
         }
 
     }
@@ -109,6 +112,13 @@ public class Sounds {
     public  MediaPlayer streamSound(int soundId){
         MediaPlayer mp = MediaPlayer.create(context, soundId);
         mp.setLooping(true);
+        mp.start();
+        return mp;
+    }
+
+    public  MediaPlayer streamSound(int soundId, boolean setLooping){
+        MediaPlayer mp = MediaPlayer.create(context, soundId);
+        mp.setLooping(setLooping);
         mp.start();
         return mp;
     }

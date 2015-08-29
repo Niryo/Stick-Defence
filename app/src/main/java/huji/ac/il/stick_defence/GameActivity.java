@@ -458,6 +458,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 this.gameState.setTime(System.currentTimeMillis(),
                         Long.parseLong(Protocol.getData(rawInput)));
                 this.waitDialog.dismiss();
+                Sounds.getInstance().streamSound(Sounds.TRUMPET_SOUND, false);
                 break;
 
 //            case PAUSE:
