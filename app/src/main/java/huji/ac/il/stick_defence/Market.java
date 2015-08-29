@@ -44,16 +44,19 @@ public class Market extends Activity implements DoProtocolAction {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Sounds.getInstance().stopAllSound();
        // Sounds.getInstance().playTheme(Sounds.MAIN_THEME);
         Client.getClientInstance().setCurrentActivity(this);
+        final boolean isMultiplayer =
+                getIntent().getBooleanExtra("isMultiplayer", true);
+
+        Log.w("custom","entering market");
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_market);
-        final boolean isMultiplayer =
-                getIntent().getBooleanExtra("isMultiplayer", true);
         Button continueButton = (Button) findViewById(R.id.market_play_button);
 
         alertDialogBuilder = new AlertDialog.Builder(this);
@@ -78,7 +81,7 @@ public class Market extends Activity implements DoProtocolAction {
             AlertDialog alertDialog= alertDialogBuilder.create();
             alertDialog.show();
             TextView title= (TextView) findViewById(R.id.market_welcome_tv);
-            title.setText(title.getText()+"   (your ip: "+ip+")");
+            title.setText(title.getText() + "   (your ip: " + ip + ")");
 
         }
 
@@ -86,6 +89,13 @@ public class Market extends Activity implements DoProtocolAction {
 
 
         gameState= GameState.getInstance();
+        if (isMultiplayer && !(gameState ==null)) { //if gameState is null we are at the first round so don't send game_over
+            Client.getClientInstance().
+                    send(Protocol.stringify(Protocol.Action.GAME_OVER,
+                            String.
+                                    valueOf(GameState.getInstance().isLeftPlayerWin())));
+        }
+
         if(gameState==null) {
             gameState = GameState.CreateGameState(getApplicationContext(),
                     isMultiplayer);
@@ -93,12 +103,7 @@ public class Market extends Activity implements DoProtocolAction {
         }
         myTowerType = gameState.getLeftTowerType();
 
-        if (isMultiplayer) {
-            Client.getClientInstance().
-                    send(Protocol.stringify(Protocol.Action.GAME_OVER,
-                            String.
-                                    valueOf(GameState.getInstance().isLeftPlayerWin())));
-        }
+
 
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +121,7 @@ public class Market extends Activity implements DoProtocolAction {
                             LeagueInfoActivity.class);
                     intent.putExtra("NewGame", false);
                     if (savedLeagueInfo != null) {
+                        Log.w("custom","goint to leguae form market and sending league info");
                         intent.putExtra("info", savedLeagueInfo);
                     }
                     startActivity(intent);
@@ -406,6 +412,7 @@ public class Market extends Activity implements DoProtocolAction {
 
         switch (action) {
             case LEAGUE_INFO:
+                Log.w("custom", "receive leagueinfo in : market.class");
                 savedLeagueInfo = Protocol.getData(rawInput);
                 runOnUiThread(new Runnable() {
                     @Override

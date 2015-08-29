@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Build;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -28,6 +29,7 @@ public class Sounds {
     private static MediaPlayer winThemePlayer;
     private static Sounds sounds=null;
     private static SoundPool soundPool;
+    private ArrayList<MediaPlayer> registerdMp= new ArrayList<>();
 
     private Context context;
     private static HashMap<Integer,Integer> soundPoolMap;
@@ -55,6 +57,9 @@ public class Sounds {
 
     }
 
+    public void registerMp(MediaPlayer mp){
+        this.registerdMp.add(mp);
+    }
     public static Sounds create(Context context){
        if(sounds==null){
            sounds= new Sounds(context);
@@ -105,6 +110,10 @@ public class Sounds {
 
     public void stopAllSound(){
         soundPool.autoPause();
+        for(MediaPlayer mp : this.registerdMp){
+            mp.stop();
+        }
+        this.registerdMp.clear();
         //soundPool.release();
     }
 

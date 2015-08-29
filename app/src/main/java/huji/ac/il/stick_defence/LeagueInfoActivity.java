@@ -85,7 +85,6 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     readyButton.setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
                     readyButton.setShadowLayer(4, 0, 0, Color.parseColor(BUTTON_RELEASED_COLOR));
-                    readyButton.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     readyButton.setTextColor(Color.BLACK);
@@ -170,6 +169,7 @@ private void initTabs(){
 
         switch (action) {
             case LEAGUE_INFO:
+                Log.w("custom", "receive leagueinfo in : leagueInfo.class");
                 waitDialog.dismiss();
                 printLeagueInfo( Protocol.getData(rawInput));
             /* if( GameState.getInstance().getInstance()!=null){

@@ -45,9 +45,9 @@ public class MathBomb {
 
 
     public MathBomb(Context context) {
-
         this.context = context;
         mp= Sounds.getInstance().streamSound(Sounds.MATH_BOMB);
+        Sounds.getInstance().registerMp(mp);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService
                 (Context.LAYOUT_INFLATER_SERVICE);
         bomb = (LinearLayout) inflater.inflate(R.layout.math_bomb_layout, null);

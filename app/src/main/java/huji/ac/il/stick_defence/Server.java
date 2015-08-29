@@ -153,11 +153,11 @@ public class Server {
 
                     if (approvedPeersCounter == leagueParticipants) {
                         //todo: sleep some time to see that no one is disconnecting
-//                            try {
-//                                Thread.sleep(2000);
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         acceptingNewClients = false;
                         //remove unapproved peers:
                         for (int i=0; i<peers.size(); i++){
@@ -194,6 +194,7 @@ public class Server {
                     peer.wins++;
                 }
                 this.gameOverCounter++;
+                Log.w("custom",""+gameOverCounter+ "partis is "+ leagueParticipants );
                 if (gameOverCounter == this.leagueParticipants) {
                     this.gameOverCounter = 0;
                     leagueManager.updateLeagueStage();

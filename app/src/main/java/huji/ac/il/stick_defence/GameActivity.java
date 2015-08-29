@@ -481,6 +481,9 @@ public class GameActivity extends Activity implements DoProtocolAction {
             case PARTNER_INFO:
                 gameState.newPartnerInfo(Protocol.getData(rawInput));
                 break;
+            case LEAGUE_INFO:
+                Log.w("custom", "receive leagueinfo in : GAMEaCTIVITY.class");
+                break;
 
         }
 
