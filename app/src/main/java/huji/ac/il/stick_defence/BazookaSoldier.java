@@ -133,6 +133,7 @@ public class BazookaSoldier extends Soldier {
 
     public static String info(){
         return "Damage: " + DAMAGE_PER_SEC + "\n" +
+                "HP: " + HP + "\n" +
                 "Deadly and destructive soldier." +
                 " Shoot bazooka missiles from a long range.\n\n" +
                 "Price: " + Market.BAZOOKA_BUY_PRICE;

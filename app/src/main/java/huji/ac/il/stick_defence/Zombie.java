@@ -95,6 +95,7 @@ public class Zombie extends Soldier {
 
     public static String info(){
         return "Damage: " + DAMAGE_PER_SEC + "\n" +
+                "HP: " + HP + "\n" +
                 "Cheap and reliable undead. " +
                 "Delightfully join your army.\n\n" +
                 "Price: " + Market.ZOMBIE_BUY_PRICE;

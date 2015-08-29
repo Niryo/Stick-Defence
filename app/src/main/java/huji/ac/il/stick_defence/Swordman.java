@@ -109,6 +109,7 @@ public class Swordman extends Soldier {
 
     public static String info(){
         return "Damage: " + DAMAGE_PER_SEC + "\n" +
+                "HP: " + HP + "\n" +
                 "An honorable and fearless warrior.\n\n" +
                 "Price: " + Market.SWORDMAN_BUY_PRICE;
     }

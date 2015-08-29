@@ -6,7 +6,7 @@ import android.content.Context;
  * Created by yahav on 21/08/15.
  */
 public class FortifiedTower extends Tower {
-    public static final double MAX_HP = 400.0;
+    public static final int MAX_HP = 400;
 
     public FortifiedTower(Context context, Sprite.Player player){
         super(context, player, R.drawable.fortified_tower,
@@ -25,7 +25,7 @@ public class FortifiedTower extends Tower {
 
     public static String info(){
         return "HP: " + MAX_HP + "\n" +
-                "A small stronghold. Defend you against the strongest opponents.\n" +
+                "A small stronghold. Defends you against the strongest opponents.\n" +
                 "Replaces the 'Wooden tower', the 'Big Wooden Tower' " +
                 "and the 'Stone Tower'.\n\n" +
                 "Price: " + Market.FORTIFIED_TOWER_PRICE;

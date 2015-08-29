@@ -4,8 +4,9 @@
                 android:layout_height="match_parent"
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp"
-              android:paddingLeft="16dp"
+                android:paddingLeft="16dp"
                 android:paddingRight="16dp"
+                android:background="@drawable/market_background"
                 android:id="@+id/market_layout"
                 android:orientation="vertical"
                 tools:context="huji.ac.il.stick_defence.Market"
@@ -16,6 +17,9 @@
         android:layout_height="0dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/welcome_to_the_market"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/woode2"
+        android:gravity="center"
         android:id="@+id/market_welcome_tv"
         android:textStyle="bold"
         android:typeface="serif"
@@ -41,6 +45,8 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:id="@+id/soldiers_list"
+            android:background="@drawable/woode2"
+            android:gravity="center"
             android:orientation="horizontal"
             android:paddingBottom="10dp"
             android:layout_weight="1">
@@ -50,7 +56,9 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:paddingRight="50dp"
+                android:paddingLeft="80dp"
                 android:text="@string/soldiers"
+                android:textColor="#FFFFFF"
                 android:typeface="serif"
                 />
 
@@ -101,6 +109,8 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:id="@+id/towers_list"
+            android:background="@drawable/woode2"
+            android:gravity="center"
             android:orientation="horizontal"
             android:paddingBottom="10dp"
             android:layout_weight="1">
@@ -111,12 +121,14 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:paddingRight="50dp"
                 android:text="@string/towers"
+                android:textColor="#FFFFFF"
                 android:typeface="serif"
-                />
+                android:paddingLeft="70dp"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/buy_big_wooden_tower"
+                android:visibility="invisible"
                 android:background="@drawable/big_wooden_tower_blue_icon"
                 android:layout_marginRight="10dp"
                 />
@@ -124,6 +136,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/buy_stone_tower"
+                android:visibility="invisible"
                 android:background="@drawable/stone_tower_blue_icon"
                 android:layout_marginRight="10dp"
                 />
@@ -131,6 +144,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/buy_fortified_tower"
+                android:visibility="invisible"
                 android:background="@drawable/fortified_tower_icon"
                 android:layout_marginRight="10dp"
                 />
@@ -140,6 +154,8 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:id="@+id/miscellaneous_list"
+            android:background="@drawable/woode2"
+            android:gravity="center"
             android:orientation="horizontal"
             android:paddingBottom="10dp"
             android:layout_weight="1">
@@ -150,6 +166,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:paddingRight="50dp"
                 android:text="@string/other"
+                android:textColor="#FFFFFF"
                 android:typeface="serif"
                 />
 
@@ -175,9 +192,11 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:background="@drawable/arrow_sign"
+        android:background="@drawable/arrow_sign2"
         android:text="@string/continue_play"
         android:typeface="serif"
+        android:textColor="#FFFFFF"
+        android:layout_gravity="right"
         android:id="@+id/market_play_button"
         android:textStyle="bold|italic"
         android:layout_weight="2" />

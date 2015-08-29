@@ -66,7 +66,6 @@ public class CreditManager extends Thread {
 
     @Override
     public void run() {
-      //  super.run();
         boolean doNothing;
         while (running) {
             doNothing = true;

@@ -135,35 +135,45 @@ public class Market extends Activity implements DoProtocolAction {
                   R.id.buy_zombie,
                   ZOMBIE_BUY_PRICE,
                   "Zombie",
-                  Zombie.info());
+                  Zombie.info(),
+                  R.drawable.zombie_icon);
         addButton(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER,
                   R.id.buy_bazooka_soldier,
                   BAZOOKA_BUY_PRICE,
                   "Bazooka Soldier",
-                  BazookaSoldier.info());
+                  BazookaSoldier.info(),
+                  R.drawable.bazooka_icon);
         addButton(PlayerStorage.PurchasesEnum.SWORDMAN,
                   R.id.buy_swordman,
                   SWORDMAN_BUY_PRICE,
                   "Swordman",
-                  Swordman.info());
+                  Swordman.info(),
+                  R.drawable.swordman_icon);
         addButton(PlayerStorage.PurchasesEnum.BOMB_GRANDPA,
                   R.id.buy_bomb_grandpa,
                   BOMB_GRANDPA_BUY_PRICE,
                   "Bomb Grandpa",
-                  BombGrandpa.info());
+                  BombGrandpa.info(),
+                  R.drawable.bomb_grandpa_icon);
         addButton(PlayerStorage.PurchasesEnum.TANK,
                   R.id.buy_tank,
                   TANK_BUY_PRICE,
                   "Tank",
-                  Tank.info());
+                  Tank.info(),
+                  R.drawable.tank_icon);
         if (isMultiplayer){
             addButton(PlayerStorage.PurchasesEnum.MATH_BOMB,
                     R.id.buy_math_bomb,
                     MATH_BOMB_PRICE,
                     "Math Bomb",
-                    MathBomb.info());
-            addButton(PlayerStorage.PurchasesEnum.FOG, R.id.buy_fog, FOG_PRICE,
-                      "Fog", Fog.info());
+                    MathBomb.info(),
+                    R.drawable.math_bomb_grayed);
+            addButton(PlayerStorage.PurchasesEnum.FOG,
+                      R.id.buy_fog,
+                      FOG_PRICE,
+                      "Fog",
+                      Fog.info(),
+                      R.drawable.fog_icon);
         } else {
             LinearLayout linearLayout = (LinearLayout) findViewById(R.id.miscellaneous_list);
             linearLayout.setVisibility(View.INVISIBLE);
@@ -173,124 +183,121 @@ public class Market extends Activity implements DoProtocolAction {
         //BigWoodenTower
         final Button bigWoodenTowerButton =
                 (Button) findViewById(R.id.buy_big_wooden_tower);
-        if (gameState.isPurchased(PlayerStorage.PurchasesEnum.BIG_WOODEN_TOWER) ||
-            gameState.isPurchased(PlayerStorage.PurchasesEnum.STONE_TOWER) ||
-            gameState.isPurchased(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER)) {
-            bigWoodenTowerButton.setVisibility(View.INVISIBLE);
-        } else {
-            bigWoodenTowerButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    alertDialogBuilder.setTitle("Big Wooden Tower");
-                    alertDialogBuilder
-                            .setMessage(BigWoodenTower.info())
-                            .setCancelable(false)
-                            .setPositiveButton("Buy",new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,int id) {
-                                    int credits = gameState.getCredits();
-                                    if (gameState.decCredits(BIG_WOODEN_TOWER_PRICE)) {
-                                        gameState.buyItem(PlayerStorage.PurchasesEnum.BIG_WOODEN_TOWER,
-                                                BIG_WOODEN_TOWER_PRICE);
-                                        creditsTv.setText(CREDITS + gameState.getCredits() + "$");
-                                        bigWoodenTowerButton.setVisibility(View.INVISIBLE);
-                                        myTowerType = Tower.TowerTypes.BIG_WOODEN_TOWER;
-                                    }
-                                }
-                            })
-                            .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,int id) {
-                                    dialog.cancel();
-                                }
-                            });
+        final Button stoneTowerButton =
+                (Button) findViewById(R.id.buy_stone_tower);
+        final Button fortifiedTowerButton =
+                (Button) findViewById(R.id.buy_fortified_tower);
 
-                    // create alert dialog
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-
-                    // show it
-                    alertDialog.show();
-                }
-            });
+        if (!gameState.isPurchased(PlayerStorage.PurchasesEnum.BIG_WOODEN_TOWER)){
+            bigWoodenTowerButton.setVisibility(View.VISIBLE);
+        } else if (!gameState.isPurchased(PlayerStorage.PurchasesEnum.STONE_TOWER)){
+            stoneTowerButton.setVisibility(View.VISIBLE);
+        } else if (!gameState.isPurchased(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER)){
+            fortifiedTowerButton.setVisibility(View.VISIBLE);
         }
+
+        bigWoodenTowerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            alertDialogBuilder.setTitle("Big Wooden Tower");
+            alertDialogBuilder
+                .setMessage(BigWoodenTower.info())
+                .setIcon(R.drawable.big_wooden_tower_blue_icon)
+                .setCancelable(false)
+                .setPositiveButton("Buy", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (gameState.decCredits(BIG_WOODEN_TOWER_PRICE)) {
+                            gameState.buyItem(PlayerStorage.PurchasesEnum.BIG_WOODEN_TOWER,
+                                    BIG_WOODEN_TOWER_PRICE);
+                            creditsTv.setText(CREDITS + gameState.getCredits() + "$");
+                            bigWoodenTowerButton.setVisibility(View.INVISIBLE);
+                            stoneTowerButton.setVisibility(View.VISIBLE);
+                            myTowerType = Tower.TowerTypes.BIG_WOODEN_TOWER;
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
+            }
+        });
 
         //StoneTower
-        final Button stoneTowerButton = (Button) findViewById(R.id.buy_stone_tower);
-        if (gameState.isPurchased(PlayerStorage.PurchasesEnum.STONE_TOWER) ||
-            gameState.isPurchased(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER)) {
-            stoneTowerButton.setVisibility(View.INVISIBLE);
-        } else {
-            stoneTowerButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    alertDialogBuilder.setTitle("Stone Tower");
-                    alertDialogBuilder
-                            .setMessage(StoneTower.info())
-                            .setCancelable(false)
-                            .setPositiveButton("Buy",new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,int id) {
-                                    if (gameState.decCredits(STONE_TOWER_PRICE)) {
-                                        gameState.buyItem(PlayerStorage.PurchasesEnum.STONE_TOWER,
-                                                STONE_TOWER_PRICE);
-                                        creditsTv.setText(CREDITS + gameState.getCredits() + "$");
-                                        bigWoodenTowerButton.setVisibility(View.INVISIBLE);
-                                        stoneTowerButton.setVisibility(View.INVISIBLE);
-                                        myTowerType = Tower.TowerTypes.STONE_TOWER;
-                                    }
-                                }
-                            })
-                            .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,int id) {
-                                    dialog.cancel();
-                                }
-                            });
+        stoneTowerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            alertDialogBuilder.setTitle("Stone Tower");
+            alertDialogBuilder
+                .setMessage(StoneTower.info())
+                .setCancelable(false)
+                .setIcon(R.drawable.stone_tower_blue_icon)
+                .setPositiveButton("Buy", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (gameState.decCredits(STONE_TOWER_PRICE)) {
+                            gameState.buyItem(PlayerStorage.PurchasesEnum.STONE_TOWER,
+                                    STONE_TOWER_PRICE);
+                            creditsTv.setText(CREDITS + gameState.getCredits() + "$");
+                            stoneTowerButton.setVisibility(View.INVISIBLE);
+                            fortifiedTowerButton.setVisibility(View.VISIBLE);
+                            myTowerType = Tower.TowerTypes.STONE_TOWER;
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
 
-                    // create alert dialog
-                    AlertDialog alertDialog = alertDialogBuilder.create();
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
 
-                    // show it
-                    alertDialog.show();
-                }
-            });
-        }
+            // show it
+            alertDialog.show();
+            }
+        });
 
         //StoneTower
-        final Button fortifiedTowerButton = (Button) findViewById(R.id.buy_fortified_tower);
-        if (gameState.isPurchased(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER)) {
-            fortifiedTowerButton.setVisibility(View.INVISIBLE);
-        } else {
-            fortifiedTowerButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    alertDialogBuilder.setTitle("Fortified Tower");
-                    alertDialogBuilder
-                            .setMessage(FortifiedTower.info())
-                            .setCancelable(false)
-                            .setPositiveButton("Buy",new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,int id) {
-                                    if (gameState.decCredits(FORTIFIED_TOWER_PRICE)) {
-                                        gameState.buyItem(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER,
-                                                FORTIFIED_TOWER_PRICE);
-                                        creditsTv.setText(CREDITS + gameState.getCredits() + "$");
-                                        bigWoodenTowerButton.setVisibility(View.INVISIBLE);
-                                        stoneTowerButton.setVisibility(View.INVISIBLE);
-                                        fortifiedTowerButton.setVisibility(View.INVISIBLE);
-                                        myTowerType = Tower.TowerTypes.FORTIFIED_TOWER;
-                                    }
-                                }
-                            })
-                            .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,int id) {
-                                    dialog.cancel();
-                                }
-                            });
+        fortifiedTowerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            alertDialogBuilder.setTitle("Fortified Tower");
+            alertDialogBuilder
+                .setMessage(FortifiedTower.info())
+                .setCancelable(false)
+                .setIcon(R.drawable.fortified_tower_icon)
+                .setPositiveButton("Buy", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (gameState.decCredits(FORTIFIED_TOWER_PRICE)) {
+                            gameState.buyItem(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER,
+                                    FORTIFIED_TOWER_PRICE);
+                            creditsTv.setText(CREDITS + gameState.getCredits() + "$");
+                            fortifiedTowerButton.setVisibility(View.INVISIBLE);
+                            myTowerType = Tower.TowerTypes.FORTIFIED_TOWER;
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
 
-                    // create alert dialog
-                    AlertDialog alertDialog = alertDialogBuilder.create();
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
 
-                    // show it
-                    alertDialog.show();
-                }
-            });
-        }
+            // show it
+            alertDialog.show();
+            }
+        });
 //        addButton(PlayerStorage.PurchasesEnum.BIG_WOODEN_TOWER,
 //                R.id.buy_big_wooden_tower,
 //                BIG_WOODEN_TOWER_PRICE);
@@ -304,11 +311,12 @@ public class Market extends Activity implements DoProtocolAction {
     }
 
     private void addButton(final PlayerStorage.PurchasesEnum item,
-                           int iconId,
+                           final int buttonId,
                            final int price,
                            final String title,
-                           final String info) {
-        final Button buyButton = (Button) findViewById(iconId);
+                           final String info,
+                           final int iconId) {
+        final Button buyButton = (Button) findViewById(buttonId);
         final TextView creditsTv = (TextView) findViewById(R.id.market_credits_tv);
         if (gameState.isPurchased(item)) {
             buyButton.setVisibility(View.INVISIBLE);
@@ -320,8 +328,9 @@ public class Market extends Activity implements DoProtocolAction {
                     alertDialogBuilder
                             .setMessage(info)
                             .setCancelable(false)
-                            .setPositiveButton("Buy",new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,int id) {
+                            .setIcon(iconId)
+                            .setPositiveButton("Buy", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
                                     if (gameState.decCredits(price)) {
                                         gameState.buyItem(item, price);
                                         creditsTv.setText(CREDITS +
