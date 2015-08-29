@@ -67,7 +67,6 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
         final boolean newGame = getIntent().getBooleanExtra("NewGame", true);
 
 
-
         readyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { //todo: switch to game and only then send ready to play.
@@ -89,7 +88,7 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
 
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     readyButton.setTextColor(Color.BLACK);
-                    readyButton.setTypeface(Typeface.SERIF);
+                    readyButton.setTypeface(Typeface.SERIF,Typeface.BOLD);
                     readyButton.setShadowLayer(0, 0, 0, 0);
                     ;
                 }
@@ -140,10 +139,10 @@ private void initTabs(){
             tabHost.setCurrentTab(0);
             buttonTab1.setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
             buttonTab1.setShadowLayer(4, 0, 0, Color.parseColor(BUTTON_RELEASED_COLOR));
-            buttonTab1.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-            buttonTab1.setTypeface(Typeface.SERIF);
+
+            buttonTab1.setTypeface(Typeface.SERIF,Typeface.BOLD);
             buttonTab2.setTextColor(Color.BLACK);
-            buttonTab2.setTypeface(Typeface.SERIF);
+            buttonTab2.setTypeface(Typeface.SERIF,Typeface.BOLD);
             buttonTab2.setShadowLayer(0,0,0,0);
         }
     });
@@ -154,10 +153,9 @@ private void initTabs(){
             tabHost.setCurrentTab(1);
             buttonTab2.setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
             buttonTab2.setShadowLayer(4, 0, 0, Color.parseColor(BUTTON_RELEASED_COLOR));
-            buttonTab2.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-            buttonTab2.setTypeface(Typeface.SERIF);
+            buttonTab2.setTypeface(Typeface.SERIF,Typeface.BOLD);
             buttonTab1.setTextColor(Color.BLACK);
-            buttonTab1.setTypeface(Typeface.SERIF);
+            buttonTab1.setTypeface(Typeface.SERIF,Typeface.BOLD);
             buttonTab1.setShadowLayer(0,0,0,0);
         }
     });
@@ -290,10 +288,9 @@ private void initTabs(){
                                     tabHost.setCurrentTab(2);
                                     buttonTab1.setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
                                     buttonTab1.setShadowLayer(8, 0, 0, Color.parseColor(BUTTON_RELEASED_COLOR));
-                                    buttonTab1.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-                                    buttonTab1.setTypeface(Typeface.SERIF);
+                                    buttonTab1.setTypeface(Typeface.SERIF,Typeface.BOLD);
                                     buttonTab2.setTextColor(Color.BLACK);
-                                    buttonTab2.setTypeface(Typeface.SERIF);
+                                    buttonTab2.setTypeface(Typeface.SERIF,Typeface.BOLD);
                                     buttonTab2.setShadowLayer(0, 0, 0, 0);
                                 }
                             });
@@ -304,10 +301,9 @@ private void initTabs(){
                                     tabHost.setCurrentTab(0);
                                     buttonTab2.setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
                                     buttonTab2.setShadowLayer(4, 0, 0, Color.parseColor(BUTTON_RELEASED_COLOR));
-                                    buttonTab2.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-                                    buttonTab2.setTypeface(Typeface.SERIF);
+                                    buttonTab2.setTypeface(Typeface.SERIF,Typeface.BOLD);
                                     buttonTab1.setTextColor(Color.BLACK);
-                                    buttonTab1.setTypeface(Typeface.SERIF);
+                                    buttonTab1.setTypeface(Typeface.SERIF,Typeface.BOLD);
                                     buttonTab1.setShadowLayer(0, 0, 0, 0);
                                 }
                             });
@@ -341,25 +337,22 @@ private void initTabs(){
         TextView place = new TextView(this);
         //place.setBackground(getResources().getDrawable(R.drawable.cell_shape));
         place.setText("Place");
-        place.setTextSize(TypedValue.COMPLEX_UNIT_PX,this.text_size);
+        place.setTextSize(TypedValue.COMPLEX_UNIT_PX, this.text_size);
         place.setGravity(Gravity.CENTER);
-        place.setTypeface(Typeface.SERIF);
-        place.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-        place.setTextSize(TypedValue.COMPLEX_UNIT_PX,(int) (this.text_size * 1.5));
+        place.setTypeface(Typeface.SERIF,Typeface.BOLD);
+        place.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) (this.text_size * 1.5));
         TextView name = new TextView(this);
         name.setText("Name");
-        name.setTextSize(TypedValue.COMPLEX_UNIT_PX,this.text_size);
+        name.setTextSize(TypedValue.COMPLEX_UNIT_PX, this.text_size);
         name.setGravity(Gravity.CENTER);
-        name.setTypeface(Typeface.SERIF);
-        name.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+        name.setTypeface(Typeface.SERIF,Typeface.BOLD);
         name.setTextSize(TypedValue.COMPLEX_UNIT_PX,(int) (this.text_size * 1.5));
      //   name.setBackground(getResources().getDrawable(R.drawable.cell_shape));
         TextView wins = new TextView(this);
         wins.setText("Wins");
-        wins.setTextSize(TypedValue.COMPLEX_UNIT_PX,this.text_size);
+        wins.setTextSize(TypedValue.COMPLEX_UNIT_PX, this.text_size);
         wins.setGravity(Gravity.CENTER);
-        wins.setTypeface(Typeface.SERIF);
-        wins.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+        wins.setTypeface(Typeface.SERIF,Typeface.BOLD);
         wins.setTextSize(TypedValue.COMPLEX_UNIT_PX,(int) (this.text_size * 1.5));
      //   wins.setBackground(getResources().getDrawable(R.drawable.cell_shape));
         tr.addView(place);

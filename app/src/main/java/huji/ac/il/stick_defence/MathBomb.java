@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +37,6 @@ public class MathBomb {
     private int currentButtonToPress = 0;
     private ArrayList<Button> buttons = new ArrayList<>();
     private int NUM_OF_FAKE_BUTTONS = 2;
-    private int NUMBER_OF_FRAMES = 13;
     private String BLUE_COLOR = "#66CCFF";
     private String GREEN_COLOR = "#85FF85";
     private Context context;
@@ -160,7 +160,7 @@ public class MathBomb {
      */
     private class MathBombTextView extends TextView{
 
-        private int SCALE_FACTOR=7;
+        private int SCALE_FACTOR=5;
         public MathBombTextView(Context context) {
             super(context);
         }
@@ -172,7 +172,7 @@ public class MathBomb {
         @Override
         protected void onSizeChanged(int w, int h, int oldw, int oldh) {
             super.onSizeChanged(w, h, oldw, oldh);
-            super.setTextSize(w/SCALE_FACTOR);
+            super.setTextSize(TypedValue.COMPLEX_UNIT_PX, (w / SCALE_FACTOR));
         }
     }
 

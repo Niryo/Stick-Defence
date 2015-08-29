@@ -54,10 +54,8 @@ public class Server {
      * @return an instance of the server
      */
     public static Server createServer(int participants) {
-        if (server == null) {
             server = new Server(participants);
             server.start();
-        }
         return server;
     }
 
