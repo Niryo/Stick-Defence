@@ -224,7 +224,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
             readyToPlay();
         }
         else{
-            Sounds.getInstance().stopTheme(Sounds.MAIN_THEME);
+            Sounds.getInstance().stopTheme();
         }
     }
 
@@ -450,7 +450,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
 
             case START_GAME:
-                Sounds.getInstance().stopTheme(Sounds.MAIN_THEME);
+                Sounds.getInstance().stopTheme();
                 this.gameState.setTime(System.currentTimeMillis(),
                         Long.parseLong(Protocol.getData(rawInput)));
                 this.waitDialog.dismiss();

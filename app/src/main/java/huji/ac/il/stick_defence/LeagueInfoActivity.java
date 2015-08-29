@@ -44,7 +44,7 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
     private int TEXT_SCALE_FACTOR=30;
     private final String BUTTON_PUSHED_COLOR= "#FFFFCC";
     private final String BUTTON_RELEASED_COLOR="#FF9900";
-    private String winner=" testWiner";
+    private String winner="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -270,6 +270,7 @@ private void initTabs(){
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            Sounds.getInstance().playTheme(Sounds.WIN_THEME);
                             TextView winText = (TextView) findViewById(R.id.tab3);
                             winText.setText("All glory to " + winner + "!\n The big winner of the league!");
                             winText.setTextSize(TypedValue.COMPLEX_UNIT_PX,(float) (text_size * 2));

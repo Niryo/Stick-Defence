@@ -100,10 +100,17 @@ public class Sounds {
         MediaPlayer mp = MediaPlayer.create(context, soundID);
         mp.setLooping(true);
         if(soundID== MAIN_THEME && this.mainThemePlayer==null){
+
+            if(this.winThemePlayer!=null && this.winThemePlayer.isPlaying()){
+                this.winThemePlayer.stop();
+            }
         mp.start();
             mainThemePlayer=mp;
         }
         if(soundID== WIN_THEME){
+            if(this.mainThemePlayer!=null && this.mainThemePlayer.isPlaying()){
+                this.mainThemePlayer.stop();
+            }
             mp.start();
             winThemePlayer=mp;
         }
@@ -133,15 +140,15 @@ public class Sounds {
         //soundPool.release();
     }
 
-    public void stopTheme(int soundID){
-        if(soundID== WIN_THEME){
-            if(winThemePlayer!=null){
+    public void stopTheme(){
+
+            if(winThemePlayer!=null && winThemePlayer.isPlaying()){
             winThemePlayer.stop();
             winThemePlayer=null;}
-        }else{
-            if(mainThemePlayer!=null){
+
+            if(mainThemePlayer!=null && mainThemePlayer.isPlaying()){
             mainThemePlayer.stop();
             mainThemePlayer=null;}
-        }
+
     }
 }
