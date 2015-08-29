@@ -78,7 +78,7 @@ public class GameSurface extends SurfaceView implements
         stopGameLoop();
         Intent gameIntent = new Intent(context, Market.class);
 // TODO - Save an object with points[player], nPlayers, isMultiplayer, etc.
-        gameIntent.putExtra("Multiplayer", gameState.isMultiplayer());
+        gameIntent.putExtra("isMultiplayer", gameState.isMultiplayer());
         context.startActivity(gameIntent);
         ((Activity) context).finish();
     }

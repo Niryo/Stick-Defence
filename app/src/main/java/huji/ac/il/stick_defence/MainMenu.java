@@ -69,19 +69,17 @@ public class MainMenu extends Activity implements DoProtocolAction {
         setContentView(R.layout.activity_main_menu);
 
 
-        deleteOldGameData();
-
-        //   checkForOngoingGame();
+        GameState.newGame();
 
         //========================Single player=================================
         Button singlePlayer = (Button) findViewById(R.id.single_player);
         singlePlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent gameIntent = new Intent(getApplicationContext(),
+                Intent marketIntent = new Intent(getApplicationContext(),
                         Market.class);
-                gameIntent.putExtra("Multiplayer", false);
-                startActivity(gameIntent);
+                marketIntent.putExtra("isMultiplayer", false);
+                startActivity(marketIntent);
                 finish();
             }
         });
@@ -273,10 +271,6 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 
             }
         });
-
-
-
-
     }
 
     public void showNicknameDialog(){
@@ -325,8 +319,8 @@ public class MainMenu extends Activity implements DoProtocolAction {
     }
     private void initClient(){
         final SharedPreferences settings = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
-        String name = settings.getString(NICKNAME,"");
-        String id =   settings.getString(UNIQUE_ID,"");
+        String name = settings.getString(NICKNAME, "");
+        String id =   settings.getString(UNIQUE_ID, "");
         this.client = Client.createClient(name,id);
         this.client.setCurrentActivity(this);
     }
@@ -344,7 +338,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
         Protocol.Action action = Protocol.getAction(rawInput);
         switch (action) {
             case NAME_CONFIRMED:
-                Log.w("custom", "going to league");
+                Log.w("custom", "going to marekt");
                 Intent intent = new Intent(this, Market.class);
                 intent.putExtra("isMultiplayer", true);
                 if(isInternet){
@@ -366,34 +360,4 @@ public class MainMenu extends Activity implements DoProtocolAction {
 
         }
     }
-
-    private void deleteOldGameData() {
-        final File file = new File(getFilesDir(), PlayerStorage.FILE_NAME);
-        file.delete();
-    }
-/*
-    private boolean checkForOngoingGame(){
-        final File file = new File(getFilesDir(), PlayerStorage.FILE_NAME);
-        if (file.exists()){
-            Log.w("yahav", "File exists");
-            GameState gameState = GameState.CreateGameState(getApplicationContext());
-            Intent gameIntent = new Intent(getApplicationContext(),
-                    GameActivity.class);
-
-            if (!gameState.isMultiplayer()){
-                gameIntent.putExtra("Multiplayer", false);
-                gameIntent.putExtra("NewGame", false);
-                startActivity(gameIntent);
-                finish();
-            } else {
-                Intent createLeague = new Intent(getApplicationContext(),
-                        JoinLeagueActivity.class);
-                startActivity(createLeague);
-                finish();
-            }
-
-        }
-    }*/
-
-
 }

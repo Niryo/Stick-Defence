@@ -1,5 +1,6 @@
 package huji.ac.il.stick_defence;
 
+import android.util.Log;
 import android.widget.TextView;
 import android.os.Handler;
 
@@ -58,7 +59,7 @@ public class CreditManager extends Thread {
 
     @Override
     public void run() {
-        super.run();
+      //  super.run();
         while (running) {
             if (tmpCredits < (int) credits) {
                 tmpCredits++;

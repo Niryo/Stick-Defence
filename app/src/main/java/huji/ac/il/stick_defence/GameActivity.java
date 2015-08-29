@@ -117,6 +117,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
             sendMathBomb.setTag("MathBomb");
             sendMathBomb.setCompoundDrawablesWithIntrinsicBounds(
                     R.drawable.math_bomb, 0, 0, 0);
+            sendMathBomb.setSoundEffectsEnabled(false);
             sendMathBomb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -136,6 +137,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
             Button sendFog = new Button(this);
             sendFog.setCompoundDrawablesWithIntrinsicBounds(
                     R.drawable.fog_icon, 0, 0, 0);
+            sendFog.setSoundEffectsEnabled(false);
             sendFog.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -248,22 +250,22 @@ public class GameActivity extends Activity implements DoProtocolAction {
     private void addButton(PlayerStorage.PurchasesEnum item,
                            int pic, final Protocol.Action action, final int intervalInMillisec){
         if (gameState.isPurchased(item)){
-            final Button buyButton = new Button(this);
+            final Button sendButton = new Button(this);
             RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.WRAP_CONTENT,
                     RelativeLayout.LayoutParams.WRAP_CONTENT);
             buttonParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-            buyButton.setLayoutParams(buttonParams);
-            buyButton.
+            sendButton.setLayoutParams(buttonParams);
+            sendButton.
                     setCompoundDrawablesWithIntrinsicBounds(pic, 0, 0, 0);
 
-
+            sendButton.setSoundEffectsEnabled(false);
             RelativeLayout buttonLayout = new RelativeLayout(this);
 
-            buyButton.setId(R.id.generic_soldier_id);
-            buttonLayout.addView(buyButton);
+            sendButton.setId(R.id.generic_soldier_id);
+            buttonLayout.addView(sendButton);
 
-            gameState.activateSendSoldierButton(buyButton, item);
+            gameState.activateSendSoldierButton(sendButton, item);
 
             final ProgressBar progressButton = new ProgressBar(this, null, android.R
                     .attr.progressBarStyleHorizontal);
@@ -286,30 +288,30 @@ public class GameActivity extends Activity implements DoProtocolAction {
             buttonsLayout.addView(buttonLayout);
 
 
-            buttons.add(buyButton);
+            buttons.add(sendButton);
 
-            buyButton.setOnClickListener(new View.OnClickListener() {
+            sendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                if (gameState.addSoldier(Sprite.Player.LEFT, 0, action)){
-                    buyButton.setEnabled(false);
-                    progressButton.setProgress(0);
+                    if (gameState.addSoldier(Sprite.Player.LEFT, 0, action)) {
+                        sendButton.setEnabled(false);
+                        progressButton.setProgress(0);
 
-                    CountDownTimer mCountDownTimer = new CountDownTimer(intervalInMillisec, 100) {
-                        @Override
-                        public void onTick(long millisUntilFinished) {
-                            progressButton.setProgress(intervalInMillisec -
-                                    (int)millisUntilFinished);
-                        }
+                        CountDownTimer mCountDownTimer = new CountDownTimer(intervalInMillisec, 100) {
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+                                progressButton.setProgress(intervalInMillisec -
+                                        (int) millisUntilFinished);
+                            }
 
-                        @Override
-                        public void onFinish() {
-                            progressButton.setProgress(intervalInMillisec);
-                            buyButton.setEnabled(true);
-                        }
-                    };
-                    mCountDownTimer.start();
-                }
+                            @Override
+                            public void onFinish() {
+                                progressButton.setProgress(intervalInMillisec);
+                                sendButton.setEnabled(true);
+                            }
+                        };
+                        mCountDownTimer.start();
+                    }
 
                 }
             });

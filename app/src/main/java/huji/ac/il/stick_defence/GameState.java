@@ -83,9 +83,9 @@ public class GameState {
      */
     private GameState(Context context, boolean isMultiplayer) {
         this.context = context;
-        playerStorage = new PlayerStorage(context, 0);
+        playerStorage = new PlayerStorage(context, START_CREDITS);
+        creditManager = new CreditManager(START_CREDITS);
         rightPlayerStorage = new PlayerStorage(context, 0);
-        this.creditManager = new CreditManager(START_CREDITS);
         this.isMultiplayer = isMultiplayer;
  //       playerStorage = PlayerStorage.load(context);
     }
@@ -132,6 +132,10 @@ public class GameState {
 
         this.rightBow = new Bow(context, Sprite.Player.RIGHT, rightTower);
         bows.set(1, rightBow);
+    }
+
+    public static void newGame(){
+        gameState = null;
     }
 
     public void init(int canvasWidth, int canvasHeight, Activity activity) {
@@ -190,6 +194,11 @@ public class GameState {
         playerStorage.setCredits(creditManager.getCredits());
     //    save();
         creditManager.setRunning(false);
+        try {
+            creditManager.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void save() {
@@ -226,6 +235,7 @@ public class GameState {
     }
 
     public void initCredits(TextView leftCreditsTv) {
+        creditManager = new CreditManager(playerStorage.getCredits());
         creditManager.initCreditTv(leftCreditsTv);
         creditManager.setRunning(true);
         creditManager.start();
