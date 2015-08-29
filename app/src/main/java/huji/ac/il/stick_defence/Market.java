@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.format.Formatter;
@@ -11,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -22,6 +25,8 @@ import java.io.File;
 
 
 public class Market extends Activity implements DoProtocolAction {
+    private final String BUTTON_PUSHED_COLOR= "#FFFFCC";
+    private final String BUTTON_RELEASED_COLOR="#FFFFFF";
 //TODO: CREATE A BUTTON THAT MOVES YOU INTO LEAGUE_INFO ACTIVITY AND IF THERE IS INFO, SEND EXTRA IN THE INTENT
     public static final int    ZOMBIE_BUY_PRICE = 100;
     public static final int    SWORDMAN_BUY_PRICE = 50;
@@ -54,7 +59,7 @@ public class Market extends Activity implements DoProtocolAction {
         setContentView(R.layout.activity_market);
         final boolean isMultiplayer =
                 getIntent().getBooleanExtra("isMultiplayer", true);
-        Button continueButton = (Button) findViewById(R.id.market_play_button);
+        final Button continueButton = (Button) findViewById(R.id.market_play_button);
 
         alertDialogBuilder = new AlertDialog.Builder(this);
         if (getIntent().hasExtra("info")) {
@@ -99,6 +104,23 @@ public class Market extends Activity implements DoProtocolAction {
                                     valueOf(GameState.getInstance().isLeftPlayerWin())));
         }
 
+        continueButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    continueButton.setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
+                    continueButton.setShadowLayer(4, 0, 0, Color.parseColor(BUTTON_RELEASED_COLOR));
+                    continueButton.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    continueButton.setTextColor(Color.parseColor(BUTTON_RELEASED_COLOR));
+                    continueButton.setTypeface(Typeface.SERIF);
+                    continueButton.setShadowLayer(0, 0, 0, 0);
+                }
+                return false;
+            }
+        });
+
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,9 +142,9 @@ public class Market extends Activity implements DoProtocolAction {
                     startActivity(intent);
                     finish();
                 }
-
             }
         });
+
 
         //Show credits
         int credits = gameState.getCredits();
