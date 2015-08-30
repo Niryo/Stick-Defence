@@ -25,11 +25,11 @@ public class BazookaSoldier extends Soldier {
 
     //============================Sprite constants==============================
     private static final int NUMBER_OF_FRAMES = 7;
-    private static final int SHOOT_NUMBER_OF_FRAMES = 2;
+    private static final int SHOOT_NUMBER_OF_FRAMES = 7;
     private static final int WALK_FPS = 40;
-    private static final int ATTACK_FPS = 2;
+    private static final int ATTACK_FPS = 30;
     private static final float BAZOOKA_HEIGHT_RELATIVE = 0.99f;
-    private static final int ATTACK_PIC_INDEX = 1;
+    private static final int ATTACK_PIC_INDEX = 3;
     //==========================================================================
 
     private static Bitmap leftSoldierPic = null;
@@ -46,7 +46,7 @@ public class BazookaSoldier extends Soldier {
         if (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
                     context.getResources(),
-                    R.drawable.bazooka);
+                    R.drawable.bazooka_walk);
         }
 
         if (null == rightSoldierPic) {
