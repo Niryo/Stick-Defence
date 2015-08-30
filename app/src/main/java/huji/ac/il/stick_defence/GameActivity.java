@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -154,6 +155,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         firstLineLayout.addView(buttonsLayout);
 
+
+
         //=====================ProgressBar(Tower's HP)==========================
 
         ProgressBar leftProgressBar = new ProgressBar(this, null, android.R
@@ -193,7 +196,6 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         gameComponentsLayout.addView(progressBarComponent);
 
-
         //============================== Points ================================
 
         LinearLayout scoreLayout = new LinearLayout(this);
@@ -201,22 +203,23 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         TextView pointsTv = new TextView(this);
 
-        pointsTv.setTextSize(50);
+        pointsTv.setTextSize(25);
         pointsTv.setTextColor(Color.rgb(255, 215, 0));
         RelativeLayout.LayoutParams pointsLayoutParams =
                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        RelativeLayout.LayoutParams.WRAP_CONTENT);
 
         TextView smallTv = new TextView(this);
-        smallTv.setTextSize(20);
+        smallTv.setTextSize(10);
         smallTv.setTextColor(Color.rgb(100, 100, 0));
 
         gameState.initCredits(pointsTv, smallTv);
 
         scoreLayout.addView(pointsTv, pointsLayoutParams);
         scoreLayout.addView(smallTv, pointsLayoutParams);
+
         //   buttons.addView(rightPointsTv);
-        firstLineLayout.addView(scoreLayout);
+        gameComponentsLayout.addView(scoreLayout);
 
         //======================================================================
 
@@ -334,7 +337,6 @@ public class GameActivity extends Activity implements DoProtocolAction {
                     send(Protocol.stringify(Protocol.Action.PAUSE));
         }
        gameSurface.stopGameLoop();
-
     }
 
 

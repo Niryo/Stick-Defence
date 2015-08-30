@@ -24,10 +24,10 @@ public class BazookaSoldier extends Soldier {
     //==========================================================================
 
     //============================Sprite constants==============================
-    private static final int NUMBER_OF_FRAMES = 7;
-    private static final int SHOOT_NUMBER_OF_FRAMES = 7;
-    private static final int WALK_FPS = 40;
-    private static final int ATTACK_FPS = 30;
+    private static final int NUMBER_OF_FRAMES = 9;
+    private static final int SHOOT_NUMBER_OF_FRAMES = 9;
+    private static final int WALK_FPS = 20;
+    private static final int ATTACK_FPS = 10;
     private static final float BAZOOKA_HEIGHT_RELATIVE = 0.99f;
     private static final int ATTACK_PIC_INDEX = 3;
     //==========================================================================

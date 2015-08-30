@@ -28,6 +28,7 @@ public class Sounds {
     public static final int BOW_RELEASE = R.raw.bow_release;
     public static final int START_TRUMPET = R.raw.start_trumpet;
     public  static final int END_TRUMPET= R.raw.end_trumpet;
+    public static final int SMALL_EXPLOSION = R.raw.small_explosion;
 
     private static MediaPlayer mainThemePlayer;
     private static MediaPlayer winThemePlayer;
@@ -60,6 +61,7 @@ public class Sounds {
         soundPoolMap.put( OLD_MAN_SOUND, soundPool.load(context,R.raw.old_man_sound, 1) );
         soundPoolMap.put( BOW_STRECH, soundPool.load(context,R.raw.bow_strech, 1) );
         soundPoolMap.put(BOW_RELEASE, soundPool.load(context, R.raw.bow_release, 1));
+        soundPoolMap.put(SMALL_EXPLOSION, soundPool.load(context, R.raw.small_explosion, 1));
 
     }
 

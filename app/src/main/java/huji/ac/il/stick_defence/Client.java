@@ -179,6 +179,8 @@ public class Client implements DoProtocolAction, Serializable{
         send(Protocol.stringify(Protocol.Action.FOG));
     }
 
+    public void changeName(String name){ this.name = name; }
+
 
     /**
      * This class represents a socket listener on a server node.

@@ -63,7 +63,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
         final SharedPreferences settings = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
         String name = settings.getString(NICKNAME, "");
         if(name.isEmpty()){
-            showNicknameDialog();
+            showNicknameDialog(true/*initClient*/);
         }else{
             initClient();
         }
@@ -72,10 +72,20 @@ public class MainMenu extends Activity implements DoProtocolAction {
 
         setContentView(R.layout.activity_main_menu);
 
-
         GameState.newGame();
 
-        //========================Single player=================================
+        //===========================Player name================================
+        TextView playerName = (TextView) findViewById(R.id.player_name);
+        playerName.setText("Hello, " +
+                settings.getString(NICKNAME, "friend") + "!");
+        playerName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showNicknameDialog(false);
+            }
+        });
+
+        //==========================Single player===============================
         Button singlePlayer = (Button) findViewById(R.id.single_player);
         designButton(singlePlayer);
         singlePlayer.setOnClickListener(new View.OnClickListener() {
@@ -89,7 +99,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
             }
         });
 
-        //========================Create League=================================
+        //=========================Create League================================
 
         Button createLeague = (Button) findViewById(R.id.create_league);
         designButton(createLeague);
@@ -281,9 +291,10 @@ public class MainMenu extends Activity implements DoProtocolAction {
         });
     }
 
-    public void showNicknameDialog(){
+    public void showNicknameDialog(final boolean initClient){
         final Dialog dialog = new Dialog(MainMenu.this);
-        dialog.setCancelable(false);
+        // We want to give the user option to regret if there is an old nickname
+        dialog.setCancelable(!initClient);
         dialog.setContentView(R.layout.enter_nickname_dialog);
         dialog.setTitle("Choose your nickname:");
 
@@ -297,7 +308,14 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString(NICKNAME, name);
                 editor.commit();
-                initClient();
+                if (initClient){
+                    initClient();
+                } else {
+                    client.changeName(name);
+                }
+                TextView playerName = (TextView) findViewById(R.id.player_name);
+                playerName.setText("Hello, " +
+                        settings.getString(NICKNAME, "friend") + "!");
                 dialog.dismiss();
 
             }

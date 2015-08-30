@@ -28,16 +28,16 @@ public class Market extends Activity implements DoProtocolAction {
     private final String BUTTON_PUSHED_COLOR= "#FFFFCC";
     private final String BUTTON_RELEASED_COLOR="#FFFFFF";
 //TODO: CREATE A BUTTON THAT MOVES YOU INTO LEAGUE_INFO ACTIVITY AND IF THERE IS INFO, SEND EXTRA IN THE INTENT
-    public static final int    ZOMBIE_BUY_PRICE = 100;
-    public static final int    SWORDMAN_BUY_PRICE = 50;
-    public static final int    BOMB_GRANDPA_BUY_PRICE = 100;
-    public static final int    TANK_BUY_PRICE = 100;
-    public static final int    BAZOOKA_BUY_PRICE = 100;
+    public static final int    ZOMBIE_BUY_PRICE = 10;
+    public static final int    SWORDMAN_BUY_PRICE = 10;
+    public static final int    BOMB_GRANDPA_BUY_PRICE = 10;
+    public static final int    TANK_BUY_PRICE = 10;
+    public static final int    BAZOOKA_BUY_PRICE = 10;
     public static final int    MATH_BOMB_PRICE = 100;
     public static final int    BIG_WOODEN_TOWER_PRICE = 100;
     public static final int    STONE_TOWER_PRICE = 100;
-    public static final int    FORTIFIED_TOWER_PRICE = 100;
-    public static final int    FOG_PRICE = 100;
+    public static final int    FORTIFIED_TOWER_PRICE = 10;
+    public static final int    FOG_PRICE = 10;
 
     private static final String CREDITS = "Credits: ";
     private Tower.TowerTypes myTowerType;

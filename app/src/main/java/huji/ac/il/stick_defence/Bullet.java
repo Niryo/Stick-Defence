@@ -24,6 +24,7 @@ public class Bullet implements Serializable {
     private Sprite.Player player;
     private Sprite sprite;
     private static double scaleDownFactor;
+    private static int explosionSound;
 
     public Bullet(Context context, float x, float y,
                   Sprite.Player player) {
@@ -54,6 +55,7 @@ public class Bullet implements Serializable {
 
         if (this.x <= gameState.getLeftTowerCentralX() ||
                 this.x >= gameState.getRightTowerCentralX()) {
+            playExplosionSound();
             gameState.removeBullet(this);
         }
     }
@@ -95,6 +97,11 @@ public class Bullet implements Serializable {
 
     public Sprite.Player getPlayer() {
         return this.player;
+    }
+
+    public void playExplosionSound(){
+        this.explosionSound = Sounds.getInstance().playSound(Sounds.SMALL_EXPLOSION,
+                false);
     }
 
 }
