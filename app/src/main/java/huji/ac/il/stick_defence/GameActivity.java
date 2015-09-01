@@ -91,22 +91,22 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         addButton(PlayerStorage.PurchasesEnum.BASIC_SOLDIER,
                   R.drawable.basic_soldier_icon, Protocol.Action.BASIC_SOLDIER,
-                GameState.MILLISEC_TO_BASIC_SOLDIER);
+                  GameState.MILLISEC_TO_BASIC_SOLDIER);
         addButton(PlayerStorage.PurchasesEnum.ZOMBIE,
-                R.drawable.zombie_icon, Protocol.Action.ZOMBIE,
-                GameState.MILLISEC_TO_ZOMBIE);
+                  R.drawable.zombie_icon, Protocol.Action.ZOMBIE,
+                  GameState.MILLISEC_TO_ZOMBIE);
         addButton(PlayerStorage.PurchasesEnum.SWORDMAN,
                   R.drawable.swordman_icon, Protocol.Action.SWORDMAN,
-                GameState.MILLISEC_TO_SWORDMAN);
+                  GameState.MILLISEC_TO_SWORDMAN);
         addButton(PlayerStorage.PurchasesEnum.BOMB_GRANDPA,
-                R.drawable.bomb_grandpa_icon, Protocol.Action.BOMB_GRANDPA,
-                GameState.MILLISEC_TO_BOMB_GRANDPA);
+                  R.drawable.bomb_grandpa_icon, Protocol.Action.BOMB_GRANDPA,
+                  GameState.MILLISEC_TO_BOMB_GRANDPA);
         addButton(PlayerStorage.PurchasesEnum.BAZOOKA_SOLDIER,
                   R.drawable.bazooka_icon, Protocol.Action.BAZOOKA_SOLDIER,
-                GameState.MILLISEC_TO_BAZOOKA);
+                  GameState.MILLISEC_TO_BAZOOKA);
         addButton(PlayerStorage.PurchasesEnum.TANK,
                   R.drawable.tank_icon, Protocol.Action.TANK,
-                GameState.MILLISEC_TO_TANK);
+                  GameState.MILLISEC_TO_TANK);
 
         //Different because of the second setCompoundDrawablesWithIntrinsicBounds
         if (gameState.isPurchased(PlayerStorage.PurchasesEnum.MATH_BOMB)){
@@ -147,6 +147,24 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
             buttonsLayout.addView(sendFog);
             buttons.add(sendFog);
+        }
+
+        if(gameState.isPurchased(PlayerStorage.PurchasesEnum.POTION_OF_LIFE)){
+            Button usePotion = new Button(this);
+            usePotion.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.fog_icon, 0, 0, 0);
+            usePotion.setSoundEffectsEnabled(false);
+            usePotion.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    gameState.usePotionOfLife(Sprite.Player.LEFT);
+                    v.setEnabled(false);
+
+                }
+            });
+
+            buttonsLayout.addView(usePotion);
+            buttons.add(usePotion);
         }
 
         gameComponentsLayout.addView(firstLineLayout);
@@ -252,7 +270,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
     }
 
     private void addButton(PlayerStorage.PurchasesEnum item,
-                           int pic, final Protocol.Action action, final int intervalInMillisec){
+                           int pic, final Protocol.Action action,
+                           final int intervalInMillisec){
         if (gameState.isPurchased(item)){
             final Button sendButton = new Button(this);
             RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
@@ -263,7 +282,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
             sendButton.
                     setCompoundDrawablesWithIntrinsicBounds(pic, 0, 0, 0);
 
-            sendButton.setSoundEffectsEnabled(false);
+            sendButton.setSoundEffectsEnabled(false); // Disable default sound
             RelativeLayout buttonLayout = new RelativeLayout(this);
 
             sendButton.setId(R.id.generic_soldier_id);
@@ -274,7 +293,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
             final ProgressBar progressButton = new ProgressBar(this, null, android.R
                     .attr.progressBarStyleHorizontal);
 
-            RelativeLayout.LayoutParams progressButtonParams = new RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams progressButtonParams =
+                    new RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.WRAP_CONTENT,
                     RelativeLayout.LayoutParams.WRAP_CONTENT);
             progressButtonParams.addRule(RelativeLayout.ALIGN_BOTTOM,
@@ -297,26 +317,27 @@ public class GameActivity extends Activity implements DoProtocolAction {
             sendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (gameState.addSoldier(Sprite.Player.LEFT, 0, action)) {
-                        sendButton.setEnabled(false);
-                        progressButton.setProgress(0);
+                if (gameState.addSoldier(Sprite.Player.LEFT, 0, action)) {
 
-                        CountDownTimer mCountDownTimer = new CountDownTimer(intervalInMillisec, 100) {
-                            @Override
-                            public void onTick(long millisUntilFinished) {
-                                progressButton.setProgress(intervalInMillisec -
-                                        (int) millisUntilFinished);
-                            }
+                    sendButton.setEnabled(false);
+                    progressButton.setProgress(0);
 
-                            @Override
-                            public void onFinish() {
-                                progressButton.setProgress(intervalInMillisec);
-                                sendButton.setEnabled(true);
-                            }
-                        };
-                        mCountDownTimer.start();
-                    }
+                    CountDownTimer mCountDownTimer = new CountDownTimer(intervalInMillisec, 100) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            progressButton.setProgress(intervalInMillisec -
+                                    (int) millisUntilFinished);
+                        }
 
+                        @Override
+                        public void onFinish() {
+                            progressButton.setProgress(intervalInMillisec);
+                            sendButton.setEnabled(true);
+                        }
+                    };
+                    mCountDownTimer.start();
+
+                }
                 }
             });
         }
@@ -481,6 +502,10 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 });
                     }
                 }
+                break;
+
+            case POTION_OF_LIFE:
+                gameState.usePotionOfLife(Sprite.Player.RIGHT);
                 break;
             case PARTNER_INFO:
                 gameState.newPartnerInfo(Protocol.getData(rawInput));

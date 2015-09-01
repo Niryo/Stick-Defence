@@ -16,15 +16,18 @@ public class Fog implements DrawableObject{
     private int updateCounter=0;
     private long timeOfCreation= System.currentTimeMillis();
     private boolean active=true;
-    private static int ACTIVE_TIME= 15000;
-    private static int DESTROY_TIME= 18000;
+    private static final int ACTIVE_TIME= 15000;
+    private static final int DESTROY_TIME= 18000;
     private MediaPlayer mp;
+    private static Bitmap fogPic;
 
     public Fog(Context context){
-        Bitmap bitmap =   BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.smoke);
+        if (null == fogPic){
+            fogPic = BitmapFactory.decodeResource(context.getResources(),
+                    R.drawable.smoke);
+        }
         this.sprite= new Sprite();
-        this.sprite.initSprite(context,bitmap, 9,Sprite.Player.LEFT, 0.5);
+        this.sprite.initSprite(context,fogPic, 9,Sprite.Player.LEFT, 0.5);
         this.sprite.setAnimationSpeed(4);
         this.sprite.setLooping(false);
         this.screenHeight=GameState.getInstance().getCanvasHeight();

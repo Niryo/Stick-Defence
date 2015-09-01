@@ -38,6 +38,7 @@ public class Market extends Activity implements DoProtocolAction {
     public static final int    STONE_TOWER_PRICE = 100;
     public static final int    FORTIFIED_TOWER_PRICE = 10;
     public static final int    FOG_PRICE = 10;
+    public static final int    POTION_OF_LIFE_PRICE = 100;
 
     private static final String CREDITS = "Credits: ";
     private Tower.TowerTypes myTowerType;
@@ -191,6 +192,12 @@ public class Market extends Activity implements DoProtocolAction {
                   "Tank",
                   Tank.info(),
                   R.drawable.tank_icon);
+        addButton(PlayerStorage.PurchasesEnum.POTION_OF_LIFE,
+                R.id.buy_potion,
+                POTION_OF_LIFE_PRICE,
+                "Potion of Life",
+                PotionOfLife.info(),
+                R.drawable.basic_soldier_icon);
         if (isMultiplayer){
             addButton(PlayerStorage.PurchasesEnum.MATH_BOMB,
                     R.id.buy_math_bomb,
@@ -204,11 +211,7 @@ public class Market extends Activity implements DoProtocolAction {
                       "Fog",
                       Fog.info(),
                       R.drawable.fog_icon);
-        } else {
-            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.miscellaneous_list);
-            linearLayout.setVisibility(View.INVISIBLE);
         }
-
 
         //BigWoodenTower
         final Button bigWoodenTowerButton =
@@ -351,6 +354,7 @@ public class Market extends Activity implements DoProtocolAction {
         if (gameState.isPurchased(item)) {
             buyButton.setVisibility(View.INVISIBLE);
         } else {
+            buyButton.setVisibility(View.VISIBLE);
             buyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

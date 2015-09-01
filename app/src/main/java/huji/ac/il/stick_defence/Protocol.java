@@ -63,6 +63,7 @@ public class Protocol {
         SOLDIER_KILL,
         MATH_BOMB,
         MATH_BOMB_SOLVED,
+        POTION_OF_LIFE,
         ARROW,
         LEFT_WIN,
         RIGHT_WIN,

@@ -31,7 +31,8 @@ public class PlayerStorage implements Serializable {
         BIG_WOODEN_TOWER,
         STONE_TOWER,
         FORTIFIED_TOWER,
-        FOG
+        FOG,
+        POTION_OF_LIFE
     }
 
     public static final String FILE_NAME = "stick_defence.sav";
@@ -69,6 +70,11 @@ public class PlayerStorage implements Serializable {
     public void buy(PurchasesEnum item) {
         this.items[item.ordinal()] = true;
     }
+
+    public void use(PurchasesEnum item){
+        this.items[item.ordinal()] = false;
+    }
+
 
     public boolean isGameInProcess() {
         return !this.newGame;

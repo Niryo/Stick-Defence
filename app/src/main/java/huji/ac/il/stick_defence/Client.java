@@ -179,6 +179,10 @@ public class Client implements DoProtocolAction, Serializable{
         send(Protocol.stringify(Protocol.Action.FOG));
     }
 
+    public void reportPotionOfLife(){
+        send(Protocol.stringify(Protocol.Action.POTION_OF_LIFE));
+    }
+
     public void changeName(String name){ this.name = name; }
 
 

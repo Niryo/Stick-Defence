@@ -199,6 +199,14 @@ public abstract class Tower {
         return this.hp > 0;
     }
 
+    public void increaceHp(double hp){
+        if (this.hp + hp > this.max_hp){
+            this.hp = this.max_hp;
+        } else {
+            this.hp += hp;
+        }
+    }
+
     public double getScaledWidth() {
         return towerSprite.getScaledFrameWidth();
     }

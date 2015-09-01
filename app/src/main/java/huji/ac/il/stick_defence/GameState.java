@@ -147,7 +147,6 @@ public class GameState {
         this.rightTower = towerFactory(rightPlayerStorage, Sprite.Player.RIGHT);
         this.gameActivity = activity;
 
-        Log.w("yahav", "Adding" + leftTower.getName());
         towers.add(leftTower);
         towers.add(rightTower);
 
@@ -577,6 +576,17 @@ public class GameState {
 
     public void sendMathBomb(){
         client.reportMathBomb();
+    }
+
+    public void usePotionOfLife(Sprite.Player player){
+        if(Sprite.Player.LEFT == player){
+            client.reportPotionOfLife();
+            leftTower.increaceHp(PotionOfLife.LIFE_TO_ADD);
+            //Next time, buy it again
+            playerStorage.use(PlayerStorage.PurchasesEnum.POTION_OF_LIFE);
+        } else {
+            rightTower.increaceHp(PotionOfLife.LIFE_TO_ADD);
+        }
     }
 
     public boolean isInitialized(){
