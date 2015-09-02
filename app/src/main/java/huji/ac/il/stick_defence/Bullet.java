@@ -15,28 +15,19 @@ public class Bullet implements Serializable {
     private static Sprite leftBulletSprite, rightBulletSprite;
 
     private GameState gameState = GameState.getInstance();
-    private float x;
-    private float y;
-    private int screenWidth;
-    private int screenHeight;
+    private float x, y;
     private long lastUpdateTime;
     private double x_pixPerSec;
     private Sprite.Player player;
     private Sprite sprite;
-    private static double scaleDownFactor;
     private static int explosionSound;
 
-    public Bullet(Context context, float x, float y,
-                  Sprite.Player player) {
-        this.screenWidth =
-                gameState.getCanvasWidth();
-        this.screenHeight =
-                gameState.getCanvasHeight();
+    public Bullet(float x, float y, Sprite.Player player) {
         this.x = x;
         this.y = y;
         this.player = player;
 
-        x_pixPerSec = SEC_TO_SCREEN_WIDTH * screenWidth;
+        x_pixPerSec = SEC_TO_SCREEN_WIDTH * gameState.getCanvasWidth();
 
         if (Sprite.Player.RIGHT == player) {
             sprite = rightBulletSprite;
@@ -100,7 +91,7 @@ public class Bullet implements Serializable {
     }
 
     public void playExplosionSound(){
-        this.explosionSound = Sounds.getInstance().playSound(Sounds.SMALL_EXPLOSION,
+        explosionSound = Sounds.getInstance().playSound(Sounds.SMALL_EXPLOSION,
                 false);
     }
 

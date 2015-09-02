@@ -38,8 +38,6 @@ public class GameActivity extends Activity implements DoProtocolAction {
     private ProgressDialog waitDialog;
     private boolean isMultiplayer;
     private GameSurface gameSurface;
-    private AlertDialog pauseDialog;
-    private LinearLayout gameComponentsLayout;
     private ArrayList<Button> buttons;
     private LinearLayout buttonsLayout;
 
@@ -68,7 +66,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
             GameState.getInstance().reset();
         }
 
-        gameComponentsLayout = (LinearLayout) findViewById(R.id.game_components);
+        LinearLayout gameComponentsLayout =
+                (LinearLayout) findViewById(R.id.game_components);
 
 
         Client.getClientInstance().setCurrentActivity(this);
@@ -140,8 +139,6 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 public void onClick(View v) {
                     gameState.sendFog();
                     v.setEnabled(false);
-//                    ((Button) v).setCompoundDrawablesWithIntrinsicBounds(
-//                            R.drawable.math_bomb_sent, 0, 0, 0);
                 }
             });
 
@@ -169,30 +166,30 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         gameComponentsLayout.addView(firstLineLayout);
         gameState.setButtonsComponent(buttons);
-
-
         firstLineLayout.addView(buttonsLayout);
-
-
 
         //=====================ProgressBar(Tower's HP)==========================
 
         ProgressBar leftProgressBar = new ProgressBar(this, null, android.R
                 .attr.progressBarStyleHorizontal);
 
-        Drawable blueStyle = ContextCompat.getDrawable(this, R.drawable.blue_progressbar);
+        Drawable blueStyle = ContextCompat.getDrawable(
+                                            this, R.drawable.blue_progressbar);
         leftProgressBar.setProgressDrawable(blueStyle);
         leftProgressBar.setAlpha(0.7f);
         ProgressBar rightProgressBar = new ProgressBar(this, null, android.R
                 .attr.progressBarStyleHorizontal);
 
-        Drawable redStyle = ContextCompat.getDrawable(this, R.drawable.red_progressbar);
+        Drawable redStyle = ContextCompat.getDrawable(
+                this, R.drawable.red_progressbar);
         rightProgressBar.setProgressDrawable(redStyle);
         rightProgressBar.setAlpha(0.7f);
-        leftProgressBar.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+        leftProgressBar.setLayoutParams(new TableLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
-        rightProgressBar.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+        rightProgressBar.setLayoutParams(new TableLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         leftProgressBar.setPadding(10, 10, 10, 10);
 
@@ -208,10 +205,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         progressBarComponent.setWeightSum(2);
         progressBarComponent.addView(leftProgressBar);
-        TextView leftName = new TextView(this);
-
         progressBarComponent.addView(rightProgressBar);
-
         gameComponentsLayout.addView(progressBarComponent);
 
         //============================== Points ================================
@@ -224,7 +218,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
         pointsTv.setTextSize(25);
         pointsTv.setTextColor(Color.rgb(255, 215, 0));
         RelativeLayout.LayoutParams pointsLayoutParams =
-                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.WRAP_CONTENT,
                         RelativeLayout.LayoutParams.WRAP_CONTENT);
 
         TextView smallTv = new TextView(this);
@@ -236,7 +231,6 @@ public class GameActivity extends Activity implements DoProtocolAction {
         scoreLayout.addView(pointsTv, pointsLayoutParams);
         scoreLayout.addView(smallTv, pointsLayoutParams);
 
-        //   buttons.addView(rightPointsTv);
         gameComponentsLayout.addView(scoreLayout);
 
         //======================================================================
@@ -256,7 +250,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
         waitDialog.setCancelable(false);
         waitDialog.show();
 
-        Client.getClientInstance().send(Protocol.stringify(Protocol.Action.READY_TO_PLAY));
+        Client.getClientInstance().send(
+                Protocol.stringify(Protocol.Action.READY_TO_PLAY));
 
 
         AlertDialog.Builder pauseDialogBuilder;
@@ -265,8 +260,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 .setMessage("Wait! Other player in a break")
                 .setIcon(android.R.drawable.ic_dialog_alert);
 
-        pauseDialog = pauseDialogBuilder.create();
-
+        pauseDialogBuilder.create();
     }
 
     private void addButton(PlayerStorage.PurchasesEnum item,
@@ -274,7 +268,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
                            final int intervalInMillisec){
         if (gameState.isPurchased(item)){
             final Button sendButton = new Button(this);
-            RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams buttonParams =
+                    new RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.WRAP_CONTENT,
                     RelativeLayout.LayoutParams.WRAP_CONTENT);
             buttonParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
@@ -290,8 +285,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
             gameState.activateSendSoldierButton(sendButton, item);
 
-            final ProgressBar progressButton = new ProgressBar(this, null, android.R
-                    .attr.progressBarStyleHorizontal);
+            final ProgressBar progressButton = new ProgressBar(this, null,
+                    android.R.attr.progressBarStyleHorizontal);
 
             RelativeLayout.LayoutParams progressButtonParams =
                     new RelativeLayout.LayoutParams(
@@ -311,7 +306,6 @@ public class GameActivity extends Activity implements DoProtocolAction {
             progressButton.bringToFront();
             buttonsLayout.addView(buttonLayout);
 
-
             buttons.add(sendButton);
 
             sendButton.setOnClickListener(new View.OnClickListener() {
@@ -322,7 +316,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
                     sendButton.setEnabled(false);
                     progressButton.setProgress(0);
 
-                    CountDownTimer mCountDownTimer = new CountDownTimer(intervalInMillisec, 100) {
+                    CountDownTimer mCountDownTimer =
+                            new CountDownTimer(intervalInMillisec, 100) {
                         @Override
                         public void onTick(long millisUntilFinished) {
                             progressButton.setProgress(intervalInMillisec -
@@ -341,12 +336,6 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 }
             });
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.w("yahav", "onResume");
     }
 
     @Override
@@ -377,12 +366,6 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.exit_to_main_menu) {
-            File file = new File(getFilesDir(), PlayerStorage.FILE_NAME);
-            if (!file.delete()) {
-                Log.w("yahav", "Failed to delete file");
-            } else {
-                Log.w("yahav", "File deleted successfully");
-            }
             Intent intent = new Intent(getApplicationContext(), MainMenu.class);
             startActivity(intent);
             finish();
@@ -397,7 +380,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
         Protocol.Action action = Protocol.getAction(rawInput);
         switch (action) {
             case ARROW:
-                double arrowDistance = Double.parseDouble(Protocol.getData(rawInput));
+                double arrowDistance =
+                        Double.parseDouble(Protocol.getData(rawInput));
                 long timeStamp = Protocol.getTimeStamp(rawInput);
                 this.gameState.addEnemyShot(arrowDistance, timeStamp);
                 break;
@@ -436,7 +420,6 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
             case SOLDIER_KILL:
                 try {
-                    Log.w("yahav", "Received soldier kill report");
                     JSONObject data = new JSONObject(Protocol.getData(rawInput));
                     int id = data.getInt("id");
                     String playerString = data.getString("player");
@@ -461,7 +444,8 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ((FrameLayout) findViewById(R.id.center_of_screen)).addView(bomb.getBomb());
+                        ((FrameLayout) findViewById(R.id.center_of_screen))
+                                .addView(bomb.getBomb());
                     }
                 });
                 break;
@@ -486,17 +470,19 @@ public class GameActivity extends Activity implements DoProtocolAction {
 //                break;
 
             case RESUME:
-                this.gameSurface.wakeUp();
+      //          this.gameSurface.wakeUp();
                 break;
 
             case MATH_BOMB_SOLVED:
                 for(final Button button: this.buttons){
                    Object tag= button.getTag();
-                    if(tag instanceof String && ((String) tag).equals("MathBomb")){
+                    if(tag instanceof String && (tag).equals("MathBomb")){
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.math_bomb_grayed, 0, 0, 0);
+                        button.
+                                setCompoundDrawablesWithIntrinsicBounds(
+                                        R.drawable.math_bomb_grayed, 0, 0, 0);
 
                     }
                 });

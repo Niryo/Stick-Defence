@@ -42,8 +42,8 @@ public class Tank extends Soldier {
     private int attackFrame = 0;
 
     public Tank(Context context, Sprite.Player player, double delayInSec) {
-        super(context, player, SEC_TO_SCREEN_WIDTH,
-              DAMAGE_PER_SEC,Sounds.TANK_SOUND, delayInSec, HP);
+        super(context, player, SEC_TO_SCREEN_WIDTH, DAMAGE_PER_SEC,
+              Sounds.TANK_SOUND, delayInSec, HP, SoldierType.TANK);
         if (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
                     context.getResources(),
@@ -106,10 +106,9 @@ public class Tank extends Soldier {
                     if (Sprite.Player.LEFT == player) {
                         bulletX += (float) getScaledFrameWidth() / 2;
                     }
-                    Bullet bullet = new Bullet(getContext(),
-                            bulletX,
-                            getSoldierY() / TANK_HEIGHT_RELATIVE,
-                            getPlayer());
+                    Bullet bullet = new Bullet(bulletX,
+                                               getSoldierY() / TANK_HEIGHT_RELATIVE,
+                                               getPlayer());
 
                     gameState.addBullet(bullet);
                     canShoot = false;

@@ -10,9 +10,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.util.Log;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -21,13 +25,14 @@ import android.view.SurfaceView;
 public class GameSurface extends SurfaceView implements
         SurfaceHolder.Callback {
 
-    private int END_GAME_MSG_FACTOR=7;
+    private static final int END_GAME_MSG_FACTOR = 7;
     private GameLoopThread gameLoopThread;
     private GameState gameState = GameState.getInstance();
     private SimpleGestureDetector simpleGestureDetector =
             new SimpleGestureDetector();
     private Context context;
     private Bitmap scaledBackground;
+    private Set<Pair<Integer, Soldier.SoldierType>> soldiersX = new HashSet<>();
 
     public GameSurface(Context context) {
 
@@ -78,7 +83,6 @@ public class GameSurface extends SurfaceView implements
         gameState.finishGame();
         stopGameLoop();
         Intent gameIntent = new Intent(context, Market.class);
-// TODO - Save an object with points[player], nPlayers, isMultiplayer, etc.
         gameIntent.putExtra("isMultiplayer", gameState.isMultiplayer());
         context.startActivity(gameIntent);
         ((Activity) context).finish();
@@ -87,21 +91,7 @@ public class GameSurface extends SurfaceView implements
     public void stopGameLoop() {
         if (null != gameLoopThread) {
             gameLoopThread.setRunning(false);
-     /*       try{
-                gameLoopThread.join();
-            } catch (InterruptedException e){
-                e.printStackTrace();
-            }*/
-
         }
-    }
-
-    public void sleep() {
-        gameLoopThread.sleep();
-    }
-
-    public void wakeUp() {
-        gameLoopThread.wakeUp();
     }
 
     @Override
@@ -124,10 +114,10 @@ public class GameSurface extends SurfaceView implements
         float scale = (float) background.getHeight() / (float) getHeight();
         int newWidth = Math.round(background.getWidth() / scale);
         int newHeight = Math.round(background.getHeight() / scale);
-        scaledBackground = Bitmap.createScaledBitmap(background, newWidth, newHeight, true);
+        scaledBackground = Bitmap.createScaledBitmap(background, newWidth,
+                                                     newHeight, true);
 
         if (gameLoopThread.getState() == Thread.State.NEW) {
-            Log.w("yahav", "surfaceCreated");
             gameLoopThread.setRunning(true);
             gameLoopThread.start();
         }
@@ -135,7 +125,6 @@ public class GameSurface extends SurfaceView implements
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        Log.w("yahav", "surfaceDestroyed");
         boolean retry = true;
         while (retry) {
             try {
@@ -150,7 +139,6 @@ public class GameSurface extends SurfaceView implements
     }
 
     public void render(Canvas canvas) {
-        //    canvas.drawColor(Color.WHITE);
         canvas.drawBitmap(scaledBackground, 0, 0, null); // draw the background
         for (Tower tower : gameState.getTowers()) {
             tower.render(canvas);
@@ -160,8 +148,14 @@ public class GameSurface extends SurfaceView implements
             bullet.render(canvas);
         }
 
+        //Optimization - don't draw 2 same soldiers with same x
         for (Soldier soldier : gameState.getSoldiers()) {
-            soldier.render(canvas);
+            Pair<Integer, Soldier.SoldierType> soldierPair =
+                    new Pair<>(soldier.getSoldierX(), soldier.getSoldierType());
+            if (!soldiersX.contains(soldierPair)){
+                soldiersX.add(soldierPair);
+                soldier.render(canvas);
+            } // else - don't render the soldier
         }
 
         for (Bow bow : gameState.getBows()) {
@@ -173,6 +167,7 @@ public class GameSurface extends SurfaceView implements
         for (DrawableObject drawableObject :gameState.getMiscellaneous()){
             drawableObject.render(canvas);
         }
+        soldiersX.clear();
     }
 
 }

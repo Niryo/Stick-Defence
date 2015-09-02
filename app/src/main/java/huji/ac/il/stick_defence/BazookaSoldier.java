@@ -36,13 +36,12 @@ public class BazookaSoldier extends Soldier {
     private static Bitmap rightSoldierPic = null;
     private static Bitmap leftAttackSoldierPic = null;
     private static Bitmap rightAttackSoldierPic = null;
-    private static float bazookaSoldierY = 0;
     private boolean canShoot = false;
     private Sprite.Player player;
 
     public BazookaSoldier(Context context, Sprite.Player player, double delayInSec) {
-        super(context, player, SEC_TO_SCREEN_WIDTH,
-              DAMAGE_PER_SEC,Sounds.WALKING_SOUND, delayInSec, HP);
+        super(context, player, SEC_TO_SCREEN_WIDTH, DAMAGE_PER_SEC,
+              Sounds.WALKING_SOUND, delayInSec, HP, SoldierType.BAZOOKA);
         if (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
                     context.getResources(),
@@ -73,8 +72,6 @@ public class BazookaSoldier extends Soldier {
 
         Bullet.init(context, getScaledDownFactor());
 
-        bazookaSoldierY = super.getSoldierY(); // TODO - verify
-
         this.player = player;
 
     }
@@ -86,14 +83,12 @@ public class BazookaSoldier extends Soldier {
                         getScreenWidth() * 0.25) {
                     super.attack(leftAttackSoldierPic, SHOOT_NUMBER_OF_FRAMES,
                             ATTACK_FPS);
-                    bazookaSoldierY = super.getSoldierY();
                 }
             } else {
                 if (getSoldierX() + getScaledFrameWidth() / 2 <=
                         (float) getScreenWidth() * 0.75) {
                     super.attack(rightAttackSoldierPic, SHOOT_NUMBER_OF_FRAMES,
                             ATTACK_FPS);
-                    bazookaSoldierY = super.getSoldierY();
                 }
             }
         } else { // Attack
@@ -103,10 +98,10 @@ public class BazookaSoldier extends Soldier {
                     if (Sprite.Player.LEFT == player) {
                         bulletX += (float) getScaledFrameWidth() / 2;
                     }
-                    Bullet bullet = new Bullet(getContext(),
-                            bulletX,
-                            getSoldierY() / BAZOOKA_HEIGHT_RELATIVE,
-                            getPlayer());
+                    Bullet bullet = new Bullet(bulletX,
+                                               getSoldierY() /
+                                                       BAZOOKA_HEIGHT_RELATIVE,
+                                               getPlayer());
 
                     gameState.addBullet(bullet);
                     canShoot = false;
@@ -125,10 +120,6 @@ public class BazookaSoldier extends Soldier {
 
     public boolean isHitByArrow(Arrow arrow) {
         return super.isHitByArrow(arrow);
-    }
-
-    public static float getBazookaSoldierY() {
-        return bazookaSoldierY;
     }
 
     public static String info(){

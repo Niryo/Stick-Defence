@@ -20,19 +20,18 @@ public class Bow implements Serializable {
     //bow to span over a half of the screen height.
     private static final double SCREEN_HEIGHT_PORTION = 0.15;
     private static final int NUMBER_OF_FRAMES = 9;
-    private static int ARC_PATH_WIDTH_FACTOR = 2;
-    private static int ARC_PATH_HEIGHT_FACTOR = 4;
+    private static final int ARC_PATH_WIDTH_FACTOR = 2;
+    private static final int ARC_PATH_HEIGHT_FACTOR = 4;
     private static int actualArcPathHeight;
     private static int actualArcPathWidth;
     private static final int ARC_PATH_START_ANGLE = 290;
     private static final int ARC_PATH_LENGTH = 80;
 
-    private int bowStrechSound, bowReleaseSound;
+    private int bowSound, bowReleaseSound;
     private GameState gameState = GameState.getInstance();
     private static Bitmap leftBowPic = null;
     //    private static        Bitmap rightBowPic = null;
     private Sprite sprite;
-    private int towerHeight;
     private Sprite.Player player;
 
     private Context context;
@@ -123,8 +122,6 @@ public class Bow implements Serializable {
      */
     public void update(long gameTime) {
 //        sprite.update(gameTime);
-
-
     }
 
     /**
@@ -134,14 +131,7 @@ public class Bow implements Serializable {
      */
     public void render(Canvas canvas) {
         canvas.drawBitmap(this.scaledBow[this.currentFrame], matrix, null);
-
-//        Paint paint =new Paint();
-//        paint.setColor(Color.BLACK);
-//        paint.setStrokeWidth(3);
-//        paint.setStyle(Paint.Style.STROKE);
-//        canvas.drawPath(this.path, paint);
     }
-
 
     public boolean rotateLeft() {
         if (distance > 0) {
@@ -171,7 +161,9 @@ public class Bow implements Serializable {
     }
 
     public void setBowDirection(Sprite.Point point) {
-        float newDegrees = (float) Math.toDegrees(Math.atan2(point.getY() - this.pos[1], point.getX() - this.pos[0]));
+        float newDegrees =
+                (float) Math.toDegrees(Math.atan2(point.getY() - this.pos[1],
+                        point.getX() - this.pos[0]));
         while (Math.abs(this.degrees - newDegrees) > 2) {
             if (Sprite.Player.LEFT == player) {
                 if (this.degrees < newDegrees) {
@@ -230,11 +222,12 @@ public class Bow implements Serializable {
 
     }
 
-    public void aimAndShoot(double relativeDistance, double delayInSec) { //todo: add animation for strech and unstrech
+    public void aimAndShoot(double relativeDistance, double delayInSec) {
 
         this.distance = (int) (pathLength * relativeDistance);
         resetMatrix();
-        this.gameState.addArrow(new Arrow(this.context, this.pos[0], this.pos[1], this.tan, this.player, delayInSec));
+        this.gameState.addArrow(new Arrow(this.context, this.pos[0],
+                this.pos[1], this.tan, this.player, delayInSec));
 
     }
 
@@ -243,17 +236,15 @@ public class Bow implements Serializable {
     }
 
     public void playStrechSound(){
-        this.bowStrechSound = Sounds.getInstance().playSound(Sounds.BOW_STRECH,
-                                                             false);
+        this.bowSound = Sounds.getInstance().playSound(Sounds.BOW_STRECH, false);
     }
 
     public void stopStrechSound(){
-        Sounds.stopSound(this.bowStrechSound);
+        Sounds.stopSound(this.bowSound);
     }
 
     public void playReleaseSound(){
-        this.bowStrechSound = Sounds.getInstance().playSound(Sounds.BOW_RELEASE,
-                                                             false);
+        this.bowSound = Sounds.getInstance().playSound(Sounds.BOW_RELEASE, false);
     }
 
 }

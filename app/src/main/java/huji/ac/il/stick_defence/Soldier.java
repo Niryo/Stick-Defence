@@ -16,6 +16,10 @@ import java.io.Serializable;
  * by itself. This can be handled by attack() and isAttack() methods.
  */
 public abstract class Soldier implements Serializable {
+    public enum SoldierType{
+        BASIC, BAZOOKA, BOMB_GRANDPA, SWORDMAN, TANK, ZOMBIE
+    }
+
     //Epsilon to hit soldier from his center
     private static final int HIT_EPSILON = 10;
 
@@ -24,6 +28,7 @@ public abstract class Soldier implements Serializable {
     private Sprite sprite;
 
     //Characteristics
+    private SoldierType soldierType;
     private final Sprite.Player PLAYER;
     private final int DAMAGE_PER_SEC;
     private double runPixelsPerSec;
@@ -47,7 +52,7 @@ public abstract class Soldier implements Serializable {
 
     protected Soldier(Context context, Sprite.Player player,
                       double secToCrossScreen, int damagePerSec, int soundId,
-                      double delayInSec, int hp) {
+                      double delayInSec, int hp, SoldierType soldierType) {
         this.PLAYER = player;
         this.soundId = soundId;
         this.screenWidth = gameState.getCanvasWidth();
@@ -66,6 +71,7 @@ public abstract class Soldier implements Serializable {
         } else {
             this.id = rightId++;
         }
+        this.soldierType = soldierType;
     }
 
     protected void initSprite(Context context, Bitmap soldierPic, int
@@ -224,4 +230,6 @@ public abstract class Soldier implements Serializable {
     public void stopSound(){
         Sounds.stopSound(this.soundStream);
     }
+
+    public SoldierType getSoldierType(){ return this.soldierType; }
 }

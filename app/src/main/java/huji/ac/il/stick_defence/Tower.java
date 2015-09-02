@@ -63,8 +63,7 @@ public abstract class Tower {
     private double     hp;
     private TowerTypes towerType;
 
-    private Bitmap leftTowerPic = null;
-    private Bitmap rightTowerPic = null;
+
     public static Bitmap firePic = null;
     private Sprite towerSprite;
     private ArrayList<Fire> fires;
@@ -87,11 +86,12 @@ public abstract class Tower {
      */
     public Tower(Context context, Sprite.Player player, int leftPic,
                  int rightPic, double maxHp, TowerTypes type) {
-        leftTowerPic = BitmapFactory.decodeResource(context.getResources(),
+        //Not needed to read tower image only once
+        Bitmap leftTowerPic = BitmapFactory.decodeResource(context.getResources(),
                 leftPic);
+        Bitmap rightTowerPic = BitmapFactory.decodeResource(context.getResources(),
+                rightPic);
 
-        rightTowerPic = BitmapFactory.decodeResource(context.getResources(),
-                rightPic); // Read resource only once
         rightTowerPic = Sprite.mirrorBitmap(rightTowerPic);
 
 

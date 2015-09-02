@@ -40,7 +40,7 @@ public class BasicSoldier extends Soldier {
 
     public BasicSoldier(Context context, Sprite.Player player, double delayInSec) {
         super(context, player, SEC_TO_CROSS_SCREEN, DAMAGE_PER_SEC,
-              Sounds.RUN_SOUND, delayInSec, HP);
+              Sounds.RUN_SOUND, delayInSec, HP, SoldierType.BASIC);
         if (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
                     context.getResources(),

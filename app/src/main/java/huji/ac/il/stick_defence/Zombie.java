@@ -35,8 +35,8 @@ public class Zombie extends Soldier {
     private Sprite.Player player;
 
     public Zombie(Context context, Sprite.Player player, double delayInSec) {
-        super(context, player, SEC_TO_CROSS_SCREEN,
-              DAMAGE_PER_SEC, Sounds.ZOMBIE_SOUND, delayInSec, HP);
+        super(context, player, SEC_TO_CROSS_SCREEN, DAMAGE_PER_SEC,
+              Sounds.ZOMBIE_SOUND, delayInSec, HP, SoldierType.ZOMBIE);
         if (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
                     context.getResources(),

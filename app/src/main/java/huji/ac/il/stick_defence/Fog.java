@@ -11,9 +11,7 @@ import android.media.MediaPlayer;
  */
 public class Fog implements DrawableObject{
     private Sprite sprite;
-    private int screenWidth;
     private int screenHeight;
-    private int updateCounter=0;
     private long timeOfCreation= System.currentTimeMillis();
     private boolean active=true;
     private static final int ACTIVE_TIME= 15000;
@@ -38,7 +36,6 @@ public class Fog implements DrawableObject{
 
         sprite.update(gameTime);
         long timePassed=System.currentTimeMillis()-this.timeOfCreation;
-            this.updateCounter++;
         if(timePassed>ACTIVE_TIME && active){
             sprite.reverse();
             sprite.runAnimation();

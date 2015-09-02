@@ -25,8 +25,7 @@ public class Client implements DoProtocolAction, Serializable{
     private PrintWriter out;
     private DoProtocolAction currentActivity;
 
-    private Client() {
-    }
+    private Client() {}
 
     /**
      * Constructs a new client with the given name
@@ -98,7 +97,8 @@ public class Client implements DoProtocolAction, Serializable{
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            send(Protocol.stringify(Protocol.Action.NAME, jsonName.toString())); //send the
+            send(Protocol.stringify(Protocol.Action.NAME,
+                                    jsonName.toString())); //send the
             // client name to the server.
         }
 
@@ -152,7 +152,6 @@ public class Client implements DoProtocolAction, Serializable{
     }
 
     public void reportSoldierKill(int soldierId, Sprite.Player player){
-        Log.w("yahav", "Report soldier kill, sId " + soldierId);
         JSONObject data = new JSONObject();
         try{
             data.put("id", soldierId);

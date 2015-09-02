@@ -40,7 +40,8 @@ public class CreditManager extends Thread {
         pointsToAddOrDec = creditsToAdd;
     }
 
-    synchronized public boolean decCredits(double creditsToDec, Sprite.Player player) {
+    synchronized public boolean decCredits(double creditsToDec,
+                                           Sprite.Player player) {
         if (Sprite.Player.RIGHT == player){
             return true;
         }
@@ -101,7 +102,5 @@ public class CreditManager extends Thread {
                 e.printStackTrace();
             }
         }
-
-
     }
 }

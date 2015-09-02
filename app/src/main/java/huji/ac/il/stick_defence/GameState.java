@@ -48,7 +48,6 @@ public class GameState {
     private static int canvas_height;
     private static int canvas_width;
     private ArtificialIntelligence ai;
-    private Sounds sounds= Sounds.getInstance();
     private ArrayList<Button> buttonsComponent;
     private ArrayList<Soldier> soldiers = new ArrayList<>();
     private ArrayList<Tower> towers = new ArrayList<>(2);
@@ -70,7 +69,6 @@ public class GameState {
     private boolean leftPlayerWin = false;
     private boolean rightPlayerWin = false;
     private PlayerStorage playerStorage, rightPlayerStorage;
-    private Button sendBazookaSoldierButton;
     private Activity gameActivity;
     private Tower rightTower;
     private Tower leftTower;
@@ -88,7 +86,6 @@ public class GameState {
         creditManager = new CreditManager(START_CREDITS);
         rightPlayerStorage = new PlayerStorage(context, 0);
         this.isMultiplayer = isMultiplayer;
- //       playerStorage = PlayerStorage.load(context);
     }
 
     public static GameState CreateGameState(Context context,
@@ -180,11 +177,6 @@ public class GameState {
         return new WoodenTower(context, player);
     }
 
-
-    public void setSinglePlayer() {
-        this.isMultiplayer = false;
-    }
-
     public void sendFog(){
         client.reportFog();
     }
@@ -193,17 +185,12 @@ public class GameState {
     }
     public void finishGame() {
         playerStorage.setCredits(creditManager.getCredits());
-    //    save();
         creditManager.setRunning(false);
         try {
             creditManager.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    public void save() {
-        playerStorage.save();
     }
 
     public boolean isPurchased(PlayerStorage.PurchasesEnum iSoldier) {
@@ -268,7 +255,6 @@ public class GameState {
     public void update() {
         long currentTimeMillis = System.currentTimeMillis();
 
-
         for (Soldier soldier : this.getSoldiers()) {
             soldier.update(currentTimeMillis);
         }
@@ -309,23 +295,16 @@ public class GameState {
     public void touch(SimpleGestureDetector.Gesture move, Sprite.Point point) {
         if (move == SimpleGestureDetector.Gesture.DOWN) {
             this.leftBow.unStretch();
-            //     this.leftBow.rotateRight();
         }
         if (move == SimpleGestureDetector.Gesture.UP) {
             this.leftBow.stretch();
-            //     this.leftBow.rotateLeft();
         }
 
         if (move == SimpleGestureDetector.Gesture.RIGHT) {
             this.leftBow.unStretch();
-            //     this.leftBow.rotateLeft();
-            // this.rightBow.rotateLeft();
-
         }
         if (move == SimpleGestureDetector.Gesture.LEFT) {
             this.leftBow.stretch();
-            //    this.leftBow.rotateRight();
-            //this.rightBow.rotateRight();
         }
         if (move == SimpleGestureDetector.Gesture.TOUCH_UP) {
             this.leftBow.release();
@@ -334,7 +313,6 @@ public class GameState {
             this.leftBow.setBowDirection(point);
         }
     }
-
 
     /**
      * adds a soldier to the requested PLAYER
@@ -359,12 +337,7 @@ public class GameState {
                     delay = 0;
                 }
                 delay = delay / 1000; //convert to seconds;
-
-                Log.w("custom", "the delay is: " + delay);
             }
-
-
-
         }
 
         Soldier soldier;
@@ -374,13 +347,11 @@ public class GameState {
                 soldier.playSound();
                 soldiers.add(soldier);
                 if (isMultiplayer && Sprite.Player.LEFT == player){
-                    Log.w("yahav", "Basic soldier");
                     client.reportBasicSoldier();
                 }
                 break;
             case ZOMBIE:
-                soldier =new Zombie(context, player, delay);
-
+                soldier = new Zombie(context, player, delay);
                 if (player == Sprite.Player.RIGHT ||
                         creditManager.decCredits(ZOMBIE_SEND_PRICE, player)) {
                     soldiers.add(soldier);
@@ -393,8 +364,7 @@ public class GameState {
                 }
                 break;
             case SWORDMAN:
-                soldier =new Swordman(context, player, delay);
-
+                soldier = new Swordman(context, player, delay);
                 if (player == Sprite.Player.RIGHT ||
                         creditManager.decCredits(SWORDMAN_SEND_PRICE, player)) {
                     soldiers.add(soldier);
@@ -407,10 +377,11 @@ public class GameState {
                 }
                 break;
             case BOMB_GRANDPA:
-               soldier =new BombGrandpa(context, player, delay);
+               soldier = new BombGrandpa(context, player, delay);
 
                 if (player == Sprite.Player.RIGHT ||
-                        creditManager.decCredits(BOMB_GRANDPA_SEND_PRICE, player)) {
+                        creditManager.decCredits(BOMB_GRANDPA_SEND_PRICE,
+                                                 player)) {
                     soldiers.add(soldier);
                     soldier.playSound();
                 } else {
@@ -421,7 +392,7 @@ public class GameState {
                 }
                 break;
             case BAZOOKA_SOLDIER:
-                soldier =new BazookaSoldier(context, player, delay);
+                soldier = new BazookaSoldier(context, player, delay);
 
                 soldier.playSound();
                 if (player == Sprite.Player.RIGHT ||
@@ -436,7 +407,7 @@ public class GameState {
                 }
                 break;
             case TANK:
-                soldier =new Tank(context, player, delay);
+                soldier = new Tank(context, player, delay);
 
                 if (player == Sprite.Player.RIGHT ||
                         creditManager.decCredits(TANK_SEND_PRICE, player)) {
@@ -451,7 +422,7 @@ public class GameState {
                 break;
 
             default:
-                Log.e("yahav",
+                Log.e("custom",
                         "Wrong soldier type " + soldierType.toString());
                 break;
         }
@@ -461,13 +432,13 @@ public class GameState {
         } else {
             this.rightPlayerSoldiers++;
         }
-
         return true;
     }
+
     public void newPartnerInfo(String rawInput){
         try {
             JSONObject info = new JSONObject(rawInput);
-            String towerName= info.getString("tower");
+            String towerName = info.getString("tower");
 
             Tower.TowerTypes towerType =
                     Tower.TowerTypes.valueOf(towerName);
@@ -529,25 +500,21 @@ public class GameState {
         for (Soldier soldier : soldiers){
             if (soldier.getId() == soldierId && soldier.getPlayer() == player){
                 removeSoldier(soldier, false);
-                Log.w("yahav", "Soldier" + soldier.getId() +
-                        soldier.getPlayer().toString() +
-                        " removed by requests from other peer");
                 return;
             }
         }
     }
 
-    /**
-     * Returns the sprite list
-     *
-     * @return the sprite list
-     */
     public ArrayList<Soldier> getSoldiers() {
         return (ArrayList<Soldier>) this.soldiers.clone();
     }
 
     public ArrayList<Bullet> getBullets() {
         return (ArrayList<Bullet>) this.bullets.clone();
+    }
+
+    public ArrayList<Arrow> getArrows() {
+        return (ArrayList<Arrow>) this.arrows.clone();
     }
 
     public ArrayList<Tower> getTowers() {
@@ -594,7 +561,6 @@ public class GameState {
     }
     public void addArrow(Arrow arrow) {
         this.arrows.add(arrow);
-        //todo:wait for server aproval
         if (isMultiplayer && arrow.getPlayer() == Sprite.Player.LEFT) {
             client.reportArrow(this.leftBow.getRelativeDistance());
         }
@@ -610,10 +576,6 @@ public class GameState {
 
     public void removeBullet(Bullet bullet) {
         this.bullets.remove(bullet);
-    }
-
-    public ArrayList<Arrow> getArrows() {
-        return (ArrayList<Arrow>) this.arrows.clone();
     }
 
     public void hitTower(Sprite.Player player, double hp) {
@@ -652,8 +614,6 @@ public class GameState {
         if (delay < 0) {
             delay = 0;
         }
-        Log.w("custom", "delay is: " + delay);
-        //delay = currentTime - timeStamp;
         delay = delay / 1000; //convert to seconds;
         this.rightBow.aimAndShoot(dist, delay);
     }
@@ -662,9 +622,9 @@ public class GameState {
         return this.context;
     }
 
-    public void setTime(long localTimeInMillisecond, long serverTimeInMillisecond) {
+    public void setTime(long localTimeInMillisecond,
+                        long serverTimeInMillisecond) {
         this.timeDifference = serverTimeInMillisecond - localTimeInMillisecond;
-        Log.w("custom", "time deference is: " + timeDifference);
     }
 
     public ArrayList<DrawableObject> getMiscellaneous(){
@@ -707,10 +667,8 @@ public class GameState {
                 }
             }
         });
-
-
-
     }
+
     public void enableButtons(){
         this.gameActivity.runOnUiThread(new Runnable() {
             @Override
@@ -739,7 +697,6 @@ public class GameState {
 
     public void exitToMainMenu(){
         Intent intent = new Intent(context, MainMenu.class);
-      //  intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
         ((Activity) context).finish();
     }

@@ -41,8 +41,8 @@ public class Swordman extends Soldier {
     private Sprite.Player player;
 
     public Swordman(Context context, Sprite.Player player, double delayInSec) {
-        super(context, player, SEC_TO_CROSS_SCREEN,
-              DAMAGE_PER_SEC,Sounds.WALKING_SOUND, delayInSec, HP);
+        super(context, player, SEC_TO_CROSS_SCREEN, DAMAGE_PER_SEC,
+              Sounds.WALKING_SOUND, delayInSec, HP, SoldierType.SWORDMAN);
         if (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
                     context.getResources(),

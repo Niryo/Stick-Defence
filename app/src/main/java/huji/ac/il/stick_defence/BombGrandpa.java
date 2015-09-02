@@ -32,13 +32,13 @@ public class BombGrandpa extends Soldier {
 
     private static Bitmap leftSoldierPic = null;
     private static Bitmap rightSoldierPic = null;
-
+    private static Sounds sounds;
 
     private Sprite.Player player;
 
-    public BombGrandpa(Context context, Sprite.Player player, double delayInSec) {
+    public BombGrandpa(Context context, Sprite.Player player, double delayInSec){
         super(context, player, SEC_TO_CROSS_SCREEN, DAMAGE_PER_SEC,
-                Sounds.OLD_MAN_SOUND, delayInSec, HP);
+                Sounds.OLD_MAN_SOUND, delayInSec, HP, SoldierType.BOMB_GRANDPA);
 
         if (null == leftSoldierPic) {
             leftSoldierPic = BitmapFactory.decodeResource(
@@ -57,11 +57,8 @@ public class BombGrandpa extends Soldier {
             super.initSprite(context, rightSoldierPic, NUMBER_OF_FRAMES,
                     SCREEN_HEIGHT_PORTION, MOVE_FPS);
         }
-
-
         this.player = player;
-
-
+        this.sounds = Sounds.getInstance();
     }
 
     public void update(long gameTime) {
@@ -91,12 +88,10 @@ public class BombGrandpa extends Soldier {
         return super.isHitByArrow(arrow);
     }
 
-
     @Override
     public void playSound(){
-        soundStream = Sounds.getInstance().playSound(soundId,false);
+        soundStream = sounds.playSound(soundId,false);
     }
-
 
     public static String info(){
         return "Damage: " + DAMAGE_PER_SEC + "\n" +
@@ -106,5 +101,4 @@ public class BombGrandpa extends Soldier {
                 "opponent's tower.\n\n" +
                 "Price: " + Market.BOMB_GRANDPA_BUY_PRICE;
     }
-
 }

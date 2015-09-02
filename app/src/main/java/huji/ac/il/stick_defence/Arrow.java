@@ -14,8 +14,6 @@ import java.io.Serializable;
 /**
  * Created by Nir on 03/05/2015.
  */
-
-
 public class Arrow implements Serializable {
     //===========================Arrow's abilities==============================
 
@@ -37,8 +35,6 @@ public class Arrow implements Serializable {
     private int screenHeight;
     private long lastUpdateTime;
     private double pixPerSec;
-    private double initialHeight;
-    private double y_pixPerSec;
     private Sprite.Player player;
 
     public Arrow(Context context, float x, float y,
@@ -57,41 +53,30 @@ public class Arrow implements Serializable {
         this.bm_offsetY = scaledArrowPic.getHeight() / 2;
         this.degree = (float) (Math.atan2(tan[1], tan[0]) * 180.0 / Math.PI);
         updateMatrix();
-        Log.w("custom", "delay:" + delayInSec);
         double arrowHeight = screenHeight - this.y;
         double pathLength = (arrowHeight / (Math.cos(Math.toRadians(90 - this.degree))));
-        Log.w("custom", "arrowHeight:" + arrowHeight + "     pathLength: " + pathLength + "      degree: " + (91 - this.degree));
         double oldSpeed = ((double) screenWidth) / SEC_TO_CROSS_SCREEN;
         double pathLeft = pathLength - (oldSpeed * delayInSec);
-        Log.w("custom", "pathLeft:" + pathLeft);
         double timeLeft = pathLeft / oldSpeed;
-        Log.w("custom", "timeLeft:" + timeLeft);
         double newSpeed = pathLength / timeLeft;
         if (pathLeft > 0) {
             pixPerSec = newSpeed;
-            Log.w("custom", "pixPerSec:" + pixPerSec);
         } else {
             //todo:
-            pixPerSec=oldSpeed;
-            Log.w("custom", "pixPerSec is old speed:" + pixPerSec);
+            pixPerSec = oldSpeed;
         }
-
-
         lastUpdateTime = System.currentTimeMillis();
-
     }
 
     private void updateMatrix() {
         matrix.reset();
         matrix.postRotate(this.degree, bm_offsetX, bm_offsetY);
         matrix.postTranslate(this.x - bm_offsetX, this.y - bm_offsetY);
-
     }
 
     public void update(long gameTime) {
         double passedTimeInSec = ((double) (gameTime - lastUpdateTime)) / 1000;
         lastUpdateTime = System.currentTimeMillis();
-
         this.x +=
                 Math.cos(Math.toRadians(this.degree)) *
                         pixPerSec * passedTimeInSec;
@@ -104,18 +89,16 @@ public class Arrow implements Serializable {
         }
     }
 
-
     public void render(Canvas canvas) {
         canvas.drawBitmap(scaledArrowPic, matrix, null);
         Paint paint = new Paint();
-        paint.setColor(this.player == Sprite.Player.RIGHT ? Color.RED : Color.BLUE);
+        paint.setColor(this.player ==
+                Sprite.Player.RIGHT ? Color.RED : Color.BLUE);
         paint.setStrokeWidth(10);
         canvas.drawPoint(this.getHeadX(), this.getHeadY(), paint);
-
     }
 
     public static void init(Context context, double scaleDownFactor) {
-
         Bitmap arrowPic = BitmapFactory.decodeResource(context.getResources(),
                 R.drawable.arrow); // Read resource only once
 
@@ -147,5 +130,5 @@ public class Arrow implements Serializable {
         return this.player;
     }
 
-    public int getArrowDamage(){ return this.ARROW_DAMAGE; }
+    public int getArrowDamage(){ return ARROW_DAMAGE; }
 }

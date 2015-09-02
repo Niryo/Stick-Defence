@@ -6,7 +6,7 @@ import android.graphics.Canvas;
  * This interface represents any object that can be draw on the screen
  */
 public interface DrawableObject {
-    public void render(Canvas canvas);
-    public void update (long gameTime);
+    void render(Canvas canvas);
+    void update (long gameTime);
 
 }
