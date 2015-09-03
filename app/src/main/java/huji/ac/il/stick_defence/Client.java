@@ -184,6 +184,10 @@ public class Client implements DoProtocolAction, Serializable{
 
     public void changeName(String name){ this.name = name; }
 
+    public void reportFinalRound(){
+        send(Protocol.stringify(Protocol.Action.FINAL_ROUND));
+    }
+
 
     /**
      * This class represents a socket listener on a server node.

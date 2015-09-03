@@ -502,6 +502,9 @@ public class GameActivity extends Activity implements DoProtocolAction {
             case LEAGUE_INFO:
                 Log.w("custom", "receive leagueinfo in : GAMEaCTIVITY.class");
                 break;
+            case FINAL_ROUND:
+                gameState.setFinalRound(false);
+                break;
 
         }
 

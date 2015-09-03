@@ -179,7 +179,13 @@ private void initTabs(){
                 printLeagueInfo( Protocol.getData(rawInput));
                 break;
             case PARTNER_INFO:
-                GameState.getInstance().newPartnerInfo( Protocol.getData(rawInput));
+                GameState.getInstance().newPartnerInfo(Protocol.getData(rawInput));
+                break;
+            case FINAL_ROUND:
+                GameState gameState = GameState.getInstance();
+                if (null != gameState){
+                    gameState.setFinalRound(false);
+                }
                 break;
         }
     }

@@ -71,6 +71,7 @@ public class Protocol {
         PAUSE,
         RESUME,
         END_LEAGUE,
+        FINAL_ROUND,
         TEST,
         PARTNER_INFO,
         FOG

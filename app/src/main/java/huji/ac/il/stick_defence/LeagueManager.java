@@ -10,20 +10,29 @@ import java.util.Collections;
  * Created by Nir on 29/05/2015.
  */
 public class LeagueManager {
-    //TODO: MAKE OUTER JSONobject CALLED "INFO" SO THAT IT LOOKS LIKE {PAIR: {}, STATISTICS: {}}
     private ArrayList<Server.Peer> peers;
-    private int stage = 0; //the stage of the league (every round we will do stage++)
-    //an hardcoded pattern for the league: every array represents a round. for example, in the second
-    //round we can see that peer 1 will be the partner of peer 3, and peer 2 will be the partner of peer 4:
-    private int[][] allCombinationWithFour = {{0, 1, 2, 3}, {0, 2, 1, 3}, {0, 3, 1, 2}};
-    private int[][] allCombinationWithSix = {{0, 1, 2, 3, 4, 5}, {0, 2, 1, 4, 3, 5}, {0, 3, 1, 5, 2, 4}, {0, 4, 1, 2, 3, 5}, {0, 5, 1, 3, 2, 4}};
-    private static int TWO_PLAYERS_STAGES = 3;
-    private static int FOUR_PLAYERS_STAGES = 3;
-    private static int SIX_PLAYERS_STAGES = 5;
-    private static int EIGHT_PLAYERS_STAGES = 3;
+    //the stage of the league (every round we will do stage++)
+    private int stage = 0;
+
+    //an hardcoded pattern for the league: every array represents a round.
+    //For example, in the second round we can see that peer 1 will be the
+    //partner of peer 3, and peer 2 will be the partner of peer 4:
+    private int[][] allCombinationWithFour = {{0, 1, 2, 3},
+                                              {0, 2, 1, 3},
+                                              {0, 3, 1, 2}};
+    private int[][] allCombinationWithSix = {{0, 1, 2, 3, 4, 5},
+                                             {0, 2, 1, 4, 3, 5},
+                                             {0, 3, 1, 5, 2, 4},
+                                             {0, 4, 1, 2, 3, 5},
+                                             {0, 5, 1, 3, 2, 4}};
+    private static final int TWO_PLAYERS_STAGES = 3;
+    private static final int FOUR_PLAYERS_STAGES = 3;
+    private static final int SIX_PLAYERS_STAGES = 5;
+    private static final int EIGHT_PLAYERS_STAGES = 3;
     public LeagueManager(ArrayList<Server.Peer> peers) {
         this.peers = peers;
-        Collections.shuffle(this.peers); //we shuffle the peers so the pairing will be random.
+        //we shuffle the peers so the pairing will be random.
+        Collections.shuffle(this.peers);
 
     }
 
@@ -43,7 +52,7 @@ public class LeagueManager {
                 resetLeague();
             return info;
         } else if (stage == TWO_PLAYERS_STAGES - 1){
-            gameState.setFinalRound();
+            gameState.setFinalRound(true);
         }
         Server.getServerInstance().makePair(peers.get(0), peers.get(1));
         JSONObject players = new JSONObject();
@@ -74,14 +83,15 @@ public class LeagueManager {
             resetLeague();
             return info;
         } else if (stage == FOUR_PLAYERS_STAGES - 1){
-            gameState.setFinalRound();
+            gameState.setFinalRound(true);
         }
         int pairCount = 0;
         for (int i = 0; i < 4; i += 2) {
             JSONObject players = new JSONObject();
             int first = allCombinationWithFour[stage][i];
             int second = allCombinationWithFour[stage][i + 1];
-            Server.getServerInstance().makePair(peers.get(first), peers.get(second));
+            Server.getServerInstance().makePair(peers.get(first),
+                                                peers.get(second));
                 players.put("player1", peers.get(first).getName());
                 players.put("player2", peers.get(second).getName());
                 pairs.put("pair" + pairCount, players);
@@ -112,14 +122,15 @@ public class LeagueManager {
             resetLeague();
             return info;
         } else if (stage == SIX_PLAYERS_STAGES - 1){
-            gameState.setFinalRound();
+            gameState.setFinalRound(true);
         }
         int pairCount = 0;
         for (int i = 0; i < 6; i += 2) {
             JSONObject players = new JSONObject();
             int first = allCombinationWithSix[stage][i];
             int second = allCombinationWithSix[stage][i + 1];
-            Server.getServerInstance().makePair(peers.get(first), peers.get(second));
+            Server.getServerInstance().makePair(peers.get(first),
+                                                peers.get(second));
                 players.put("player1", peers.get(first).getName());
                 players.put("player2", peers.get(second).getName());
                 pairs.put("pair" + pairCount, players);
@@ -150,11 +161,12 @@ public class LeagueManager {
             resetLeague();
             return info;
         } else if (stage == EIGHT_PLAYERS_STAGES - 1){
-            gameState.setFinalRound();
+            gameState.setFinalRound(true);
         }
         int pairCount = 0;
-        //we run over the list of peers making a temp list, with all the peers that have the
-        //same number of wins. then, we run over the temp list and pair the peers.
+        //we run over the list of peers making a temp list,
+        //with all the peers that have the same number of wins.
+        //Then, we run over the temp list and pair the peers.
         for (int i = 0; i < stage + 1; i++) {
             ArrayList<Server.Peer> temp = new ArrayList<>();
             for (Server.Peer peer : this.peers) {

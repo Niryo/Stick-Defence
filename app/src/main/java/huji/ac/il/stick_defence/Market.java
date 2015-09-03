@@ -96,8 +96,7 @@ public class Market extends Activity implements DoProtocolAction {
         if (isMultiplayer && !(gameState ==null)) { //if gameState is null we are at the first round so don't send game_over
             Client.getClientInstance().
                     send(Protocol.stringify(Protocol.Action.GAME_OVER,
-                            String.
-                                    valueOf(GameState.getInstance().isLeftPlayerWin())));
+                            String.valueOf(GameState.getInstance().isLeftPlayerWin())));
         }
 
         if(gameState==null) {
@@ -467,6 +466,10 @@ public class Market extends Activity implements DoProtocolAction {
 
             case PARTNER_INFO:
                 GameState.getInstance().newPartnerInfo( Protocol.getData(rawInput));
+                break;
+
+            case FINAL_ROUND:
+                gameState.setFinalRound(false);
                 break;
         }
     }

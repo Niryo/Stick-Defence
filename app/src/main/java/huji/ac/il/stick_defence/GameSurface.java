@@ -78,6 +78,9 @@ public class GameSurface extends SurfaceView implements
     }
 
     public void goToLeagueInfo(){
+        Client.getClientInstance().
+                send(Protocol.stringify(Protocol.Action.GAME_OVER,
+                        String.valueOf(GameState.getInstance().isLeftPlayerWin())));
         gameState.finishGame();
         stopGameLoop();
         Intent intent = new Intent(context, LeagueInfoActivity.class);

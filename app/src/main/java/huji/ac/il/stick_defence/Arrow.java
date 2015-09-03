@@ -12,17 +12,16 @@ import android.util.Log;
 import java.io.Serializable;
 
 /**
- * Created by Nir on 03/05/2015.
+ * This class represents the Arrow of the game
  */
 public class Arrow implements Serializable {
     //===========================Arrow's abilities==============================
-
     private static final double SEC_TO_CROSS_SCREEN = 2;
     private static final int    ARROW_DAMAGE = 10;
-
     //============================Arrow's picture===============================
     private static Bitmap scaledArrowPic;
     private static Sprite sprite;
+    //==========================================================================
 
     private GameState gameState = GameState.getInstance();
     private float x;
@@ -37,8 +36,16 @@ public class Arrow implements Serializable {
     private double pixPerSec;
     private Sprite.Player player;
 
-    public Arrow(Context context, float x, float y,
-                 float[] tan, Sprite.Player player, double delayInSec) {
+    /**
+     * Constructor
+     * @param x the x value
+     * @param y the y value
+     * @param tan arrow angle
+     * @param player the player that shot
+     * @param delayInSec
+     */
+    public Arrow(float x, float y, float[] tan,
+                 Sprite.Player player, double delayInSec) {
         this.screenWidth =
                 gameState.getCanvasWidth();
         Log.w("custom", "screen width:" + screenWidth);

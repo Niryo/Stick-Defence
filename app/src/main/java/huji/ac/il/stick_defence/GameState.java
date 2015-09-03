@@ -707,7 +707,12 @@ public class GameState {
         ((Activity) context).finish();
     }
 
-    public void setFinalRound() {this.finalRound = true; }
+    public void setFinalRound(boolean shouldReport) {
+        if (shouldReport){
+            client.reportFinalRound();
+        }
+        this.finalRound = true;
+    }
 
     public boolean isFinalRound() {return this.finalRound; }
 }
