@@ -115,7 +115,12 @@ public class GameLoopThread extends Thread {
                         if (!isMultiplayer && gameState.isRightPlayerWin()){
                             gameState.exitToMainMenu();
                         } else {
-                            gameSurface.goToMarket();
+                            if (gameState.isFinalRound()){
+                                gameSurface.goToLeagueInfo();
+                            } else {
+                                gameSurface.goToMarket();
+                            }
+
                         }
 
 

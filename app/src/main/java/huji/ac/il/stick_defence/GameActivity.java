@@ -56,7 +56,10 @@ public class GameActivity extends Activity implements DoProtocolAction {
         int newScreenHeight = (int) Math.round(((double) 9 * screenWidth) / 16);//set the height to be proportional to the width
 
 
-
+        final boolean newGame = getIntent().getBooleanExtra("NewGame", true);
+        if (newGame){
+            GameState.newGame();
+        }
         gameState = GameState.getInstance();
         isMultiplayer = gameState.isMultiplayer();
 
@@ -149,7 +152,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
         if(gameState.isPurchased(PlayerStorage.PurchasesEnum.POTION_OF_LIFE)){
             Button usePotion = new Button(this);
             usePotion.setCompoundDrawablesWithIntrinsicBounds(
-                    R.drawable.fog_icon, 0, 0, 0);
+                    R.drawable.potion_icon, 0, 0, 0);
             usePotion.setSoundEffectsEnabled(false);
             usePotion.setOnClickListener(new View.OnClickListener() {
                 @Override

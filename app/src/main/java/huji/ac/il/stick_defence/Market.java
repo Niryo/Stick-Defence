@@ -42,7 +42,7 @@ public class Market extends Activity implements DoProtocolAction {
 
     private static final String CREDITS = "Credits: ";
     private Tower.TowerTypes myTowerType;
-    private String savedLeagueInfo = null;
+    private static String savedLeagueInfo = null;
     private GameState gameState;
     AlertDialog.Builder alertDialogBuilder;
 
@@ -69,7 +69,7 @@ public class Market extends Activity implements DoProtocolAction {
         alertDialogBuilder = new AlertDialog.Builder(this);
         if (getIntent().hasExtra("info")) {
 
-            this.savedLeagueInfo=getIntent().getStringExtra("info");
+            savedLeagueInfo = getIntent().getStringExtra("info");
         }
 
         if(getIntent().hasExtra("internet")){
@@ -105,7 +105,8 @@ public class Market extends Activity implements DoProtocolAction {
             if (isMultiplayer){
                 continueButton.setEnabled(false);
                 continueButton.setAlpha(0.7f);
-                continueButton.setText("Please wait for other players to join the league before continuing");
+                continueButton.setText("Please wait for other players to join" +
+                                       " the league before continuing");
             }
 
         }
@@ -197,7 +198,7 @@ public class Market extends Activity implements DoProtocolAction {
                 POTION_OF_LIFE_PRICE,
                 "Potion of Life",
                 PotionOfLife.info(),
-                R.drawable.basic_soldier_icon);
+                R.drawable.potion_icon);
         if (isMultiplayer){
             addButton(PlayerStorage.PurchasesEnum.MATH_BOMB,
                     R.id.buy_math_bomb,
@@ -469,5 +470,7 @@ public class Market extends Activity implements DoProtocolAction {
                 break;
         }
     }
+
+    public static String getLeagueInfo(){ return savedLeagueInfo; }
 
 }

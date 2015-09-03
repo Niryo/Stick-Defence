@@ -23,6 +23,7 @@ public class Sounds {
     public static final int TANK_SOUND = R.raw.tank_sound;
     public static final int OLD_MAN_SOUND= R.raw.old_man_sound;
     public static final int FOG_SOUND =R.raw.wind_sound;
+    public static final int POTION_SOUND =R.raw.potion_sound;
     public static final int MATH_BOMB =R.raw.shame;
     public static final int BOW_STRECH = R.raw.bow_strech;
     public static final int BOW_RELEASE = R.raw.bow_release;
@@ -54,14 +55,15 @@ public class Sounds {
             soundPool = new SoundPool(3,AudioManager.STREAM_MUSIC,0);
         }
         soundPoolMap= new HashMap<>();
-        soundPoolMap.put( RUN_SOUND, soundPool.load(context,R.raw.running_sound, 1) );
-        soundPoolMap.put( WALKING_SOUND, soundPool.load(context,R.raw.walking_sound, 1) );
-        soundPoolMap.put( TANK_SOUND, soundPool.load(context,R.raw.tank_sound, 1) );
-        soundPoolMap.put( ZOMBIE_SOUND, soundPool.load(context,R.raw.zombie_sound, 1) );
-        soundPoolMap.put( OLD_MAN_SOUND, soundPool.load(context,R.raw.old_man_sound, 1) );
-        soundPoolMap.put( BOW_STRECH, soundPool.load(context,R.raw.bow_strech, 1) );
+        soundPoolMap.put(RUN_SOUND, soundPool.load(context,R.raw.running_sound, 1) );
+        soundPoolMap.put(WALKING_SOUND, soundPool.load(context,R.raw.walking_sound, 1) );
+        soundPoolMap.put(TANK_SOUND, soundPool.load(context,R.raw.tank_sound, 1) );
+        soundPoolMap.put(ZOMBIE_SOUND, soundPool.load(context,R.raw.zombie_sound, 1) );
+        soundPoolMap.put(OLD_MAN_SOUND, soundPool.load(context,R.raw.old_man_sound, 1) );
+        soundPoolMap.put(BOW_STRECH, soundPool.load(context,R.raw.bow_strech, 1) );
         soundPoolMap.put(BOW_RELEASE, soundPool.load(context, R.raw.bow_release, 1));
         soundPoolMap.put(SMALL_EXPLOSION, soundPool.load(context, R.raw.small_explosion, 1));
+        soundPoolMap.put(POTION_SOUND, soundPool.load(context, R.raw.potion_sound, 1));
 
     }
 

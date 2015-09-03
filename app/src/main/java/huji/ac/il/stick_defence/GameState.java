@@ -72,7 +72,8 @@ public class GameState {
     private Activity gameActivity;
     private Tower rightTower;
     private Tower leftTower;
-    private boolean isInitialized=false;
+    private boolean isInitialized = false;
+    private boolean finalRound = false;
 
 
     /**
@@ -459,7 +460,11 @@ public class GameState {
                     rightPlayerStorage.buy(PlayerStorage.
                             PurchasesEnum.WOODEN_TOWER);
             }
-
+            this.rightTower = towerFactory(rightPlayerStorage,
+                               Sprite.Player.RIGHT);
+            if (this.towers.size() == 2){
+                this.towers.set(1, this.rightTower);
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -546,8 +551,9 @@ public class GameState {
     }
 
     public void usePotionOfLife(Sprite.Player player){
+        PotionOfLife.playSound();
         if(Sprite.Player.LEFT == player){
-            client.reportPotionOfLife();
+            if (isMultiplayer){ client.reportPotionOfLife(); }
             leftTower.increaceHp(PotionOfLife.LIFE_TO_ADD);
             //Next time, buy it again
             playerStorage.use(PlayerStorage.PurchasesEnum.POTION_OF_LIFE);
@@ -700,4 +706,8 @@ public class GameState {
         context.startActivity(intent);
         ((Activity) context).finish();
     }
+
+    public void setFinalRound() {this.finalRound = true; }
+
+    public boolean isFinalRound() {return this.finalRound; }
 }

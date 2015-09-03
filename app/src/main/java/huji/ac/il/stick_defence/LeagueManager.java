@@ -17,7 +17,10 @@ public class LeagueManager {
     //round we can see that peer 1 will be the partner of peer 3, and peer 2 will be the partner of peer 4:
     private int[][] allCombinationWithFour = {{0, 1, 2, 3}, {0, 2, 1, 3}, {0, 3, 1, 2}};
     private int[][] allCombinationWithSix = {{0, 1, 2, 3, 4, 5}, {0, 2, 1, 4, 3, 5}, {0, 3, 1, 5, 2, 4}, {0, 4, 1, 2, 3, 5}, {0, 5, 1, 3, 2, 4}};
-
+    private static int TWO_PLAYERS_STAGES = 3;
+    private static int FOUR_PLAYERS_STAGES = 3;
+    private static int SIX_PLAYERS_STAGES = 5;
+    private static int EIGHT_PLAYERS_STAGES = 3;
     public LeagueManager(ArrayList<Server.Peer> peers) {
         this.peers = peers;
         Collections.shuffle(this.peers); //we shuffle the peers so the pairing will be random.
@@ -30,14 +33,17 @@ public class LeagueManager {
      * @return information about the league
      */
     private JSONObject twoPersonLeague() {
+        GameState gameState = GameState.getInstance();
         JSONObject info = new JSONObject();
         JSONObject pairs = new JSONObject();
         try {
-        if(stage==3){
+        if(stage == TWO_PLAYERS_STAGES){
             addStatistics(info);
                 info.put("end_of_league", true);
                 resetLeague();
             return info;
+        } else if (stage == TWO_PLAYERS_STAGES - 1){
+            gameState.setFinalRound();
         }
         Server.getServerInstance().makePair(peers.get(0), peers.get(1));
         JSONObject players = new JSONObject();
@@ -58,14 +64,17 @@ public class LeagueManager {
      * @return information about the league
      */
     private JSONObject fourPersonLeague() {
+        GameState gameState = GameState.getInstance();
         JSONObject info = new JSONObject();
         JSONObject pairs = new JSONObject();
             try {
-        if(stage==3){
+        if(stage == FOUR_PLAYERS_STAGES){
             addStatistics(info);
             info.put("end_of_league", true);
             resetLeague();
             return info;
+        } else if (stage == FOUR_PLAYERS_STAGES - 1){
+            gameState.setFinalRound();
         }
         int pairCount = 0;
         for (int i = 0; i < 4; i += 2) {
@@ -93,14 +102,17 @@ public class LeagueManager {
      * @return information about the league
      */
     private JSONObject sixPersonLeague() {
+        GameState gameState = GameState.getInstance();
         JSONObject info = new JSONObject();
         JSONObject pairs = new JSONObject();
             try {
-        if(stage==5){
+        if(stage == SIX_PLAYERS_STAGES){
             addStatistics(pairs);
             info.put("end_of_league", true);
             resetLeague();
             return info;
+        } else if (stage == SIX_PLAYERS_STAGES - 1){
+            gameState.setFinalRound();
         }
         int pairCount = 0;
         for (int i = 0; i < 6; i += 2) {
@@ -128,14 +140,17 @@ public class LeagueManager {
      * @return
      */
     private JSONObject eightPersonLeague() {
+        GameState gameState = GameState.getInstance();
         JSONObject info = new JSONObject();
         JSONObject pairs = new JSONObject();
                 try {
-        if(stage==3){
+        if(stage == EIGHT_PLAYERS_STAGES){
             addStatistics(pairs);
                 info.put("end_of_league", true);
             resetLeague();
             return info;
+        } else if (stage == EIGHT_PLAYERS_STAGES - 1){
+            gameState.setFinalRound();
         }
         int pairCount = 0;
         //we run over the list of peers making a temp list, with all the peers that have the
@@ -171,26 +186,24 @@ public class LeagueManager {
 
         switch (this.peers.size()) {
             case 2:
-                info= twoPersonLeague();
+                info = twoPersonLeague();
                 break;
             case 4:
-                info= fourPersonLeague();
+                info = fourPersonLeague();
                 break;
             case 6:
-                info= sixPersonLeague();
+                info = sixPersonLeague();
                 break;
             case 8:
-                info= eightPersonLeague();
+                info = eightPersonLeague();
                 break;
-
         }
 
         return info;
     }
 
     private void resetLeague(){
-        this.stage=-1
-        ;
+        this.stage = -1;
         for (Server.Peer peer : peers){
             peer.resetWins();
         }

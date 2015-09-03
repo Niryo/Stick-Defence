@@ -70,21 +70,33 @@ public class GameSurface extends SurfaceView implements
         String half1 = message.substring(0, message.length() / 2);
         String half2 = message.substring(message.length() / 2);
 
-        canvas.drawText(half1,x,y,paint);
+        canvas.drawText(half1, x, y, paint);
         paint.setTextAlign(Paint.Align.LEFT);
         canvas.drawText(half2, x, y, paint);
         Sounds.getInstance().streamSound(Sounds.END_TRUMPET,false);
 
     }
 
-
+    public void goToLeagueInfo(){
+        gameState.finishGame();
+        stopGameLoop();
+        Intent intent = new Intent(context, LeagueInfoActivity.class);
+        intent.putExtra("NewGame", false);
+        String leagueInfo = Market.getLeagueInfo();
+        if (leagueInfo != null) {
+            Log.w("custom","goint to league form market and sending league info");
+            intent.putExtra("info", leagueInfo);
+        }
+        context.startActivity(intent);
+        ((Activity) context).finish();
+    }
 
     public void goToMarket() {
         gameState.finishGame();
         stopGameLoop();
-        Intent gameIntent = new Intent(context, Market.class);
-        gameIntent.putExtra("isMultiplayer", gameState.isMultiplayer());
-        context.startActivity(gameIntent);
+        Intent intent = new Intent(context, Market.class);
+        intent.putExtra("isMultiplayer", gameState.isMultiplayer());
+        context.startActivity(intent);
         ((Activity) context).finish();
     }
 

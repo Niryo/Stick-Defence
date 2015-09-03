@@ -41,7 +41,7 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
     private Client client = Client.getClientInstance();
     private ProgressDialog waitDialog;
     private int text_size;
-    private int TEXT_SCALE_FACTOR=30;
+    private static final int TEXT_SCALE_FACTOR = 30;
     private final String BUTTON_PUSHED_COLOR= "#FFFFCC";
     private final String BUTTON_RELEASED_COLOR="#FF9900";
     private String winner="";
@@ -54,7 +54,9 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_league_info);
-        int screenWidth = getApplicationContext().getResources().getDisplayMetrics().widthPixels;
+        int screenWidth =
+                getApplicationContext().getResources().
+                        getDisplayMetrics().widthPixels;
         this.text_size = screenWidth/TEXT_SCALE_FACTOR;
         waitDialog = new ProgressDialog(this);
         waitDialog.setMessage("Waiting for league information");
@@ -70,7 +72,7 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
 
         readyButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { //todo: switch to game and only then send ready to play.
+            public void onClick(View v) {
                 Intent gameIntent = new Intent(getApplicationContext(),
                         GameActivity.class);
                 gameIntent.putExtra("NewGame", newGame);
@@ -83,8 +85,11 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    readyButton.setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
-                    readyButton.setShadowLayer(4, 0, 0, Color.parseColor(BUTTON_RELEASED_COLOR));
+                    readyButton.
+                            setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
+                    readyButton.
+                            setShadowLayer(4, 0, 0,
+                                    Color.parseColor(BUTTON_RELEASED_COLOR));
 
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     readyButton.setTextColor(Color.BLACK);
@@ -138,7 +143,8 @@ private void initTabs(){
         public void onClick(View v) {
             tabHost.setCurrentTab(0);
             buttonTab1.setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
-            buttonTab1.setShadowLayer(4, 0, 0, Color.parseColor(BUTTON_RELEASED_COLOR));
+            buttonTab1.setShadowLayer(4, 0, 0,
+                    Color.parseColor(BUTTON_RELEASED_COLOR));
 
             buttonTab1.setTypeface(Typeface.SERIF,Typeface.BOLD);
             buttonTab2.setTextColor(Color.BLACK);
@@ -152,7 +158,8 @@ private void initTabs(){
         public void onClick(View v) {
             tabHost.setCurrentTab(1);
             buttonTab2.setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
-            buttonTab2.setShadowLayer(4, 0, 0, Color.parseColor(BUTTON_RELEASED_COLOR));
+            buttonTab2.setShadowLayer(4, 0, 0,
+                    Color.parseColor(BUTTON_RELEASED_COLOR));
             buttonTab2.setTypeface(Typeface.SERIF,Typeface.BOLD);
             buttonTab1.setTextColor(Color.BLACK);
             buttonTab1.setTypeface(Typeface.SERIF,Typeface.BOLD);
@@ -165,21 +172,15 @@ private void initTabs(){
     public void doAction(String rawInput) {
         Protocol.Action action = Protocol.getAction(rawInput);
 
-
-
         switch (action) {
             case LEAGUE_INFO:
                 Log.w("custom", "receive leagueinfo in : leagueInfo.class");
                 waitDialog.dismiss();
                 printLeagueInfo( Protocol.getData(rawInput));
-            /* if( GameState.getInstance().getInstance()!=null){
-                 GameState.getInstance().getInstance().sendInfoToPartner();
-            }*/
                 break;
             case PARTNER_INFO:
                 GameState.getInstance().newPartnerInfo( Protocol.getData(rawInput));
                 break;
-
         }
     }
 
@@ -189,8 +190,7 @@ private void initTabs(){
         final LinearLayout vsLayout = (LinearLayout) findViewById(R.id.vsLinearLayout);
 
         try {
-            JSONObject info = null;
-            info = new JSONObject(rawInfo);
+            JSONObject info = new JSONObject(rawInfo);
                 if (info.has("pairs")) {
                     JSONObject pairs= (JSONObject)info.get("pairs");
                     Iterator<?> pairKeys = pairs.keys();
@@ -200,7 +200,10 @@ private void initTabs(){
                     String player1 = players.getString("player1");
                     String player2 = players.getString("player2");
                     final VSview vsView = new VSview(this);
-                    LinearLayout.LayoutParams lp=  new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,1);
+                    LinearLayout.LayoutParams lp =
+                            new LinearLayout.LayoutParams(
+                                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT, 1);
                     lp.setMargins(0,0,0,50);
                     vsView.setNames(player1, player2);
                     vsView.setLayoutParams(lp);
@@ -215,7 +218,8 @@ private void initTabs(){
                 }
                 if(info.has("statistics")) {
                     ArrayList<PlayerWins> dataToSort = new ArrayList<>();
-                    final TableLayout table = (TableLayout) findViewById(R.id.statistics_table);
+                    final TableLayout table = (TableLayout)
+                            findViewById(R.id.statistics_table);
                     JSONObject stats = (JSONObject) info.get("statistics");
                     Iterator<?> statKeys = stats.keys();
                     while (statKeys.hasNext()) {
@@ -233,21 +237,21 @@ private void initTabs(){
                     for (PlayerWins pw : dataToSort) {
                         final TableRow tr = new TableRow(this);
                         TextView place = new TextView(this);
-                        //place.setBackground(getResources().getDrawable(R.drawable.cell_shape));
                         place.setText("" + count);
-                        place.setTextSize(TypedValue.COMPLEX_UNIT_PX,this.text_size);
+                        place.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                                          this.text_size);
                         place.setGravity(Gravity.CENTER);
                         count++;
                         TextView name = new TextView(this);
                         name.setText(pw.name);
-                        name.setTextSize(TypedValue.COMPLEX_UNIT_PX,this.text_size);
+                        name.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                                         this.text_size);
                         name.setGravity(Gravity.CENTER);
-                      //  name.setBackground(getResources().getDrawable(R.drawable.cell_shape));
                         TextView wins = new TextView(this);
                         wins.setText("" + pw.wins);
-                        wins.setTextSize(TypedValue.COMPLEX_UNIT_PX,this.text_size);
+                        wins.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                                         this.text_size);
                         wins.setGravity(Gravity.CENTER);
-                     //   wins.setBackground(getResources().getDrawable(R.drawable.cell_shape));
 
                         tr.addView(place);
                         tr.addView(name);
@@ -260,11 +264,8 @@ private void initTabs(){
 
                             }
                         });
-
                     }
-
                 }
-
 
                 if(info.has("end_of_league")){
                     runOnUiThread(new Runnable() {
@@ -272,8 +273,10 @@ private void initTabs(){
                         public void run() {
                             Sounds.getInstance().playTheme(Sounds.WIN_THEME);
                             TextView winText = (TextView) findViewById(R.id.tab3);
-                            winText.setText("All glory to " + winner + "!\n The big winner of the league!");
-                            winText.setTextSize(TypedValue.COMPLEX_UNIT_PX,(float) (text_size * 2));
+                            winText.setText("All glory to " + winner +
+                                    "!\n The big winner of the league!");
+                            winText.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                                                (float) (text_size * 2));
                             winText.setTextColor(Color.parseColor("#FF9900"));
                             winText.setShadowLayer(10, 0, 0, Color.parseColor("#FFFF66"));
                             final TabHost tabHost= (TabHost) findViewById(R.id.tabHost);

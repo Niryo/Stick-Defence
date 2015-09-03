@@ -117,6 +117,7 @@ public abstract class Soldier implements Serializable {
     }
 
     protected void attack() {
+        stopSound();
         this.attack = true;
         this.soldierY = screenHeight - (int) sprite.getScaledFrameHeight();
     }
@@ -215,10 +216,6 @@ public abstract class Soldier implements Serializable {
 
     public int getScreenWidth() {
         return this.screenWidth;
-    }
-
-    public int getScreenHeight() {
-        return this.screenHeight;
     }
 
     public int getCurrentFrame() {

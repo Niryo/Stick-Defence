@@ -40,7 +40,6 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
     BroadcastReceiver mReceiver;
     IntentFilter mIntentFilter;
     private ArrayAdapter adapter;
-    private ListView list;
     private ArrayList<WifiP2pDevice> devices = new ArrayList<>();
     private Client client = Client.getClientInstance();
     private boolean running;
@@ -77,7 +76,8 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
             }
         });
 
-        mManager = (WifiP2pManager) getSystemService(getApplicationContext().WIFI_P2P_SERVICE);
+        mManager = (WifiP2pManager)
+                getSystemService(getApplicationContext().WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(this, getMainLooper(), null);
         mReceiver = new WiFiDirectBroadcastReceiver(this, mManager, mChannel);
 
@@ -86,7 +86,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
-        list = (ListView) findViewById(R.id.devices);
+        ListView list = (ListView) findViewById(R.id.devices);
 
 //Start discovering peers in the background:
         new AsyncTask<Void, Void, Void>() {
@@ -96,7 +96,8 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
                 running = true;
                 while (running) {
                     Log.w("custom", "searching peers");
-                    mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
+                    mManager.discoverPeers(mChannel,
+                            new WifiP2pManager.ActionListener() {
                         @Override
                         public void onSuccess() {
 
@@ -118,16 +119,19 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
 
 
-        adapter = new DeviceAdapter(this, android.R.layout.simple_list_item_1, devices);
+        adapter = new DeviceAdapter(this,
+                                android.R.layout.simple_list_item_1, devices);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
                 WifiP2pDevice device = devices.get(position);
                 WifiP2pConfig config = new WifiP2pConfig();
                 config.deviceAddress = device.deviceAddress;
-                mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
+                mManager.connect(mChannel, config,
+                                 new WifiP2pManager.ActionListener() {
                     @Override
                     public void onSuccess() {
                         Log.w("custom", "connections success!");
@@ -138,13 +142,17 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
                                 Log.w("custom", "groupInfo:");
                                 Log.w("custom", info.toString());
                                 if (info.groupOwnerAddress != null) {
-                                    Log.w("custom", info.groupOwnerAddress.getHostAddress());
+                                    Log.w("custom",
+                                            info.groupOwnerAddress.
+                                                    getHostAddress());
                                     new AsyncTask<Void, Void, Void>() {
                                         @Override
                                         protected Void doInBackground(Void... params) {
                                             try {
                                                 Socket socket =
-                                                        new Socket(info.groupOwnerAddress.getHostAddress(),
+                                                        new Socket(info.
+                                                                groupOwnerAddress.
+                                                                getHostAddress(),
                                                                 Server.PORT);
                                                 client.setServer(socket);
 
@@ -153,9 +161,9 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
                                             }
                                             return null;
                                         }
-                                    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+                                    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                                            null);
                                 }
-
                             }
                         });
                     }
@@ -198,7 +206,6 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
         switch (action) {
             case NAME_CONFIRMED:
                 running = false;
-                //todo: go to wait state;
                 Log.w("custom", "going to league");
                 Intent intent = new Intent(this, LeagueInfoActivity.class);
                 startActivity(intent);
@@ -214,20 +221,16 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
                 finish();
                 break;
 
-
             case TEST:
               Client.getClientInstance().send(Protocol.stringify(Protocol.Action.TEST));
                 break;
-
-
         }
-
-
     }
 
-    //======================================Adapter class==============================
+    //=============================Adapter class================================
     private class DeviceAdapter extends ArrayAdapter<WifiP2pDevice> {
-        public DeviceAdapter(Context context, int resource, ArrayList<WifiP2pDevice> items) {
+        public DeviceAdapter(Context context, int resource,
+                             ArrayList<WifiP2pDevice> items) {
             super(context, resource, items);
         }
 
@@ -237,14 +240,15 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
             if (convertView == null) {
                 LayoutInflater vi;
                 vi = LayoutInflater.from(getContext());
-                convertView = vi.inflate(android.R.layout.simple_list_item_1, null);
+                convertView = vi.inflate(android.R.layout.simple_list_item_1,
+                                         null);
             }
 
             String title = getItem(position).deviceName;
-            TextView titleView = (TextView) convertView.findViewById(android.R.id.text1);
+            TextView titleView = (TextView)
+                    convertView.findViewById(android.R.id.text1);
             titleView.setText(title);
             return convertView;
         }
     }
-
 }

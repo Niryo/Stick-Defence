@@ -172,7 +172,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/buy_potion"
-                android:background="@drawable/basic_soldier_icon"
+                android:background="@drawable/potion_icon"
                 android:layout_marginRight="10dp"
                 />
 
