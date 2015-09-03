@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 /**
- * Created by yahav on 18/06/15.
+ * Represents a bazooka soldier
  */
 public class BazookaSoldier extends Soldier {
 
@@ -39,6 +39,12 @@ public class BazookaSoldier extends Soldier {
     private boolean canShoot = false;
     private Sprite.Player player;
 
+    /**
+     * Constructor
+     * @param context the context
+     * @param player the player
+     * @param delayInSec the delay from other player in seconds
+     */
     public BazookaSoldier(Context context, Sprite.Player player, double delayInSec) {
         super(context, player, SEC_TO_SCREEN_WIDTH, DAMAGE_PER_SEC,
               Sounds.WALKING_SOUND, delayInSec, HP, SoldierType.BAZOOKA);
@@ -76,6 +82,7 @@ public class BazookaSoldier extends Soldier {
 
     }
 
+    @Override
     public void update(long gameTime) {
         if (!super.isAttack()) {
             if (player == Sprite.Player.LEFT) {
@@ -114,10 +121,12 @@ public class BazookaSoldier extends Soldier {
 
     }
 
+    @Override
     public void render(Canvas canvas) {
         super.render(canvas);
     }
 
+    @Override
     public boolean isHitByArrow(Arrow arrow) {
         return super.isHitByArrow(arrow);
     }

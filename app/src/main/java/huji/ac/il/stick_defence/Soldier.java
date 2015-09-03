@@ -93,10 +93,12 @@ public abstract class Soldier implements Serializable {
 
         //Set speed
         if (this.PLAYER == Sprite.Player.LEFT) {
-            this.runPixelsPerSec = ((double) screenWidth) / (secToCrossScreen - delayInSec);
+            this.runPixelsPerSec = ((double) screenWidth) /
+                                    (secToCrossScreen - delayInSec);
 
         } else {
-            this.runPixelsPerSec = -((double) screenWidth) / (secToCrossScreen - delayInSec);
+            this.runPixelsPerSec = - ((double) screenWidth) /
+                                      (secToCrossScreen - delayInSec);
         }
         Log.w("custom", "Soldier pix per sec: " + runPixelsPerSec);
 

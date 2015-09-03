@@ -36,6 +36,12 @@ public class BombGrandpa extends Soldier {
 
     private Sprite.Player player;
 
+    /**
+     * Constructor
+     * @param context the context
+     * @param player the player
+     * @param delayInSec the delay from other player in seconds
+     */
     public BombGrandpa(Context context, Sprite.Player player, double delayInSec){
         super(context, player, SEC_TO_CROSS_SCREEN, DAMAGE_PER_SEC,
                 Sounds.OLD_MAN_SOUND, delayInSec, HP, SoldierType.BOMB_GRANDPA);
@@ -61,6 +67,7 @@ public class BombGrandpa extends Soldier {
         this.sounds = Sounds.getInstance();
     }
 
+    @Override
     public void update(long gameTime) {
         if (!super.isAttack()) {
             if (player == Sprite.Player.LEFT) {
@@ -80,10 +87,12 @@ public class BombGrandpa extends Soldier {
         super.update(gameTime);
     }
 
+    @Override
     public void render(Canvas canvas) {
         super.render(canvas);
     }
 
+    @Override
     public boolean isHitByArrow(Arrow arrow) {
         return super.isHitByArrow(arrow);
     }

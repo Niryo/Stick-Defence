@@ -38,6 +38,12 @@ public class BasicSoldier extends Soldier {
 
     private Sprite.Player player;
 
+    /**
+     * Constructor
+     * @param context the context
+     * @param player the player
+     * @param delayInSec the delay from other player in seconds
+     */
     public BasicSoldier(Context context, Sprite.Player player, double delayInSec) {
         super(context, player, SEC_TO_CROSS_SCREEN, DAMAGE_PER_SEC,
               Sounds.RUN_SOUND, delayInSec, HP, SoldierType.BASIC);
@@ -68,13 +74,10 @@ public class BasicSoldier extends Soldier {
             super.initSprite(context, rightSoldierPic, NUMBER_OF_FRAMES,
                     SCREEN_HEIGHT_PORTION, MOVE_FPS);
         }
-
-
         this.player = player;
-
-
     }
 
+    @Override
     public void update(long gameTime) {
         if (!super.isAttack()) {
             if (player == Sprite.Player.LEFT) {
@@ -98,10 +101,12 @@ public class BasicSoldier extends Soldier {
         super.update(gameTime);
     }
 
+    @Override
     public void render(Canvas canvas) {
         super.render(canvas);
     }
 
+    @Override
     public boolean isHitByArrow(Arrow arrow) {
         return super.isHitByArrow(arrow);
     }

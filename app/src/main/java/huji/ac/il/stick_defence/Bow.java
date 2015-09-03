@@ -214,7 +214,7 @@ public class Bow implements Serializable {
         if (this.currentFrame == NUMBER_OF_FRAMES - 4) {
             stopStrechSound();
             playReleaseSound();
-            this.gameState.addArrow(new Arrow(this.context, this.pos[0], this.pos[1], this.tan, this.player, 0));
+            this.gameState.addArrow(new Arrow(this.pos[0], this.pos[1], this.tan, this.player, 0));
 
 
         }
@@ -226,7 +226,7 @@ public class Bow implements Serializable {
 
         this.distance = (int) (pathLength * relativeDistance);
         resetMatrix();
-        this.gameState.addArrow(new Arrow(this.context, this.pos[0],
+        this.gameState.addArrow(new Arrow(this.pos[0],
                 this.pos[1], this.tan, this.player, delayInSec));
 
     }

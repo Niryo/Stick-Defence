@@ -14,7 +14,7 @@ import java.io.Serializable;
 /**
  * This class represents the Arrow of the game
  */
-public class Arrow implements Serializable {
+public class Arrow {
     //===========================Arrow's abilities==============================
     private static final double SEC_TO_CROSS_SCREEN = 2;
     private static final int    ARROW_DAMAGE = 10;
@@ -41,8 +41,8 @@ public class Arrow implements Serializable {
      * @param x the x value
      * @param y the y value
      * @param tan arrow angle
-     * @param player the player that shot
-     * @param delayInSec
+     * @param player the player that shot the arrow
+     * @param delayInSec the delay from other player
      */
     public Arrow(float x, float y, float[] tan,
                  Sprite.Player player, double delayInSec) {
@@ -53,7 +53,6 @@ public class Arrow implements Serializable {
                 gameState.getCanvasHeight();
         this.x = x;
         this.y = y;
-
 
         this.player = player;
         this.bm_offsetX = scaledArrowPic.getWidth() / 2;
@@ -69,7 +68,6 @@ public class Arrow implements Serializable {
         if (pathLeft > 0) {
             pixPerSec = newSpeed;
         } else {
-            //todo:
             pixPerSec = oldSpeed;
         }
         lastUpdateTime = System.currentTimeMillis();
@@ -81,6 +79,10 @@ public class Arrow implements Serializable {
         matrix.postTranslate(this.x - bm_offsetX, this.y - bm_offsetY);
     }
 
+    /**
+     * Update arrow's position
+     * @param gameTime the time passed
+     */
     public void update(long gameTime) {
         double passedTimeInSec = ((double) (gameTime - lastUpdateTime)) / 1000;
         lastUpdateTime = System.currentTimeMillis();
@@ -96,6 +98,10 @@ public class Arrow implements Serializable {
         }
     }
 
+    /**
+     * Draw the arrow
+     * @param canvas the canvas to draw on
+     */
     public void render(Canvas canvas) {
         canvas.drawBitmap(scaledArrowPic, matrix, null);
         Paint paint = new Paint();
@@ -105,6 +111,11 @@ public class Arrow implements Serializable {
         canvas.drawPoint(this.getHeadX(), this.getHeadY(), paint);
     }
 
+    /**
+     * Init the arrow after construct
+     * @param context the context
+     * @param scaleDownFactor scale down size
+     */
     public static void init(Context context, double scaleDownFactor) {
         Bitmap arrowPic = BitmapFactory.decodeResource(context.getResources(),
                 R.drawable.arrow); // Read resource only once

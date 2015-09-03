@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Created by yahav on 09/05/15.
+ * A class represents the AI
  */
 public class ArtificialIntelligence {
-
+    //=============================Constants====================================
     private static final float START_FACTOR_TO_SEND_SOLDIERS = 3.0f;
     private static final float START_SECONDS_TO_SHOOT = 3.0f;
     private static final float START_SCREEN_PORTION_TO_AIM = 0.3f;
     private static final float LEVEL_UP_FACTOR = 0.9f;
+    //==========================================================================
 
     GameState gameState;
 
@@ -19,11 +20,15 @@ public class ArtificialIntelligence {
                  lastBombGrandpa, lastBazooka, lastTank;
     private long lastShootInMillisec;
     private float secondsToShoot;
+
     private int pixelsShootRange;
     private float factor_send_soldiers;
     private int level;
     private PlayerStorage aiStorage;
 
+    /**
+     * Constructor
+     */
     ArtificialIntelligence() {
         gameState = GameState.getInstance();
         int screenWidth = gameState.getContext().getResources().
@@ -40,6 +45,9 @@ public class ArtificialIntelligence {
         level = 0;
     }
 
+    /**
+     * Send AI's soldier
+     */
     public void sendSoldier() {
         long currentTime = System.currentTimeMillis();
         if ((currentTime - lastTank) >=
@@ -82,6 +90,9 @@ public class ArtificialIntelligence {
     }
 
 
+    /**
+     * Shoot an arrow
+     */
     public void shoot() {
 
         long currentTime = System.currentTimeMillis();
@@ -120,6 +131,9 @@ public class ArtificialIntelligence {
         }
     }
 
+    /**
+     * Level up in the end of each game
+     */
     public void levelUp(){
         this.level++;
 
@@ -154,6 +168,12 @@ public class ArtificialIntelligence {
         this.factor_send_soldiers *= LEVEL_UP_FACTOR;
     }
 
+    /**
+     * Return integer between min and max
+     * @param min the min value
+     * @param max the max value
+     * @return integer between min and max
+     */
     public static int randInt(int min, int max) {
         Random rand = new Random();
         int randomNum = rand.nextInt((max - min) + 1) + min;
