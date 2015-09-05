@@ -224,7 +224,7 @@ public abstract class Soldier implements DrawableObject{
     }
 
     public void playSound(){
-       this.soundStream = Sounds.playSound(this.soundId);
+       this.soundStream = Sounds.playSound(this.soundId, false);
     }
     public void stopSound(){
         Sounds.stopSound(this.soundStream);
