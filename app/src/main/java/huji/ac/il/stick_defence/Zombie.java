@@ -27,6 +27,7 @@ public class Zombie extends Soldier {
     //============================Sprite constants==============================
     private static final int NUMBER_OF_FRAMES = 9;
     private static final int MOVE_FPS = 10;
+    private static final int ATTACK_FRAME = 3;
     //==========================================================================
 
     private static Bitmap leftSoldierPic = null;
@@ -71,16 +72,22 @@ public class Zombie extends Soldier {
                 if (getSoldierX() + getScaledFrameWidth() >=
                         gameState.getRightTowerLeftX()) {
                     super.attack();
-                    super.setSoldierX(getSoldierX() +
-                            (int) getScaledFrameWidth());
+                    super.setSoldierX(getSoldierX() + (int)
+                            getScaledFrameWidth());
+                    super.setSound(Sounds.BASIC_HIT);
                 }
             } else {
                 if (getSoldierX() + getScaledFrameWidth() <=
                         gameState.getLeftTowerRightX()) {
                     super.attack();
-                    super.setSoldierX(getSoldierX() +
-                            (int) getScaledFrameWidth());
+                    super.setSoldierX(getSoldierX() + (int)
+                            getScaledFrameWidth());
+                    super.setSound(Sounds.BASIC_HIT);
                 }
+            }
+        } else {
+            if (getCurrentFrame() == ATTACK_FRAME){
+                super.playSound();
             }
         }
         super.update(gameTime);

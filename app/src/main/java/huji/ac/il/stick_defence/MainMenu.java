@@ -87,6 +87,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
         singlePlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Sounds.playSound(Sounds.BUTTON_CLICK, false);
                 stopSoundOnPause = false;
                 Intent marketIntent = new Intent(getApplicationContext(),
                         Market.class);
@@ -96,13 +97,14 @@ public class MainMenu extends Activity implements DoProtocolAction {
             }
         });
 
-        //=========================Create League================================
+        //===========================CreateLeague===============================
 
         Button createLeague = (Button) findViewById(R.id.create_league);
         designButton(createLeague);
         createLeague.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Sounds.playSound(Sounds.BUTTON_CLICK, false);
                 if (isCreateLeagueOptionsVisible) { //if league options are already visible,
                     isCreateLeagueOptionsVisible = false;
                     findViewById(R.id.create_league_options).setVisibility(View.GONE);
@@ -128,6 +130,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 increasePlayersButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Sounds.playSound(Sounds.BUTTON_CLICK, false);
                         if (nPlayers[0] < MAX_N_PLAYERS) {
                             nPlayers[0]+=2;
                         }
@@ -138,6 +141,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 decreasePlayersButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Sounds.playSound(Sounds.BUTTON_CLICK, false);
                         if (nPlayers[0] > MIN_N_PLAYERS) {
                             nPlayers[0]-=2;
                         }
@@ -149,6 +153,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 startButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Sounds.playSound(Sounds.BUTTON_CLICK, false);
                         Server.createServer(nPlayers[0]);
                         int radioButtonId = ((RadioGroup)
                                 findViewById(R.id.network_choice))
@@ -230,6 +235,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
         joinLeague.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Sounds.playSound(Sounds.BUTTON_CLICK, false);
                 Intent createLeague = new Intent(getApplicationContext(),
                         JoinLeagueActivity.class);
                 stopSoundOnPause = false;
@@ -244,6 +250,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
         connectOverLanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Sounds.playSound(Sounds.BUTTON_CLICK, false);
                 final Dialog dialog = new Dialog(MainMenu.this);
                 dialog.setContentView(R.layout.enter_ip_dialog);
                 dialog.setTitle("Enter server ip:");
@@ -280,6 +287,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 connect.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Sounds.playSound(Sounds.BUTTON_CLICK, false);
                         dialog.dismiss();
                         final String ip= editText.getText().toString();
                         SharedPreferences.Editor editor = settings.edit();

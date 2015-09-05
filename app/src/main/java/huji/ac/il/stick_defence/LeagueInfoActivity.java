@@ -68,6 +68,7 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
         readyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Sounds.playSound(Sounds.BUTTON_CLICK, false);
                 Intent gameIntent = new Intent(getApplicationContext(),
                         GameActivity.class);
                 gameIntent.putExtra("NewGame", newGame);
@@ -131,6 +132,7 @@ private void initTabs(){
     buttonTab1.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            Sounds.playSound(Sounds.BUTTON_CLICK, false);
             tabHost.setCurrentTab(0);
             buttonTab1.setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
             buttonTab1.setShadowLayer(4, 0, 0,
@@ -146,6 +148,7 @@ private void initTabs(){
     buttonTab2.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            Sounds.playSound(Sounds.BUTTON_CLICK, false);
             tabHost.setCurrentTab(1);
             buttonTab2.setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
             buttonTab2.setShadowLayer(4, 0, 0,
@@ -292,6 +295,7 @@ private void initTabs(){
                             buttonTab1.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
+                                    Sounds.playSound(Sounds.BUTTON_CLICK, false);
                                     tabHost.setCurrentTab(2);
                                     buttonTab1.setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
                                     buttonTab1.setShadowLayer(8, 0, 0, Color.parseColor(BUTTON_RELEASED_COLOR));
@@ -305,6 +309,7 @@ private void initTabs(){
                             buttonTab2.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
+                                    Sounds.playSound(Sounds.BUTTON_CLICK, false);
                                     tabHost.setCurrentTab(0);
                                     buttonTab2.setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
                                     buttonTab2.setShadowLayer(4, 0, 0, Color.parseColor(BUTTON_RELEASED_COLOR));

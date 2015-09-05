@@ -29,6 +29,7 @@ public class BasicSoldier extends Soldier {
     private static final int ATTACK_N_FRAMES = 11;
     private static final int MOVE_FPS = 40;
     private static final int ATTACK_FPS = 20;
+    private static final int ATTACK_FRAME = 2;
     //==========================================================================
 
     private static Bitmap leftSoldierPic = null;
@@ -85,17 +86,23 @@ public class BasicSoldier extends Soldier {
                         gameState.getRightTowerLeftX()) {
                     super.attack(leftAttackSoldierPic, ATTACK_N_FRAMES,
                             ATTACK_FPS);
-                    super.setSoldierX(getSoldierX() +
-                            (int) getScaledFrameWidth());
+                    super.setSoldierX(getSoldierX() + (int)
+                            getScaledFrameWidth());
+                    super.setSound(Sounds.BASIC_HIT);
                 }
             } else {
                 if (getSoldierX() + getScaledFrameWidth() / 2 <=
                         gameState.getLeftTowerRightX()) {
                     super.attack(rightAttackSoldierPic, ATTACK_N_FRAMES,
                             ATTACK_FPS);
-                    super.setSoldierX(getSoldierX() +
-                            (int) getScaledFrameWidth());
+                    super.setSoldierX(getSoldierX() + (int)
+                            getScaledFrameWidth());
+                    super.setSound(Sounds.BASIC_HIT);
                 }
+            }
+        } else {
+            if (getCurrentFrame() == ATTACK_FRAME){
+                super.playSound();
             }
         }
         super.update(gameTime);

@@ -31,6 +31,8 @@ public class Sounds {
     public static final int SMALL_EXPLOSION = R.raw.small_explosion;
     public static final int BIG_EXPLOSTION = R.raw.big_explosion;
     public static final int SWORD_HIT = R.raw.sward_hit;
+    public static final int BASIC_HIT = R.raw.basic_hit;
+    public static final int BUTTON_CLICK = R.raw.button_click;
 
     private static MediaPlayer mainThemePlayer;
     private static MediaPlayer winThemePlayer;
@@ -53,28 +55,24 @@ public class Sounds {
             soundPool = new SoundPool(3, AudioManager.STREAM_MUSIC, 0);
         }
         soundPoolMap = new HashMap<>();
-        soundPoolMap.put(RUN_SOUND, soundPool.load(context, R.raw
-                .running_sound, 1));
-        soundPoolMap.put(WALKING_SOUND, soundPool.load(context, R.raw
-                .walking_sound, 1));
-        soundPoolMap.put(TANK_SOUND, soundPool.load(context, R.raw
-                .tank_sound, 1));
-        soundPoolMap.put(ZOMBIE_SOUND, soundPool.load(context, R.raw
-                .zombie_sound, 1));
-        soundPoolMap.put(OLD_MAN_SOUND, soundPool.load(context, R.raw
-                .old_man_sound, 1));
-        soundPoolMap.put(BOW_STRECH, soundPool.load(context, R.raw
-                .bow_strech, 1));
-        soundPoolMap.put(BOW_RELEASE, soundPool.load(context, R.raw
-                .bow_release, 1));
-        soundPoolMap.put(SMALL_EXPLOSION, soundPool.load(context, R.raw
-                .small_explosion, 1));
-        soundPoolMap.put(BIG_EXPLOSTION, soundPool.load(context, R.raw
-                .big_explosion, 1));
-        soundPoolMap.put(POTION_SOUND, soundPool.load(context, R.raw
-                .potion_sound, 1));
-        soundPoolMap.put(SWORD_HIT, soundPool.load(context, R.raw
-                .sward_hit, 1));
+        soundPoolMap.put(RUN_SOUND, soundPool.load(context, RUN_SOUND, 1));
+        soundPoolMap
+                .put(WALKING_SOUND, soundPool.load(context, WALKING_SOUND, 1));
+        soundPoolMap.put(TANK_SOUND, soundPool.load(context, TANK_SOUND, 1));
+        soundPoolMap
+                .put(ZOMBIE_SOUND, soundPool.load(context, ZOMBIE_SOUND, 1));
+        soundPoolMap
+                .put(OLD_MAN_SOUND, soundPool.load(context, OLD_MAN_SOUND, 1));
+        soundPoolMap.put(BOW_STRECH, soundPool.load(context, BOW_STRECH, 1));
+        soundPoolMap.put(BOW_RELEASE, soundPool.load(context, BOW_RELEASE, 1));
+        soundPoolMap
+                .put(SMALL_EXPLOSION, soundPool.load(context, SMALL_EXPLOSION, 1));
+        soundPoolMap
+                .put(BIG_EXPLOSTION, soundPool.load(context, BIG_EXPLOSTION, 1));
+        soundPoolMap.put(POTION_SOUND, soundPool.load(context, POTION_SOUND, 1));
+        soundPoolMap.put(SWORD_HIT, soundPool.load(context, SWORD_HIT, 1));
+        soundPoolMap.put(BASIC_HIT, soundPool.load(context, BASIC_HIT, 1));
+        soundPoolMap.put(BUTTON_CLICK, soundPool.load(context, BUTTON_CLICK, 1));
 
     }
 

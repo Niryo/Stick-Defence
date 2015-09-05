@@ -135,6 +135,7 @@ public class Market extends Activity implements DoProtocolAction {
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Sounds.playSound(Sounds.BUTTON_CLICK, false);
                 stopSoundOnPause = false;
                 if (!isMultiplayer) {
                     Intent intent = new Intent(getApplicationContext(),
@@ -242,6 +243,7 @@ public class Market extends Activity implements DoProtocolAction {
         bigWoodenTowerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+            Sounds.playSound(Sounds.BUTTON_CLICK, false);
             alertDialogBuilder.setTitle("Big Wooden Tower");
             alertDialogBuilder
                 .setMessage(BigWoodenTower.info())
@@ -277,6 +279,7 @@ public class Market extends Activity implements DoProtocolAction {
         stoneTowerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+            Sounds.playSound(Sounds.BUTTON_CLICK, false);
             alertDialogBuilder.setTitle("Stone Tower");
             alertDialogBuilder
                 .setMessage(StoneTower.info())
@@ -312,6 +315,7 @@ public class Market extends Activity implements DoProtocolAction {
         fortifiedTowerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+            Sounds.playSound(Sounds.BUTTON_CLICK, false);
             alertDialogBuilder.setTitle("Fortified Tower");
             alertDialogBuilder
                 .setMessage(FortifiedTower.info())
@@ -341,16 +345,6 @@ public class Market extends Activity implements DoProtocolAction {
             alertDialog.show();
             }
         });
-//        addButton(PlayerStorage.PurchasesEnum.BIG_WOODEN_TOWER,
-//                R.id.buy_big_wooden_tower,
-//                BIG_WOODEN_TOWER_PRICE);
-//        addButton(PlayerStorage.PurchasesEnum.STONE_TOWER,
-//                R.id.buy_stone_tower,
-//                STONE_TOWER_PRICE);
-//        addButton(PlayerStorage.PurchasesEnum.FORTIFIED_TOWER,
-//                R.id.buy_fortified_tower,
-//                FORTIFIED_TOWER_PRICE);
-
     }
 
     private void addButton(final PlayerStorage.PurchasesEnum item,
@@ -368,6 +362,7 @@ public class Market extends Activity implements DoProtocolAction {
             buyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Sounds.playSound(Sounds.BUTTON_CLICK, false);
                     alertDialogBuilder.setTitle(title);
                     alertDialogBuilder
                             .setMessage(info)

@@ -85,6 +85,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
         exitToMainMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Sounds.playSound(Sounds.BUTTON_CLICK, false);
                 stopSoundOnPause = false;
                 Intent mainMenuIntent = new Intent(getApplicationContext(),
                         MainMenu.class);

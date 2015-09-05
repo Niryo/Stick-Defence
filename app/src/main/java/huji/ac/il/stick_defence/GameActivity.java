@@ -516,6 +516,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
     @Override
     public void onBackPressed() {
+        Sounds.playSound(Sounds.BUTTON_CLICK, false);
         new AlertDialog.Builder(this)
                 .setTitle("Quit")
                 .setMessage("Are you sure you want to quit to main menu?")
