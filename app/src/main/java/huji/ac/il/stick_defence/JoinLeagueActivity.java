@@ -228,9 +228,9 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
         switch (action) {
             case NAME_CONFIRMED:
                 running = false;
-                Log.w("custom", "going to league");
+                Log.w("custom", "going to market");
                 stopSoundOnPause = false;
-                Intent intent = new Intent(this, LeagueInfoActivity.class);
+                Intent intent = new Intent(this, Market.class);
                 startActivity(intent);
                 finish();
                 break;

@@ -77,6 +77,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
         playerName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Sounds.playSound(Sounds.BUTTON_CLICK, false);
                 showNicknameDialog(false);
             }
         });
@@ -236,12 +237,10 @@ public class MainMenu extends Activity implements DoProtocolAction {
             @Override
             public void onClick(View v) {
                 Sounds.playSound(Sounds.BUTTON_CLICK, false);
-                Intent intent = new Intent(getApplicationContext(),
-                                           Market.class);
-                intent.putExtra("isMultiplayer", true);
-                intent.putExtra("internet", false);
+                Intent createLeague = new Intent(getApplicationContext(),
+                        JoinLeagueActivity.class);
                 stopSoundOnPause = false;
-                startActivity(intent);
+                startActivity(createLeague);
                 finish();
             }
         });
