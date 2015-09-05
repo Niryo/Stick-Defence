@@ -29,6 +29,8 @@ public class Sounds {
     public static final int START_TRUMPET = R.raw.start_trumpet;
     public static final int END_TRUMPET = R.raw.end_trumpet;
     public static final int SMALL_EXPLOSION = R.raw.small_explosion;
+    public static final int BIG_EXPLOSTION = R.raw.big_explosion;
+    public static final int SWORD_HIT = R.raw.sward_hit;
 
     private static MediaPlayer mainThemePlayer;
     private static MediaPlayer winThemePlayer;
@@ -67,8 +69,12 @@ public class Sounds {
                 .bow_release, 1));
         soundPoolMap.put(SMALL_EXPLOSION, soundPool.load(context, R.raw
                 .small_explosion, 1));
+        soundPoolMap.put(BIG_EXPLOSTION, soundPool.load(context, R.raw
+                .big_explosion, 1));
         soundPoolMap.put(POTION_SOUND, soundPool.load(context, R.raw
                 .potion_sound, 1));
+        soundPoolMap.put(SWORD_HIT, soundPool.load(context, R.raw
+                .sward_hit, 1));
 
     }
 

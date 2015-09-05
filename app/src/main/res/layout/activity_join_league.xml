@@ -12,7 +12,7 @@
     <TextView
         android:text="@string/peers" android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="30dp"
+        android:textSize="30sp"
         android:layout_gravity="center"
 
         />
@@ -20,8 +20,7 @@
     <ListView
         android:id="@+id/devices"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        ></ListView>
+        android:layout_width="wrap_content"/>
 
 
     <Button
@@ -29,6 +28,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/exit_to_main_menu"
         android:background="@drawable/wooden_tab"
+        android:soundEffectsEnabled="false"
         android:text="@string/exit_to_main_menu"
         android:layout_gravity="bottom"
         android:layout_margin="10dp"/>

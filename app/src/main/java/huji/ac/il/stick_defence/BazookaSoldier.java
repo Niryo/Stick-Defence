@@ -108,7 +108,8 @@ public class BazookaSoldier extends Soldier {
                     Bullet bullet = new Bullet(bulletX,
                                                getSoldierY() /
                                                        BAZOOKA_HEIGHT_RELATIVE,
-                                               getPlayer());
+                                               getPlayer(),
+                                               Sounds.SMALL_EXPLOSION);
 
                     gameState.addBullet(bullet);
                     canShoot = false;

@@ -30,6 +30,7 @@ public class Swordman extends Soldier {
     private static final int MOVE_FPS = 15;
     private static final int ATTACK_FPS = 20;
     private static final float RANGE_FROM_TOWER_ATTACK = 1.5f;
+    private static final int ATTACK_PIC = 4;
     //==========================================================================
 
     private static Bitmap leftSoldierPic = null;
@@ -80,6 +81,7 @@ public class Swordman extends Soldier {
             if (player == Sprite.Player.LEFT) {
                 if (getSoldierX() + getScaledFrameWidth() * RANGE_FROM_TOWER_ATTACK >=
                         gameState.getRightTowerLeftX()) {
+                    super.setSound(R.raw.sward_hit);
                     super.attack(leftAttackSoldierPic, ATTACK_N_FRAMES,
                             ATTACK_FPS);
                     super.setSoldierX(getSoldierX() +
@@ -90,9 +92,14 @@ public class Swordman extends Soldier {
                         gameState.getLeftTowerRightX()) {
                     super.attack(rightAttackSoldierPic, ATTACK_N_FRAMES,
                             ATTACK_FPS);
-                    super.setSoldierX(getSoldierX() +
-                            (int) getScaledFrameWidth());
+                    super.setSoldierX(getSoldierX() + (int)
+                            getScaledFrameWidth());
+                    super.setSound(R.raw.sward_hit);
                 }
+            }
+        } else {
+            if (getCurrentFrame() == ATTACK_PIC){
+                super.playSound();
             }
         }
         super.update(gameTime);

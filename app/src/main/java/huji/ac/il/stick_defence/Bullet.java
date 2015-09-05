@@ -20,6 +20,7 @@ public class Bullet {
     private long lastUpdateTime;
     private double x_pixPerSec;
     private Sprite sprite;
+    int soundId;
 
     /**
      * Constructor
@@ -27,7 +28,7 @@ public class Bullet {
      * @param y the y value
      * @param player the player who shot the bullet
      */
-    public Bullet(float x, float y, Sprite.Player player) {
+    public Bullet(float x, float y, Sprite.Player player, int soundId) {
         this.x = x;
         this.y = y;
 
@@ -40,6 +41,8 @@ public class Bullet {
             sprite = leftBulletSprite;
         }
         resetUpdateTime();
+
+        this.soundId = soundId;
     }
 
     /**
@@ -106,7 +109,7 @@ public class Bullet {
     }
 
     private void playExplosionSound(){
-        Sounds.playSound(Sounds.SMALL_EXPLOSION, false);
+        Sounds.playSound(soundId, false);
     }
 
 }

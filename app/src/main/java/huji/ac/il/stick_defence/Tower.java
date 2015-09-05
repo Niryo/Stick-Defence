@@ -199,7 +199,7 @@ public abstract class Tower {
         }
     }
 
-    public double getScaledWidth() {
+    public double getScaledWidth(){
         return towerSprite.getScaledFrameWidth();
     }
 

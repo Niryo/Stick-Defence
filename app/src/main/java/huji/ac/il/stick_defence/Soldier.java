@@ -230,5 +230,12 @@ public abstract class Soldier implements DrawableObject{
         Sounds.stopSound(this.soundStream);
     }
 
+    public void setSound(int sound){
+        stopSound();
+        this.soundId = sound;
+
+    }
+
     public SoldierType getSoldierType(){ return this.soldierType; }
+
 }

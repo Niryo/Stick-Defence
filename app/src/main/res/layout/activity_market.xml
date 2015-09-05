@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:paddingRight="50dp"
-                android:paddingLeft="80dp"
+                android:paddingLeft="50dp"
                 android:text="@string/soldiers"
                 android:textColor="#FFFFFF"
                 android:typeface="serif"
@@ -68,6 +68,7 @@
                 android:id="@+id/buy_zombie"
                 android:background="@drawable/zombie_icon"
                 android:layout_marginRight="10dp"
+                android:soundEffectsEnabled="false"
                 />
 
             <Button
@@ -76,6 +77,7 @@
                 android:id="@+id/buy_swordman"
                 android:background="@drawable/swordman_icon"
                 android:layout_marginRight="10dp"
+                android:soundEffectsEnabled="false"
                 />
 
             <Button
@@ -84,6 +86,7 @@
                 android:id="@+id/buy_bomb_grandpa"
                 android:background="@drawable/bomb_grandpa_icon"
                 android:layout_marginRight="10dp"
+                android:soundEffectsEnabled="false"
                 />
 
             <Button
@@ -92,6 +95,7 @@
                 android:id="@+id/buy_bazooka_soldier"
                 android:background="@drawable/bazooka_icon"
                 android:layout_marginRight="10dp"
+                android:soundEffectsEnabled="false"
                 />
 
             <Button
@@ -100,6 +104,7 @@
                 android:id="@+id/buy_tank"
                 android:background="@drawable/tank_icon"
                 android:layout_marginRight="10dp"
+                android:soundEffectsEnabled="false"
                 />
         </LinearLayout>
 
@@ -120,8 +125,7 @@
                 android:paddingRight="50dp"
                 android:text="@string/towers"
                 android:textColor="#FFFFFF"
-                android:typeface="serif"
-                android:paddingLeft="50dp"/>
+                android:typeface="serif"/>
 
             <Button
                 android:layout_width="wrap_content"
@@ -130,6 +134,7 @@
                 android:visibility="invisible"
                 android:background="@drawable/big_wooden_tower_blue_icon"
                 android:layout_marginRight="10dp"
+                android:soundEffectsEnabled="false"
                 />
             <Button
                 android:layout_width="wrap_content"
@@ -138,6 +143,7 @@
                 android:visibility="invisible"
                 android:background="@drawable/stone_tower_blue_icon"
                 android:layout_marginRight="10dp"
+                android:soundEffectsEnabled="false"
                 />
             <Button
                 android:layout_width="wrap_content"
@@ -146,6 +152,7 @@
                 android:visibility="invisible"
                 android:background="@drawable/fortified_tower_icon"
                 android:layout_marginRight="10dp"
+                android:soundEffectsEnabled="false"
                 />
         </LinearLayout>
 
@@ -174,6 +181,7 @@
                 android:id="@+id/buy_potion"
                 android:background="@drawable/potion_icon"
                 android:layout_marginRight="10dp"
+                android:soundEffectsEnabled="false"
                 />
 
             <Button
@@ -183,6 +191,7 @@
                 android:id="@+id/buy_math_bomb"
                 android:background="@drawable/math_bomb"
                 android:layout_marginRight="10dp"
+                android:soundEffectsEnabled="false"
                 />
 
             <Button
@@ -192,6 +201,7 @@
                 android:id="@+id/buy_fog"
                 android:background="@drawable/fog_icon"
                 android:layout_marginRight="10dp"
+                android:soundEffectsEnabled="false"
                 />
 
         </LinearLayout>
@@ -207,6 +217,7 @@
         android:layout_gravity="right"
         android:id="@+id/market_play_button"
         android:textStyle="bold|italic"
+        android:soundEffectsEnabled="false"
         android:layout_weight="2" />
 
 </LinearLayout>

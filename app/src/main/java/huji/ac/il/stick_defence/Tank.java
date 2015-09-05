@@ -103,7 +103,8 @@ public class Tank extends Soldier {
                     }
                     Bullet bullet = new Bullet(bulletX,
                                                getSoldierY() / TANK_HEIGHT_RELATIVE,
-                                               getPlayer());
+                                               getPlayer(),
+                                               Sounds.BIG_EXPLOSTION);
 
                     gameState.addBullet(bullet);
                     canShoot = false;

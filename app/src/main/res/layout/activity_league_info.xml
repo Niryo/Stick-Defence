@@ -19,6 +19,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Statistics table"
+            android:soundEffectsEnabled="false"
             android:id="@+id/buttonTab1"
             android:layout_weight="1"
             android:background="@drawable/wooden_tab"
@@ -28,6 +29,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Next Round battles"
+            android:soundEffectsEnabled="false"
             android:id="@+id/buttonTab2"
             android:layout_weight="1"
             android:background="@drawable/wooden_tab" />

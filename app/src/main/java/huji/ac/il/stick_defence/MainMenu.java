@@ -129,7 +129,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
                     @Override
                     public void onClick(View v) {
                         if (nPlayers[0] < MAX_N_PLAYERS) {
-                            nPlayers[0]++;
+                            nPlayers[0]+=2;
                         }
                         nPlayersText.setText(String.valueOf(nPlayers[0]));
                     }
@@ -139,7 +139,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
                     @Override
                     public void onClick(View v) {
                         if (nPlayers[0] > MIN_N_PLAYERS) {
-                            nPlayers[0]--;
+                            nPlayers[0]-=2;
                         }
                         nPlayersText.setText(String.valueOf(nPlayers[0]));
                     }
@@ -224,7 +224,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
         });
 
 
-        //========================Join league=================================
+        //===========================Join league================================
         Button joinLeague = (Button) findViewById(R.id.join_league);
         designButton(joinLeague);
         joinLeague.setOnClickListener(new View.OnClickListener() {
@@ -238,7 +238,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
             }
         });
 
-        //============================connect over lan button=====================
+        //=====================Connect over lan button==========================
         Button connectOverLanButton = (Button) findViewById(R.id.enter_ip_button);
         designButton(connectOverLanButton);
         connectOverLanButton.setOnClickListener(new View.OnClickListener() {
