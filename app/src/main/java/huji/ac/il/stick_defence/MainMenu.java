@@ -21,13 +21,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Random;
@@ -37,15 +33,14 @@ import java.util.regex.Pattern;
 public class MainMenu extends Activity implements DoProtocolAction {
     private Client client;// = Client.createClient(name);
     private boolean isCreateLeagueOptionsVisible = false;
-    private boolean isEnterIpViewVisble= false;
     private boolean isInternet=false;
     private String SAVED_IP = "SAVED_IP";
     private String NICKNAME= "NICKNAME";
     private String UNIQUE_ID= "UNIQUE_ID";
     private String SHARED_PREFERENCES= "SHARED_PREFERENCES";
-    private  final Pattern PARTIAl_IP_ADDRESS =
-            Pattern.compile("^((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])\\.){0,3}"+
-                    "((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])){0,1}$");
+    private final Pattern PARTIAl_IP_ADDRESS = Pattern.compile
+             ("^((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])\\.){0,3}"+
+              "((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])){0,1}$");
     private final String BUTTON_PUSHED_COLOR= "#FFFFCC";
     private final String BUTTON_RELEASED_COLOR="#000000";
 
@@ -59,8 +54,8 @@ public class MainMenu extends Activity implements DoProtocolAction {
         Sounds sounds = Sounds.create(this);
         sounds.playTheme(Sounds.MAIN_THEME);
         super.onCreate(savedInstanceState);
-        //getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit().clear().commit();//todo: remove
-        final SharedPreferences settings = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
+        final SharedPreferences settings =
+                getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
         String name = settings.getString(NICKNAME, "");
         if(name.isEmpty()){
             showNicknameDialog(true/*initClient*/);
@@ -117,12 +112,16 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 final int[] nPlayers = {2};
                 final boolean isWifi = true;
 
-                findViewById(R.id.create_league_options).setVisibility(View.VISIBLE);
+                findViewById(R.id.create_league_options)
+                        .setVisibility(View.VISIBLE);
                 isCreateLeagueOptionsVisible = true;
-                Button increasePlayersButton = (Button) findViewById(R.id.more_players);
-                Button decreasePlayersButton = (Button) findViewById(R.id.less_players);
+                Button increasePlayersButton =
+                        (Button) findViewById(R.id.more_players);
+                Button decreasePlayersButton =
+                        (Button) findViewById(R.id.less_players);
                 Button startButton = (Button) findViewById(R.id.start);
-                final TextView nPlayersText = (TextView) findViewById(R.id.num_of_players);
+                final TextView nPlayersText =
+                        (TextView) findViewById(R.id.num_of_players);
                 nPlayersText.setText(String.valueOf(nPlayers[0]));
 
                 increasePlayersButton.setOnClickListener(new View.OnClickListener() {
@@ -150,42 +149,51 @@ public class MainMenu extends Activity implements DoProtocolAction {
                     @Override
                     public void onClick(View v) {
                         Server.createServer(nPlayers[0]);
-                        int radioButtonId = ((RadioGroup) findViewById(R.id.network_choice)).getCheckedRadioButtonId();
-                        RadioButton chosenButton = (RadioButton) findViewById(radioButtonId);
+                        int radioButtonId = ((RadioGroup)
+                                findViewById(R.id.network_choice))
+                                .getCheckedRadioButtonId();
+                        RadioButton chosenButton =
+                                (RadioButton) findViewById(radioButtonId);
 
                         if(chosenButton.getText().equals("WiFi")){
-                        WifiP2pManager mManager = (WifiP2pManager) getSystemService(getApplicationContext().WIFI_P2P_SERVICE);
-                        WifiP2pManager.Channel mChannel = mManager.initialize(getApplicationContext(), getMainLooper(), null);
-                        mManager.createGroup(mChannel, null);
-                        mManager.requestConnectionInfo(mChannel, new WifiP2pManager.ConnectionInfoListener() {
+                            WifiP2pManager mManager = (WifiP2pManager)
+                                    getSystemService(
+                                            getApplicationContext().WIFI_P2P_SERVICE);
+                            WifiP2pManager.Channel mChannel =
+                                    mManager.initialize(getApplicationContext(),
+                                                        getMainLooper(), null);
+                            mManager.createGroup(mChannel, null);
+                            mManager.requestConnectionInfo(mChannel,
+                                    new WifiP2pManager.ConnectionInfoListener() {
 
-                            @Override
-                            public void onConnectionInfoAvailable(final WifiP2pInfo
-                                                                          info) {
-                                Log.w("custom", "groupInfo:");
-                                Log.w("custom", info.toString());
-                                if (info.groupOwnerAddress != null) {
-                                    Log.w("custom", info.groupOwnerAddress
-                                            .getHostAddress());
-                                    new AsyncTask<Void, Void, Void>() {
-                                        @Override
-                                        protected Void doInBackground(Void... params) {
-                                            try {
-                                                Socket socket = new Socket(info
-                                                        .groupOwnerAddress
-                                                        .getHostAddress(), Server.PORT);
-                                                client.setServer(socket);
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
+                                @Override
+                                public void onConnectionInfoAvailable(
+                                                       final WifiP2pInfo info) {
+                                    Log.w("custom", "groupInfo:");
+                                    Log.w("custom", info.toString());
+                                    if (info.groupOwnerAddress != null) {
+                                        Log.w("custom", info.groupOwnerAddress
+                                                .getHostAddress());
+                                        new AsyncTask<Void, Void, Void>() {
+                                            @Override
+                                            protected Void doInBackground(Void... params) {
+                                                try {
+                                                    Socket socket = new Socket(info
+                                                            .groupOwnerAddress
+                                                            .getHostAddress(),
+                                                            Server.PORT);
+                                                    client.setServer(socket);
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                return null;
                                             }
-                                            return null;
-                                        }
-                                    }.executeOnExecutor(AsyncTask
-                                            .THREAD_POOL_EXECUTOR, null);
-                                }
+                                        }.executeOnExecutor(AsyncTask
+                                                .THREAD_POOL_EXECUTOR, null);
+                                    }
 
-                            }
-                        });
+                                }
+                            });
 
                         }
 
@@ -237,17 +245,21 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 final Dialog dialog = new Dialog(MainMenu.this);
                 dialog.setContentView(R.layout.enter_ip_dialog);
                 dialog.setTitle("Enter server ip:");
-                final EditText editText = (EditText) dialog.findViewById(R.id.enter_ip_editText);
-                final SharedPreferences settings = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
+                final EditText editText =
+                        (EditText) dialog.findViewById(R.id.enter_ip_editText);
+                final SharedPreferences settings =
+                        getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
                 String saved_ip= settings.getString(SAVED_IP,"10.0.0.0");
                 editText.setText(saved_ip);
                 editText.addTextChangedListener(new TextWatcher() {
                     @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    public void onTextChanged(CharSequence s, int start,
+                                              int before, int count) {
                     }
 
                     @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    public void beforeTextChanged(CharSequence s, int start,
+                                                  int count, int after) {
                     }
 
                     private String mPreviousText = "";
@@ -261,7 +273,8 @@ public class MainMenu extends Activity implements DoProtocolAction {
                         }
                     }
                 });
-                Button connect= (Button) dialog.findViewById(R.id.dialog_connect_button);
+                Button connect = (Button) dialog.findViewById(R.id
+                        .dialog_connect_button);
                 connect.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -298,13 +311,16 @@ public class MainMenu extends Activity implements DoProtocolAction {
         dialog.setContentView(R.layout.enter_nickname_dialog);
         dialog.setTitle("Choose your nickname:");
 
-        final EditText editText = (EditText) dialog.findViewById(R.id.nickname_editText);
-        final Button okButton = (Button) dialog.findViewById(R.id.nickname_ok_button);
+        final EditText editText =
+                (EditText) dialog.findViewById(R.id.nickname_editText);
+        final Button okButton =
+                (Button) dialog.findViewById(R.id.nickname_ok_button);
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String name= editText.getText().toString();
-                final SharedPreferences settings = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
+                final SharedPreferences settings =
+                        getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString(NICKNAME, name);
                 editor.commit();
@@ -323,11 +339,13 @@ public class MainMenu extends Activity implements DoProtocolAction {
         okButton.setEnabled(false);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
             }
 
             @Override
@@ -340,9 +358,9 @@ public class MainMenu extends Activity implements DoProtocolAction {
             }
         });
         dialog.show();
-       generateRandomId();
-
+        generateRandomId();
     }
+
     private void initClient(){
         final SharedPreferences settings = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
         String name = settings.getString(NICKNAME, "");
@@ -350,7 +368,8 @@ public class MainMenu extends Activity implements DoProtocolAction {
         this.client = Client.createClient(name,id);
         this.client.setCurrentActivity(this);
     }
-    public  void generateRandomId(){
+
+    private  void generateRandomId(){
         Random rand = new Random(System.currentTimeMillis());
         long id= rand.nextInt(100000000);
         final SharedPreferences settings = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
@@ -387,21 +406,22 @@ public class MainMenu extends Activity implements DoProtocolAction {
         }
     }
 
-    public void designButton(final Button button){
+    private void designButton(final Button button){
         button.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    button.setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
-                    button.setShadowLayer(4, 0, 0, Color.parseColor(BUTTON_RELEASED_COLOR));
-                    button.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                button.setTextColor(Color.parseColor(BUTTON_PUSHED_COLOR));
+                button.setShadowLayer(4, 0, 0,
+                        Color.parseColor(BUTTON_RELEASED_COLOR));
+                button.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    button.setTextColor(Color.parseColor(BUTTON_RELEASED_COLOR));
-                    button.setTypeface(Typeface.SERIF);
-                    button.setShadowLayer(0, 0, 0, 0);
-                }
-                return false;
+            } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                button.setTextColor(Color.parseColor(BUTTON_RELEASED_COLOR));
+                button.setTypeface(Typeface.SERIF);
+                button.setShadowLayer(0, 0, 0, 0);
+            }
+            return false;
             }
         });
     }

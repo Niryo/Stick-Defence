@@ -95,7 +95,6 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
                     readyButton.setTextColor(Color.BLACK);
                     readyButton.setTypeface(Typeface.SERIF,Typeface.BOLD);
                     readyButton.setShadowLayer(0, 0, 0, 0);
-                    ;
                 }
                 return false;
             }

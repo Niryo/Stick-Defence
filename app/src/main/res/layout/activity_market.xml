@@ -179,6 +179,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="invisible"
                 android:id="@+id/buy_math_bomb"
                 android:background="@drawable/math_bomb"
                 android:layout_marginRight="10dp"
@@ -187,6 +188,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="invisible"
                 android:id="@+id/buy_fog"
                 android:background="@drawable/fog_icon"
                 android:layout_marginRight="10dp"

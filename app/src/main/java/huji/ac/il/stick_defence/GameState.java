@@ -8,20 +8,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 
 /**
  * This class represents the game state of stick-defence game.
  * That is contains all sprites, handle them and manage
- * the interactions between them.
+ * the interactions between them. Singletone.
  */
 public class GameState {
-
 
     private static GameState gameState;
 
@@ -74,6 +71,7 @@ public class GameState {
     private Tower leftTower;
     private boolean isInitialized = false;
     private boolean finalRound = false;
+    private boolean enableBow = true;
 
 
     /**
@@ -83,12 +81,18 @@ public class GameState {
      */
     private GameState(Context context, boolean isMultiplayer) {
         this.context = context;
-        playerStorage = new PlayerStorage(context, START_CREDITS);
+        playerStorage = new PlayerStorage(START_CREDITS);
         creditManager = new CreditManager(START_CREDITS);
-        rightPlayerStorage = new PlayerStorage(context, 0);
+        rightPlayerStorage = new PlayerStorage(0);
         this.isMultiplayer = isMultiplayer;
     }
 
+    /**
+     * Create singletone instance
+     * @param context the context
+     * @param isMultiplayer is multiplayer?
+     * @return the Gamestate instance
+     */
     public static GameState CreateGameState(Context context,
                                             boolean isMultiplayer) {
         if (null == gameState) {
@@ -97,6 +101,10 @@ public class GameState {
         return gameState;
     }
 
+    /**
+     * Returns the Gamestate instance
+     * @return the Gamestate instance
+     */
     public static GameState getInstance() {
         return gameState;
     }
@@ -105,6 +113,9 @@ public class GameState {
         return this.playerStorage.isGameInProcess();
     }
 
+    /**
+     * Reset the Gamestate between each round
+     */
     public void reset() {
         buttonsComponent = null;
         soldiers = new ArrayList<>();
@@ -132,12 +143,23 @@ public class GameState {
 
         this.rightBow = new Bow(context, Sprite.Player.RIGHT, rightTower);
         bows.set(1, rightBow);
+
+        enableBow(true);
     }
 
+    /**
+     * Nullify the Gamestate between games
+     */
     public static void newGame(){
         gameState = null;
     }
 
+    /**
+     * Initializes Gamestate. Must be called after construction.
+     * @param canvasWidth the canvas width
+     * @param canvasHeight the canvas height
+     * @param activity the activity
+     */
     public void init(int canvasWidth, int canvasHeight, Activity activity) {
         setCanvasDimentions(canvasWidth, canvasHeight);
 
@@ -163,6 +185,7 @@ public class GameState {
             ai = new ArtificialIntelligence();
         }
         this.isInitialized = true;
+        enableBow(true);
     }
 
     private Tower towerFactory(PlayerStorage ps, Sprite.Player player){
@@ -262,9 +285,6 @@ public class GameState {
         for (Bullet bullet : this.getBullets()) {
             bullet.update(currentTimeMillis);
         }
-        for (Bow bow : this.getBows()) {
-            bow.update(currentTimeMillis);
-        }
         for (Arrow arrow : this.getArrows()) {
             arrow.update(currentTimeMillis);
         }
@@ -293,14 +313,29 @@ public class GameState {
         }
     }
 
+    /**
+     * Enable/Disable the bow
+     * @param enable the value to set
+     */
+    public void enableBow(boolean enable){
+        this.enableBow = enable;
+    }
+
+    /**
+     * Handle onTouch events
+     * @param move the move type
+     * @param point the point touched (If needed)
+     */
     public void touch(SimpleGestureDetector.Gesture move, Sprite.Point point) {
+        if (!enableBow){
+            return;
+        }
         if (move == SimpleGestureDetector.Gesture.DOWN) {
             this.leftBow.unStretch();
         }
         if (move == SimpleGestureDetector.Gesture.UP) {
             this.leftBow.stretch();
         }
-
         if (move == SimpleGestureDetector.Gesture.RIGHT) {
             this.leftBow.unStretch();
         }
@@ -436,6 +471,10 @@ public class GameState {
         return true;
     }
 
+    /**
+     * Get new partner info from the server
+     * @param rawInput the input received
+     */
     public void newPartnerInfo(String rawInput){
         try {
             JSONObject info = new JSONObject(rawInput);
@@ -471,15 +510,12 @@ public class GameState {
         }
 
     }
-    public void sendInfoToPartner(Tower.TowerTypes type){
-        JSONObject info = new JSONObject();
-        try {
-            info.put("tower", type.name());
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
+    /**
+     * Send output to the server
+     * @param info the info to send in JSON
+     */
+    public void sendInfoToPartner(JSONObject info){
         String data= info.toString();
         client.send(Protocol.stringify(Protocol.Action.PARTNER_INFO, data));
 
@@ -554,17 +590,18 @@ public class GameState {
         PotionOfLife.playSound();
         if(Sprite.Player.LEFT == player){
             if (isMultiplayer){ client.reportPotionOfLife(); }
-            leftTower.increaceHp(PotionOfLife.LIFE_TO_ADD);
+            leftTower.increaseHp(PotionOfLife.LIFE_TO_ADD);
             //Next time, buy it again
             playerStorage.use(PlayerStorage.PurchasesEnum.POTION_OF_LIFE);
         } else {
-            rightTower.increaceHp(PotionOfLife.LIFE_TO_ADD);
+            rightTower.increaseHp(PotionOfLife.LIFE_TO_ADD);
         }
     }
 
     public boolean isInitialized(){
         return this.isInitialized;
     }
+
     public void addArrow(Arrow arrow) {
         this.arrows.add(arrow);
         if (isMultiplayer && arrow.getPlayer() == Sprite.Player.LEFT) {

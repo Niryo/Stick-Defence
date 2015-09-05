@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pInfo;
@@ -15,6 +17,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -32,9 +35,13 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
+/**
+ * This class represents joining to a league activity
+ */
 public class JoinLeagueActivity extends Activity implements DoProtocolAction {
     private final int TIME_TO_REFRESH_PEERS = 20000;
+    private final String BUTTON_PUSHED_COLOR= "#FFFFCC";
+    private final String BUTTON_RELEASED_COLOR="#000000";
     WifiP2pManager mManager;
     WifiP2pManager.Channel mChannel;
     BroadcastReceiver mReceiver;
@@ -58,17 +65,29 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
         setContentView(R.layout.activity_join_league);
         client.setCurrentActivity(this);
 
-        Button exitToMainMenuButton =
+        final Button exitToMainMenuButton =
                 (Button) findViewById(R.id.exit_to_main_menu);
+
+        exitToMainMenuButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    exitToMainMenuButton.setTextColor(Color.parseColor
+                            (BUTTON_PUSHED_COLOR));
+                    exitToMainMenuButton.setShadowLayer(4, 0, 0, Color.parseColor(BUTTON_RELEASED_COLOR));
+                    exitToMainMenuButton.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    exitToMainMenuButton.setTextColor(Color.parseColor(BUTTON_RELEASED_COLOR));
+                    exitToMainMenuButton.setTypeface(Typeface.SERIF);
+                    exitToMainMenuButton.setShadowLayer(0, 0, 0, 0);
+                }
+                return false;
+            }
+        });
         exitToMainMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final File file = new File(getFilesDir(), PlayerStorage.FILE_NAME);
-                if (file.delete()) {
-                    Log.w("yahav", "File deleted successfully");
-                } else {
-                    Log.w("yahav", "Failed to delete file");
-                }
                 Intent mainMenuIntent = new Intent(getApplicationContext(),
                         MainMenu.class);
                 startActivity(mainMenuIntent);
@@ -99,9 +118,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
                     mManager.discoverPeers(mChannel,
                             new WifiP2pManager.ActionListener() {
                         @Override
-                        public void onSuccess() {
-
-                        }
+                        public void onSuccess() {}
 
                         @Override
                         public void onFailure(int reason) {

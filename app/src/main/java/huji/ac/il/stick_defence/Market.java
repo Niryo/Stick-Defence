@@ -21,23 +21,28 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 
-
+/**
+ * This class represents the market activity
+ */
 public class Market extends Activity implements DoProtocolAction {
-    private final String BUTTON_PUSHED_COLOR= "#FFFFCC";
-    private final String BUTTON_RELEASED_COLOR="#FFFFFF";
-//TODO: CREATE A BUTTON THAT MOVES YOU INTO LEAGUE_INFO ACTIVITY AND IF THERE IS INFO, SEND EXTRA IN THE INTENT
-    public static final int    ZOMBIE_BUY_PRICE = 10;
-    public static final int    SWORDMAN_BUY_PRICE = 10;
-    public static final int    BOMB_GRANDPA_BUY_PRICE = 10;
-    public static final int    TANK_BUY_PRICE = 10;
-    public static final int    BAZOOKA_BUY_PRICE = 10;
-    public static final int    MATH_BOMB_PRICE = 100;
-    public static final int    BIG_WOODEN_TOWER_PRICE = 100;
-    public static final int    STONE_TOWER_PRICE = 100;
-    public static final int    FORTIFIED_TOWER_PRICE = 10;
-    public static final int    FOG_PRICE = 10;
+    private final String BUTTON_PUSHED_COLOR   = "#FFFFCC";
+    private final String BUTTON_RELEASED_COLOR ="#FFFFFF";
+
+    public static final int    ZOMBIE_BUY_PRICE = 100;
+    public static final int    SWORDMAN_BUY_PRICE = 500;
+    public static final int    BOMB_GRANDPA_BUY_PRICE = 800;
+    public static final int    TANK_BUY_PRICE = 2000;
+    public static final int    BAZOOKA_BUY_PRICE = 1000;
+    public static final int    MATH_BOMB_PRICE = 200;
+    public static final int    BIG_WOODEN_TOWER_PRICE = 200;
+    public static final int    STONE_TOWER_PRICE = 400;
+    public static final int    FORTIFIED_TOWER_PRICE = 800;
+    public static final int    FOG_PRICE = 100;
     public static final int    POTION_OF_LIFE_PRICE = 100;
 
     private static final String CREDITS = "Credits: ";
@@ -136,12 +141,19 @@ public class Market extends Activity implements DoProtocolAction {
                 if (!isMultiplayer) {
                     Intent intent = new Intent(getApplicationContext(),
                             GameActivity.class);
-                    intent.putExtra("Multiplayer", isMultiplayer);
+                    intent.putExtra("Multiplayer", false);
                     intent.putExtra("NewGame", false);
                     startActivity(intent);
                     finish();
                 } else { //go to league info
-                    gameState.sendInfoToPartner(myTowerType);
+                    JSONObject info = new JSONObject();
+                    try {
+                        info.put("tower", myTowerType.name());
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    gameState.sendInfoToPartner(info);
                     Intent intent = new Intent(getApplicationContext(),
                             LeagueInfoActivity.class);
                     intent.putExtra("NewGame", false);
@@ -405,16 +417,10 @@ public class Market extends Activity implements DoProtocolAction {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.exit_to_main_menu) {
-            File file = new File(getFilesDir(), PlayerStorage.FILE_NAME);
-            if (!file.delete()) {
-                Log.w("yahav", "Failed to delete file");
-            }
             Intent intent = new Intent(getApplicationContext(), MainMenu.class);
             startActivity(intent);
             finish();
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 

@@ -5,26 +5,18 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 
-import java.lang.reflect.Type;
-
-/**
- * Created by Nir on 09/08/2015.
- */
 public class VSview extends View {
-    private double PADDING_TOP = 5;
-    private double PADDING_BOTTOM = 1.1;
-    private int FONT_SCALE_FACTOR = 8;
-    private int DESIRED_WIDTH = 400;
-    private int DESIRED_HEIGHT = 400;
+    private static final double PADDING_TOP = 5;
+    private static final double PADDING_BOTTOM = 1.1;
+    private static final int FONT_SCALE_FACTOR = 8;
     private static Bitmap scaledPic = null;
+    private int desired_width = 400;
+    private int desired_height = 400;
     private String name1;
     private String name2;
     private Paint paintRight = null;
@@ -40,18 +32,15 @@ public class VSview extends View {
     }
 
 
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         //Get the width measurement
         int newWidth;
         int newHeight;
-        int width = getMeasurement(widthMeasureSpec,
-                DESIRED_WIDTH);
+        int width = getMeasurement(widthMeasureSpec, desired_width);
 
         //Get the height measurement
-        int height = getMeasurement(heightMeasureSpec,
-                DESIRED_HEIGHT);
+        int height = getMeasurement(heightMeasureSpec, desired_height);
         if (scaledPic == null) {
             if (width == 0) {
                 width = 1;
@@ -59,18 +48,21 @@ public class VSview extends View {
             if (height == 0) {
                 height = 1;
             }
-            Bitmap pic = BitmapFactory.decodeResource(getResources(),
-                    R.drawable.vs);
-            float scale = Math.max((float) pic.getHeight() / (float) height, (float) pic.getWidth() / width);
+            Bitmap pic = BitmapFactory.decodeResource(getResources(), R
+                    .drawable.vs);
+            float scale = Math.max((float) pic.getHeight() / (float) height,
+                    (float) pic.getWidth() / width);
             newWidth = Math.round(pic.getWidth() / scale);
-             newHeight = Math.round(pic.getHeight() / scale);
-            DESIRED_HEIGHT=Math.min(newHeight,DESIRED_HEIGHT);
-            DESIRED_WIDTH=Math.min(newWidth, DESIRED_WIDTH);
-            scaledPic = Bitmap.createScaledBitmap(pic, newWidth, newHeight, true);
+            newHeight = Math.round(pic.getHeight() / scale);
+            desired_height = Math.min(newHeight, desired_height);
+            desired_width = Math.min(newWidth, desired_width);
+            scaledPic = Bitmap.createScaledBitmap(pic, newWidth, newHeight,
+                    true);
 
         } else {
-            newHeight=Math.min(scaledPic.getHeight(),DESIRED_HEIGHT);
-            newWidth=Math.min(scaledPic.getWidth(), DESIRED_WIDTH);}
+            newHeight = Math.min(scaledPic.getHeight(), desired_height);
+            newWidth = Math.min(scaledPic.getWidth(), desired_width);
+        }
 
         if (paintRight == null) {
             paintRight = new Paint();
@@ -92,17 +84,20 @@ public class VSview extends View {
         canvas.drawBitmap(scaledPic, 0, 0, null);
 
 
-
         String half1Name1 = name1.substring(0, name1.length() / 2);
         String half2Name1 = name1.substring(name1.length() / 2);
         String half1Name2 = name2.substring(0, name2.length() / 2);
         String half2Name2 = name2.substring(name2.length() / 2);
 
 
-        canvas.drawText(half1Name1, scaledPic.getWidth() / 2, (int) (scaledPic.getHeight() / PADDING_TOP), paintRight);
-        canvas.drawText(half2Name1, scaledPic.getWidth() / 2, (int) (scaledPic.getHeight() / PADDING_TOP), paintLeft);
-        canvas.drawText(half1Name2, scaledPic.getWidth() / 2, (int) (scaledPic.getHeight() / PADDING_BOTTOM), paintRight);
-        canvas.drawText(half2Name2, scaledPic.getWidth() / 2, (int) (scaledPic.getHeight() / PADDING_BOTTOM), paintLeft);
+        canvas.drawText(half1Name1, scaledPic.getWidth() / 2, (int)
+                (scaledPic.getHeight() / PADDING_TOP), paintRight);
+        canvas.drawText(half2Name1, scaledPic.getWidth() / 2, (int)
+                (scaledPic.getHeight() / PADDING_TOP), paintLeft);
+        canvas.drawText(half1Name2, scaledPic.getWidth() / 2, (int)
+                (scaledPic.getHeight() / PADDING_BOTTOM), paintRight);
+        canvas.drawText(half2Name2, scaledPic.getWidth() / 2, (int)
+                (scaledPic.getHeight() / PADDING_BOTTOM), paintLeft);
     }
 
     private int getMeasurement(int measureSpec, int contentSize) {

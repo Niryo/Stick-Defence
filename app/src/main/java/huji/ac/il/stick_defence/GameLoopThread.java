@@ -1,7 +1,6 @@
 package huji.ac.il.stick_defence;
 
 import android.graphics.Canvas;
-import android.util.Log;
 import android.view.SurfaceHolder;
 
 
@@ -22,13 +21,20 @@ public class GameLoopThread extends Thread {
     private GameSurface gameSurface;
     private GameState gameState;
     private boolean running;
-    private boolean sleep;
 
-
+    /**
+     * Set the running true or false
+     * @param running the value to set
+     */
     public synchronized void setRunning(boolean running) {
         this.running = running;
     }
 
+    /**
+     * Constuctor
+     * @param surfaceHolder the surface holder
+     * @param gameSurface the game surface object
+     */
     public GameLoopThread(SurfaceHolder surfaceHolder,
                           GameSurface gameSurface) {
         super();
@@ -40,7 +46,6 @@ public class GameLoopThread extends Thread {
         if (!isMultiplayer) {
             this.ai = gameState.getAi();
         }
-        sleep = false;
     }
 
     @Override
@@ -61,15 +66,13 @@ public class GameLoopThread extends Thread {
                     beginTime = System.currentTimeMillis();
                     skippedFrames = 0;    // resetting the frames skipped
 
-                    if (!sleep) {
-                        if (!isMultiplayer) {
-                            ai.sendSoldier();
-                            ai.shoot();
-                        }
-
-                        this.gameState.update();
-                        this.gameSurface.render(canvas);
+                    if (!isMultiplayer) {
+                        ai.sendSoldier();
+                        ai.shoot();
                     }
+
+                    this.gameState.update();
+                    this.gameSurface.render(canvas);
 
                     timeDiff = System.currentTimeMillis() - beginTime;
 
@@ -82,11 +85,11 @@ public class GameLoopThread extends Thread {
                             // send the thread to sleep for a short period
                             Thread.sleep(sleepTime);
                         } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
                     }
 
-                    while (!sleep && sleepTime < 0 &&
-                            skippedFrames < MAX_FRAME_SKIPS) {
+                    while (sleepTime < 0 && skippedFrames < MAX_FRAME_SKIPS) {
                         // we need to catch up
                         this.gameState.update(); // update without rendering
                         // add frame period to check if in next frame
@@ -97,6 +100,8 @@ public class GameLoopThread extends Thread {
                     //Check if one of the players win
                     if (gameState.isLeftPlayerWin() ||
                             gameState.isRightPlayerWin()) {
+                        gameState.disableButtons();
+                        gameState.enableBow(false);
                         running = false;
                         gameSurface.writeEndGameMessage(canvas);
                         SURFACE_HOLDER.unlockCanvasAndPost(canvas);
@@ -115,15 +120,13 @@ public class GameLoopThread extends Thread {
                         if (!isMultiplayer && gameState.isRightPlayerWin()){
                             gameState.exitToMainMenu();
                         } else {
-                            if (gameState.isFinalRound()){
-                                gameSurface.goToLeagueInfo();
-                            } else {
-                                gameSurface.goToMarket();
-                            }
-
+//                            if (gameState.isFinalRound()){
+//                                gameSurface.goToLeagueInfo();
+//                            } else {
+//                                gameSurface.goToMarket();
+//                            }
+                            gameSurface.goToMarket();
                         }
-
-
                     }
 
                 }

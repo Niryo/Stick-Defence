@@ -32,7 +32,9 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 
-
+/**
+ * This class represents the actual game activity
+ */
 public class GameActivity extends Activity implements DoProtocolAction {
     private GameState gameState;
     private ProgressDialog waitDialog;
@@ -50,12 +52,10 @@ public class GameActivity extends Activity implements DoProtocolAction {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity);
-
-        int screenWidth = getApplicationContext().getResources().getDisplayMetrics().widthPixels;
-
-        int newScreenHeight = (int) Math.round(((double) 9 * screenWidth) / 16);//set the height to be proportional to the width
-
-
+        int screenWidth =
+         getApplicationContext().getResources().getDisplayMetrics().widthPixels;
+        //set the height to be proportional to the width
+        int newScreenHeight = (int) Math.round(((double) 9 * screenWidth) / 16);
         final boolean newGame = getIntent().getBooleanExtra("NewGame", true);
         if (newGame){
             GameState.newGame();
@@ -84,7 +84,6 @@ public class GameActivity extends Activity implements DoProtocolAction {
 
         //======================Add Buttons===========================
         buttonsLayout = new LinearLayout(this);
-        //buttonsLayout.setOrientation(LinearLayout.HORIZONTAL);
 
         LinearLayout firstLineLayout = new LinearLayout(this);
         firstLineLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -444,6 +443,7 @@ public class GameActivity extends Activity implements DoProtocolAction {
                 final MathBomb bomb= new MathBomb(this);
                 //disable other buttons
                 gameState.disableButtons();
+                gameState.enableBow(false);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

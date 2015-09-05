@@ -20,12 +20,13 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
     private WifiP2pManager.Channel mChannel;
     private JoinLeagueActivity activity;
 
-    public WiFiDirectBroadcastReceiver(JoinLeagueActivity activity, WifiP2pManager manager, WifiP2pManager.Channel channel) {
+    public WiFiDirectBroadcastReceiver(JoinLeagueActivity activity,
+                                       WifiP2pManager manager,
+                                       WifiP2pManager.Channel channel) {
         super();
         this.activity = activity;
         this.mManager = manager;
         this.mChannel = channel;
-
     }
 
     @Override
@@ -49,7 +50,8 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
 
                         @Override
                         public void onPeersAvailable(WifiP2pDeviceList peers) {
-                            Collection<WifiP2pDevice> deviceList = peers.getDeviceList();
+                            Collection<WifiP2pDevice> deviceList =
+                                    peers.getDeviceList();
                             activity.addDevices(deviceList);
                             Log.w("custom", "List of devices:");
                             Log.w("custom", deviceList.toString());
@@ -58,12 +60,13 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
                     });
                 }
 
-            } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
-                // Respond to new connection or disconnections
             } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
-                WifiP2pDevice device = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE);
+                WifiP2pDevice device =
+                        intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE);
                 String thisDeviceName = device.deviceName;
                 Log.w("custom", thisDeviceName);
+            } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
+                // Respond to new connection or disconnections
             }
         }
     }

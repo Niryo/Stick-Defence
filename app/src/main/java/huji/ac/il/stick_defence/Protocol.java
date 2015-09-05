@@ -15,7 +15,8 @@ import org.json.JSONObject;
  * #client: send NAME
  * #server: send name NAME_CONFIRMED
  * <p/>
- * stage 2: When the server is ready it will send an information about the league to all his clients.
+ * stage 2: When the server is ready it will send an information about the
+ * league to all his clients.
  * <p/>
  * #server: send LEAGUE_INFO
  * <p/>
@@ -27,7 +28,8 @@ import org.json.JSONObject;
  * <p/>
  * stage 5: todo: during game protocol.
  * <p/>
- * stage 6: clients tell the server that game has been finished by sending it GameOver with the winning side
+ * stage 6: clients tell the server that game has been finished by sending it
+ * GameOver with the winning side
  * #client: send GAME_OVER
  * <p/>
  * stage 7: server send again information about the league
@@ -37,17 +39,13 @@ import org.json.JSONObject;
  * #server: send END_LEAGUE
  */
 public class Protocol {
-    private Client client;
 
-
-    private Protocol() {
-    }
-
+    private Protocol() {}
 
     /**
      * represents the actions that could be sent during a communication session
      */
-    public static enum Action {
+    public enum Action {
         NAME,
         READY_TO_PLAY,
         NAME_CONFIRMED,
@@ -97,7 +95,7 @@ public class Protocol {
      * Prepare an action with data for being sent over the socket.
      *
      * @param action the action
-     * @param data
+     * @param data the date
      * @return a string representation of the action and the data
      */
     public static String stringify(Action action, String data) {

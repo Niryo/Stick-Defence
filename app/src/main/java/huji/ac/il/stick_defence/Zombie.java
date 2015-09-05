@@ -34,6 +34,12 @@ public class Zombie extends Soldier {
 
     private Sprite.Player player;
 
+    /**
+     * Constructor
+     * @param context the context
+     * @param player the player
+     * @param delayInSec the delay
+     */
     public Zombie(Context context, Sprite.Player player, double delayInSec) {
         super(context, player, SEC_TO_CROSS_SCREEN, DAMAGE_PER_SEC,
               Sounds.ZOMBIE_SOUND, delayInSec, HP, SoldierType.ZOMBIE);
@@ -48,16 +54,17 @@ public class Zombie extends Soldier {
         }
 
         if (Sprite.Player.LEFT == player) {
-            super.initSprite(context, leftSoldierPic, NUMBER_OF_FRAMES,
+            super.initSprite(leftSoldierPic, NUMBER_OF_FRAMES,
                     SCREEN_HEIGHT_PORTION, MOVE_FPS);
         } else {
-            super.initSprite(context, rightSoldierPic, NUMBER_OF_FRAMES,
+            super.initSprite(rightSoldierPic, NUMBER_OF_FRAMES,
                     SCREEN_HEIGHT_PORTION, MOVE_FPS);
         }
 
         this.player = player;
     }
 
+    @Override
     public void update(long gameTime) {
         if (!super.isAttack()) {
             if (player == Sprite.Player.LEFT) {
@@ -79,6 +86,7 @@ public class Zombie extends Soldier {
         super.update(gameTime);
     }
 
+    @Override
     public void render(Canvas canvas) {
         super.render(canvas);
     }
@@ -90,7 +98,7 @@ public class Zombie extends Soldier {
 
     @Override
     public void playSound(){
-        soundStream = Sounds.getInstance().playSound(soundId,false);
+        soundStream = Sounds.playSound(soundId, false);
     }
 
     public static String info(){

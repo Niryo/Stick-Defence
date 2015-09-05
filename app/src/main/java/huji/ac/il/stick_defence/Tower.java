@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Created by yahav on 28/04/15.
+ * This class represents a tower
  */
 public abstract class Tower {
     public enum TowerTypes{
@@ -26,11 +26,11 @@ public abstract class Tower {
         private int fireY;
         private Random random;
 
-        public Fire(Context context) {
+        public Fire() {
             random = new Random();
             fireSprite = new Sprite();
 
-            fireSprite.initSprite(context, firePic, NUMBER_OF_FRAMES, player,
+            fireSprite.initSprite(firePic, NUMBER_OF_FRAMES, player,
                     FIRE_SCREEN_HEIGHT_PORTION);
 
             this.fireX =
@@ -62,16 +62,9 @@ public abstract class Tower {
     private double     max_hp;
     private double     hp;
     private TowerTypes towerType;
-
-
     public static Bitmap firePic = null;
     private Sprite towerSprite;
     private ArrayList<Fire> fires;
-    private Context context;
-
-
-    private int screenWidth;
-    private int screenHeight;
     private Sprite.Player player;
     private int towerX;
     private int towerY;
@@ -100,16 +93,16 @@ public abstract class Tower {
                     R.drawable.fire);
         }
 
-        this.screenWidth = gameState.getCanvasWidth();
-        this.screenHeight = gameState.getCanvasHeight();
+        int  screenWidth = GameState.getCanvasWidth();
+        int  screenHeight = GameState.getCanvasHeight();
 
         towerSprite = new Sprite();
 
         if (player == Sprite.Player.LEFT) {
-            towerSprite.initSprite(context, leftTowerPic, 1, player, SCREEN_HEIGHT_PORTION);
+            towerSprite.initSprite(leftTowerPic, 1, player, SCREEN_HEIGHT_PORTION);
             towerX = 0;
         } else {
-            towerSprite.initSprite(context, rightTowerPic, 1, player, SCREEN_HEIGHT_PORTION);
+            towerSprite.initSprite(rightTowerPic, 1, player, SCREEN_HEIGHT_PORTION);
             towerX = screenWidth - (int) towerSprite.getScaledFrameWidth();
         }
         towerY = screenHeight - (int) towerSprite.getScaledFrameHeight();
@@ -118,7 +111,6 @@ public abstract class Tower {
 
         this.hp = this.max_hp = maxHp;
 
-        this.context = context;
         fires = new ArrayList<>();
         this.towerType = type;
     }
@@ -183,23 +175,23 @@ public abstract class Tower {
         this.hp -= hp;
 
         if (this.hp < 0.75 * max_hp && this.fires.size() < 1) {
-            this.fires.add(new Fire(context));
+            this.fires.add(new Fire());
         }
         if (this.hp < 0.5 * max_hp && this.fires.size() < 2) {
-            this.fires.add(new Fire(context));
+            this.fires.add(new Fire());
         }
         if (this.hp < 0.25 * max_hp && this.fires.size() < 3) {
-            this.fires.add(new Fire(context));
+            this.fires.add(new Fire());
         }
         if (this.hp < 0.1 * max_hp && this.fires.size() < 4) {
-            this.fires.add(new Fire(context));
+            this.fires.add(new Fire());
         }
         gameState.setTowerProgressHP(this.hp, player);
 
         return this.hp > 0;
     }
 
-    public void increaceHp(double hp){
+    public void increaseHp(double hp){
         if (this.hp + hp > this.max_hp){
             this.hp = this.max_hp;
         } else {
@@ -211,17 +203,9 @@ public abstract class Tower {
         return towerSprite.getScaledFrameWidth();
     }
 
-    public double getScaledHeight() {
-        return towerSprite.getScaledFrameHeight();
-    }
-
     public double getMaxHp(){ return this.max_hp; }
 
     public String getName(){ return this.towerType.name(); }
 
     public TowerTypes getTowerType(){ return this.towerType; }
-    public void reset(){
-        this.hp = this.max_hp;
-        this.fires = new ArrayList<>();
-    }
 }

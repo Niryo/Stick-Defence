@@ -57,10 +57,10 @@ public class BombGrandpa extends Soldier {
         }
         
         if (Sprite.Player.LEFT == player) {
-            super.initSprite(context, leftSoldierPic, NUMBER_OF_FRAMES,
+            super.initSprite(leftSoldierPic, NUMBER_OF_FRAMES,
                     SCREEN_HEIGHT_PORTION, MOVE_FPS);
         } else {
-            super.initSprite(context, rightSoldierPic, NUMBER_OF_FRAMES,
+            super.initSprite(rightSoldierPic, NUMBER_OF_FRAMES,
                     SCREEN_HEIGHT_PORTION, MOVE_FPS);
         }
         this.player = player;

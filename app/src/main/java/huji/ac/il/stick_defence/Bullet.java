@@ -5,27 +5,31 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
-import java.io.Serializable;
 
-public class Bullet implements Serializable {
+/**
+ * This class represents a bullet
+ */
+public class Bullet {
     //==========================Bullet's abilities==============================
     private static final double SEC_TO_SCREEN_WIDTH = 0.021;
-
-    //============================Bullet's picture==============================
+    //===========================Bullet's picture===============================
     private static Sprite leftBulletSprite, rightBulletSprite;
-
+    private static Bitmap leftBazookaBulletPic, rightBazookaBulletPic;
     private GameState gameState = GameState.getInstance();
     private float x, y;
     private long lastUpdateTime;
     private double x_pixPerSec;
-    private Sprite.Player player;
     private Sprite sprite;
-    private static int explosionSound;
 
+    /**
+     * Constructor
+     * @param x the x value
+     * @param y the y value
+     * @param player the player who shot the bullet
+     */
     public Bullet(float x, float y, Sprite.Player player) {
         this.x = x;
         this.y = y;
-        this.player = player;
 
         x_pixPerSec = SEC_TO_SCREEN_WIDTH * gameState.getCanvasWidth();
 
@@ -35,11 +39,13 @@ public class Bullet implements Serializable {
         } else {
             sprite = leftBulletSprite;
         }
-
         resetUpdateTime();
-
     }
 
+    /**
+     * Update the bullet position
+     * @param gameTime the current time
+     */
     public void update(long gameTime) {
         double passedTimeInSec = (double) (gameTime - lastUpdateTime) / 1000;
         this.x += x_pixPerSec * passedTimeInSec;
@@ -51,48 +57,56 @@ public class Bullet implements Serializable {
         }
     }
 
-    public void resetUpdateTime() {
+
+    private void resetUpdateTime() {
         lastUpdateTime = System.currentTimeMillis();
     }
 
+    /**
+     * Draw the bullet
+     * @param canvas the canvas to draw on
+     */
     public void render(Canvas canvas) {
         sprite.render(canvas, getHeadX(), getHeadY());
-
     }
 
+    /**
+     * Init the bullet. must be called after construct
+     * @param context the context
+     * @param scaleDownFactor the scale down factor
+     */
     public static void init(Context context, double scaleDownFactor) {
+        if (null == leftBazookaBulletPic){
+            leftBazookaBulletPic = BitmapFactory.decodeResource(context.getResources(),
+                    R.drawable.bazooka_bullet); // Read resource only once
+        }
 
-        Bitmap leftBazookaBulletPic = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.bazooka_bullet); // Read resource only once
-        Bitmap rightBazookaBulletPic = Sprite.mirrorBitmap(leftBazookaBulletPic);
+        if (null == rightBazookaBulletPic){
+            rightBazookaBulletPic = Sprite.mirrorBitmap(leftBazookaBulletPic);
+        }
 
         leftBulletSprite = new Sprite();
-        leftBulletSprite.initSprite(context, leftBazookaBulletPic,
-                1, Sprite.Player.LEFT, 1.0);
+        leftBulletSprite.initSprite(leftBazookaBulletPic, 1,
+                Sprite.Player.LEFT, 1.0);
         leftBulletSprite.setScaleDownFactor(scaleDownFactor);
 
         rightBulletSprite = new Sprite();
-        rightBulletSprite.initSprite(context, rightBazookaBulletPic,
-                1, Sprite.Player.RIGHT, 1.0);
+        rightBulletSprite.initSprite(rightBazookaBulletPic, 1,
+                Sprite.Player.RIGHT, 1.0);
         rightBulletSprite.setScaleDownFactor(scaleDownFactor);
 
     }
 
-    public int getHeadX() {
+    private int getHeadX() {
         return (int) (this.x + sprite.getScaledFrameWidth() / 2);
     }
 
-    public int getHeadY() {
+    private int getHeadY() {
         return (int) (this.y + sprite.getScaledFrameHeight() / 2);
     }
 
-    public Sprite.Player getPlayer() {
-        return this.player;
-    }
-
-    public void playExplosionSound(){
-        explosionSound = Sounds.getInstance().playSound(Sounds.SMALL_EXPLOSION,
-                false);
+    private void playExplosionSound(){
+        Sounds.getInstance().playSound(Sounds.SMALL_EXPLOSION, false);
     }
 
 }

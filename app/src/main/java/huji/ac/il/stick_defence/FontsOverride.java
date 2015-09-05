@@ -4,6 +4,9 @@ import java.lang.reflect.Field;
 import android.content.Context;
 import android.graphics.Typeface;
 
+/**
+ * This class responsible to replace the application font to the requested font
+ */
 public final class FontsOverride {
 
     public static void setDefaultFont(Context context,

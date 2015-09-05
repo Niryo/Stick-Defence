@@ -116,12 +116,13 @@ public class Client implements DoProtocolAction, Serializable{
 
     }
 
-
+    @Override
     public void doAction(String rawInput) {
         this.currentActivity.doAction(rawInput);
 
     }
 
+    //==========================Reports to server===============================
     public void reportArrow(double distance) {
         send(Protocol.stringify(Protocol.Action.ARROW, Double.toString
                 (distance)));
@@ -182,17 +183,16 @@ public class Client implements DoProtocolAction, Serializable{
         send(Protocol.stringify(Protocol.Action.POTION_OF_LIFE));
     }
 
-    public void changeName(String name){ this.name = name; }
-
     public void reportFinalRound(){
         send(Protocol.stringify(Protocol.Action.FINAL_ROUND));
     }
+    //==========================================================================
 
+    public void changeName(String name){ this.name = name; }
 
     /**
      * This class represents a socket listener on a server node.
      */
-
     private class ServerSocketListener implements Runnable{
     private Socket serverSocket;
         public ServerSocketListener(Socket serverSocket){

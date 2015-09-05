@@ -3,11 +3,16 @@ package huji.ac.il.stick_defence;
 import android.content.Context;
 
 /**
- * Created by yahav on 21/08/15.
+ * This class represents a fortified tower
  */
 public class FortifiedTower extends Tower {
     public static final int MAX_HP = 400;
 
+    /**
+     * Constructor
+     * @param context the context
+     * @param player the player
+     */
     public FortifiedTower(Context context, Sprite.Player player){
         super(context, player, R.drawable.fortified_tower,
               R.drawable.fortified_tower, MAX_HP, TowerTypes.FORTIFIED_TOWER);

@@ -1,6 +1,5 @@
 package huji.ac.il.stick_defence;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -11,33 +10,27 @@ import android.util.DisplayMetrics;
 /**
  * This class represents a sprite animation object
  */
-public class Sprite {
-
+public class Sprite{
 
     /**
      * Represents left or right PLAYER
      */
-    public enum Player {
-        LEFT,
-        RIGHT
-    }
+    public enum Player { LEFT, RIGHT }
 
     private static final int DEFAULT_FPS = 40;
     private static final int MILLISEC_IN_SEC = 1000;
 
-    private GameState gameState = GameState.getInstance();
     private Bitmap bitmap;
-    private Rect frameRect;  // the rectangle to be drawn from the animation bitmap
+    private Rect frameRect; // the rectangle to be drawn from the animation bitmap
     private RectF destRect;
     private int frameHeight;
     private int frameWidth;
-    private int currentFrame = 0;    // the current frame
-
-    private int nFrames;            // number of frames in animation
-    private int fps = DEFAULT_FPS;           //the speed of the animation
-    private int framePeriod
-            = MILLISEC_IN_SEC / fps;    // milliseconds between each frame (1000/fps)
-    private long frameTicker = 01;    // the time of the last frame update
+    private int currentFrame = 0; // the current frame
+    private int nFrames; // number of frames in animation
+    private int fps = DEFAULT_FPS; //the speed of the animation
+    // milliseconds between each frame (1000/fps)
+    private int framePeriod = MILLISEC_IN_SEC / fps;
+    private long frameTicker = 0l;    // the time of the last frame update
     private double scaleDownFactor;
     private Player player;
     private boolean isLooping=true;
@@ -47,13 +40,11 @@ public class Sprite {
     /**
      * Default Constructor
      */
-    public Sprite() {
-    }
+    public Sprite() {}
 
     /**
      * Initialize the sprite. Must be called after construct.
      *
-     * @param context             the context
      * @param bitmap              the bitmap of the sprite
      * @param nFrames             the number of frames in the sprite
      * @param player              left or right PLAYER
@@ -61,26 +52,23 @@ public class Sprite {
      *                            0-1 double. For instance, 0.5 will cause the
      *                            sprite to span over a half of the screen height.
      */
-    public void initSprite(Context context, Bitmap bitmap, int nFrames,
-                           Player player, double screenHeightPortion) {
+    public void initSprite(Bitmap bitmap, int nFrames, Player player,
+                           double screenHeightPortion) {
 
         this.bitmap = bitmap;
-
         this.player = player;
         this.nFrames = nFrames;
         this.frameHeight = bitmap.getHeight();
         this.frameWidth = (bitmap.getWidth() / nFrames);
         this.frameRect = new Rect(0, 0, frameWidth, frameHeight);
         this.destRect = new RectF();
-        int screenHeight =
-                gameState.getCanvasHeight();
+        int screenHeight = GameState.getCanvasHeight();
         setScaleDownFactor(((double) this.frameHeight / (double) screenHeight)
                 / screenHeightPortion);
-
     }
 
     /**
-     * Mirror bitmap. Release the old bitmap to save space.
+     * Mirror bitmap.
      *
      * @param src the bitmap to mirror
      * @return a mirrored bitmap
@@ -97,7 +85,7 @@ public class Sprite {
     /**
      * Sets the animation speed (fps)
      *
-     * @param fps
+     * @param fps the fps
      */
     public void setAnimationSpeed(int fps) {
         this.fps = fps;
@@ -113,7 +101,6 @@ public class Sprite {
     public void update(long gameTime) {
         if (gameTime > frameTicker + framePeriod && this.runLoopFlag) {
             frameTicker = gameTime;
-
             if (nFrames > 1) {
                 // increment the frame
                 if (player == Player.LEFT) {
@@ -166,14 +153,6 @@ public class Sprite {
         canvas.drawBitmap(this.bitmap, this.frameRect, destRect, null);
     }
 
-    public Rect getFrameRect() {
-        return this.frameRect;
-    }
-
-    public RectF getDestRect() {
-        return this.destRect;
-    }
-
     /**
      * Set the scale factor of the bitmap. if the bitmap is big and you want it to appear small, set
      * a high scale factor.
@@ -219,7 +198,6 @@ public class Sprite {
     public static class Point {
         float x = 0;
         float y = 0;
-        boolean isInitialized = false;
 
         public Point(float x, float y) {
             this.x = x;
@@ -230,25 +208,13 @@ public class Sprite {
             return this.x;
         }
 
-        float getY() {
-            return this.y;
-        }
+        float getY() { return this.y; }
 
         void set(float x, float y) {
             this.x = x;
             this.y = y;
-            isInitialized = true;
-        }
-
-        boolean isInitialized() {
-            return this.isInitialized;
-        }
-
-        void invalidate() {
-            this.isInitialized = false;
         }
     }
-
 
     public void setPic(Bitmap bitmap, int nFrames) {
         this.bitmap = bitmap;
@@ -260,6 +226,7 @@ public class Sprite {
     public void setLooping(boolean looping){
         this.isLooping= looping;
     }
+
     public void reverse(){
         if (this.player==Player.RIGHT){
             this.player=Player.LEFT;
@@ -267,8 +234,5 @@ public class Sprite {
             this.player=Player.RIGHT;
         }
     }
-    public void runAnimation(){
-        this.runLoopFlag =true;
-
-    }
+    public void runAnimation(){ this.runLoopFlag =true; }
 }

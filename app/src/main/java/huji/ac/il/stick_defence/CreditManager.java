@@ -6,10 +6,9 @@ import android.os.Handler;
 import java.text.DecimalFormat;
 
 /**
- * Created by yahav on 24/07/15.
+ * This class represents the current player's points
  */
 public class CreditManager extends Thread {
-    //TODO: REMOVE OPPONENT'S CREDIT.
     private static final DecimalFormat DECIMAL_FORMAT =
             new DecimalFormat("####0.00");
 
@@ -23,7 +22,6 @@ public class CreditManager extends Thread {
     Handler handler;
 
     public CreditManager(int credits) {
-
         this.credits = credits;
         this.tmpCredits = credits;
         handler = new Handler();

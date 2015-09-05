@@ -15,19 +15,21 @@ import java.util.ArrayList;
 
 /**
  * This class represents a server that manages all the league stuff
- * It uses the singleton pattern so that the current instance of the server doesn't depend on the calling
- * activity and his life cycle is during the whole league.
- * The person who starts the server (by creating a new league) is just hosting the server on
- * his machine, but from the server point of view this person his just a regular client like evryone else.
+ * It uses the singleton pattern so that the current instance of the
+ * server doesn't depend on the calling activity and his life cycle is during
+ * the whole league.
+ * The person who starts the server (by creating a new league) is just hosting
+ * the server on his machine, but from the server point of view this person
+ * his just a regular client like evryone else.
  * In other words the server doesn't know on witch machine it is being hosted.
  */
 public class Server {
     private int leagueParticipants;
     public static final int PORT = 6666; //arbitrary port
     private static Server server;
-    private int counter = 0;
     private boolean acceptingNewClients = false;
-    private ArrayList<Peer> peers = new ArrayList<>(); //we keep tracking all the connected peers todo: change to hashmap based on id
+    //we keep tracking all the connected peers todo: change to hashmap based on id
+    private ArrayList<Peer> peers = new ArrayList<>();
     private ServerSocket serverSocket;
     private boolean test = true;
     private LeagueManager leagueManager;
@@ -42,7 +44,7 @@ public class Server {
     /**
      * private constructor, for the singleton pattern.
      *
-     * @param participants
+     * @param participants the number of participants
      */
     private Server(int participants) {
         this.leagueParticipants = participants;
@@ -67,7 +69,8 @@ public class Server {
     }
 
     /**
-     * Returns an instance of the server. Could return null if no one called "createServer" before
+     * Returns an instance of the server.
+     * Could return null if no one called "createServer" before
      *
      * @return an instance of the server.
      */
@@ -127,7 +130,7 @@ public class Server {
         Protocol.Action action = Protocol.getAction(rawInput);
         switch (action) {
             case NAME:
-                JSONObject data = null;
+                JSONObject data;
                 String name = null;
                 String id = null;
                 try {
@@ -176,14 +179,16 @@ public class Server {
 
             case READY_TO_PLAY:
                 peer.setReadyToPlay();
-                if (peer.canStartPlay && peer.partner.canStartPlay) { //both peers can ready to play
+                //both peers can ready to play
+                if (peer.canStartPlay && peer.partner.canStartPlay) {
                     sendStartGame(peer);
                 }
                 break;
 
             case PARTNER_INFO:
                 peer.setReceivedPartnerInfo();
-                if (peer.canStartPlay && peer.partner.canStartPlay) { //both peers can ready to play
+                //both peers can ready to play
+                if (peer.canStartPlay && peer.partner.canStartPlay) {
                     sendStartGame(peer);
                 }
                 break;
@@ -216,15 +221,19 @@ public class Server {
         peer1.setPartner(null);
         peer2.setPartner(null);
     }
+
     private void sendStartGame(Peer peer){
         try {
-            Thread.sleep(3000); //sleep for a few seconds, just to give the player some time to finish loading his game
+            //sleep for a few seconds, just to give the
+            // player some time to finish loading his game
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         String currentTime = Long.toString(System.currentTimeMillis());
         peer.send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
-        peer.partner.send(Protocol.stringify(Protocol.Action.START_GAME, currentTime));
+        peer.partner.send(
+                Protocol.stringify(Protocol.Action.START_GAME, currentTime));
         //clear the readyToPlayFlag for the next time:
         peer.clearReadyToPlayAndReceivedInfo();
         peer.partner.clearReadyToPlayAndReceivedInfo();
@@ -245,13 +254,16 @@ private Peer peer;
             Log.w("custom", "start socket listener");
             String inputLine;
             try {
-                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                while ((inputLine = in.readLine()) != null) { //the readLine is a blocking method.
+                BufferedReader in =
+                        new BufferedReader(
+                                new InputStreamReader(socket.getInputStream()));
+                //the readLine is a blocking method.
+                while ((inputLine = in.readLine()) != null) {
                     Log.w("custom", "client syas: "+ inputLine);
                     doAction(inputLine, peer);
                     if (peer.partner != null) {
-                        inputLine = Protocol.addTimeStampToRawInput(inputLine);//add time stamp to the action;
-//                      Thread.sleep(4000);//add delay for testing reasons. TODO:REMOVE!
+                        //add time stamp to the action;
+                        inputLine = Protocol.addTimeStampToRawInput(inputLine);
                         peer.partner.send(inputLine);
                     }
                 }
@@ -264,48 +276,11 @@ private Peer peer;
         }
     }
 
-//    private class ServerSocketListener extends AsyncTask<Peer, Void, Void> {
-//
-//        @Override
-//        protected Void doInBackground(Peer[] params) {
-//            Peer peer = params[0];
-//            Socket socket = peer.socket;
-//            Log.w("custom", "start socket listener");
-//            String inputLine;
-//
-//
-//
-//            try {
-//                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//                while ((inputLine = in.readLine()) != null) { //the readLine is a blocking method.
-//                    Log.w("custom", "client syas: "+ inputLine);
-//                    doAction(inputLine, peer);
-//                    if (peer.partner != null) {
-//                        inputLine = Protocol.addTimeStampToRawInput(inputLine);//add time stamp to the action;
-////                      Thread.sleep(4000);//add delay for testing reasons. TODO:REMOVE!
-//                        peer.partner.send(inputLine);
-//                    }
-//                }
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//
-//            Log.w("custom", "finish socket listener");
-//
-//
-//            return null;
-//        }
-//
-//        ;
-//    }
-
     /**
      * A socket wrapper.
      * Instead of keeping track on raw sockets, we wrap them as peers with name, id, and usfull methods.
      */
     public class Peer {
-        private long WAIT_FOR_APPROVE = 10000;
         private boolean approved = false; //check if the peer is an approved
         private String id; //unique id for each peer
         private String name; //name of the client. don't have to be unique.
@@ -324,28 +299,6 @@ private Peer peer;
          * @param socket the socket to wrap
          */
         public Peer(Socket socket) {
-            //start an asyncTask
-            // that will remove this peer from the peers list if it isn't approved:
-//            new AsyncTask<Peer, Void, Void>() {
-//                @Override
-//                protected Void doInBackground(Peer... params) { //TODO: remove this process and make that server to it instead
-//                    try {
-//                        Peer currentPeer = params[0];
-//                        Thread.sleep(WAIT_FOR_APPROVE);
-//                        if (!approved) {
-//                            peers.remove(currentPeer);
-//                            currentPeer.socket.close();
-//                            Log.w("custom", "illegal peer removed!");
-//                        }
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                    return null;
-//                }
-//            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this);
-
             this.socket = socket;
             new Thread(new ClientSocketListener(this)).start();
             try {
@@ -425,10 +378,10 @@ private Peer peer;
             this.canStartPlay=false;
             this.receivedPartnerInfo=false;
         }
+
         public void resetWins(){
             this.wins=0;
         }
-
     }
 
 }

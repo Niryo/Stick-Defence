@@ -3,18 +3,17 @@ package huji.ac.il.stick_defence;
 import android.view.MotionEvent;
 
 /**
- * Created by Nir on 03/05/2015.
+ * This class handles onTouch events
  */
 public class SimpleGestureDetector {
 
-    public static enum Gesture {
+    public enum Gesture {
         DOWN,
         UP,
         LEFT,
         RIGHT,
         TOUCH_DOWN,
         TOUCH_UP
-
     }
 
     private final int DISTANCE = 15;
@@ -22,8 +21,11 @@ public class SimpleGestureDetector {
     private float lastX;
     private GameState gameState = GameState.getInstance();
 
+    /**
+     * Receives MotionEvent and calls gameState.touch(...) respectively.
+     * @param event
+     */
     public void detect(MotionEvent event) {
-
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 this.lastX = event.getX();
@@ -48,7 +50,6 @@ public class SimpleGestureDetector {
                     gameState.touch(Gesture.UP, null);
 
                 }
-
                 if (currentX - this.lastX > DISTANCE) {
                     this.lastX = event.getX();
                     this.lastY = event.getY();
@@ -61,7 +62,6 @@ public class SimpleGestureDetector {
                     gameState.touch(Gesture.LEFT, null);
 
                 }
-//                gameState.touch(event.getX(), event.getY());
                 break;
 
             case MotionEvent.ACTION_UP:

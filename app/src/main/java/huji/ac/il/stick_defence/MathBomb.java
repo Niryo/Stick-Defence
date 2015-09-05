@@ -1,9 +1,6 @@
 package huji.ac.il.stick_defence;
 
-import android.app.ActionBar;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
@@ -17,16 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
 /**
- * Created by Nir on 12/08/2015.
+ * This class represents math bomb
  */
 public class MathBomb {
     //TODO: DISABLE ARRAOWS
@@ -69,9 +64,10 @@ public class MathBomb {
         addAnswerButtons(firstNum + secondNum);
     }
 
-
-
-
+    public static String info(){
+        return "Blocks enemy's operations until he/she solves a math exercise.\n\n" +
+               "Price: " + Market.MATH_BOMB_PRICE;
+    }
 
     private void addAnswerButtons(int result) {
         Log.w("custom", "the result is:" + result);
@@ -135,6 +131,7 @@ public class MathBomb {
                     if (currentButtonToPress == correctAnswer.size()) {
                         ((ViewGroup) bomb.getParent()).removeView(bomb);
                         GameState.getInstance().enableButtons();
+                        GameState.getInstance().enableBow(true);
                         Client.getClientInstance().send(Protocol.stringify(Protocol.Action.MATH_BOMB_SOLVED));
                         mp.stop();
                         Log.w("custom", "guessed correct!");
@@ -174,11 +171,6 @@ public class MathBomb {
             super.onSizeChanged(w, h, oldw, oldh);
             super.setTextSize(TypedValue.COMPLEX_UNIT_PX, (w / SCALE_FACTOR));
         }
-    }
-
-    public static String info(){
-        return "Blocks enemy's operations until he/she solves a math exercise.\n\n" +
-               "Price: " + Market.MATH_BOMB_PRICE;
     }
 }
 

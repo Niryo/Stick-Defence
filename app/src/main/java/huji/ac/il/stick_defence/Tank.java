@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 /**
- * Created by yahav on 18/08/15.
+ * This class represents a tank
  */
 public class Tank extends Soldier {
 
@@ -25,18 +25,16 @@ public class Tank extends Soldier {
 
     //============================Sprite constants==============================
     private static final int NUMBER_OF_FRAMES = 6;
-    private static final int SHOOT_NUMBER_OF_FRAMES = 6; //TODO
+    private static final int SHOOT_NUMBER_OF_FRAMES = 6;
     private static final int WALK_FPS = 40;
     private static final int ATTACK_FPS = 2;
     private static final float TANK_HEIGHT_RELATIVE = 0.99f;
-    private static final int ATTACK_PIC_INDEX = 1; //TODO
     //==========================================================================
 
     private static Bitmap leftSoldierPic = null;
     private static Bitmap rightSoldierPic = null;
     private static Bitmap leftAttackSoldierPic = null;
     private static Bitmap rightAttackSoldierPic = null;
-    private static float tankY = 0;
     private boolean canShoot = false;
     private Sprite.Player player;
     private int attackFrame = 0;
@@ -57,7 +55,7 @@ public class Tank extends Soldier {
         if (null == leftAttackSoldierPic) {
             leftAttackSoldierPic =
                     BitmapFactory.decodeResource(context.getResources(),
-                            R.drawable.tank); //TODO
+                            R.drawable.tank);
         }
 
         if (null == rightAttackSoldierPic) {
@@ -65,21 +63,20 @@ public class Tank extends Soldier {
         }
 
         if (Sprite.Player.LEFT == player) {
-            super.initSprite(context, leftSoldierPic, NUMBER_OF_FRAMES,
+            super.initSprite(leftSoldierPic, NUMBER_OF_FRAMES,
                     SCREEN_HEIGHT_PORTION, WALK_FPS);
         } else {
-            super.initSprite(context, rightSoldierPic, NUMBER_OF_FRAMES,
+            super.initSprite(rightSoldierPic, NUMBER_OF_FRAMES,
                     SCREEN_HEIGHT_PORTION, WALK_FPS);
         }
 
         Bullet.init(context, getScaledDownFactor());
 
-        tankY = super.getSoldierY(); // TODO - verify
-
         this.player = player;
 
     }
 
+    @Override
     public void update(long gameTime) {
         if (!super.isAttack()) {
             if (player == Sprite.Player.LEFT) {
@@ -87,7 +84,6 @@ public class Tank extends Soldier {
                         getScreenWidth() * 0.25) {
                     super.attack(leftSoldierPic, SHOOT_NUMBER_OF_FRAMES,
                             ATTACK_FPS);
-                    tankY = super.getSoldierY();
                     attackFrame = (getCurrentFrame() + 1) % NUMBER_OF_FRAMES;
                 }
             } else {
@@ -95,7 +91,6 @@ public class Tank extends Soldier {
                         (float) getScreenWidth() * 0.75) {
                     super.attack(rightSoldierPic, SHOOT_NUMBER_OF_FRAMES,
                             ATTACK_FPS);
-                    tankY = super.getSoldierY();
                     attackFrame = (getCurrentFrame() + 1) % NUMBER_OF_FRAMES;
                 }
             }
@@ -121,16 +116,13 @@ public class Tank extends Soldier {
 
     }
 
+    @Override
     public void render(Canvas canvas) {
         super.render(canvas);
     }
 
     public boolean isHitByArrow(Arrow arrow) {
         return super.isHitByArrow(arrow);
-    }
-
-    public static float getTankY() {
-        return tankY;
     }
 
     public static String info(){

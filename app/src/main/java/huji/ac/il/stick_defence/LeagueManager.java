@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * Created by Nir on 29/05/2015.
+ * This class represents the league manager
  */
 public class LeagueManager {
     private ArrayList<Server.Peer> peers;
@@ -20,11 +20,13 @@ public class LeagueManager {
     private int[][] allCombinationWithFour = {{0, 1, 2, 3},
                                               {0, 2, 1, 3},
                                               {0, 3, 1, 2}};
-    private int[][] allCombinationWithSix = {{0, 1, 2, 3, 4, 5},
-                                             {0, 2, 1, 4, 3, 5},
-                                             {0, 3, 1, 5, 2, 4},
-                                             {0, 4, 1, 2, 3, 5},
-                                             {0, 5, 1, 3, 2, 4}};
+
+    private int[][] allCombinationWithSix  = {{0, 1, 2, 3, 4, 5},
+                                              {0, 2, 1, 4, 3, 5},
+                                              {0, 3, 1, 5, 2, 4},
+                                              {0, 4, 1, 2, 3, 5},
+                                              {0, 5, 1, 3, 2, 4}};
+
     private static final int TWO_PLAYERS_STAGES = 3;
     private static final int FOUR_PLAYERS_STAGES = 3;
     private static final int SIX_PLAYERS_STAGES = 5;
@@ -107,7 +109,7 @@ public class LeagueManager {
     }
 
     /**
-     * A six person league. every player will play againt all the other players
+     * A six person league. every player will play against all the other players
      *
      * @return information about the league
      */

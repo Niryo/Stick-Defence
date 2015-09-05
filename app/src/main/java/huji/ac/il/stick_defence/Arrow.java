@@ -122,7 +122,7 @@ public class Arrow {
 
         if (sprite == null) {
             sprite = new Sprite();
-            sprite.initSprite(context, arrowPic, 1, Sprite.Player.LEFT, 1.0);
+            sprite.initSprite(arrowPic, 1, Sprite.Player.LEFT, 1.0);
             sprite.setScaleDownFactor(scaleDownFactor);
         }
 

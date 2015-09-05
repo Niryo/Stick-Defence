@@ -7,7 +7,7 @@ import android.graphics.Canvas;
 import android.media.MediaPlayer;
 
 /**
- * Created by Nir on 24/08/2015.
+ * This class represents the fog weapon
  */
 public class Fog implements DrawableObject{
     private Sprite sprite;
@@ -19,21 +19,25 @@ public class Fog implements DrawableObject{
     private MediaPlayer mp;
     private static Bitmap fogPic;
 
+    /**
+     * Constructor
+     * @param context the context
+     */
     public Fog(Context context){
         if (null == fogPic){
             fogPic = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.smoke);
         }
         this.sprite= new Sprite();
-        this.sprite.initSprite(context,fogPic, 9,Sprite.Player.LEFT, 0.5);
+        this.sprite.initSprite(fogPic, 9,Sprite.Player.LEFT, 0.5);
         this.sprite.setAnimationSpeed(4);
         this.sprite.setLooping(false);
         this.screenHeight=GameState.getInstance().getCanvasHeight();
         this.mp=Sounds.getInstance().streamSound(Sounds.FOG_SOUND);
     }
 
+    @Override
     public void update(long gameTime){
-
         sprite.update(gameTime);
         long timePassed=System.currentTimeMillis()-this.timeOfCreation;
         if(timePassed>ACTIVE_TIME && active){
@@ -44,16 +48,17 @@ public class Fog implements DrawableObject{
         if(timePassed>DESTROY_TIME ){
             destroy();
         }
-
-
     }
+
+    @Override
+    public void render(Canvas canvas) {
+        sprite.render(canvas, 0,
+                      (int) (screenHeight - sprite.getScaledFrameHeight()));
+    }
+
     private void destroy(){
         mp.stop();
-    GameState.getInstance().getMiscellaneous().remove(this);
-    }
-    public void render(Canvas canvas) {
-        sprite.render(canvas, 0, (int) (screenHeight - sprite.getScaledFrameHeight()));
-
+        GameState.getInstance().getMiscellaneous().remove(this);
     }
 
     public static String info(){

@@ -9,12 +9,10 @@ import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.RectF;
 
-import java.io.Serializable;
-
 /**
- * Created by yahav on 01/05/15.
+ * This class represents a bow
  */
-public class Bow implements Serializable {
+public class Bow implements DrawableObject{
     //Bow height in relation to the screen height.
     //0-1 double. For instance, 0.5 will cause the
     //bow to span over a half of the screen height.
@@ -22,20 +20,14 @@ public class Bow implements Serializable {
     private static final int NUMBER_OF_FRAMES = 9;
     private static final int ARC_PATH_WIDTH_FACTOR = 2;
     private static final int ARC_PATH_HEIGHT_FACTOR = 4;
-    private static int actualArcPathHeight;
-    private static int actualArcPathWidth;
     private static final int ARC_PATH_START_ANGLE = 290;
     private static final int ARC_PATH_LENGTH = 80;
 
-    private int bowSound, bowReleaseSound;
+    private int bowSound;
     private GameState gameState = GameState.getInstance();
     private static Bitmap leftBowPic = null;
-    //    private static        Bitmap rightBowPic = null;
-    private Sprite sprite;
     private Sprite.Player player;
 
-    private Context context;
-    private Path path = new Path();
     private PathMeasure pathMeasure;
     private float pathLength;
     private float[] pos = new float[2];
@@ -60,16 +52,17 @@ public class Bow implements Serializable {
                     R.drawable.bow); // Read resource only once
         }
         //set the arc path relative to the tower dimentions:
-        actualArcPathHeight = (int) tower.getScaledWidth() / ARC_PATH_HEIGHT_FACTOR;
-        actualArcPathWidth = (int) tower.getScaledWidth() / ARC_PATH_WIDTH_FACTOR;
+        int actualArcPathHeight = (int) tower.getScaledWidth() /
+                ARC_PATH_HEIGHT_FACTOR;
+        int actualArcPathWidth = (int) tower.getScaledWidth() /
+                ARC_PATH_WIDTH_FACTOR;
 
-        sprite = new Sprite();
-        this.context = context;
+        Sprite sprite = new Sprite();
         if (player == Sprite.Player.LEFT) {
-            sprite.initSprite(context, leftBowPic, NUMBER_OF_FRAMES,
+            sprite.initSprite(leftBowPic, NUMBER_OF_FRAMES,
                     player, SCREEN_HEIGHT_PORTION);
         } else {
-            sprite.initSprite(context, leftBowPic, NUMBER_OF_FRAMES,
+            sprite.initSprite(leftBowPic, NUMBER_OF_FRAMES,
                     player, SCREEN_HEIGHT_PORTION);
         }
 
@@ -89,20 +82,25 @@ public class Bow implements Serializable {
             }
             this.scaledBow[i] = Bitmap.
                     createScaledBitmap(frameToScale,
-                            (int) this.sprite.getScaledFrameWidth(),
-                            (int) this.sprite.getScaledFrameHeight(),
+                            (int) sprite.getScaledFrameWidth(),
+                            (int) sprite.getScaledFrameHeight(),
                             false);
         }
 
 
         RectF oval = new RectF();
+        Path path = new Path();
         Sprite.Point towerPos = tower.getPosition();
         float centerTowerX = (float) (towerPos.getX() + tower.getWidth() / 2);
         if (player == Sprite.Player.LEFT) {
-            oval.set(centerTowerX, towerPos.getY() - actualArcPathHeight, centerTowerX + actualArcPathWidth, towerPos.getY() + actualArcPathHeight);
+            oval.set(centerTowerX, towerPos.getY() - actualArcPathHeight,
+                     centerTowerX + actualArcPathWidth,
+                     towerPos.getY() + actualArcPathHeight);
             path.addArc(oval, ARC_PATH_START_ANGLE, ARC_PATH_LENGTH);
         } else {
-            oval.set(centerTowerX - actualArcPathWidth, towerPos.getY() - actualArcPathHeight, centerTowerX, towerPos.getY() + actualArcPathHeight);
+            oval.set(centerTowerX - actualArcPathWidth,
+                     towerPos.getY() - actualArcPathHeight, centerTowerX,
+                     towerPos.getY() + actualArcPathHeight);
             path.addArc(oval, 540 - ARC_PATH_START_ANGLE, -ARC_PATH_LENGTH);
         }
 
@@ -115,24 +113,20 @@ public class Bow implements Serializable {
 
     }
 
-    /**
-     * Updates bow's place and angel
-     *
-     * @param gameTime the current time in milliseconds
-     */
-    public void update(long gameTime) {
-//        sprite.update(gameTime);
+    @Override
+    public void update (long gameTime){
+        //Do nothing
     }
 
-    /**
-     * Draws the tower
-     *
-     * @param canvas the canvas to draw on
-     */
+    @Override
     public void render(Canvas canvas) {
         canvas.drawBitmap(this.scaledBow[this.currentFrame], matrix, null);
     }
 
+    /**
+     * Rorate the bow left
+     * @return iff the rotation succeed
+     */
     public boolean rotateLeft() {
         if (distance > 0) {
             this.distance -= 1;
@@ -143,6 +137,10 @@ public class Bow implements Serializable {
         return false;
     }
 
+    /**
+     * Rotate the bow right
+     * @return true if the rotation succeed
+     */
     public boolean rotateRight() {
         if (distance < this.pathLength) {
             this.distance += 1;
@@ -160,6 +158,10 @@ public class Bow implements Serializable {
         matrix.postTranslate(pos[0] - bm_offsetX, pos[1] - bm_offsetY);
     }
 
+    /**
+     * Set the bow to aim at the input point
+     * @param point the point to aim at
+     */
     public void setBowDirection(Sprite.Point point) {
         float newDegrees =
                 (float) Math.toDegrees(Math.atan2(point.getY() - this.pos[1],
@@ -191,6 +193,9 @@ public class Bow implements Serializable {
 
     }
 
+    /**
+     * Strech the bow
+     */
     public void stretch() {
         if (this.currentFrame == 1){
             playStrechSound();
@@ -203,23 +208,25 @@ public class Bow implements Serializable {
         }
     }
 
+    /**
+     * Unstrech the bow
+     */
     public void unStretch() {
-
         if (this.currentFrame > 0) {
             this.currentFrame--;
         }
     }
 
+    /**
+     * Release an arrow
+     */
     public void release() {
         if (this.currentFrame == NUMBER_OF_FRAMES - 4) {
             stopStrechSound();
             playReleaseSound();
             this.gameState.addArrow(new Arrow(this.pos[0], this.pos[1], this.tan, this.player, 0));
-
-
         }
         this.currentFrame = NUMBER_OF_FRAMES - 1;
-
     }
 
     public void aimAndShoot(double relativeDistance, double delayInSec) {
