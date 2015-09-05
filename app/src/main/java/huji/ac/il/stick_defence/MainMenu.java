@@ -236,10 +236,12 @@ public class MainMenu extends Activity implements DoProtocolAction {
             @Override
             public void onClick(View v) {
                 Sounds.playSound(Sounds.BUTTON_CLICK, false);
-                Intent createLeague = new Intent(getApplicationContext(),
-                        JoinLeagueActivity.class);
+                Intent intent = new Intent(getApplicationContext(),
+                                           Market.class);
+                intent.putExtra("isMultiplayer", true);
+                intent.putExtra("internet", false);
                 stopSoundOnPause = false;
-                startActivity(createLeague);
+                startActivity(intent);
                 finish();
             }
         });
