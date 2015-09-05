@@ -46,7 +46,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
     private ArrayList<WifiP2pDevice> devices = new ArrayList<>();
     private Client client = Client.getClientInstance();
     private boolean running;
-
+    private boolean stopSoundOnPause = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +61,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
         setContentView(R.layout.activity_join_league);
         client.setCurrentActivity(this);
 
+        stopSoundOnPause = true;
         final Button exitToMainMenuButton =
                 (Button) findViewById(R.id.exit_to_main_menu);
 
@@ -84,6 +85,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
         exitToMainMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                stopSoundOnPause = false;
                 Intent mainMenuIntent = new Intent(getApplicationContext(),
                         MainMenu.class);
                 startActivity(mainMenuIntent);
@@ -193,12 +195,18 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
     protected void onResume() {
         super.onResume();
         registerReceiver(mReceiver, mIntentFilter);
+        Sounds sounds = Sounds.getInstance();
+        sounds.playTheme(Sounds.MAIN_THEME);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         unregisterReceiver(mReceiver);
+        if (stopSoundOnPause){
+            Sounds sounds = Sounds.getInstance();
+            sounds.stopTheme();
+        }
     }
 
     public void addDevices(Collection<WifiP2pDevice> devices) {
@@ -220,6 +228,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
             case NAME_CONFIRMED:
                 running = false;
                 Log.w("custom", "going to league");
+                stopSoundOnPause = false;
                 Intent intent = new Intent(this, LeagueInfoActivity.class);
                 startActivity(intent);
                 finish();
@@ -227,6 +236,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
 
             case LEAGUE_INFO:
                 Log.w("custom", "going to league");
+                stopSoundOnPause = false;
                 Intent intentWithInfo = new Intent(this, LeagueInfoActivity.class);
                 String info = Protocol.getData(rawInput);
                 intentWithInfo.putExtra("info", info);

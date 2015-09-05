@@ -63,8 +63,8 @@ public class Sprite{
         this.frameRect = new Rect(0, 0, frameWidth, frameHeight);
         this.destRect = new RectF();
         int screenHeight = GameState.getCanvasHeight();
-        setScaleDownFactor(((double) this.frameHeight / (double) screenHeight)
-                / screenHeightPortion);
+        setScaleDownFactor(((double) this.frameHeight / (double)
+                screenHeight) / screenHeightPortion);
     }
 
     /**
@@ -76,8 +76,8 @@ public class Sprite{
     public static Bitmap mirrorBitmap(Bitmap src) {
         Matrix m = new Matrix();
         m.preScale(-1, 1);
-        Bitmap dst = Bitmap.createBitmap(src, 0, 0, src.getWidth(),
-                src.getHeight(), m, false);
+        Bitmap dst = Bitmap.createBitmap(src, 0, 0, src.getWidth(), src
+                .getHeight(), m, false);
         dst.setDensity(DisplayMetrics.DENSITY_DEFAULT);
         return dst;
     }
@@ -136,7 +136,8 @@ public class Sprite{
     }
 
     /**
-     * Draws the sprite on the canvas in the given point. the sprite will be drawn from the
+     * Draws the sprite on the canvas in the given point.
+     * the sprite will be drawn from the
      * top left.
      *
      * @param canvas the canvas

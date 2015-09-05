@@ -46,6 +46,7 @@ public class Market extends Activity implements DoProtocolAction {
     private static String savedLeagueInfo = null;
     private GameState gameState;
     AlertDialog.Builder alertDialogBuilder;
+    private boolean stopSoundOnPause = true;
 
 
     @Override
@@ -63,7 +64,7 @@ public class Market extends Activity implements DoProtocolAction {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_market);
-
+        stopSoundOnPause = true;
         final Button continueButton = (Button) findViewById(R.id.market_play_button);
 
 
@@ -134,6 +135,7 @@ public class Market extends Activity implements DoProtocolAction {
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                stopSoundOnPause = false;
                 if (!isMultiplayer) {
                     Intent intent = new Intent(getApplicationContext(),
                             GameActivity.class);
@@ -413,6 +415,7 @@ public class Market extends Activity implements DoProtocolAction {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.exit_to_main_menu) {
+            stopSoundOnPause = false;
             Intent intent = new Intent(getApplicationContext(), MainMenu.class);
             startActivity(intent);
             finish();
@@ -428,6 +431,7 @@ public class Market extends Activity implements DoProtocolAction {
                 .setPositiveButton(android.R.string.yes,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                stopSoundOnPause = false;
                                 Intent intent = new Intent(getApplicationContext(),
                                         MainMenu.class);
                                 startActivity(intent);
@@ -479,4 +483,19 @@ public class Market extends Activity implements DoProtocolAction {
 
     public static String getLeagueInfo(){ return savedLeagueInfo; }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (stopSoundOnPause){
+            Sounds sounds = Sounds.getInstance();
+            sounds.stopTheme();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Sounds sounds = Sounds.getInstance();
+        sounds.playTheme(Sounds.MAIN_THEME);
+    }
 }

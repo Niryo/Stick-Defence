@@ -102,10 +102,6 @@ public class LeagueInfoActivity extends Activity implements DoProtocolAction {
             waitDialog.dismiss();
             printLeagueInfo(getIntent().getStringExtra("info"));
         }
-
-
-
-
     }
 
 private void initTabs(){
@@ -273,15 +269,19 @@ private void initTabs(){
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Sounds.getInstance().playTheme(Sounds.WIN_THEME);
+                            Sounds sounds = Sounds.getInstance();
+                            sounds.stopTheme();
+                            sounds.playTheme(Sounds.WIN_THEME);
                             TextView winText = (TextView) findViewById(R.id.tab3);
                             winText.setText("All glory to " + winner +
                                     "!\n The big winner of the league!");
                             winText.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                                                 (float) (text_size * 2));
                             winText.setTextColor(Color.parseColor("#FF9900"));
-                            winText.setShadowLayer(10, 0, 0, Color.parseColor("#FFFF66"));
-                            final TabHost tabHost= (TabHost) findViewById(R.id.tabHost);
+                            winText.setShadowLayer(10, 0, 0,
+                                    Color.parseColor("#FFFF66"));
+                            final TabHost tabHost = (TabHost) findViewById(R
+                                    .id.tabHost);
 
 
                             final Button buttonTab1= (Button) findViewById(R.id.buttonTab1);
@@ -368,4 +368,10 @@ private void initTabs(){
         table.addView(tr);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Sounds sounds = Sounds.getInstance();
+        sounds.stopTheme();
+    }
 }

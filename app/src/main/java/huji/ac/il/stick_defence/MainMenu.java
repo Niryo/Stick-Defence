@@ -33,7 +33,9 @@ import java.util.regex.Pattern;
 public class MainMenu extends Activity implements DoProtocolAction {
     private Client client;// = Client.createClient(name);
     private boolean isCreateLeagueOptionsVisible = false;
-    private boolean isInternet=false;
+    private boolean isInternet = false;
+    private boolean stopSoundOnPause = true;
+    private Sounds sounds;
     private String SAVED_IP = "SAVED_IP";
     private String NICKNAME= "NICKNAME";
     private String UNIQUE_ID= "UNIQUE_ID";
@@ -51,8 +53,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        Sounds sounds = Sounds.create(this);
-        sounds.playTheme(Sounds.MAIN_THEME);
+        this.sounds = Sounds.create(this);
         super.onCreate(savedInstanceState);
         final SharedPreferences settings =
                 getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
@@ -62,7 +63,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
         }else{
             initClient();
         }
-
+        stopSoundOnPause = true;
         FontsOverride.setDefaultFont(this, "SERIF", "Schoolbell.ttf");
 
         setContentView(R.layout.activity_main_menu);
@@ -86,6 +87,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
         singlePlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                stopSoundOnPause = false;
                 Intent marketIntent = new Intent(getApplicationContext(),
                         Market.class);
                 marketIntent.putExtra("isMultiplayer", false);
@@ -230,6 +232,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
             public void onClick(View v) {
                 Intent createLeague = new Intent(getApplicationContext(),
                         JoinLeagueActivity.class);
+                stopSoundOnPause = false;
                 startActivity(createLeague);
                 finish();
             }
@@ -391,6 +394,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 if(isInternet){
                     intent.putExtra("internet", true);
                 }
+                stopSoundOnPause = false;
                 startActivity(intent);
                 finish();
                 break;
@@ -401,10 +405,10 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 intentWithInfo.putExtra("isMultiplayer", true);
                 String info = Protocol.getData(rawInput);
                 intentWithInfo.putExtra("info", info);
+                stopSoundOnPause = false;
                 startActivity(intentWithInfo);
                 finish();
                 break;
-
         }
     }
 
@@ -428,4 +432,17 @@ public class MainMenu extends Activity implements DoProtocolAction {
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (stopSoundOnPause){
+            sounds.stopTheme();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sounds.playTheme(Sounds.MAIN_THEME);
+    }
 }
