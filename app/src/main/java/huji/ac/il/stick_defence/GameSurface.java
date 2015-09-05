@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
@@ -110,7 +111,7 @@ public class GameSurface extends SurfaceView implements
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         super.onTouchEvent(event);
         this.simpleGestureDetector.detect(event);
         return true;

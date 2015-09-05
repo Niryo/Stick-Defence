@@ -32,7 +32,6 @@ public class BombGrandpa extends Soldier {
 
     private static Bitmap leftSoldierPic = null;
     private static Bitmap rightSoldierPic = null;
-    private static Sounds sounds;
 
     private Sprite.Player player;
 
@@ -64,7 +63,6 @@ public class BombGrandpa extends Soldier {
                     SCREEN_HEIGHT_PORTION, MOVE_FPS);
         }
         this.player = player;
-        this.sounds = Sounds.getInstance();
     }
 
     @Override
@@ -99,7 +97,7 @@ public class BombGrandpa extends Soldier {
 
     @Override
     public void playSound(){
-        soundStream = sounds.playSound(soundId,false);
+        soundStream = Sounds.playSound(soundId, false);
     }
 
     public static String info(){

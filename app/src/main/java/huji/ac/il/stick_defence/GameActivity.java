@@ -380,6 +380,9 @@ public class GameActivity extends Activity implements DoProtocolAction {
     @Override
     public void doAction(String rawInput) {
         Protocol.Action action = Protocol.getAction(rawInput);
+        if (null == action){
+            return;
+        }
         switch (action) {
             case ARROW:
                 double arrowDistance =

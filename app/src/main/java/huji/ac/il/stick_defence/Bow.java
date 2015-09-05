@@ -243,7 +243,7 @@ public class Bow implements DrawableObject{
     }
 
     public void playStrechSound(){
-        this.bowSound = Sounds.getInstance().playSound(Sounds.BOW_STRECH, false);
+        this.bowSound = Sounds.playSound(Sounds.BOW_STRECH, false);
     }
 
     public void stopStrechSound(){
@@ -251,7 +251,7 @@ public class Bow implements DrawableObject{
     }
 
     public void playReleaseSound(){
-        this.bowSound = Sounds.getInstance().playSound(Sounds.BOW_RELEASE, false);
+        this.bowSound = Sounds.playSound(Sounds.BOW_RELEASE, false);
     }
 
 }

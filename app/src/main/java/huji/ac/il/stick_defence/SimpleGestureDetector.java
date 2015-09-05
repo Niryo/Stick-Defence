@@ -16,14 +16,14 @@ public class SimpleGestureDetector {
         TOUCH_UP
     }
 
-    private final int DISTANCE = 15;
+    private static final int DISTANCE = 15;
     private float lastY;
     private float lastX;
     private GameState gameState = GameState.getInstance();
 
     /**
      * Receives MotionEvent and calls gameState.touch(...) respectively.
-     * @param event
+     * @param event the event to handle
      */
     public void detect(MotionEvent event) {
         switch (event.getAction()) {

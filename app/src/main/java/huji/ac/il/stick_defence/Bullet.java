@@ -31,7 +31,7 @@ public class Bullet {
         this.x = x;
         this.y = y;
 
-        x_pixPerSec = SEC_TO_SCREEN_WIDTH * gameState.getCanvasWidth();
+        x_pixPerSec = SEC_TO_SCREEN_WIDTH * GameState.getCanvasWidth();
 
         if (Sprite.Player.RIGHT == player) {
             sprite = rightBulletSprite;
@@ -106,7 +106,7 @@ public class Bullet {
     }
 
     private void playExplosionSound(){
-        Sounds.getInstance().playSound(Sounds.SMALL_EXPLOSION, false);
+        Sounds.playSound(Sounds.SMALL_EXPLOSION, false);
     }
 
 }

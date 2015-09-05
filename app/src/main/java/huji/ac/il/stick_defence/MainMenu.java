@@ -110,7 +110,6 @@ public class MainMenu extends Activity implements DoProtocolAction {
                 final int MAX_N_PLAYERS = 8;
                 final int MIN_N_PLAYERS = 2;
                 final int[] nPlayers = {2};
-                final boolean isWifi = true;
 
                 findViewById(R.id.create_league_options)
                         .setVisibility(View.VISIBLE);
@@ -157,8 +156,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
 
                         if(chosenButton.getText().equals("WiFi")){
                             WifiP2pManager mManager = (WifiP2pManager)
-                                    getSystemService(
-                                            getApplicationContext().WIFI_P2P_SERVICE);
+                                    getSystemService(WIFI_P2P_SERVICE);
                             WifiP2pManager.Channel mChannel =
                                     mManager.initialize(getApplicationContext(),
                                                         getMainLooper(), null);
@@ -189,7 +187,8 @@ public class MainMenu extends Activity implements DoProtocolAction {
                                                 return null;
                                             }
                                         }.executeOnExecutor(AsyncTask
-                                                .THREAD_POOL_EXECUTOR, null);
+                                                .THREAD_POOL_EXECUTOR, (Void)
+                                                null);
                                     }
 
                                 }
@@ -213,7 +212,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
                                     return null;
                                 }
                             }.executeOnExecutor(AsyncTask
-                                    .THREAD_POOL_EXECUTOR, null);
+                                    .THREAD_POOL_EXECUTOR, (Void) null);
                         }
 
                     }
@@ -295,7 +294,7 @@ public class MainMenu extends Activity implements DoProtocolAction {
                                 return null;
                             }
                         }.executeOnExecutor(AsyncTask
-                                .THREAD_POOL_EXECUTOR, null);
+                                .THREAD_POOL_EXECUTOR, (Void) null);
                     }
                 });
                 dialog.show();
@@ -381,6 +380,9 @@ public class MainMenu extends Activity implements DoProtocolAction {
     @Override
     public void doAction(String rawInput) {
         Protocol.Action action = Protocol.getAction(rawInput);
+        if (null == action){
+            return;
+        }
         switch (action) {
             case NAME_CONFIRMED:
                 Log.w("custom", "going to marekt");

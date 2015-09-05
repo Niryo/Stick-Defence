@@ -30,7 +30,6 @@ public class Swordman extends Soldier {
     private static final int MOVE_FPS = 15;
     private static final int ATTACK_FPS = 20;
     private static final float RANGE_FROM_TOWER_ATTACK = 1.5f;
-    private static final int SWORDMAN_Y = 10;
     //==========================================================================
 
     private static Bitmap leftSoldierPic = null;

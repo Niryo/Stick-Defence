@@ -150,7 +150,7 @@ public class LeagueManager {
     /**
      * A classic eight person league.
      *
-     * @return
+     * @return information about the league
      */
     private JSONObject eightPersonLeague() {
         GameState gameState = GameState.getInstance();

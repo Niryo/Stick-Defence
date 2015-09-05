@@ -2,20 +2,15 @@ package huji.ac.il.stick_defence;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.format.Formatter;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -170,7 +165,9 @@ private void initTabs(){
     @Override
     public void doAction(String rawInput) {
         Protocol.Action action = Protocol.getAction(rawInput);
-
+        if (null == action){
+            return;
+        }
         switch (action) {
             case LEAGUE_INFO:
                 Log.w("custom", "receive leagueinfo in : leagueInfo.class");

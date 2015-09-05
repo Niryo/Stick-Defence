@@ -62,8 +62,8 @@ public abstract class Soldier implements DrawableObject{
                       double delayInSec, int hp, SoldierType soldierType) {
         this.PLAYER = player;
         this.soundId = soundId;
-        this.screenWidth = gameState.getCanvasWidth();
-        this.screenHeight = gameState.getCanvasHeight();
+        this.screenWidth = GameState.getCanvasWidth();
+        this.screenHeight = GameState.getCanvasHeight();
         this.context = context;
         this.hp = this.startHp = hp;
         this.DAMAGE_PER_SEC = damagePerSec;
@@ -195,13 +195,10 @@ public abstract class Soldier implements DrawableObject{
     }
 
     protected boolean isHitByArrow(Arrow arrow) {
-        if (arrow.getPlayer() != this.getPlayer() &&
+        return (arrow.getPlayer() != this.getPlayer() &&
                 this.soldierY <= arrow.getHeadY() &&
                 Math.abs(this.soldierX + sprite.getScaledFrameWidth() / 2 -
-                        arrow.getHeadX()) <= HIT_EPSILON) {
-            return true;
-        }
-        return false;
+                        arrow.getHeadX()) <= HIT_EPSILON);
     }
 
     /**
@@ -227,7 +224,7 @@ public abstract class Soldier implements DrawableObject{
     }
 
     public void playSound(){
-       this.soundStream = Sounds.getInstance().playSound(this.soundId);
+       this.soundStream = Sounds.playSound(this.soundId);
     }
     public void stopSound(){
         Sounds.stopSound(this.soundStream);

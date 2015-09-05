@@ -1,6 +1,5 @@
 package huji.ac.il.stick_defence;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import org.json.JSONException;

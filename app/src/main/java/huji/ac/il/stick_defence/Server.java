@@ -31,7 +31,6 @@ public class Server {
     //we keep tracking all the connected peers todo: change to hashmap based on id
     private ArrayList<Peer> peers = new ArrayList<>();
     private ServerSocket serverSocket;
-    private boolean test = true;
     private LeagueManager leagueManager;
     private int gameOverCounter = 0;
     private int approvedPeersCounter =0;
@@ -128,6 +127,9 @@ public class Server {
      */
     private void doAction(String rawInput, Peer peer) {
         Protocol.Action action = Protocol.getAction(rawInput);
+        if (null == action){
+            return;
+        }
         switch (action) {
             case NAME:
                 JSONObject data;
@@ -217,10 +219,11 @@ public class Server {
         peer2.setPartner(peer1);
     }
 
+    /*
     private void destroyPair(Peer peer1, Peer peer2) {
         peer1.setPartner(null);
         peer2.setPartner(null);
-    }
+    }*/
 
     private void sendStartGame(Peer peer){
         try {
@@ -287,11 +290,12 @@ private Peer peer;
         private PrintWriter out;
         private Socket socket;
         private Peer partner = null;
-        private int score = 0;
         private int wins = 0;
         private Boolean readyToPlay = false;
-        private Boolean receivedPartnerInfo=true;//we start with true because in the first round we don't need to wait for partner info
-        private Boolean canStartPlay=false; //if both readyToPlay and receivedPartnerInfo are true;
+        private Boolean receivedPartnerInfo = true;//we start with true
+        // because in the first round we don't need to wait for partner info
+        private Boolean canStartPlay = false; //if both readyToPlay and
+        // receivedPartnerInfo are true;
 
         /**
          * Constructs a new peer.
@@ -333,21 +337,8 @@ private Peer peer;
             this.out.flush();
         }
 
-        /**
-         * Return the peer socket
-         *
-         * @return the peer socket
-         */
-        public Socket getSocket() {
-            return this.socket;
-        }
-
         public void setPartner(Peer peer) {
             this.partner = peer;
-        }
-
-        public int getScore() {
-            return this.score;
         }
 
         public int getWins() {
@@ -370,9 +361,6 @@ private Peer peer;
             }
         }
 
-        public boolean canStartPlay(){
-            return this.canStartPlay;
-        }
         public void clearReadyToPlayAndReceivedInfo(){
             this.readyToPlay=false;
             this.canStartPlay=false;

@@ -1,10 +1,8 @@
 package huji.ac.il.stick_defence;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -26,10 +24,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TabHost;
 import android.widget.TextView;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -95,8 +91,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
             }
         });
 
-        mManager = (WifiP2pManager)
-                getSystemService(getApplicationContext().WIFI_P2P_SERVICE);
+        mManager = (WifiP2pManager) getSystemService(WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(this, getMainLooper(), null);
         mReceiver = new WiFiDirectBroadcastReceiver(this, mManager, mChannel);
 
@@ -133,7 +128,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
                 }
                 return null;
             }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
 
 
         adapter = new DeviceAdapter(this,
@@ -159,8 +154,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
                                 Log.w("custom", "groupInfo:");
                                 Log.w("custom", info.toString());
                                 if (info.groupOwnerAddress != null) {
-                                    Log.w("custom",
-                                            info.groupOwnerAddress.
+                                    Log.w("custom", info.groupOwnerAddress.
                                                     getHostAddress());
                                     new AsyncTask<Void, Void, Void>() {
                                         @Override
@@ -179,7 +173,7 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
                                             return null;
                                         }
                                     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-                                            null);
+                                            (Void) null);
                                 }
                             }
                         });
@@ -219,7 +213,9 @@ public class JoinLeagueActivity extends Activity implements DoProtocolAction {
     @Override
     public void doAction(String rawInput) {
         Protocol.Action action = Protocol.getAction(rawInput);
-
+        if (null == action){
+            return;
+        }
         switch (action) {
             case NAME_CONFIRMED:
                 running = false;

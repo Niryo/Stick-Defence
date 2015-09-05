@@ -50,7 +50,6 @@ public class Protocol {
         READY_TO_PLAY,
         NAME_CONFIRMED,
         LEAGUE_INFO,
-        PREPARE_GAME,
         START_GAME,
         BASIC_SOLDIER,
         ZOMBIE,
@@ -68,7 +67,6 @@ public class Protocol {
         GAME_OVER,
         PAUSE,
         RESUME,
-        END_LEAGUE,
         FINAL_ROUND,
         TEST,
         PARTNER_INFO,
@@ -109,6 +107,7 @@ public class Protocol {
         return jObject.toString();
     }
 
+    /*
     public static String stringify(Action action, String data, Long timeStamp) {
         JSONObject jObject = new JSONObject();
         try {
@@ -131,7 +130,8 @@ public class Protocol {
         }
         return jObject.toString();
     }
-
+    */
+    
     public static Action getAction(String rawInput) {
         try {
             return Action.valueOf(new JSONObject(rawInput).getString("command"));

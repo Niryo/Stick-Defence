@@ -15,7 +15,7 @@ public interface DrawableObject {
 
     /**
      * Update object's place
-     * @param gameTime
+     * @param gameTime the current time
      */
     void update (long gameTime);
 

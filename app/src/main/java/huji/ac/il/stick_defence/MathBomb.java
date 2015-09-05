@@ -24,14 +24,12 @@ import java.util.Random;
  * This class represents math bomb
  */
 public class MathBomb {
-    //TODO: DISABLE ARRAOWS
     private Random rand = new Random(System.currentTimeMillis());
     private LinearLayout answerButtonsLayout;
-    private LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1);
     private ArrayList<Integer> correctAnswer;
     private int currentButtonToPress = 0;
     private ArrayList<Button> buttons = new ArrayList<>();
-    private int NUM_OF_FAKE_BUTTONS = 2;
+    private static final int NUM_OF_FAKE_BUTTONS = 2;
     private String BLUE_COLOR = "#66CCFF";
     private String GREEN_COLOR = "#85FF85";
     private Context context;

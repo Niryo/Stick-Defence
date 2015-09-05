@@ -10,7 +10,6 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.format.Formatter;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -18,13 +17,10 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.File;
 
 /**
  * This class represents the market activity
@@ -451,8 +447,9 @@ public class Market extends Activity implements DoProtocolAction {
     @Override
     public void doAction(String rawInput) {
         Protocol.Action action = Protocol.getAction(rawInput);
-
-
+        if (null == action){
+            return;
+        }
         switch (action) {
             case LEAGUE_INFO:
                 Log.w("custom", "receive leagueinfo in : market.class");

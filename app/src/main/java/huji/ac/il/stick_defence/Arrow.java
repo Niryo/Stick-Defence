@@ -9,7 +9,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.Log;
 
-import java.io.Serializable;
 
 /**
  * This class represents the Arrow of the game
@@ -46,11 +45,9 @@ public class Arrow {
      */
     public Arrow(float x, float y, float[] tan,
                  Sprite.Player player, double delayInSec) {
-        this.screenWidth =
-                gameState.getCanvasWidth();
+        this.screenWidth = GameState.getCanvasWidth();
         Log.w("custom", "screen width:" + screenWidth);
-        this.screenHeight =
-                gameState.getCanvasHeight();
+        this.screenHeight = GameState.getCanvasHeight();
         this.x = x;
         this.y = y;
 
