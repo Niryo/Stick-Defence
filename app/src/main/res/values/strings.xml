@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Stick-Defence</string>
+    <string name="app_name">Stick Defence</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_main_menu">MainMenu</string>
     <string name="single_player">Single Player</string>

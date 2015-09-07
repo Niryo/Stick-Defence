@@ -634,7 +634,13 @@ public class GameState {
             addCredits(hp);
             if (!towers.get(1).reduceHP(hp)) {
                 this.leftPlayerWin = true;
-                addCredits(CREDITS_ON_WIN);
+                int bonus = 0;
+                if (isMultiplayer){
+                    //Double points in case of multiplayer
+                    bonus = getCredits();
+                }
+                bonus = Math.max(bonus, CREDITS_ON_WIN);
+                addCredits(bonus);
             }
         }
     }
@@ -679,10 +685,6 @@ public class GameState {
 
     public boolean isMultiplayer() {
         return this.isMultiplayer;
-    }
-
-    private boolean isGameOver() {
-        return isRightPlayerWin() || isLeftPlayerWin();
     }
 
     public static void setCanvasDimentions(int width, int height) {
@@ -750,6 +752,4 @@ public class GameState {
         }
         this.finalRound = true;
     }
-
-    public boolean isFinalRound() {return this.finalRound; }
 }

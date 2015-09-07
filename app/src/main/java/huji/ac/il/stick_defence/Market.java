@@ -32,7 +32,7 @@ public class Market extends Activity implements DoProtocolAction {
     public static final int    ZOMBIE_BUY_PRICE = 100;
     public static final int    SWORDMAN_BUY_PRICE = 500;
     public static final int    BOMB_GRANDPA_BUY_PRICE = 800;
-    public static final int    TANK_BUY_PRICE = 2000;
+    public static final int    TANK_BUY_PRICE = 1200;
     public static final int    BAZOOKA_BUY_PRICE = 1000;
     public static final int    MATH_BOMB_PRICE = 200;
     public static final int    BIG_WOODEN_TOWER_PRICE = 200;
